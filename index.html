@@ -34,14 +34,6 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
 /* ── MAIN ── */
 .main{max-width:1120px;margin:0 auto;padding:36px 24px 80px;flex:1;width:100%}
 
-/* ── DOSEN BANNER ── */
-.dosen-banner{background:linear-gradient(135deg,rgba(56,189,248,.1),rgba(14,165,233,.05));border:1.5px solid rgba(56,189,248,.3);border-radius:var(--r);padding:20px 24px;margin-bottom:36px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
-.dosen-tag{font-size:11.5px;font-weight:700;color:#38BDF8;text-transform:uppercase;letter-spacing:.06em}
-.dosen-title{font-family:'Amiri',serif;font-size:21px;color:#fff;margin:2px 0 4px}
-.dosen-desc{font-size:13.5px;color:var(--txm);margin:0}
-.dosen-btn{background:linear-gradient(135deg,#0284C7,#0EA5E9);color:#fff;text-decoration:none;padding:10px 20px;border-radius:8px;font-size:13.5px;font-weight:700;box-shadow:0 4px 14px rgba(14,165,233,.3);transition:all .15s;display:inline-flex;align-items:center;gap:8px}
-.dosen-btn:hover{background:#0284C7;transform:translateY(-2px)}
-
 /* ── COURSES SECTION ── */
 .sec-title{font-family:'Amiri',serif;font-size:24px;color:#fff;margin-bottom:20px;display:flex;align-items:center;gap:10px}
 .sec-title::before{content:'';width:4px;height:22px;background:#38BDF8;border-radius:2px}
@@ -88,16 +80,6 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
 </header>
 
 <main class="main">
-
-  <!-- DOSEN MONITORING -->
-  <div class="dosen-banner">
-    <div>
-      <span class="dosen-tag">Khusus Fasilitator &amp; Dosen Pengampu</span>
-      <h3 class="dosen-title">📊 Dashboard Monitoring &amp; Rekap Nilai Mahasiswa (Cloud)</h3>
-      <p class="dosen-desc">Pantau skor kuis dan aktivitas praktikum mahasiswa secara realtime serta kelola PIN rahasia kelas.</p>
-    </div>
-    <a href="dashboard-dosen.html" class="dosen-btn">Buka Dashboard Dosen ➔</a>
-  </div>
 
   <h2 class="sec-title">Mata Kuliah Semester Ganjil 2026/2027</h2>
 
@@ -225,6 +207,14 @@ function escapeHtml(text) {
   if (!text) return '';
   return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
+
+// Discreet shortcut for Lecturer (Cmd+Shift+D / Ctrl+Shift+D)
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'D' || e.key === 'd')) {
+    e.preventDefault();
+    window.location.href = 'dashboard-dosen.html';
+  }
+});
 </script>
 
 </body>
