@@ -141,13 +141,21 @@ function saveStudentIdentity() {
   localStorage.setItem('tazkia_student_nama', nama);
 
   // Sync to Firestore collection 'users'
-  if (db && window.firebase) {
-    db.collection('users').doc(nim).set({
+  window.onCloudSyncReady((dbInstance) => {
+    dbInstance.collection('users').doc(nim).set({
       nim: nim,
       nama: nama,
       lastActive: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true }).catch(err => console.error("Error saving user:", err));
-  }
+    }, { merge: true })
+      .then(() => {
+        console.log("✓ User data tersinkronisasi ke Firestore collection 'users'");
+        showCloudToast(`Identitas <strong>${nama} (${nim})</strong> terhubung ke Cloud!`);
+      })
+      .catch(err => {
+        console.error("Error saving user:", err);
+        showCloudToast(`Gagal menghubungkan profil: ${err.message}`, true);
+      });
+  });
 
   const modal = document.getElementById('studentIdModal');
   if (modal) modal.remove();
