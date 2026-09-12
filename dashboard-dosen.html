@@ -58,6 +58,26 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
 .kpi-num{font-family:'Source Code Pro',monospace;font-size:24px;font-weight:700;color:#fff;line-height:1.2}
 .kpi-lbl{font-size:12px;color:var(--txm);font-weight:600}
 
+/* ── PIN MANAGEMENT SECTION ── */
+.pin-panel{background:var(--sf);border:1.5px solid var(--bd);border-radius:var(--r);padding:22px;margin-bottom:28px}
+.pin-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px}
+.pin-title{font-family:'Amiri',serif;font-size:21px;color:#fff;margin:0 0 2px}
+.pin-sub{font-size:13px;color:var(--txm);margin:0}
+
+.pin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.pin-card{background:var(--sf3);border:1px solid var(--bd);border-radius:var(--rs);padding:14px;position:relative;display:flex;flex-direction:column;gap:10px;transition:border-color .15s}
+.pin-card:hover{border-color:rgba(56,189,248,.4)}
+.pin-card-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.pin-card-title{font-size:12.5px;font-weight:700;color:#fff;display:flex;align-items:center;gap:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pin-card-folder{font-size:11px;color:var(--txl);font-family:'Source Code Pro',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pin-input-group{display:flex;gap:8px;align-items:center}
+.pin-input{flex:1;padding:8px 10px;border-radius:6px;border:1px solid #334155;background:#0A0E17;color:#FFD488;font-size:16px;font-family:'Source Code Pro',monospace;font-weight:700;text-align:center;box-sizing:border-box;outline:none}
+.pin-input:focus{border-color:var(--pri)}
+.btn-save-single{background:#1E293B;border:1px solid var(--bd);color:#38BDF8;padding:7px 12px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s}
+.btn-save-single:hover{background:#38BDF8;color:#0A0E17}
+.btn-delete-course{background:transparent;border:none;color:#EF4444;cursor:pointer;font-size:14px;padding:2px 4px;border-radius:4px}
+.btn-delete-course:hover{background:rgba(239,68,68,.15)}
+
 /* ── CONTROLS & FILTER BAR ── */
 .controls{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px 20px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:20px}
 .search-input{background:var(--sf3);border:1px solid var(--bd);border-radius:var(--rs);padding:9px 14px;color:#fff;font-size:13.5px;min-width:240px;flex:1;outline:none}
@@ -67,6 +87,9 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
 
 .btn-primary{background:linear-gradient(135deg,#0284C7,#0EA5E9);color:#fff;border:none;border-radius:var(--rs);padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s;box-shadow:0 4px 12px rgba(14,165,233,.25)}
 .btn-primary:hover{background:#0284C7;transform:translateY(-1px)}
+
+.btn-orange{background:linear-gradient(135deg,#D46020,#E88030);color:#fff;border:none;border-radius:var(--rs);padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 14px rgba(212,96,32,.25)}
+.btn-orange:hover{opacity:.9}
 
 .btn-export{background:linear-gradient(135deg,#059669,#10B981);color:#fff;border:none;border-radius:var(--rs);padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:opacity .15s}
 .btn-export:hover{opacity:.9}
@@ -87,7 +110,7 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
 .action-delete{border-color:rgba(239,68,68,.3);color:#FCA5A5}
 .action-delete:hover{background:rgba(239,68,68,.2);border-color:#EF4444;color:#fff}
 
-/* ── MODAL CRUD ── */
+/* ── MODALS ── */
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:999;padding:20px}
 .modal-overlay.active{display:flex}
 .modal-box{background:var(--sf);border:1.5px solid var(--bd);border-radius:var(--r);width:100%;max-width:540px;box-shadow:0 20px 50px rgba(0,0,0,.6);overflow:hidden;animation:modalPop .2s ease-out}
@@ -133,9 +156,9 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
 
 <main class="main">
   <div class="hd">
-    <span class="hd-badge">Monitoring Pembelajaran OBE &amp; Kuis Interaktif</span>
+    <span class="hd-badge">Monitoring Pembelajaran OBE &amp; Multi-Kelas</span>
     <h1 class="hd-title">Rekapitulasi &amp; Manajemen Nilai Mahasiswa</h1>
-    <p class="hd-sub">Kelola, tambahkan, edit, atau hapus submission nilai kuis dan lembar kerja praktikum mahasiswa secara langsung pada database cloud.</p>
+    <p class="hd-sub">Kelola PIN rahasia untuk seluruh mata kuliah, input nilai manual, edit skor, dan ekspor rekapitulasi nilai mahasiswa.</p>
   </div>
 
   <!-- KPI SUMMARY -->
@@ -170,33 +193,22 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
     </div>
   </div>
 
-  <!-- PIN MANAGEMENT PANEL (CONFIDENTIAL ACCESS) -->
-  <div style="background:var(--sf);border:1.5px solid var(--bd);border-radius:var(--r);padding:20px;margin-bottom:24px">
-    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+  <!-- ════════ DYNAMIC PIN MANAGEMENT PANEL ════════ -->
+  <div class="pin-panel">
+    <div class="pin-header">
       <div>
-        <h3 style="font-family:'Amiri',serif;font-size:20px;color:#fff;margin:0 0 2px">🔐 Pengaturan PIN Akses Kelas (Confidential Gate)</h3>
-        <p style="font-size:12.5px;color:var(--txm);margin:0">Bagikan PIN rahasia ini ke mahasiswa di kelas masing-masing agar mahasiswa kelas lain tidak bisa membuka materi.</p>
+        <h3 class="pin-title">🔐 Pengaturan PIN Akses Kelas (Dinamis &amp; Multi Mata Kuliah)</h3>
+        <p class="pin-sub">Atur PIN rahasia untuk tiap mata kuliah secara dinamis. Anda dapat menambah mata kuliah baru tanpa batas.</p>
       </div>
-      <button onclick="savePinsToCloud()" style="background:linear-gradient(135deg,#D46020,#E88030);color:#fff;border:none;border-radius:var(--rs);padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 14px rgba(212,96,32,.25)">💾 Simpan PIN Baru ke Cloud ✓</button>
+      <div class="btn-group">
+        <button class="btn-primary" onclick="openAddCourseModal()">+ Tambah Mata Kuliah Baru</button>
+        <button class="btn-orange" onclick="saveAllPinsToCloud()">💾 Simpan Semua PIN ke Cloud ✓</button>
+      </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">
-      <div style="background:var(--sf3);border:1px solid var(--bd);border-radius:var(--rs);padding:12px">
-        <label style="display:block;font-size:11.5px;font-weight:700;color:#38BDF8;margin-bottom:4px">🏛️ SIA (Akuntansi):</label>
-        <input type="text" id="pinSIA" value="3021" maxlength="8" style="width:100%;padding:8px 10px;border-radius:6px;border:1px solid #334155;background:#0A0E17;color:#FFD488;font-size:16px;font-family:'Source Code Pro',monospace;font-weight:700;text-align:center;box-sizing:border-box">
-      </div>
-      <div style="background:var(--sf3);border:1px solid var(--bd);border-radius:var(--rs);padding:12px">
-        <label style="display:block;font-size:11.5px;font-weight:700;color:#20C8D0;margin-bottom:4px">📊 ADA (Data Analytics):</label>
-        <input type="text" id="pinADA" value="3011" maxlength="8" style="width:100%;padding:8px 10px;border-radius:6px;border:1px solid #334155;background:#0A0E17;color:#FFD488;font-size:16px;font-family:'Source Code Pro',monospace;font-weight:700;text-align:center;box-sizing:border-box">
-      </div>
-      <div style="background:var(--sf3);border:1px solid var(--bd);border-radius:var(--rs);padding:12px">
-        <label style="display:block;font-size:11.5px;font-weight:700;color:#C09030;margin-bottom:4px">📈 BIV (Visualization):</label>
-        <input type="text" id="pinBIV" value="3012" maxlength="8" style="width:100%;padding:8px 10px;border-radius:6px;border:1px solid #334155;background:#0A0E17;color:#FFD488;font-size:16px;font-family:'Source Code Pro',monospace;font-weight:700;text-align:center;box-sizing:border-box">
-      </div>
-      <div style="background:var(--sf3);border:1px solid var(--bd);border-radius:var(--rs);padding:12px">
-        <label style="display:block;font-size:11.5px;font-weight:700;color:#F43F5E;margin-bottom:4px">🔑 PIN Dashboard Dosen:</label>
-        <input type="text" id="pinDosen" value="7788" maxlength="8" style="width:100%;padding:8px 10px;border-radius:6px;border:1px solid #334155;background:#0A0E17;color:#FFD488;font-size:16px;font-family:'Source Code Pro',monospace;font-weight:700;text-align:center;box-sizing:border-box">
-      </div>
+    <!-- DYNAMIC PIN GRID -->
+    <div id="pinGrid" class="pin-grid">
+      <!-- Generated by JavaScript -->
     </div>
   </div>
 
@@ -206,16 +218,7 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
     
     <select id="courseFilter" class="filter-select" onchange="renderTable()">
       <option value="ALL">Semua Modul / Pertemuan</option>
-      <option value="Pertemuan 01">SIA — Pertemuan 01 (Pengantar AIS)</option>
-      <option value="Pertemuan 02">SIA — Pertemuan 02 (Proses &amp; Data)</option>
-      <option value="Pertemuan 03">SIA — Pertemuan 03 (Enterprise Systems)</option>
-      <option value="Pertemuan 04">SIA — Pertemuan 04 (Etika &amp; Fraud)</option>
-      <option value="Pertemuan 05">SIA — Pertemuan 05 (COSO Controls)</option>
-      <option value="Pertemuan 06">SIA — Pertemuan 06 (Cybersecurity)</option>
-      <option value="Pertemuan 07">SIA — Pertemuan 07 (ITGC &amp; Controls)</option>
-      <option value="Pertemuan 08">SIA — Pertemuan 08 (Evaluasi UTS)</option>
-      <option value="ADA">Applied Data Analytics (ADA)</option>
-      <option value="BIV">Business Intelligence (BIV)</option>
+      <!-- Populated dynamically -->
     </select>
 
     <div class="btn-group">
@@ -253,7 +256,62 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
   </div>
 </main>
 
-<!-- ════════ MODAL FORM (CREATE / UPDATE) ════════ -->
+<!-- ════════ MODAL: TAMBAH MATA KULIAH BARU ════════ -->
+<div id="addCourseModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 class="modal-title">Tambah Mata Kuliah / Kelas Baru</h3>
+      <button class="modal-close" onclick="closeAddCourseModal()">&times;</button>
+    </div>
+    <form id="addCourseForm" onsubmit="handleAddCourseSubmit(event)">
+      <div class="modal-body">
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Kode Singkat (ID) *</label>
+            <input type="text" id="newCourseCode" class="form-input" placeholder="Contoh: AUDIT_SI" required style="text-transform:uppercase">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Icon Emoji *</label>
+            <select id="newCourseIcon" class="form-select">
+              <option value="🏛️">🏛️ Akuntansi / Bank</option>
+              <option value="📊">📊 Data Analytics</option>
+              <option value="📈">📈 Business Intelligence</option>
+              <option value="🛡️">🛡️ Audit / Keamanan</option>
+              <option value="💰">💰 Keuangan Syariah</option>
+              <option value="🤖">🤖 AI &amp; Otomasi</option>
+              <option value="⚖️">⚖️ Fiqh Muamalah</option>
+              <option value="📱">📱 Sistem Informasi</option>
+              <option value="🌐">🌐 ERP &amp; E-Business</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Nama Lengkap Mata Kuliah *</label>
+          <input type="text" id="newCourseName" class="form-input" placeholder="Contoh: Audit Sistem Informasi (AUD-401)" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Nama Folder di Repositori *</label>
+          <input type="text" id="newCourseFolder" class="form-input" placeholder="Contoh: Audit Sistem Informasi" required>
+          <span style="font-size:11px;color:var(--txm)">Sistem akan otomatis mendeteksi ketika mahasiswa mengakses folder ini untuk mengunci dengan PIN.</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">PIN Akses Rahasia *</label>
+          <input type="text" id="newCoursePin" class="form-input" placeholder="Contoh: 4040" maxlength="8" required style="font-family:'Source Code Pro',monospace;font-weight:700">
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" onclick="closeAddCourseModal()">Batal</button>
+        <button type="submit" class="btn-primary">Tambahkan Mata Kuliah ✓</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ════════ MODAL: TAMBAH / EDIT NILAI SISWA (CRUD) ════════ -->
 <div id="crudModal" class="modal-overlay">
   <div class="modal-box">
     <div class="modal-header">
@@ -277,18 +335,7 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
         <div class="form-group">
           <label class="form-label">Mata Kuliah / Pertemuan *</label>
           <select id="formPertemuan" class="form-select" required>
-            <option value="Pertemuan 01">SIA — Pertemuan 01: Pengantar AIS</option>
-            <option value="Pertemuan 02">SIA — Pertemuan 02: Proses Bisnis &amp; DFD</option>
-            <option value="Pertemuan 03">SIA — Pertemuan 03: Enterprise Systems &amp; ERP</option>
-            <option value="Pertemuan 04">SIA — Pertemuan 04: Etika, Fraud &amp; Kejahatan</option>
-            <option value="Pertemuan 05">SIA — Pertemuan 05: COSO Internal Control</option>
-            <option value="Pertemuan 06">SIA — Pertemuan 06: Keamanan Siber &amp; Forensik</option>
-            <option value="Pertemuan 07">SIA — Pertemuan 07: ITGC &amp; Audit Trail</option>
-            <option value="Pertemuan 08">SIA — Pertemuan 08: Milestone UTS Project</option>
-            <option value="ADA - Pertemuan 01">ADA — Pertemuan 01: Python &amp; Colab</option>
-            <option value="ADA - Pertemuan 02">ADA — Pertemuan 02: Pandas Groupby</option>
-            <option value="ADA - Pertemuan 03">ADA — Pertemuan 03: Data Wrangling</option>
-            <option value="BIV - Pertemuan 01">BIV — Pertemuan 01: Fondasi BI &amp; Power BI</option>
+            <!-- Generated dynamically -->
           </select>
         </div>
 
@@ -322,6 +369,14 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
 </footer>
 
 <script>
+const DEFAULT_COURSES = [
+  { code: 'SIA', name: 'Sistem Informasi Akuntansi (AKS-302)', folder: 'Sistem Informasi Akuntansi', pin: '3021', icon: '🏛️' },
+  { code: 'ADA', name: 'Applied Data Analytics (DAT-301)', folder: 'Applied Data Analytics', pin: '3011', icon: '📊' },
+  { code: 'BIV', name: 'Business Intelligence & Visualization (BIV-301)', folder: 'Business Intelligence', pin: '3012', icon: '📈' }
+];
+
+let registeredCourses = [...DEFAULT_COURSES];
+let activePins = { SIA: '3021', ADA: '3011', BIV: '3012', DOSEN: '7788' };
 let allQuizData = [];
 let allUsersMap = {};
 let dbRef = null;
@@ -330,18 +385,30 @@ function initLecturerDashboard() {
   window.onCloudSyncReady((dbInstance) => {
     dbRef = dbInstance;
 
-    // 1. Listen to 'settings/access_pins'
+    // 1. Listen to 'settings/courses_meta'
+    dbInstance.collection('settings').doc('courses_meta').onSnapshot(doc => {
+      if (doc.exists) {
+        const data = doc.data();
+        if (data && Array.isArray(data.courses) && data.courses.length > 0) {
+          registeredCourses = [...data.courses];
+        }
+      }
+      renderPinCards();
+      populateDropdowns();
+    }, err => {
+      renderPinCards();
+      populateDropdowns();
+    });
+
+    // 2. Listen to 'settings/access_pins'
     dbInstance.collection('settings').doc('access_pins').onSnapshot(doc => {
       if (doc.exists) {
-        const pins = doc.data();
-        if (pins.SIA) document.getElementById('pinSIA').value = pins.SIA;
-        if (pins.ADA) document.getElementById('pinADA').value = pins.ADA;
-        if (pins.BIV) document.getElementById('pinBIV').value = pins.BIV;
-        if (pins.DOSEN) document.getElementById('pinDosen').value = pins.DOSEN;
+        activePins = { ...activePins, ...doc.data() };
+        renderPinCards();
       }
     });
 
-    // 2. Listen to 'users' collection
+    // 3. Listen to 'users' collection
     dbInstance.collection('users').onSnapshot(snapshot => {
       allUsersMap = {};
       snapshot.forEach(doc => {
@@ -350,7 +417,7 @@ function initLecturerDashboard() {
       document.getElementById('kpiStudents').textContent = Object.keys(allUsersMap).length;
     });
 
-    // 3. Listen to 'quiz' collection (Realtime Gradebook)
+    // 4. Listen to 'quiz' collection (Realtime Gradebook)
     dbInstance.collection('quiz').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
       allQuizData = [];
       snapshot.forEach(doc => {
@@ -381,6 +448,220 @@ function initLecturerDashboard() {
   });
 }
 
+/* ════════ DYNAMIC PIN MANAGEMENT ════════ */
+function renderPinCards() {
+  const container = document.getElementById('pinGrid');
+  if (!container) return;
+
+  let html = '';
+
+  // 1. Dosen Master PIN
+  const dosenPin = activePins['DOSEN'] || '7788';
+  html += `
+    <div class="pin-card" style="border-color:rgba(244,63,94,.4);background:rgba(244,63,94,.05)">
+      <div class="pin-card-top">
+        <div class="pin-card-title" style="color:#FDA4AF">🔑 PIN Dashboard Dosen</div>
+        <span style="font-size:10.5px;font-weight:700;color:#F43F5E;background:rgba(244,63,94,.15);padding:2px 6px;border-radius:4px">MASTER</span>
+      </div>
+      <div class="pin-card-folder">Akses Halaman Dosen</div>
+      <div class="pin-input-group">
+        <input type="text" id="pin_DOSEN" value="${dosenPin}" maxlength="8" class="pin-input">
+        <button class="btn-save-single" onclick="saveSinglePin('DOSEN', 'pin_DOSEN')">Simpan</button>
+      </div>
+    </div>
+  `;
+
+  // 2. All Registered Courses
+  registeredCourses.forEach(c => {
+    const pinVal = activePins[c.code] || c.pin || '1234';
+    const isDefault = ['SIA', 'ADA', 'BIV'].includes(c.code);
+    const deleteBtn = isDefault ? '' : `<button class="btn-delete-course" title="Hapus Mata Kuliah" onclick="deleteCourse('${c.code}', '${escapeHtml(c.name)}')">🗑️</button>`;
+
+    html += `
+      <div class="pin-card">
+        <div class="pin-card-top">
+          <div class="pin-card-title">${c.icon || '📚'} ${escapeHtml(c.name)}</div>
+          ${deleteBtn}
+        </div>
+        <div class="pin-card-folder">Folder: ${escapeHtml(c.folder)}</div>
+        <div class="pin-input-group">
+          <input type="text" id="pin_${c.code}" value="${pinVal}" maxlength="8" class="pin-input">
+          <button class="btn-save-single" onclick="saveSinglePin('${c.code}', 'pin_${c.code}')">Simpan</button>
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+function saveSinglePin(code, inputId) {
+  const val = document.getElementById(inputId).value.trim();
+  if (!val) {
+    alert("PIN tidak boleh kosong!");
+    return;
+  }
+  if (!dbRef) return;
+
+  const updateObj = {};
+  updateObj[code] = val;
+  updateObj.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+
+  dbRef.collection('settings').doc('access_pins').set(updateObj, { merge: true })
+    .then(() => {
+      activePins[code] = val;
+      alert(`✅ PIN untuk ${code} berhasil diperbarui menjadi "${val}"!`);
+    })
+    .catch(err => {
+      alert("❌ Gagal menyimpan PIN: " + err.message);
+    });
+}
+
+function saveAllPinsToCloud() {
+  if (!dbRef) return;
+
+  const updateObj = {
+    DOSEN: document.getElementById('pin_DOSEN').value.trim()
+  };
+
+  registeredCourses.forEach(c => {
+    const el = document.getElementById('pin_' + c.code);
+    if (el) updateObj[c.code] = el.value.trim();
+  });
+
+  updateObj.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+
+  dbRef.collection('settings').doc('access_pins').set(updateObj, { merge: true })
+    .then(() => {
+      alert("✅ Seluruh PIN Akses Kelas Berhasil Disimpan ke Cloud!");
+    })
+    .catch(err => {
+      alert("❌ Gagal menyimpan PIN: " + err.message);
+    });
+}
+
+function openAddCourseModal() {
+  document.getElementById('newCourseCode').value = '';
+  document.getElementById('newCourseName').value = '';
+  document.getElementById('newCourseFolder').value = '';
+  document.getElementById('newCoursePin').value = '';
+  document.getElementById('addCourseModal').classList.add('active');
+}
+
+function closeAddCourseModal() {
+  document.getElementById('addCourseModal').classList.remove('active');
+}
+
+function handleAddCourseSubmit(e) {
+  e.preventDefault();
+  if (!dbRef) return;
+
+  const code = document.getElementById('newCourseCode').value.trim().toUpperCase();
+  const icon = document.getElementById('newCourseIcon').value;
+  const name = document.getElementById('newCourseName').value.trim();
+  const folder = document.getElementById('newCourseFolder').value.trim();
+  const pin = document.getElementById('newCoursePin').value.trim();
+
+  if (registeredCourses.some(c => c.code === code)) {
+    alert(`Kode Mata Kuliah "${code}" sudah terdaftar! Gunakan kode lain.`);
+    return;
+  }
+
+  const newCourse = { code, icon, name, folder, pin };
+  const updatedList = [...registeredCourses, newCourse];
+
+  // 1. Save courses list to settings/courses_meta
+  dbRef.collection('settings').doc('courses_meta').set({
+    courses: updatedList,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }, { merge: true });
+
+  // 2. Save PIN to settings/access_pins
+  const pinObj = {};
+  pinObj[code] = pin;
+  dbRef.collection('settings').doc('access_pins').set(pinObj, { merge: true })
+    .then(() => {
+      registeredCourses = updatedList;
+      activePins[code] = pin;
+      closeAddCourseModal();
+      renderPinCards();
+      populateDropdowns();
+      alert(`✅ Mata Kuliah "${name}" berhasil ditambahkan dengan PIN ${pin}!`);
+    })
+    .catch(err => {
+      alert("❌ Gagal menambahkan mata kuliah: " + err.message);
+    });
+}
+
+function deleteCourse(code, courseName) {
+  if (!confirm(`Hapus mata kuliah "${courseName}" (${code}) dari daftar PIN?`)) return;
+  if (!dbRef) return;
+
+  const updatedList = registeredCourses.filter(c => c.code !== code);
+
+  dbRef.collection('settings').doc('courses_meta').set({
+    courses: updatedList,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }, { merge: true })
+    .then(() => {
+      registeredCourses = updatedList;
+      renderPinCards();
+      populateDropdowns();
+      alert(`✅ Mata Kuliah "${courseName}" berhasil dihapus.`);
+    })
+    .catch(err => {
+      alert("❌ Gagal menghapus mata kuliah: " + err.message);
+    });
+}
+
+function populateDropdowns() {
+  const filterSel = document.getElementById('courseFilter');
+  const formSel = document.getElementById('formPertemuan');
+
+  // Filter Dropdown
+  const curFilter = filterSel.value;
+  let filterHtml = '<option value="ALL">Semua Modul / Pertemuan</option>';
+  
+  // Form Pertemuan Dropdown
+  let formHtml = '';
+
+  // Default Standard Meetings
+  const defaultOptions = [
+    { val: 'Pertemuan 01', text: 'SIA — Pertemuan 01 (Pengantar AIS)' },
+    { val: 'Pertemuan 02', text: 'SIA — Pertemuan 02 (Proses & Data)' },
+    { val: 'Pertemuan 03', text: 'SIA — Pertemuan 03 (Enterprise Systems)' },
+    { val: 'Pertemuan 04', text: 'SIA — Pertemuan 04 (Etika & Fraud)' },
+    { val: 'Pertemuan 05', text: 'SIA — Pertemuan 05 (COSO Controls)' },
+    { val: 'Pertemuan 06', text: 'SIA — Pertemuan 06 (Cybersecurity)' },
+    { val: 'Pertemuan 07', text: 'SIA — Pertemuan 07 (ITGC & Controls)' },
+    { val: 'Pertemuan 08', text: 'SIA — Pertemuan 08 (Evaluasi UTS)' },
+    { val: 'ADA - Pertemuan 01', text: 'ADA — Pertemuan 01 (Python & Colab)' },
+    { val: 'ADA - Pertemuan 02', text: 'ADA — Pertemuan 02 (Pandas Groupby)' },
+    { val: 'ADA - Pertemuan 03', text: 'ADA — Pertemuan 03 (Data Wrangling)' },
+    { val: 'BIV - Pertemuan 01', text: 'BIV — Pertemuan 01 (Fondasi BI & Power BI)' }
+  ];
+
+  defaultOptions.forEach(opt => {
+    filterHtml += `<option value="${opt.val}">${opt.text}</option>`;
+    formHtml += `<option value="${opt.val}">${opt.text}</option>`;
+  });
+
+  // Add custom registered courses
+  registeredCourses.forEach(c => {
+    if (!['SIA', 'ADA', 'BIV'].includes(c.code)) {
+      filterHtml += `<option value="${c.code}">${c.name}</option>`;
+      formHtml += `<option value="${c.code} - P01">${c.name} — P01</option>`;
+      formHtml += `<option value="${c.code} - P02">${c.name} — P02</option>`;
+      formHtml += `<option value="${c.code} - UTS">${c.name} — UTS</option>`;
+    }
+  });
+
+  filterSel.innerHTML = filterHtml;
+  formSel.innerHTML = formHtml;
+  filterSel.value = curFilter;
+}
+
+/* ════════ KPI & GRADEBOOK TABLE ════════ */
 function updateKPIs() {
   document.getElementById('kpiSubmissions').textContent = allQuizData.length;
   if (allQuizData.length === 0) {
@@ -458,7 +739,7 @@ function openCreateModal() {
   document.getElementById('modalTitle').textContent = 'Tambah Nilai Mahasiswa (Manual)';
   document.getElementById('formNim').value = '';
   document.getElementById('formNama').value = '';
-  document.getElementById('formPertemuan').value = 'Pertemuan 01';
+  document.getElementById('formPertemuan').selectedIndex = 0;
   document.getElementById('formAktivitas').value = 'Kuis Pemahaman AIS';
   document.getElementById('formSkor').value = '9';
   document.getElementById('formTotal').value = '9';
@@ -475,7 +756,6 @@ function openEditModal(docId) {
   document.getElementById('formNim').value = item.nim;
   document.getElementById('formNama').value = item.nama;
   
-  // Match dropdown if exists, else add custom option
   const sel = document.getElementById('formPertemuan');
   let matched = false;
   for (let i = 0; i < sel.options.length; i++) {
@@ -532,7 +812,6 @@ function handleCrudSubmit(e) {
     timestampClient: new Date().toISOString()
   };
 
-  // Sync also to users collection
   dbRef.collection('users').doc(nim).set({
     nim: nim,
     nama: nama,
@@ -540,25 +819,21 @@ function handleCrudSubmit(e) {
   }, { merge: true });
 
   if (docId) {
-    // UPDATE
     dbRef.collection('quiz').doc(docId).update(payload)
       .then(() => {
         closeCrudModal();
         alert("✅ Data nilai berhasil diperbarui di Cloud!");
       })
       .catch(err => {
-        console.error("Error updating quiz:", err);
         alert("❌ Gagal mengupdate data: " + err.message);
       });
   } else {
-    // CREATE
     dbRef.collection('quiz').add(payload)
       .then(() => {
         closeCrudModal();
         alert("✅ Data nilai baru berhasil ditambahkan ke Cloud!");
       })
       .catch(err => {
-        console.error("Error creating quiz:", err);
         alert("❌ Gagal menambahkan data: " + err.message);
       });
   }
@@ -568,18 +843,13 @@ function deleteQuizEntry(docId, studentName) {
   if (!confirm(`Apakah Anda yakin ingin menghapus data submission milik "${studentName}" dari Cloud? Tindakan ini tidak dapat dibatalkan.`)) {
     return;
   }
-
-  if (!dbRef) {
-    alert("Koneksi ke Firebase Cloud Firestore belum siap!");
-    return;
-  }
+  if (!dbRef) return;
 
   dbRef.collection('quiz').doc(docId).delete()
     .then(() => {
       console.log("Deleted doc:", docId);
     })
     .catch(err => {
-      console.error("Error deleting doc:", err);
       alert("❌ Gagal menghapus data: " + err.message);
     });
 }
@@ -606,35 +876,6 @@ function exportToCSV() {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-}
-
-function savePinsToCloud() {
-  const sia = document.getElementById('pinSIA').value.trim();
-  const ada = document.getElementById('pinADA').value.trim();
-  const biv = document.getElementById('pinBIV').value.trim();
-  const dosen = document.getElementById('pinDosen').value.trim();
-
-  if (!sia || !ada || !biv || !dosen) {
-    alert("Semua kolom PIN harus diisi!");
-    return;
-  }
-
-  window.onCloudSyncReady(dbInstance => {
-    dbInstance.collection('settings').doc('access_pins').set({
-      SIA: sia,
-      ADA: ada,
-      BIV: biv,
-      DOSEN: dosen,
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true })
-      .then(() => {
-        alert("✅ PIN Akses Kelas Berhasil Disimpan!\n\n• SIA: " + sia + "\n• ADA: " + ada + "\n• BIV: " + biv + "\n• Dosen: " + dosen + "\n\nPerubahan langsung berlaku realtime bagi seluruh mahasiswa.");
-      })
-      .catch(err => {
-        console.error("Error saving pins:", err);
-        alert("❌ Gagal menyimpan PIN ke Cloud: " + err.message);
-      });
-  });
 }
 
 // Inisialisasi saat window dimuat
