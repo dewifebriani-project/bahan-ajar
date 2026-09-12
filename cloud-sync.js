@@ -211,6 +211,23 @@ function checkCourseAccessPin() {
   if (!info) return;
 
   const requiredPin = activeCoursePins[info.code] || info.pin;
+
+  if (info.code === 'DOSEN') {
+    // Strict Dosen Gate: Must be logged in as Dosen 0206015 AND have valid session token
+    const isDosenUser = currentStudent.nim === '0206015';
+    const isDosenAuth = sessionStorage.getItem('tazkia_dosen_authenticated') === 'true';
+
+    if (isDosenUser && isDosenAuth) {
+      const lockModal = document.getElementById('coursePinModal');
+      if (lockModal) lockModal.remove();
+      document.body.style.overflow = '';
+      return;
+    } else {
+      showPinModal(info, requiredPin);
+      return;
+    }
+  }
+
   const unlocked = localStorage.getItem('tazkia_pin_unlocked_' + info.code);
 
   if (unlocked === requiredPin) {
@@ -234,19 +251,26 @@ function showPinModal(info, requiredPin) {
     modal.id = 'coursePinModal';
     document.body.style.overflow = 'hidden';
 
+    const isDosenPage = info.code === 'DOSEN';
+    const titleText = isDosenPage ? 'Autentikasi Dosen Pengampu' : 'Kunci Akses Kelas';
+    const subtitleText = isDosenPage ? 'Halaman Khusus Dosen &amp; Gradebook Akademik' : `Mata Kuliah: <strong style="color:#38BDF8">${info.name}</strong>`;
+    const descText = isDosenPage 
+      ? 'Halaman ini memuat rekapan seluruh nilai dan berkas rahasia mahasiswa. Masukkan PIN Dosen (4 Digit) untuk melanjutkan.'
+      : 'Materi ini bersifat <em>confidential</em>. Masukkan PIN akses yang dibagikan oleh Dosen di dalam kelas untuk membuka materi.';
+
     modal.innerHTML = `
       <div style="position:fixed;inset:0;background:rgba(7,15,28,.97);backdrop-filter:blur(10px);z-index:999999;display:flex;align-items:center;justify-content:center;padding:18px">
-        <div style="background:#121826;border:2px solid #D46020;border-radius:14px;padding:32px 24px;max-width:420px;width:100%;color:#fff;box-shadow:0 20px 50px rgba(0,0,0,.8);font-family:'Source Sans 3',sans-serif;text-align:center">
+        <div style="background:#121826;border:2px solid ${isDosenPage ? '#38BDF8' : '#D46020'};border-radius:14px;padding:32px 24px;max-width:420px;width:100%;color:#fff;box-shadow:0 20px 50px rgba(0,0,0,.8);font-family:'Source Sans 3',sans-serif;text-align:center">
           <div style="font-size:42px;margin-bottom:8px">${info.icon || '🔒'}</div>
-          <h3 style="font-family:'Amiri',serif;font-size:24px;margin:0 0 6px;color:#FFB885">Kunci Akses Kelas</h3>
-          <p style="font-size:14px;color:#CBD5E1;margin-bottom:6px">Mata Kuliah: <strong style="color:#38BDF8">${info.name}</strong></p>
-          <p style="font-size:12px;color:#94A3B8;margin-bottom:18px">Materi ini bersifat <em>confidential</em>. Masukkan PIN akses yang dibagikan oleh Dosen di dalam kelas untuk membuka materi.</p>
+          <h3 style="font-family:'Amiri',serif;font-size:24px;margin:0 0 6px;color:${isDosenPage ? '#7DD3FC' : '#FFB885'}">${titleText}</h3>
+          <p style="font-size:14px;color:#CBD5E1;margin-bottom:6px">${subtitleText}</p>
+          <p style="font-size:12px;color:#94A3B8;margin-bottom:18px">${descText}</p>
           
           <div style="margin-bottom:18px">
             <input type="password" id="inputCoursePin" maxlength="12" placeholder="••••" style="width:100%;padding:12px;border-radius:8px;border:1.5px solid #334155;background:#0F172A;color:#FFD488;font-size:22px;letter-spacing:.3em;text-align:center;box-sizing:border-box;font-family:'Source Code Pro',monospace;outline:none">
           </div>
 
-          <button onclick="submitCoursePin('${info.code}')" style="width:100%;background:linear-gradient(135deg,#D46020,#E88030);color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;box-shadow:0 4px 16px rgba(212,96,32,.3)">🔓 Buka Akses Materi ✓</button>
+          <button onclick="submitCoursePin('${info.code}')" style="width:100%;background:${isDosenPage ? 'linear-gradient(135deg,#0284C7,#0EA5E9)' : 'linear-gradient(135deg,#D46020,#E88030)'};color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;box-shadow:0 4px 16px rgba(14,165,233,.3)">🔓 ${isDosenPage ? 'Masuk Dashboard Dosen ✓' : 'Buka Akses Materi ✓'}</button>
           
           <div style="margin-top:16px">
             <a href="${info.code === 'DOSEN' ? 'index.html' : '../../index.html'}" style="color:#94A3B8;font-size:12.5px;text-decoration:none">← Kembali ke Portal Utama</a>
@@ -276,15 +300,28 @@ window.submitCoursePin = function(courseCode) {
   const requiredPin = activeCoursePins[courseCode] || (info ? info.pin : '1234');
 
   if (typedPin === requiredPin) {
-    localStorage.setItem('tazkia_pin_unlocked_' + courseCode, requiredPin);
+    if (courseCode === 'DOSEN') {
+      sessionStorage.setItem('tazkia_dosen_authenticated', 'true');
+      // Auto-switch to Lecturer identity
+      currentStudent.nim = '0206015';
+      currentStudent.nama = 'Dewi Febriani';
+      localStorage.setItem('tazkia_student_nim', '0206015');
+      localStorage.setItem('tazkia_student_nama', 'Dewi Febriani');
+      updateTopStudentBadge();
+    } else {
+      localStorage.setItem('tazkia_pin_unlocked_' + courseCode, requiredPin);
+    }
+
     const modal = document.getElementById('coursePinModal');
     if (modal) modal.remove();
     document.body.style.overflow = '';
-    showCloudToast(`Akses <strong>${courseCode}</strong> berhasil terbuka!`);
+    showCloudToast(`Akses <strong>${courseCode === 'DOSEN' ? 'Dashboard Dosen' : courseCode}</strong> berhasil terbuka!`);
   } else {
     input.value = '';
     input.style.borderColor = '#EF4444';
-    alert("❌ PIN Salah! Silakan tanyakan PIN akses yang benar kepada Dosen pengampu di kelas.");
+    alert(courseCode === 'DOSEN' 
+      ? "❌ PIN Dosen Salah! Hanya Dosen Pengampu yang memiliki akses ke dashboard ini." 
+      : "❌ PIN Salah! Silakan tanyakan PIN akses yang benar kepada Dosen pengampu di kelas.");
     input.focus();
   }
 };
@@ -439,6 +476,11 @@ function saveStudentIdentity() {
   currentStudent.nama = nama;
   localStorage.setItem('tazkia_student_nim', nim);
   localStorage.setItem('tazkia_student_nama', nama);
+
+  if (nim !== '0206015') {
+    sessionStorage.removeItem('tazkia_dosen_authenticated');
+    localStorage.removeItem('tazkia_pin_unlocked_DOSEN');
+  }
 
   const labNim = document.getElementById('labStudentNim');
   const labNama = document.getElementById('labStudentNama');
