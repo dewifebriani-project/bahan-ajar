@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pertemuan 5 — Pengendalian Internal &amp; COSO Framework</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap">
+<script src="../../cloud-sync.js"></script>
 <style>
 /* ═══ MEETING COLOR VARIABLES (P05 = Amber Flame & Crimson Burgundy) ═══ */
 :root{
@@ -1090,6 +1091,11 @@ function submitQuiz(){
   const badge = document.getElementById('scoreBadge');
   badge.style.display = 'inline-block';
   badge.textContent = `Skor: ${score}/${total} (${pct}%)`;
+
+  // Sinkronisasi Nilai Kuis ke Cloud Firestore
+  if (window.saveScoreToCloud) {
+    window.saveScoreToCloud('Pertemuan 05', 'Kuis COSO Internal Control', score, total, { percentage: pct, passed: pct >= 75 });
+  }
 
   if(pct >= 75){
     badge.className = 'score-badge pass';

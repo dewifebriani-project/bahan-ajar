@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Monitoring &amp; Rekap Nilai Dosen — FEBI Universitas Tazkia</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;600;700&display=swap">
+<script src="cloud-sync.js"></script>
+<style>
+:root{
+  --bg:#0A0E17;
+  --sf:#121826;
+  --sf2:#182236;
+  --sf3:#0F172A;
+  --bd:#22304A;
+  --bs:#1E293B;
+  --tx:#F0F4FA;
+  --txm:#94A3B8;
+  --txl:#64748B;
+  --pri:#38BDF8;
+  --acc:#E88030;
+  --ok:#10B981;
+  --okl:rgba(16,185,129,.15);
+  --warn:#EF4444;
+  --warnl:rgba(239,68,68,.15);
+  --gold:#F59E0B;
+  --r:12px;
+  --rs:8px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;display:flex;flex-direction:column;line-height:1.6}
+
+/* ── TOPBAR ── */
+.topbar{background:linear-gradient(135deg,#0F172A,#182236);border-bottom:1px solid var(--bd);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100}
+.topbar-left{display:flex;align-items:center;gap:14px}
+.back-btn{color:var(--txm);font-size:13.5px;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .15s}
+.back-btn:hover{color:#fff}
+.top-title{font-family:'Amiri',serif;font-size:18px;font-weight:700;color:#fff}
+.cloud-pill{display:flex;align-items:center;gap:6px;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.35);color:#34D399;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:700}
+.cloud-dot{width:7px;height:7px;background:#10B981;border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+
+/* ── CONTAINER ── */
+.main{max-width:1200px;margin:0 auto;padding:28px 20px 80px;width:100%;flex:1}
+
+/* ── HEADER TITLE ── */
+.hd{margin-bottom:24px}
+.hd-badge{display:inline-block;background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.3);color:#7DD3FC;padding:2px 12px;border-radius:14px;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.hd-title{font-family:'Amiri',serif;font-size:28px;font-weight:700;color:#fff}
+.hd-sub{font-size:13.5px;color:var(--txm)}
+
+/* ── KPI METRICS ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+@media(max-width:860px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.kpi-grid{grid-template-columns:1fr}}
+.kpi-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:18px 20px;display:flex;align-items:center;gap:14px}
+.kpi-icon{font-size:28px;background:var(--sf2);width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;border:1px solid var(--bs)}
+.kpi-num{font-family:'Source Code Pro',monospace;font-size:24px;font-weight:700;color:#fff;line-height:1.2}
+.kpi-lbl{font-size:12px;color:var(--txm);font-weight:600}
+
+/* ── CONTROLS & FILTER BAR ── */
+.controls{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px 20px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:20px}
+.search-input{background:var(--sf3);border:1px solid var(--bd);border-radius:var(--rs);padding:9px 14px;color:#fff;font-size:13.5px;min-width:260px;flex:1;outline:none}
+.search-input:focus{border-color:var(--pri)}
+.filter-select{background:var(--sf3);border:1px solid var(--bd);border-radius:var(--rs);padding:9px 12px;color:#fff;font-size:13px;outline:none;cursor:pointer}
+.btn-export{background:linear-gradient(135deg,#059669,#10B981);color:#fff;border:none;border-radius:var(--rs);padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:opacity .15s}
+.btn-export:hover{opacity:.9}
+
+/* ── DATA TABLE ── */
+.table-wrap{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.data-table{width:100%;border-collapse:collapse;text-align:left;font-size:13.5px}
+.data-table th{background:var(--sf2);padding:12px 16px;color:var(--txm);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--bd)}
+.data-table td{padding:12px 16px;border-bottom:1px solid var(--bs);color:var(--tx)}
+.data-table tr:hover td{background:rgba(255,255,255,.02)}
+
+.badge-pass{background:var(--okl);color:#34D399;border:1px solid rgba(16,185,129,.3);padding:3px 9px;border-radius:12px;font-size:11.5px;font-weight:700}
+.badge-fail{background:var(--warnl);color:#F87171;border:1px solid rgba(239,68,68,.3);padding:3px 9px;border-radius:12px;font-size:11.5px;font-weight:700}
+.badge-score{font-family:'Source Code Pro',monospace;font-weight:700;color:var(--gold)}
+
+/* ── EMPTY & LOADING ── */
+.empty-state{text-align:center;padding:48px 20px;color:var(--txl)}
+.empty-icon{font-size:36px;margin-bottom:8px}
+
+/* ── FOOTER ── */
+.ft{background:#070A10;border-top:1px solid #1E293B;padding:20px;text-align:center;font-size:12.5px;color:var(--txl);margin-top:auto}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <a class="back-btn" href="index.html">← Portal Bahan Ajar</a>
+    <span style="color:var(--txl)">|</span>
+    <span class="top-title">Dashboard Dosen &amp; Gradebook Akademik</span>
+  </div>
+  <div class="cloud-pill">
+    <span class="cloud-dot"></span>
+    <span>Cloud Firestore: akuntansi-syariah</span>
+  </div>
+</header>
+
+<main class="main">
+  <div class="hd">
+    <span class="hd-badge">Monitoring Pembelajaran OBE &amp; Kuis Interaktif</span>
+    <h1 class="hd-title">Rekapitulasi Nilai Mahasiswa Realtime</h1>
+    <p class="hd-sub">Pantau submission kuis, latihan praktikum, dan skor kolaboratif mahasiswa secara langsung dari database Cloud Firestore.</p>
+  </div>
+
+  <!-- KPI SUMMARY -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-icon">📝</div>
+      <div>
+        <div class="kpi-num" id="kpiSubmissions">0</div>
+        <div class="kpi-lbl">Total Kuis Terkumpul</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon">👥</div>
+      <div>
+        <div class="kpi-num" id="kpiStudents">0</div>
+        <div class="kpi-lbl">Mahasiswa Terdata</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon">🎯</div>
+      <div>
+        <div class="kpi-num" id="kpiAvgScore">0%</div>
+        <div class="kpi-lbl">Rata-rata Nilai Kelas</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon">🏆</div>
+      <div>
+        <div class="kpi-num" id="kpiPassRate">0%</div>
+        <div class="kpi-lbl">Tingkat Kelulusan</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTROLS & FILTER -->
+  <div class="controls">
+    <input type="text" id="searchInput" class="search-input" placeholder="🔍 Cari NIM atau Nama Mahasiswa..." oninput="renderTable()">
+    
+    <select id="courseFilter" class="filter-select" onchange="renderTable()">
+      <option value="ALL">Semua Modul / Pertemuan</option>
+      <option value="Pertemuan 01">SIA — Pertemuan 01 (Pengantar AIS)</option>
+      <option value="Pertemuan 02">SIA — Pertemuan 02 (Proses &amp; Data)</option>
+      <option value="Pertemuan 03">SIA — Pertemuan 03 (Enterprise Systems)</option>
+      <option value="Pertemuan 04">SIA — Pertemuan 04 (Etika &amp; Fraud)</option>
+      <option value="Pertemuan 05">SIA — Pertemuan 05 (COSO Controls)</option>
+      <option value="Pertemuan 06">SIA — Pertemuan 06 (Cybersecurity)</option>
+      <option value="Pertemuan 07">SIA — Pertemuan 07 (ITGC &amp; Controls)</option>
+      <option value="Pertemuan 08">SIA — Pertemuan 08 (Evaluasi UTS)</option>
+      <option value="ADA">Applied Data Analytics (ADA)</option>
+      <option value="BIV">Business Intelligence (BIV)</option>
+    </select>
+
+    <button class="btn-export" onclick="exportToCSV()">📥 Export Excel (CSV)</button>
+  </div>
+
+  <!-- TABLE WRAPPER -->
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th style="width:50px">No</th>
+          <th>NIM</th>
+          <th>Nama Mahasiswa</th>
+          <th>Mata Kuliah / Pertemuan</th>
+          <th>Aktivitas</th>
+          <th>Skor Riil</th>
+          <th>Nilai (%)</th>
+          <th>Status</th>
+          <th>Waktu Pengumpulan</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <tr>
+          <td colspan="9" class="empty-state">
+            <div class="empty-icon">⏳</div>
+            <div>Menghubungkan ke Cloud Firestore dan memuat data nilai mahasiswa...</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<footer class="ft">
+  Fakultas Ekonomi &amp; Bisnis Islam · Universitas Tazkia · Sistem Integrasi Penilaian Cloud © 2026
+</footer>
+
+<script>
+let allQuizData = [];
+let allUsersMap = {};
+
+function initLecturerDashboard() {
+  window.onCloudSyncReady((dbInstance) => {
+    // 1. Listen to 'users' collection
+    dbInstance.collection('users').onSnapshot(snapshot => {
+      allUsersMap = {};
+      snapshot.forEach(doc => {
+        allUsersMap[doc.id] = doc.data();
+      });
+      document.getElementById('kpiStudents').textContent = Object.keys(allUsersMap).length;
+    });
+
+    // 2. Listen to 'quiz' collection (Realtime Gradebook)
+    dbInstance.collection('quiz').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+      allQuizData = [];
+      snapshot.forEach(doc => {
+        const d = doc.data();
+        allQuizData.push({
+          id: doc.id,
+          nim: d.nim || '-',
+          nama: d.nama || (allUsersMap[d.nim] ? allUsersMap[d.nim].nama : '-'),
+          pertemuan: d.pertemuan || '-',
+          aktivitas: d.aktivitas || 'Kuis Interaktif',
+          skor: d.skor !== undefined ? d.skor : 0,
+          total: d.total !== undefined ? d.total : 0,
+          persentase: d.persentase !== undefined ? d.persentase : (d.total ? Math.round((d.skor/d.total)*100) : 0),
+          timestamp: d.timestampClient || (d.timestamp ? new Date(d.timestamp.seconds * 1000).toLocaleString('id-ID') : '-')
+        });
+      });
+
+      updateKPIs();
+      renderTable();
+    }, err => {
+      console.error("Error loading quiz data:", err);
+      document.getElementById('tableBody').innerHTML = `
+        <tr><td colspan="9" class="empty-state" style="color:#EF4444">
+          ⚠️ Gagal memuat data dari Cloud: ${err.message}. Pastikan tab Rules di Firestore sudah diset ke allow read, write: if true;
+        </td></tr>
+      `;
+    });
+  });
+}
+
+function updateKPIs() {
+  document.getElementById('kpiSubmissions').textContent = allQuizData.length;
+  if (allQuizData.length === 0) {
+    document.getElementById('kpiAvgScore').textContent = '0%';
+    document.getElementById('kpiPassRate').textContent = '0%';
+    return;
+  }
+
+  const sumPct = allQuizData.reduce((acc, curr) => acc + (curr.persentase || 0), 0);
+  const avg = Math.round(sumPct / allQuizData.length);
+  document.getElementById('kpiAvgScore').textContent = avg + '%';
+
+  const passedCount = allQuizData.filter(q => q.persentase >= 70).length;
+  const passRate = Math.round((passedCount / allQuizData.length) * 100);
+  document.getElementById('kpiPassRate').textContent = passRate + '%';
+}
+
+function renderTable() {
+  const query = (document.getElementById('searchInput').value || '').toLowerCase();
+  const filter = document.getElementById('courseFilter').value;
+  const tbody = document.getElementById('tableBody');
+
+  const filtered = allQuizData.filter(item => {
+    const matchSearch = item.nim.toLowerCase().includes(query) || item.nama.toLowerCase().includes(query) || item.aktivitas.toLowerCase().includes(query);
+    const matchFilter = filter === 'ALL' || item.pertemuan.includes(filter);
+    return matchSearch && matchFilter;
+  });
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="9" class="empty-state">
+          <div class="empty-icon">📭</div>
+          <div>Tidak ada data submission yang cocok dengan pencarian / filter ini.</div>
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map((row, idx) => {
+    const isPass = row.persentase >= 70;
+    return `
+      <tr>
+        <td style="color:var(--txl);font-family:'Source Code Pro',monospace">${idx + 1}</td>
+        <td style="font-family:'Source Code Pro',monospace;font-weight:700;color:var(--pri)">${row.nim}</td>
+        <td><strong>${row.nama}</strong></td>
+        <td><span style="background:var(--sf2);padding:2px 8px;border-radius:6px;font-size:12px;border:1px solid var(--bs)">${row.pertemuan}</span></td>
+        <td>${row.aktivitas}</td>
+        <td class="badge-score">${row.skor} / ${row.total}</td>
+        <td><strong style="color:${isPass ? '#34D399' : '#F87171'}">${row.persentase}%</strong></td>
+        <td><span class="${isPass ? 'badge-pass' : 'badge-fail'}">${isPass ? 'LULUS ✓' : 'BELUM LULUS'}</span></td>
+        <td style="font-size:12px;color:var(--txm)">${row.timestamp}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function exportToCSV() {
+  if (allQuizData.length === 0) {
+    alert("Belum ada data nilai untuk diexport!");
+    return;
+  }
+
+  let csvContent = "data:text/csv;charset=utf-8,";
+  csvContent += "No,NIM,Nama Mahasiswa,Pertemuan,Aktivitas,Skor Riil,Total Skor,Nilai Persen,Status,Waktu Pengumpulan\n";
+
+  allQuizData.forEach((row, idx) => {
+    const status = row.persentase >= 70 ? "LULUS" : "BELUM LULUS";
+    const namaClean = (row.nama || '').replace(/"/g, '""');
+    csvContent += `"${idx+1}","${row.nim}","${namaClean}","${row.pertemuan}","${row.aktivitas}",${row.skor},${row.total},${row.persentase}%,"${status}","${row.timestamp}"\n`;
+  });
+
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", `Rekap_Nilai_Tazkia_${new Date().toISOString().slice(0,10)}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+// Inisialisasi saat window dimuat
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initLecturerDashboard);
+} else {
+  initLecturerDashboard();
+}
+</script>
+</body>
+</html>

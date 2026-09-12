@@ -1,5 +1,6 @@
 <title>AIS Lab 2 — Konfigurasi Modul ERP &amp; Audit Rantai Pasok Halal</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap">
+<script src="../../cloud-sync.js"></script>
 <style>
 :root{
   --meet-from:#051424; --meet-mid:#0A243E; --meet-to:#103858;
@@ -550,6 +551,9 @@ function completeStep(i){
   const next = document.getElementById('step' + (i+1));
   if(next) next.scrollIntoView({behavior:'smooth', block:'start'});
   if(labState.done.length === TOTAL_STEPS){
+    if (window.saveScoreToCloud) {
+      window.saveScoreToCloud('SIA Lab 02 (P03)', 'Lembar Praktikum Modul ERP & Supply Chain Halal', 100, 100, { stepsCompleted: TOTAL_STEPS, passed: true });
+    }
     document.getElementById('completion').classList.add('show');
     document.getElementById('completion').scrollIntoView({behavior:'smooth'});
   }

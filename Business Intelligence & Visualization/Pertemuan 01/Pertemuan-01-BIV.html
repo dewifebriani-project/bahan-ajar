@@ -1,5 +1,6 @@
 <title>BIV P01 — Pengantar BI &amp; Ekosistem Tools Visualisasi</title>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="../../cloud-sync.js"></script>
 <style>
 /* ── BIV P01 · PURPLE-GOLD THEME ── */
 :root{
@@ -904,6 +905,12 @@ function submitQuiz(){
   const pct=Math.round((score/total)*100);
   state.passed=pct>=75;
   saveState();
+
+  // Sinkronisasi Nilai Kuis ke Cloud Firestore
+  if (window.saveScoreToCloud) {
+    window.saveScoreToCloud('BIV Pertemuan 01', 'Kuis Fondasi BI & Visualisasi', score, total, { percentage: pct, passed: state.passed });
+  }
+
   showQuizResult();
   updateProgress();
   if(state.passed){

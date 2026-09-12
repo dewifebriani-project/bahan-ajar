@@ -1,5 +1,6 @@
 <title>ADA P03 — Data Wrangling & Cleaning</title>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="../../cloud-sync.js"></script>
 <style>
 /* ── ADA P03 · TEAL DATA SCIENCE ── */
 :root{
@@ -770,6 +771,12 @@ function submitQuiz(){
   document.getElementById('quizScore').style.display='block';
   document.getElementById('quizScore').textContent=score+'/'+total+' benar';
   res.style.display='block';
+
+  // Sinkronisasi Nilai Kuis ke Cloud Firestore
+  if (window.saveScoreToCloud) {
+    window.saveScoreToCloud('ADA Pertemuan 03', 'Kuis Data Wrangling & Cleaning', score, total, { percentage: pct, passed: pct >= 75 });
+  }
+
   if(pct>=75){
     res.className='quiz-result pass';
     big.textContent=pct+'% — Luar Biasa! 🎉';

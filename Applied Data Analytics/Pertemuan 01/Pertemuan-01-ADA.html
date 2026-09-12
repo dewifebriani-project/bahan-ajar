@@ -1,5 +1,6 @@
 <title>ADA P01 — Pengantar &amp; Setup Python</title>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="../../cloud-sync.js"></script>
 <style>
 /* ── ADA P01 · TEAL DATA SCIENCE ── */
 :root{
@@ -927,6 +928,12 @@ function submitQuiz(){
 
   state.passed=(score>=6);
   saveState();
+
+  // Sinkronisasi Nilai Kuis ke Cloud Firestore
+  if (window.saveScoreToCloud) {
+    window.saveScoreToCloud('ADA Pertemuan 01', 'Kuis Pengantar & Setup Python', score, 8, { passed: state.passed });
+  }
+
   showQuizResult(score);
   updateProgress();
 }
