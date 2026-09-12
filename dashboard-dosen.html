@@ -463,13 +463,30 @@ function initLecturerDashboard() {
         allUsersMap[doc.id] = doc.data();
       });
       document.getElementById('kpiStudents').textContent = Object.keys(allUsersMap).length;
+      if (allQuizData.length > 0) {
+        // Re-resolve names if needed
+        allQuizData.forEach(item => {
+          if ((!item.nama || item.nama === '-') && allUsersMap[item.nim]) {
+            item.nama = allUsersMap[item.nim].nama;
+          }
+        });
+        renderGradeTable();
+      }
     });
 
-    // 4. Listen to 'quiz' collection (Realtime Gradebook)
-    dbInstance.collection('quiz').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+    // 4. Listen to 'quiz' collection (Realtime Gradebook - Resilient Fetch)
+    dbInstance.collection('quiz').onSnapshot(snapshot => {
       allQuizData = [];
       snapshot.forEach(doc => {
         const d = doc.data();
+        let rawDate = 0;
+        if (d.timestamp && d.timestamp.seconds) {
+          rawDate = d.timestamp.seconds * 1000;
+        } else if (d.timestampClient) {
+          const parsed = new Date(d.timestampClient).getTime();
+          if (!isNaN(parsed)) rawDate = parsed;
+        }
+
         allQuizData.push({
           id: doc.id,
           nim: d.nim || '-',
@@ -479,9 +496,13 @@ function initLecturerDashboard() {
           skor: d.skor !== undefined ? Number(d.skor) : 0,
           total: d.total !== undefined ? Number(d.total) : 0,
           persentase: d.persentase !== undefined ? Number(d.persentase) : (d.total ? Math.round((Number(d.skor)/Number(d.total))*100) : 0),
-          timestamp: d.timestampClient || (d.timestamp ? new Date(d.timestamp.seconds * 1000).toLocaleString('id-ID') : '-')
+          timestamp: d.timestampClient || (d.timestamp ? new Date(d.timestamp.seconds * 1000).toLocaleString('id-ID') : '-'),
+          rawDate: rawDate
         });
       });
+
+      // Sort descending by date in memory
+      allQuizData.sort((a, b) => b.rawDate - a.rawDate);
 
       document.getElementById('tabBadgeSubmissions').textContent = allQuizData.length;
       updateKPIs();
