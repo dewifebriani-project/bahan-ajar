@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Monitoring &amp; Rekap Nilai Dosen — FEBI Universitas Tazkia</title>
+<title>Dashboard Dosen &amp; Gradebook Akademik — FEBI Universitas Tazkia</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;600;700&display=swap">
 <script src="cloud-sync.js"></script>
 <style>
@@ -41,7 +41,7 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
 
 /* ── CONTAINER ── */
-.main{max-width:1200px;margin:0 auto;padding:28px 20px 80px;width:100%;flex:1}
+.main{max-width:1280px;margin:0 auto;padding:28px 20px 80px;width:100%;flex:1}
 
 /* ── HEADER TITLE ── */
 .hd{margin-bottom:24px}
@@ -60,22 +60,54 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
 
 /* ── CONTROLS & FILTER BAR ── */
 .controls{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px 20px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:20px}
-.search-input{background:var(--sf3);border:1px solid var(--bd);border-radius:var(--rs);padding:9px 14px;color:#fff;font-size:13.5px;min-width:260px;flex:1;outline:none}
+.search-input{background:var(--sf3);border:1px solid var(--bd);border-radius:var(--rs);padding:9px 14px;color:#fff;font-size:13.5px;min-width:240px;flex:1;outline:none}
 .search-input:focus{border-color:var(--pri)}
 .filter-select{background:var(--sf3);border:1px solid var(--bd);border-radius:var(--rs);padding:9px 12px;color:#fff;font-size:13px;outline:none;cursor:pointer}
-.btn-export{background:linear-gradient(135deg,#059669,#10B981);color:#fff;border:none;border-radius:var(--rs);padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:opacity .15s}
+.btn-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+
+.btn-primary{background:linear-gradient(135deg,#0284C7,#0EA5E9);color:#fff;border:none;border-radius:var(--rs);padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s;box-shadow:0 4px 12px rgba(14,165,233,.25)}
+.btn-primary:hover{background:#0284C7;transform:translateY(-1px)}
+
+.btn-export{background:linear-gradient(135deg,#059669,#10B981);color:#fff;border:none;border-radius:var(--rs);padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:opacity .15s}
 .btn-export:hover{opacity:.9}
 
 /* ── DATA TABLE ── */
-.table-wrap{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.3)}
-.data-table{width:100%;border-collapse:collapse;text-align:left;font-size:13.5px}
-.data-table th{background:var(--sf2);padding:12px 16px;color:var(--txm);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--bd)}
-.data-table td{padding:12px 16px;border-bottom:1px solid var(--bs);color:var(--tx)}
+.table-wrap{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);overflow-x:auto;box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.data-table{width:100%;border-collapse:collapse;text-align:left;font-size:13px;min-width:900px}
+.data-table th{background:var(--sf2);padding:12px 14px;color:var(--txm);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--bd)}
+.data-table td{padding:12px 14px;border-bottom:1px solid var(--bs);color:var(--tx)}
 .data-table tr:hover td{background:rgba(255,255,255,.02)}
 
-.badge-pass{background:var(--okl);color:#34D399;border:1px solid rgba(16,185,129,.3);padding:3px 9px;border-radius:12px;font-size:11.5px;font-weight:700}
-.badge-fail{background:var(--warnl);color:#F87171;border:1px solid rgba(239,68,68,.3);padding:3px 9px;border-radius:12px;font-size:11.5px;font-weight:700}
+.badge-pass{background:var(--okl);color:#34D399;border:1px solid rgba(16,185,129,.3);padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;display:inline-block}
+.badge-fail{background:var(--warnl);color:#F87171;border:1px solid rgba(239,68,68,.3);padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;display:inline-block}
 .badge-score{font-family:'Source Code Pro',monospace;font-weight:700;color:var(--gold)}
+
+.action-btn{padding:5px 9px;border-radius:6px;border:1px solid var(--bd);background:var(--sf2);color:#E2E8F0;font-size:11.5px;font-weight:600;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:4px}
+.action-btn:hover{background:#1E293B;border-color:var(--pri);color:#fff}
+.action-delete{border-color:rgba(239,68,68,.3);color:#FCA5A5}
+.action-delete:hover{background:rgba(239,68,68,.2);border-color:#EF4444;color:#fff}
+
+/* ── MODAL CRUD ── */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:999;padding:20px}
+.modal-overlay.active{display:flex}
+.modal-box{background:var(--sf);border:1.5px solid var(--bd);border-radius:var(--r);width:100%;max-width:540px;box-shadow:0 20px 50px rgba(0,0,0,.6);overflow:hidden;animation:modalPop .2s ease-out}
+@keyframes modalPop{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+
+.modal-header{background:var(--sf2);padding:18px 24px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-family:'Amiri',serif;font-size:20px;font-weight:700;color:#fff}
+.modal-close{background:transparent;border:none;color:var(--txm);font-size:20px;cursor:pointer;transition:color .15s}
+.modal-close:hover{color:#fff}
+
+.modal-body{padding:24px;display:grid;gap:16px}
+.form-group{display:grid;gap:6px}
+.form-label{font-size:12px;font-weight:700;color:var(--txm);text-transform:uppercase;letter-spacing:.04em}
+.form-input,.form-select{background:var(--sf3);border:1px solid var(--bd);border-radius:var(--rs);padding:10px 14px;color:#fff;font-size:13.5px;outline:none;font-family:inherit}
+.form-input:focus,.form-select:focus{border-color:var(--pri)}
+.form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.modal-footer{padding:16px 24px;background:var(--sf2);border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:flex-end;gap:10px}
+.btn-cancel{background:transparent;border:1px solid var(--bd);color:var(--txm);padding:8px 16px;border-radius:var(--rs);font-size:13px;font-weight:600;cursor:pointer}
+.btn-cancel:hover{color:#fff;border-color:var(--txm)}
 
 /* ── EMPTY & LOADING ── */
 .empty-state{text-align:center;padding:48px 20px;color:var(--txl)}
@@ -102,8 +134,8 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
 <main class="main">
   <div class="hd">
     <span class="hd-badge">Monitoring Pembelajaran OBE &amp; Kuis Interaktif</span>
-    <h1 class="hd-title">Rekapitulasi Nilai Mahasiswa Realtime</h1>
-    <p class="hd-sub">Pantau submission kuis, latihan praktikum, dan skor kolaboratif mahasiswa secara langsung dari database Cloud Firestore.</p>
+    <h1 class="hd-title">Rekapitulasi &amp; Manajemen Nilai Mahasiswa</h1>
+    <p class="hd-sub">Kelola, tambahkan, edit, atau hapus submission nilai kuis dan lembar kerja praktikum mahasiswa secara langsung pada database cloud.</p>
   </div>
 
   <!-- KPI SUMMARY -->
@@ -168,9 +200,9 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
     </div>
   </div>
 
-  <!-- CONTROLS & FILTER -->
+  <!-- CONTROLS & CRUD ACTIONS -->
   <div class="controls">
-    <input type="text" id="searchInput" class="search-input" placeholder="🔍 Cari NIM atau Nama Mahasiswa..." oninput="renderTable()">
+    <input type="text" id="searchInput" class="search-input" placeholder="🔍 Cari NIM, Nama, atau Aktivitas..." oninput="renderTable()">
     
     <select id="courseFilter" class="filter-select" onchange="renderTable()">
       <option value="ALL">Semua Modul / Pertemuan</option>
@@ -186,7 +218,10 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
       <option value="BIV">Business Intelligence (BIV)</option>
     </select>
 
-    <button class="btn-export" onclick="exportToCSV()">📥 Export Excel (CSV)</button>
+    <div class="btn-group">
+      <button class="btn-primary" onclick="openCreateModal()">+ Tambah Nilai Manual</button>
+      <button class="btn-export" onclick="exportToCSV()">📥 Export Excel (CSV)</button>
+    </div>
   </div>
 
   <!-- TABLE WRAPPER -->
@@ -194,20 +229,21 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
     <table class="data-table">
       <thead>
         <tr>
-          <th style="width:50px">No</th>
+          <th style="width:40px">No</th>
           <th>NIM</th>
           <th>Nama Mahasiswa</th>
-          <th>Mata Kuliah / Pertemuan</th>
+          <th>Pertemuan</th>
           <th>Aktivitas</th>
           <th>Skor Riil</th>
           <th>Nilai (%)</th>
           <th>Status</th>
           <th>Waktu Pengumpulan</th>
+          <th style="text-align:center;width:130px">Aksi</th>
         </tr>
       </thead>
       <tbody id="tableBody">
         <tr>
-          <td colspan="9" class="empty-state">
+          <td colspan="10" class="empty-state">
             <div class="empty-icon">⏳</div>
             <div>Menghubungkan ke Cloud Firestore dan memuat data nilai mahasiswa...</div>
           </td>
@@ -217,6 +253,70 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
   </div>
 </main>
 
+<!-- ════════ MODAL FORM (CREATE / UPDATE) ════════ -->
+<div id="crudModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="modalTitle" class="modal-title">Tambah Nilai Mahasiswa</h3>
+      <button class="modal-close" onclick="closeCrudModal()">&times;</button>
+    </div>
+    <form id="crudForm" onsubmit="handleCrudSubmit(event)">
+      <input type="hidden" id="editDocId" value="">
+      <div class="modal-body">
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">NIM Mahasiswa *</label>
+            <input type="text" id="formNim" class="form-input" placeholder="Contoh: 0206015" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nama Mahasiswa *</label>
+            <input type="text" id="formNama" class="form-input" placeholder="Nama Lengkap" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Mata Kuliah / Pertemuan *</label>
+          <select id="formPertemuan" class="form-select" required>
+            <option value="Pertemuan 01">SIA — Pertemuan 01: Pengantar AIS</option>
+            <option value="Pertemuan 02">SIA — Pertemuan 02: Proses Bisnis &amp; DFD</option>
+            <option value="Pertemuan 03">SIA — Pertemuan 03: Enterprise Systems &amp; ERP</option>
+            <option value="Pertemuan 04">SIA — Pertemuan 04: Etika, Fraud &amp; Kejahatan</option>
+            <option value="Pertemuan 05">SIA — Pertemuan 05: COSO Internal Control</option>
+            <option value="Pertemuan 06">SIA — Pertemuan 06: Keamanan Siber &amp; Forensik</option>
+            <option value="Pertemuan 07">SIA — Pertemuan 07: ITGC &amp; Audit Trail</option>
+            <option value="Pertemuan 08">SIA — Pertemuan 08: Milestone UTS Project</option>
+            <option value="ADA - Pertemuan 01">ADA — Pertemuan 01: Python &amp; Colab</option>
+            <option value="ADA - Pertemuan 02">ADA — Pertemuan 02: Pandas Groupby</option>
+            <option value="ADA - Pertemuan 03">ADA — Pertemuan 03: Data Wrangling</option>
+            <option value="BIV - Pertemuan 01">BIV — Pertemuan 01: Fondasi BI &amp; Power BI</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Nama Aktivitas / Kuis *</label>
+          <input type="text" id="formAktivitas" class="form-input" placeholder="Contoh: Kuis Siklus Bisnis &amp; Data" required>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Skor Riil Didapat *</label>
+            <input type="number" id="formSkor" class="form-input" min="0" max="1000" step="1" placeholder="9" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Total Skor Maksimal *</label>
+            <input type="number" id="formTotal" class="form-input" min="1" max="1000" step="1" placeholder="9" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" onclick="closeCrudModal()">Batal</button>
+        <button type="submit" id="btnSubmitModal" class="btn-primary">Simpan ke Cloud ✓</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <footer class="ft">
   Fakultas Ekonomi &amp; Bisnis Islam · Universitas Tazkia · Sistem Integrasi Penilaian Cloud © 2026
 </footer>
@@ -224,9 +324,12 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
 <script>
 let allQuizData = [];
 let allUsersMap = {};
+let dbRef = null;
 
 function initLecturerDashboard() {
   window.onCloudSyncReady((dbInstance) => {
+    dbRef = dbInstance;
+
     // 1. Listen to 'settings/access_pins'
     dbInstance.collection('settings').doc('access_pins').onSnapshot(doc => {
       if (doc.exists) {
@@ -258,9 +361,9 @@ function initLecturerDashboard() {
           nama: d.nama || (allUsersMap[d.nim] ? allUsersMap[d.nim].nama : '-'),
           pertemuan: d.pertemuan || '-',
           aktivitas: d.aktivitas || 'Kuis Interaktif',
-          skor: d.skor !== undefined ? d.skor : 0,
-          total: d.total !== undefined ? d.total : 0,
-          persentase: d.persentase !== undefined ? d.persentase : (d.total ? Math.round((d.skor/d.total)*100) : 0),
+          skor: d.skor !== undefined ? Number(d.skor) : 0,
+          total: d.total !== undefined ? Number(d.total) : 0,
+          persentase: d.persentase !== undefined ? Number(d.persentase) : (d.total ? Math.round((Number(d.skor)/Number(d.total))*100) : 0),
           timestamp: d.timestampClient || (d.timestamp ? new Date(d.timestamp.seconds * 1000).toLocaleString('id-ID') : '-')
         });
       });
@@ -270,8 +373,8 @@ function initLecturerDashboard() {
     }, err => {
       console.error("Error loading quiz data:", err);
       document.getElementById('tableBody').innerHTML = `
-        <tr><td colspan="9" class="empty-state" style="color:#EF4444">
-          ⚠️ Gagal memuat data dari Cloud: ${err.message}. Pastikan tab Rules di Firestore sudah diset ke allow read, write: if true;
+        <tr><td colspan="10" class="empty-state" style="color:#EF4444">
+          ⚠️ Gagal memuat data dari Cloud: ${err.message}. Pastikan Firestore Security Rules sudah aktif.
         </td></tr>
       `;
     });
@@ -301,7 +404,9 @@ function renderTable() {
   const tbody = document.getElementById('tableBody');
 
   const filtered = allQuizData.filter(item => {
-    const matchSearch = item.nim.toLowerCase().includes(query) || item.nama.toLowerCase().includes(query) || item.aktivitas.toLowerCase().includes(query);
+    const matchSearch = item.nim.toLowerCase().includes(query) || 
+                        item.nama.toLowerCase().includes(query) || 
+                        item.aktivitas.toLowerCase().includes(query);
     const matchFilter = filter === 'ALL' || item.pertemuan.includes(filter);
     return matchSearch && matchFilter;
   });
@@ -309,9 +414,9 @@ function renderTable() {
   if (filtered.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="9" class="empty-state">
+        <td colspan="10" class="empty-state">
           <div class="empty-icon">📭</div>
-          <div>Tidak ada data submission yang cocok dengan pencarian / filter ini.</div>
+          <div>Tidak ada data submission yang cocok dengan kriteria pencarian ini.</div>
         </td>
       </tr>
     `;
@@ -324,16 +429,159 @@ function renderTable() {
       <tr>
         <td style="color:var(--txl);font-family:'Source Code Pro',monospace">${idx + 1}</td>
         <td style="font-family:'Source Code Pro',monospace;font-weight:700;color:var(--pri)">${row.nim}</td>
-        <td><strong>${row.nama}</strong></td>
-        <td><span style="background:var(--sf2);padding:2px 8px;border-radius:6px;font-size:12px;border:1px solid var(--bs)">${row.pertemuan}</span></td>
-        <td>${row.aktivitas}</td>
+        <td><strong>${escapeHtml(row.nama)}</strong></td>
+        <td><span style="background:var(--sf2);padding:2px 8px;border-radius:6px;font-size:12px;border:1px solid var(--bs)">${escapeHtml(row.pertemuan)}</span></td>
+        <td>${escapeHtml(row.aktivitas)}</td>
         <td class="badge-score">${row.skor} / ${row.total}</td>
         <td><strong style="color:${isPass ? '#34D399' : '#F87171'}">${row.persentase}%</strong></td>
         <td><span class="${isPass ? 'badge-pass' : 'badge-fail'}">${isPass ? 'LULUS ✓' : 'BELUM LULUS'}</span></td>
         <td style="font-size:12px;color:var(--txm)">${row.timestamp}</td>
+        <td style="text-align:center">
+          <div style="display:inline-flex;gap:6px">
+            <button class="action-btn" title="Edit Nilai" onclick="openEditModal('${row.id}')">✏️ Edit</button>
+            <button class="action-btn action-delete" title="Hapus Data" onclick="deleteQuizEntry('${row.id}', '${escapeHtml(row.nama)}')">🗑️ Hapus</button>
+          </div>
+        </td>
       </tr>
     `;
   }).join('');
+}
+
+function escapeHtml(text) {
+  if (!text) return '';
+  return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+/* ════════ CRUD MODAL HANDLERS ════════ */
+function openCreateModal() {
+  document.getElementById('editDocId').value = '';
+  document.getElementById('modalTitle').textContent = 'Tambah Nilai Mahasiswa (Manual)';
+  document.getElementById('formNim').value = '';
+  document.getElementById('formNama').value = '';
+  document.getElementById('formPertemuan').value = 'Pertemuan 01';
+  document.getElementById('formAktivitas').value = 'Kuis Pemahaman AIS';
+  document.getElementById('formSkor').value = '9';
+  document.getElementById('formTotal').value = '9';
+  document.getElementById('btnSubmitModal').textContent = 'Tambah Nilai ke Cloud ✓';
+  document.getElementById('crudModal').classList.add('active');
+}
+
+function openEditModal(docId) {
+  const item = allQuizData.find(q => q.id === docId);
+  if (!item) return;
+
+  document.getElementById('editDocId').value = docId;
+  document.getElementById('modalTitle').textContent = 'Edit Nilai Mahasiswa';
+  document.getElementById('formNim').value = item.nim;
+  document.getElementById('formNama').value = item.nama;
+  
+  // Match dropdown if exists, else add custom option
+  const sel = document.getElementById('formPertemuan');
+  let matched = false;
+  for (let i = 0; i < sel.options.length; i++) {
+    if (sel.options[i].value === item.pertemuan) {
+      sel.selectedIndex = i;
+      matched = true;
+      break;
+    }
+  }
+  if (!matched) {
+    const opt = new Option(item.pertemuan, item.pertemuan);
+    sel.add(opt);
+    sel.value = item.pertemuan;
+  }
+
+  document.getElementById('formAktivitas').value = item.aktivitas;
+  document.getElementById('formSkor').value = item.skor;
+  document.getElementById('formTotal').value = item.total;
+  document.getElementById('btnSubmitModal').textContent = 'Simpan Perubahan ✓';
+  document.getElementById('crudModal').classList.add('active');
+}
+
+function closeCrudModal() {
+  document.getElementById('crudModal').classList.remove('active');
+}
+
+function handleCrudSubmit(e) {
+  e.preventDefault();
+  if (!dbRef) {
+    alert("Koneksi ke Firebase Cloud Firestore belum siap!");
+    return;
+  }
+
+  const docId = document.getElementById('editDocId').value.trim();
+  const nim = document.getElementById('formNim').value.trim();
+  const nama = document.getElementById('formNama').value.trim();
+  const pertemuan = document.getElementById('formPertemuan').value.trim();
+  const aktivitas = document.getElementById('formAktivitas').value.trim();
+  const skor = parseInt(document.getElementById('formSkor').value, 10);
+  const total = parseInt(document.getElementById('formTotal').value, 10);
+  const persentase = total > 0 ? Math.round((skor / total) * 100) : 0;
+  const passed = persentase >= 70;
+
+  const payload = {
+    nim: nim,
+    nama: nama,
+    pertemuan: pertemuan,
+    aktivitas: aktivitas,
+    skor: skor,
+    total: total,
+    persentase: persentase,
+    passed: passed,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    timestampClient: new Date().toISOString()
+  };
+
+  // Sync also to users collection
+  dbRef.collection('users').doc(nim).set({
+    nim: nim,
+    nama: nama,
+    lastActive: firebase.firestore.FieldValue.serverTimestamp()
+  }, { merge: true });
+
+  if (docId) {
+    // UPDATE
+    dbRef.collection('quiz').doc(docId).update(payload)
+      .then(() => {
+        closeCrudModal();
+        alert("✅ Data nilai berhasil diperbarui di Cloud!");
+      })
+      .catch(err => {
+        console.error("Error updating quiz:", err);
+        alert("❌ Gagal mengupdate data: " + err.message);
+      });
+  } else {
+    // CREATE
+    dbRef.collection('quiz').add(payload)
+      .then(() => {
+        closeCrudModal();
+        alert("✅ Data nilai baru berhasil ditambahkan ke Cloud!");
+      })
+      .catch(err => {
+        console.error("Error creating quiz:", err);
+        alert("❌ Gagal menambahkan data: " + err.message);
+      });
+  }
+}
+
+function deleteQuizEntry(docId, studentName) {
+  if (!confirm(`Apakah Anda yakin ingin menghapus data submission milik "${studentName}" dari Cloud? Tindakan ini tidak dapat dibatalkan.`)) {
+    return;
+  }
+
+  if (!dbRef) {
+    alert("Koneksi ke Firebase Cloud Firestore belum siap!");
+    return;
+  }
+
+  dbRef.collection('quiz').doc(docId).delete()
+    .then(() => {
+      console.log("Deleted doc:", docId);
+    })
+    .catch(err => {
+      console.error("Error deleting doc:", err);
+      alert("❌ Gagal menghapus data: " + err.message);
+    });
 }
 
 function exportToCSV() {
