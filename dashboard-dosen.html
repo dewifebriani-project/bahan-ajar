@@ -758,6 +758,8 @@ function initLecturerDashboard() {
           fileSize: d.fileSize || 0,
           fileType: d.fileType || '',
           fileBase64: d.fileBase64 || '',
+          hasChunks: d.hasChunks || false,
+          totalChunks: d.totalChunks || 1,
           linkDrive: d.linkDrive || '',
           jawaban: d.jawaban || '',
           status: d.status || 'Terkumpul',
@@ -783,6 +785,56 @@ function formatBytes(bytes) {
 }
 window.formatBytes = formatBytes;
 
+function triggerDownload(dataUri, fileName) {
+  const a = document.createElement('a');
+  a.href = dataUri;
+  a.download = fileName || 'laporan-praktikum';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+window.downloadSubmissionFile = async function(docId, fileName, btnEl) {
+  const item = allLabData.find(l => l.id === docId);
+  if (!item) return;
+
+  if (item.fileBase64) {
+    triggerDownload(item.fileBase64, fileName || item.fileName || 'laporan-praktikum');
+    return;
+  }
+
+  if (dbRef) {
+    let originalText = '';
+    if (btnEl) {
+      originalText = btnEl.innerHTML;
+      btnEl.disabled = true;
+      btnEl.innerHTML = '⏳ Mengunduh...';
+    }
+
+    try {
+      const chunksSnap = await dbRef.collection('lab_submissions').doc(docId).collection('chunks').orderBy('index', 'asc').get();
+      if (!chunksSnap.empty) {
+        let fullBase64 = '';
+        chunksSnap.forEach(cDoc => {
+          fullBase64 += (cDoc.data().data || '');
+        });
+        item.fileBase64 = fullBase64;
+        triggerDownload(fullBase64, fileName || item.fileName || 'laporan-praktikum');
+      } else {
+        alert("Berkas tidak ditemukan di Cloud Firestore.");
+      }
+    } catch (err) {
+      console.error("Gagal mengunduh berkas:", err);
+      alert("Gagal mengunduh berkas: " + err.message);
+    } finally {
+      if (btnEl) {
+        btnEl.disabled = false;
+        btnEl.innerHTML = originalText;
+      }
+    }
+  }
+};
+
 function renderLabTable() {
   const tbody = document.getElementById('labTableBody');
   if (!tbody) return;
@@ -801,8 +853,8 @@ function renderLabTable() {
 
   tbody.innerHTML = allLabData.map((row, idx) => {
     let fileBtn = '<span style="color:var(--txl);font-size:11.5px">Hanya Teks</span>';
-    if (row.fileBase64) {
-      fileBtn = `<a href="${row.fileBase64}" download="${escapeHtml(row.fileName || 'laporan-lab')}" class="action-btn" style="background:#0284C7;color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:4px;font-size:11.5px;padding:3px 8px" title="Unduh ${escapeHtml(row.fileName)}">📥 ${escapeHtml(row.fileName.length > 18 ? row.fileName.substring(0, 15) + '...' : row.fileName)} (${formatBytes(row.fileSize)})</a>`;
+    if (row.fileBase64 || row.hasChunks || row.fileName) {
+      fileBtn = `<button onclick="downloadSubmissionFile('${row.id}', '${escapeHtml(row.fileName)}', this)" class="action-btn" style="background:#0284C7;color:#fff;border:none;display:inline-flex;align-items:center;gap:4px;font-size:11.5px;padding:4px 9px;cursor:pointer;border-radius:4px" title="Unduh ${escapeHtml(row.fileName)}">📥 ${escapeHtml(row.fileName.length > 18 ? row.fileName.substring(0, 15) + '...' : row.fileName)} (${formatBytes(row.fileSize)})</button>`;
     } else if (row.linkDrive) {
       fileBtn = `<a href="${escapeHtml(row.linkDrive)}" target="_blank" style="color:#38BDF8;text-decoration:none;font-size:11.5px;font-weight:700">🔗 Link Drive</a>`;
     }
@@ -847,7 +899,7 @@ function openLabDetailModal(docId) {
         </div>
       </div>
 
-      ${item.fileBase64 ? `
+      ${(item.fileBase64 || item.hasChunks || item.fileName) ? `
         <div style="background:#0F172A;border:1.5px solid #38BDF8;border-radius:var(--rs);padding:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
           <div style="display:flex;align-items:center;gap:12px">
             <span style="font-size:32px">📁</span>
@@ -856,9 +908,9 @@ function openLabDetailModal(docId) {
               <div style="font-size:12px;color:var(--txm)">Ukuran: ${formatBytes(item.fileSize)} · Format: ${escapeHtml(item.fileType || 'application/octet-stream')}</div>
             </div>
           </div>
-          <a href="${item.fileBase64}" download="${escapeHtml(item.fileName || 'laporan-praktikum')}" class="btn-primary" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px;padding:10px 18px">
+          <button onclick="downloadSubmissionFile('${item.id}', '${escapeHtml(item.fileName)}', this)" class="btn-primary" style="border:none;display:inline-flex;align-items:center;gap:8px;padding:10px 18px;cursor:pointer">
             <span>📥 Unduh Berkas Mahasiswa</span>
-          </a>
+          </button>
         </div>
       ` : (item.linkDrive ? `
         <div style="background:#0F172A;border:1px solid #1E293B;border-radius:var(--rs);padding:12px">
@@ -881,10 +933,18 @@ function closeLabDetailModal() {
   document.getElementById('labDetailModal').classList.remove('active');
 }
 
-function deleteLabSubmission(docId) {
+async function deleteLabSubmission(docId) {
   if (!confirm("Hapus laporan praktikum ini dari Cloud Firestore?")) return;
   if (!dbRef) return;
-  dbRef.collection('lab_submissions').doc(docId).delete();
+  try {
+    const chunksSnap = await dbRef.collection('lab_submissions').doc(docId).collection('chunks').get();
+    const batch = dbRef.batch();
+    chunksSnap.forEach(cd => batch.delete(cd.ref));
+    batch.delete(dbRef.collection('lab_submissions').doc(docId));
+    await batch.commit();
+  } catch(e) {
+    dbRef.collection('lab_submissions').doc(docId).delete();
+  }
 }
 
 function exportLabsToCSV() {

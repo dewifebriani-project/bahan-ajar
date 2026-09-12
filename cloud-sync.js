@@ -633,15 +633,16 @@ window.RealtimeGameEngine = {
   }
 };
 
-// 7. LAB REPORT SUBMISSION ENGINE (DIRECT CLOUD FIRESTORE STORAGE)
+// 7. LAB REPORT SUBMISSION ENGINE (DIRECT CLOUD FIRESTORE STORAGE WITH MULTI-MB CHUNKING)
 let currentLabFileData = null;
 
 window.handleLabFileSelect = function(e) {
   const file = e.target.files && e.target.files[0];
   if (!file) return;
 
-  if (file.size > 850 * 1024) {
-    alert("⚠️ Ukuran file (" + (file.size / 1024).toFixed(1) + " KB) melebihi batas 800 KB untuk penyimpanan langsung di Cloud Firestore. Silakan pilih berkas dokumen yang lebih ringkas atau kompres file terlebih dahulu.");
+  // Support up to 10 MB
+  if (file.size > 10 * 1024 * 1024) {
+    alert("⚠️ Ukuran file (" + (file.size / (1024*1024)).toFixed(1) + " MB) melebihi batas maksimal 10 MB. Silakan pilih berkas dokumen yang lebih kecil.");
     e.target.value = '';
     return;
   }
@@ -733,6 +734,17 @@ window.submitLabReport = async function(formEvent) {
 
   try {
     window.onCloudSyncReady(async (dbInstance) => {
+      let isChunked = false;
+      let directBase64 = '';
+
+      if (currentLabFileData && currentLabFileData.fileBase64) {
+        if (currentLabFileData.fileBase64.length > 500000) { // > 500 KB string
+          isChunked = true;
+        } else {
+          directBase64 = currentLabFileData.fileBase64;
+        }
+      }
+
       const submissionDoc = {
         nim: currentStudent.nim,
         nama: currentStudent.nama,
@@ -743,7 +755,9 @@ window.submitLabReport = async function(formEvent) {
         fileName: currentLabFileData ? currentLabFileData.fileName : '',
         fileSize: currentLabFileData ? currentLabFileData.fileSize : 0,
         fileType: currentLabFileData ? currentLabFileData.fileType : '',
-        fileBase64: currentLabFileData ? currentLabFileData.fileBase64 : '',
+        fileBase64: directBase64,
+        hasChunks: isChunked,
+        totalChunks: 1,
         jawaban: labAnswer,
         status: 'Terkumpul',
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
@@ -751,7 +765,27 @@ window.submitLabReport = async function(formEvent) {
       };
 
       // 1. Save to 'lab_submissions'
-      await dbInstance.collection('lab_submissions').add(submissionDoc);
+      const docRef = await dbInstance.collection('lab_submissions').add(submissionDoc);
+
+      // If chunked, split into chunks of 400,000 chars and save into subcollection
+      if (isChunked && currentLabFileData && currentLabFileData.fileBase64) {
+        const raw = currentLabFileData.fileBase64;
+        const chunkSize = 400000;
+        const numChunks = Math.ceil(raw.length / chunkSize);
+        
+        await docRef.update({ totalChunks: numChunks });
+
+        // Batch upload chunks
+        for (let i = 0; i < numChunks; i += 10) {
+          const batch = dbInstance.batch();
+          for (let j = i; j < Math.min(i + 10, numChunks); j++) {
+            const chunkData = raw.substring(j * chunkSize, (j + 1) * chunkSize);
+            const chunkRef = dbInstance.collection('lab_submissions').doc(docRef.id).collection('chunks').doc('c_' + j);
+            batch.set(chunkRef, { index: j, data: chunkData });
+          }
+          await batch.commit();
+        }
+      }
 
       // 2. Also register into 'quiz' collection for gradebook overview
       await dbInstance.collection('quiz').add({
@@ -869,7 +903,7 @@ function mountLabSubmissionWidget() {
             <div id="labDropPrompt">
               <div style="font-size:32px;margin-bottom:4px">📤</div>
               <div style="font-weight:700;font-size:14px;color:#fff">Klik untuk Memilih File Laporan Praktikum</div>
-              <div style="font-size:11.5px;color:#94A3B8;margin-top:4px">Format yang didukung: PDF, Word (DOCX), Excel (XLSX), Gambar, ZIP, CSV (Maks. 800 KB)</div>
+              <div style="font-size:11.5px;color:#94A3B8;margin-top:4px">Format yang didukung: PDF, Word (DOCX), Excel (XLSX), Gambar, ZIP, CSV (Maks. 10 MB)</div>
             </div>
             <div id="labFileInfo" style="display:none;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap">
               <span style="font-size:32px" id="labFileIcon">📄</span>
