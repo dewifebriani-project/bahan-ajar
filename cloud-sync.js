@@ -77,25 +77,31 @@ function markDbReady(firestoreInstance) {
 
 // 4. Modal Identitas Mahasiswa (NIM & Nama)
 function checkStudentIdentity(forcePrompt = false) {
+  if (!document.body) {
+    document.addEventListener('DOMContentLoaded', () => checkStudentIdentity(forcePrompt));
+    return;
+  }
   if (!currentStudent.nim || !currentStudent.nama || forcePrompt) {
     showIdentityModal();
   } else {
     updateTopStudentBadge();
   }
 }
-  }
-}
 
 function showIdentityModal() {
+  if (!document.body) {
+    document.addEventListener('DOMContentLoaded', () => showIdentityModal());
+    return;
+  }
   let modal = document.getElementById('studentIdModal');
   if (!modal) {
     modal = document.createElement('div');
     modal.id = 'studentIdModal';
     modal.innerHTML = `
-      <div style="position:fixed;inset:0;background:rgba(7,15,28,.85);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:18px">
-        <div style="background:#121826;border:1.5px solid #22304A;border-radius:12px;padding:26px 22px;max-width:380px;width:100%;color:#fff;box-shadow:0 12px 36px rgba(0,0,0,.5);font-family:'Source Sans 3',sans-serif">
-          <div style="font-size:28px;text-align:center;margin-bottom:6px">🎓</div>
-          <h3 style="font-family:'Amiri',serif;font-size:20px;text-align:center;margin:0 0 6px;color:#38BDF8">Identitas Mahasiswa</h3>
+      <div style="position:fixed;inset:0;background:rgba(7,15,28,.88);backdrop-filter:blur(6px);z-index:99999;display:flex;align-items:center;justify-content:center;padding:18px">
+        <div style="background:#121826;border:1.5px solid #22304A;border-radius:12px;padding:26px 22px;max-width:390px;width:100%;color:#fff;box-shadow:0 14px 40px rgba(0,0,0,.6);font-family:'Source Sans 3',sans-serif">
+          <div style="font-size:32px;text-align:center;margin-bottom:6px">🎓</div>
+          <h3 style="font-family:'Amiri',serif;font-size:22px;text-align:center;margin:0 0 6px;color:#38BDF8">Identitas Mahasiswa</h3>
           <p style="font-size:12.5px;color:#94A3B8;text-align:center;margin-bottom:16px">Masukkan NIM &amp; Nama Anda untuk sinkronisasi nilai kuis, praktikum, dan skor game ke Cloud.</p>
           
           <div style="margin-bottom:12px">
@@ -105,10 +111,10 @@ function showIdentityModal() {
 
           <div style="margin-bottom:18px">
             <label style="display:block;font-size:12px;font-weight:700;color:#CBD5E1;margin-bottom:4px">Nama Lengkap:</label>
-            <input type="text" id="inputStudentNama" placeholder="Nama Anda" value="${currentStudent.nama}" style="width:100%;padding:10px 12px;border-radius:6px;border:1px solid #334155;background:#0F172A;color:#fff;font-size:14px;box-sizing:border-box">
+            <input type="text" id="inputStudentNama" placeholder="Nama Mahasiswa" value="${currentStudent.nama}" style="width:100%;padding:10px 12px;border-radius:6px;border:1px solid #334155;background:#0F172A;color:#fff;font-size:14px;box-sizing:border-box">
           </div>
 
-          <button onclick="saveStudentIdentity()" style="width:100%;background:linear-gradient(135deg,#D46020,#E88030);color:#fff;border:none;border-radius:8px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s">Simpan &amp; Hubungkan Cloud ✓</button>
+          <button onclick="saveStudentIdentity()" style="width:100%;background:linear-gradient(135deg,#D46020,#E88030);color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s">Simpan &amp; Hubungkan Cloud ✓</button>
         </div>
       </div>
     `;
@@ -117,8 +123,12 @@ function showIdentityModal() {
 }
 
 function saveStudentIdentity() {
-  const nim = document.getElementById('inputStudentNIM').value.trim();
-  const nama = document.getElementById('inputStudentNama').value.trim();
+  const nimInput = document.getElementById('inputStudentNIM');
+  const namaInput = document.getElementById('inputStudentNama');
+  if (!nimInput || !namaInput) return;
+
+  const nim = nimInput.value.trim();
+  const nama = namaInput.value.trim();
 
   if (!nim || !nama) {
     alert("Mohon isi NIM dan Nama Lengkap Anda!");
@@ -131,7 +141,7 @@ function saveStudentIdentity() {
   localStorage.setItem('tazkia_student_nama', nama);
 
   // Sync to Firestore collection 'users'
-  if (db) {
+  if (db && window.firebase) {
     db.collection('users').doc(nim).set({
       nim: nim,
       nama: nama,
@@ -145,20 +155,35 @@ function saveStudentIdentity() {
 }
 
 function updateTopStudentBadge() {
+  if (!document.body) {
+    document.addEventListener('DOMContentLoaded', () => updateTopStudentBadge());
+    return;
+  }
+
   let badge = document.getElementById('topStudentBadge');
   if (!badge) {
     const topbarRight = document.querySelector('.topbar-right') || document.querySelector('.topbar');
+    badge = document.createElement('div');
+    badge.id = 'topStudentBadge';
     if (topbarRight) {
-      badge = document.createElement('div');
-      badge.id = 'topStudentBadge';
-      badge.style.cssText = "display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:3px 10px;font-size:11.5px;color:#fff;cursor:pointer;margin-right:8px";
-      badge.title = "Klik untuk mengganti NIM/Nama";
-      badge.onclick = () => showIdentityModal();
+      badge.style.cssText = "display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:4px 12px;font-size:12px;color:#fff;cursor:pointer;margin-right:8px;transition:all .15s";
       topbarRight.insertBefore(badge, topbarRight.firstChild);
+    } else {
+      // Floating pill on top-right if no .topbar
+      badge.style.cssText = "position:fixed;top:10px;right:14px;z-index:9998;display:flex;align-items:center;gap:6px;background:#0C1D30;border:1.5px solid #1B7898;border-radius:20px;padding:6px 14px;font-size:12px;color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.3);cursor:pointer;font-family:'Source Sans 3',sans-serif";
+      document.body.appendChild(badge);
     }
+    badge.onclick = () => showIdentityModal();
   }
-  if (badge && currentStudent.nama) {
-    badge.innerHTML = `👤 <strong>${currentStudent.nama}</strong> (${currentStudent.nim})`;
+
+  if (badge) {
+    if (currentStudent.nama && currentStudent.nim) {
+      badge.innerHTML = `👤 <strong>${currentStudent.nama}</strong> (${currentStudent.nim}) ✏️`;
+      badge.title = "Klik untuk mengganti NIM / Nama";
+    } else {
+      badge.innerHTML = `🎓 <span style="color:#FFB885;font-weight:700">Isi NIM &amp; Nama</span> ⚠️`;
+      badge.title = "Klik untuk mengisi identitas mahasiswa";
+    }
   }
 }
 
