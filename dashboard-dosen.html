@@ -41,33 +41,33 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
 
 /* ── CONTAINER ── */
-.main{max-width:1280px;margin:0 auto;padding:28px 20px 80px;width:100%;flex:1}
+.main{max-width:1280px;margin:0 auto;padding:24px 20px 80px;width:100%;flex:1}
 
 /* ── HEADER TITLE ── */
-.hd{margin-bottom:24px}
+.hd{margin-bottom:20px}
 .hd-badge{display:inline-block;background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.3);color:#7DD3FC;padding:2px 12px;border-radius:14px;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
 .hd-title{font-family:'Amiri',serif;font-size:28px;font-weight:700;color:#fff}
 .hd-sub{font-size:13.5px;color:var(--txm)}
 
+/* ── TAB NAVIGATION ── */
+.tabs-nav{display:flex;align-items:center;gap:8px;border-bottom:1.5px solid var(--bd);margin-bottom:24px;background:var(--sf);padding:6px 12px 0;border-radius:var(--r) var(--r) 0 0}
+.tab-btn{background:transparent;border:none;border-bottom:3px solid transparent;color:var(--txm);padding:12px 20px;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .15s;font-family:inherit}
+.tab-btn:hover{color:#fff}
+.tab-btn.active{color:#38BDF8;border-bottom-color:#38BDF8}
+.tab-badge{background:rgba(56,189,248,.15);color:#38BDF8;font-size:11px;padding:2px 7px;border-radius:10px;font-weight:700}
+
+/* ── TAB CONTENT CONTAINERS ── */
+.tab-pane{display:none}
+.tab-pane.active{display:block}
+
 /* ── KPI METRICS ── */
-.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
 @media(max-width:860px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:480px){.kpi-grid{grid-template-columns:1fr}}
 .kpi-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:18px 20px;display:flex;align-items:center;gap:14px}
 .kpi-icon{font-size:28px;background:var(--sf2);width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;border:1px solid var(--bs)}
 .kpi-num{font-family:'Source Code Pro',monospace;font-size:24px;font-weight:700;color:#fff;line-height:1.2}
 .kpi-lbl{font-size:12px;color:var(--txm);font-weight:600}
-
-/* ── COMPACT PIN SUMMARY BAR ── */
-.pin-summary-bar{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:14px 20px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
-.pin-summary-left{display:flex;align-items:center;gap:12px;flex-wrap:wrap;flex:1}
-.pin-summary-title{font-size:13.5px;font-weight:700;color:#fff;display:flex;align-items:center;gap:6px}
-.pin-pills-list{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.pin-pill{background:var(--sf3);border:1px solid var(--bd);padding:3px 10px;border-radius:6px;font-size:12px;display:inline-flex;align-items:center;gap:6px}
-.pin-pill-code{font-weight:700;color:#CBD5E1}
-.pin-pill-val{font-family:'Source Code Pro',monospace;font-weight:700;color:#FFD488}
-.btn-manage-pin{background:linear-gradient(135deg,#1E293B,#334155);border:1px solid rgba(56,189,248,.3);color:#38BDF8;padding:8px 16px;border-radius:var(--rs);font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .15s}
-.btn-manage-pin:hover{background:#38BDF8;color:#0A0E17;border-color:#38BDF8}
 
 /* ── CONTROLS & FILTER BAR ── */
 .controls{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px 20px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:20px}
@@ -85,27 +85,29 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
 .btn-export{background:linear-gradient(135deg,#059669,#10B981);color:#fff;border:none;border-radius:var(--rs);padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:opacity .15s}
 .btn-export:hover{opacity:.9}
 
-/* ── DATA TABLE ── */
-.table-wrap{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);overflow-x:auto;box-shadow:0 8px 30px rgba(0,0,0,.3)}
-.data-table{width:100%;border-collapse:collapse;text-align:left;font-size:13px;min-width:900px}
-.data-table th{background:var(--sf2);padding:12px 14px;color:var(--txm);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--bd)}
-.data-table td{padding:12px 14px;border-bottom:1px solid var(--bs);color:var(--tx)}
+/* ── DATA TABLES ── */
+.table-wrap{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);overflow-x:auto;box-shadow:0 8px 30px rgba(0,0,0,.3);margin-bottom:20px}
+.data-table{width:100%;border-collapse:collapse;text-align:left;font-size:13.5px;min-width:900px}
+.data-table th{background:var(--sf2);padding:12px 16px;color:var(--txm);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--bd)}
+.data-table td{padding:12px 16px;border-bottom:1px solid var(--bs);color:var(--tx)}
 .data-table tr:hover td{background:rgba(255,255,255,.02)}
 
 .badge-pass{background:var(--okl);color:#34D399;border:1px solid rgba(16,185,129,.3);padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;display:inline-block}
 .badge-fail{background:var(--warnl);color:#F87171;border:1px solid rgba(239,68,68,.3);padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;display:inline-block}
 .badge-score{font-family:'Source Code Pro',monospace;font-weight:700;color:var(--gold)}
 
-.action-btn{padding:5px 9px;border-radius:6px;border:1px solid var(--bd);background:var(--sf2);color:#E2E8F0;font-size:11.5px;font-weight:600;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:4px}
+.action-btn{padding:6px 11px;border-radius:6px;border:1px solid var(--bd);background:var(--sf2);color:#E2E8F0;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px}
 .action-btn:hover{background:#1E293B;border-color:var(--pri);color:#fff}
 .action-delete{border-color:rgba(239,68,68,.3);color:#FCA5A5}
 .action-delete:hover{background:rgba(239,68,68,.2);border-color:#EF4444;color:#fff}
+
+.pin-row-input{width:100px;padding:7px 10px;border-radius:6px;border:1.5px solid #334155;background:#0A0E17;color:#FFD488;font-size:15px;font-family:'Source Code Pro',monospace;font-weight:700;text-align:center;outline:none;transition:border-color .15s}
+.pin-row-input:focus{border-color:var(--pri)}
 
 /* ── MODALS ── */
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:999;padding:20px}
 .modal-overlay.active{display:flex}
 .modal-box{background:var(--sf);border:1.5px solid var(--bd);border-radius:var(--r);width:100%;max-width:540px;box-shadow:0 20px 50px rgba(0,0,0,.6);overflow:hidden;animation:modalPop .2s ease-out}
-.modal-box-wide{max-width:760px}
 @keyframes modalPop{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
 
 .modal-header{background:var(--sf2);padding:18px 24px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
@@ -113,7 +115,7 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
 .modal-close{background:transparent;border:none;color:var(--txm);font-size:20px;cursor:pointer;transition:color .15s}
 .modal-close:hover{color:#fff}
 
-.modal-body{padding:24px;display:grid;gap:16px;max-height:75vh;overflow-y:auto}
+.modal-body{padding:24px;display:grid;gap:16px}
 .form-group{display:grid;gap:6px}
 .form-label{font-size:12px;font-weight:700;color:var(--txm);text-transform:uppercase;letter-spacing:.04em}
 .form-input,.form-select{background:var(--sf3);border:1px solid var(--bd);border-radius:var(--rs);padding:10px 14px;color:#fff;font-size:13.5px;outline:none;font-family:inherit}
@@ -123,12 +125,6 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
 .modal-footer{padding:16px 24px;background:var(--sf2);border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:flex-end;gap:10px}
 .btn-cancel{background:transparent;border:1px solid var(--bd);color:var(--txm);padding:8px 16px;border-radius:var(--rs);font-size:13px;font-weight:600;cursor:pointer}
 .btn-cancel:hover{color:#fff;border-color:var(--txm)}
-
-/* ── PIN MANAGER TABLE INSIDE MODAL ── */
-.pin-table{width:100%;border-collapse:collapse;font-size:13px}
-.pin-table th{background:var(--sf3);padding:10px 12px;color:var(--txm);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--bd);text-align:left}
-.pin-table td{padding:10px 12px;border-bottom:1px solid var(--bs);color:var(--tx)}
-.pin-row-input{width:90px;padding:6px 8px;border-radius:6px;border:1px solid #334155;background:#0A0E17;color:#FFD488;font-size:14px;font-family:'Source Code Pro',monospace;font-weight:700;text-align:center;outline:none}
 
 /* ── EMPTY & LOADING ── */
 .empty-state{text-align:center;padding:48px 20px;color:var(--txl)}
@@ -155,159 +151,153 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
 <main class="main">
   <div class="hd">
     <span class="hd-badge">Monitoring Pembelajaran OBE &amp; Multi-Kelas</span>
-    <h1 class="hd-title">Rekapitulasi &amp; Manajemen Nilai Mahasiswa</h1>
-    <p class="hd-sub">Pantau submission nilai kuis dan praktikum secara realtime, input nilai manual, serta kelola PIN rahasia tiap mata kuliah.</p>
+    <h1 class="hd-title">Dashboard Manajemen Akademik Dosen</h1>
+    <p class="hd-sub">Pantau nilai mahasiswa, kelola submission kuis/praktikum, dan atur PIN rahasia untuk setiap mata kuliah.</p>
   </div>
 
-  <!-- KPI SUMMARY -->
-  <div class="kpi-grid">
-    <div class="kpi-card">
-      <div class="kpi-icon">📝</div>
-      <div>
-        <div class="kpi-num" id="kpiSubmissions">0</div>
-        <div class="kpi-lbl">Total Kuis Terkumpul</div>
-      </div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-icon">👥</div>
-      <div>
-        <div class="kpi-num" id="kpiStudents">0</div>
-        <div class="kpi-lbl">Mahasiswa Terdata</div>
-      </div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-icon">🎯</div>
-      <div>
-        <div class="kpi-num" id="kpiAvgScore">0%</div>
-        <div class="kpi-lbl">Rata-rata Nilai Kelas</div>
-      </div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-icon">🏆</div>
-      <div>
-        <div class="kpi-num" id="kpiPassRate">0%</div>
-        <div class="kpi-lbl">Tingkat Kelulusan</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ════════ COMPACT PIN SUMMARY BAR (CLEAN UI) ════════ -->
-  <div class="pin-summary-bar">
-    <div class="pin-summary-left">
-      <div class="pin-summary-title">
-        <span>🔐 PIN Akses Kelas:</span>
-      </div>
-      <div id="pinPillsContainer" class="pin-pills-list">
-        <!-- Rendered by JS -->
-      </div>
-    </div>
-    <button class="btn-manage-pin" onclick="openPinManagerModal()">
-      <span>⚙️ Kelola &amp; Ubah PIN Mata Kuliah</span>
-      <span>➔</span>
+  <!-- TAB NAVIGATION BAR -->
+  <div class="tabs-nav">
+    <button id="tabBtnGrades" class="tab-btn active" onclick="switchTab('grades')">
+      <span>📊 Rekap Nilai Mahasiswa</span>
+      <span id="tabBadgeSubmissions" class="tab-badge">0</span>
+    </button>
+    <button id="tabBtnPins" class="tab-btn" onclick="switchTab('pins')">
+      <span>🔐 Pengaturan PIN &amp; Mata Kuliah</span>
+      <span id="tabBadgeCourses" class="tab-badge">0 Kelas</span>
     </button>
   </div>
 
-  <!-- CONTROLS & CRUD ACTIONS -->
-  <div class="controls">
-    <input type="text" id="searchInput" class="search-input" placeholder="🔍 Cari NIM, Nama, atau Aktivitas..." oninput="renderTable()">
+  <!-- ════════ TAB 1: REKAP NILAI MAHASISWA ════════ -->
+  <div id="tabContentGrades" class="tab-pane active">
     
-    <select id="courseFilter" class="filter-select" onchange="renderTable()">
-      <option value="ALL">Semua Modul / Pertemuan</option>
-      <!-- Populated dynamically -->
-    </select>
+    <!-- KPI SUMMARY -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-icon">📝</div>
+        <div>
+          <div class="kpi-num" id="kpiSubmissions">0</div>
+          <div class="kpi-lbl">Total Kuis Terkumpul</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon">👥</div>
+        <div>
+          <div class="kpi-num" id="kpiStudents">0</div>
+          <div class="kpi-lbl">Mahasiswa Terdata</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon">🎯</div>
+        <div>
+          <div class="kpi-num" id="kpiAvgScore">0%</div>
+          <div class="kpi-lbl">Rata-rata Nilai Kelas</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon">🏆</div>
+        <div>
+          <div class="kpi-num" id="kpiPassRate">0%</div>
+          <div class="kpi-lbl">Tingkat Kelulusan</div>
+        </div>
+      </div>
+    </div>
 
-    <div class="btn-group">
-      <button class="btn-primary" onclick="openCreateModal()">+ Tambah Nilai Manual</button>
-      <button class="btn-export" onclick="exportToCSV()">📥 Export Excel (CSV)</button>
+    <!-- CONTROLS & CRUD ACTIONS -->
+    <div class="controls">
+      <input type="text" id="searchInput" class="search-input" placeholder="🔍 Cari NIM, Nama Mahasiswa, atau Aktivitas..." oninput="renderGradeTable()">
+      
+      <select id="courseFilter" class="filter-select" onchange="renderGradeTable()">
+        <option value="ALL">Semua Modul / Pertemuan</option>
+        <!-- Populated dynamically -->
+      </select>
+
+      <div class="btn-group">
+        <button class="btn-primary" onclick="openCreateModal()">+ Tambah Nilai Manual</button>
+        <button class="btn-export" onclick="exportToCSV()">📥 Export Excel (CSV)</button>
+      </div>
+    </div>
+
+    <!-- GRADEBOOK TABLE -->
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th style="width:40px">No</th>
+            <th>NIM</th>
+            <th>Nama Mahasiswa</th>
+            <th>Pertemuan</th>
+            <th>Aktivitas</th>
+            <th>Skor Riil</th>
+            <th>Nilai (%)</th>
+            <th>Status</th>
+            <th>Waktu Pengumpulan</th>
+            <th style="text-align:center;width:140px">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr>
+            <td colspan="10" class="empty-state">
+              <div class="empty-icon">⏳</div>
+              <div>Menghubungkan ke Cloud Firestore dan memuat data nilai mahasiswa...</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
-  <!-- TABLE WRAPPER -->
-  <div class="table-wrap">
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th style="width:40px">No</th>
-          <th>NIM</th>
-          <th>Nama Mahasiswa</th>
-          <th>Pertemuan</th>
-          <th>Aktivitas</th>
-          <th>Skor Riil</th>
-          <th>Nilai (%)</th>
-          <th>Status</th>
-          <th>Waktu Pengumpulan</th>
-          <th style="text-align:center;width:130px">Aksi</th>
-        </tr>
-      </thead>
-      <tbody id="tableBody">
-        <tr>
-          <td colspan="10" class="empty-state">
-            <div class="empty-icon">⏳</div>
-            <div>Menghubungkan ke Cloud Firestore dan memuat data nilai mahasiswa...</div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <!-- ════════ TAB 2: TABEL KHUSUS PENGATURAN PIN ════════ -->
+  <div id="tabContentPins" class="tab-pane">
+    
+    <!-- ACTION BAR -->
+    <div class="controls">
+      <div>
+        <h3 style="font-family:'Amiri',serif;font-size:20px;color:#fff;margin:0 0 2px">🔐 Tabel Pengaturan PIN Akses Kelas (Confidential Gate)</h3>
+        <p style="font-size:12.5px;color:var(--txm);margin:0">Atur dan ubah PIN rahasia tiap mata kuliah secara terpusat. Perubahan langsung tersinkronisasi ke seluruh mahasiswa.</p>
+      </div>
+      <div class="btn-group">
+        <button class="btn-primary" onclick="openAddCourseModal()">+ Tambah Mata Kuliah Baru</button>
+        <button class="btn-orange" onclick="saveAllPinsFromTable()">💾 Simpan Semua PIN ke Cloud ✓</button>
+      </div>
+    </div>
+
+    <!-- MASTER DOSEN PIN CARD -->
+    <div style="background:linear-gradient(135deg,rgba(244,63,94,.12),rgba(244,63,94,.04));border:1.5px solid rgba(244,63,94,.35);border-radius:var(--r);padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
+      <div>
+        <div style="font-size:14px;font-weight:700;color:#FDA4AF;display:flex;align-items:center;gap:6px">🔑 PIN Master Dashboard Dosen</div>
+        <p style="font-size:12.5px;color:var(--txm);margin:2px 0 0">PIN keamanan untuk membuka dan mengakses halaman Dashboard Dosen ini.</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <input type="text" id="pin_DOSEN" value="7788" maxlength="8" class="pin-row-input" style="border-color:#F43F5E;color:#FDA4AF;font-size:16px">
+        <button class="btn-primary" onclick="saveSinglePin('DOSEN', 'pin_DOSEN')">Simpan PIN Dosen ✓</button>
+      </div>
+    </div>
+
+    <!-- PIN MANAGEMENT TABLE -->
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th style="width:40px">No</th>
+            <th>Mata Kuliah</th>
+            <th>Kode ID</th>
+            <th>Folder di Repositori</th>
+            <th style="width:130px;text-align:center">PIN Akses Rahasia</th>
+            <th style="width:110px;text-align:center">Status Proteksi</th>
+            <th style="text-align:center;width:150px">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="pinTableBody">
+          <!-- Rendered by JS -->
+        </tbody>
+      </table>
+    </div>
   </div>
+
 </main>
 
-<!-- ════════ MODAL: DEDICATED PIN & COURSE MANAGER ════════ -->
-<div id="pinManagerModal" class="modal-overlay">
-  <div class="modal-box modal-box-wide">
-    <div class="modal-header">
-      <h3 class="modal-title">🔐 Pengaturan PIN Akses &amp; Manajemen Mata Kuliah</h3>
-      <button class="modal-close" onclick="closePinManagerModal()">&times;</button>
-    </div>
-    <div class="modal-body">
-      
-      <!-- Top Action Bar -->
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding-bottom:12px;border-bottom:1px solid var(--bd)">
-        <div>
-          <div style="font-size:13px;font-weight:700;color:#fff">Daftar Mata Kuliah Terproteksi</div>
-          <div style="font-size:12px;color:var(--txm)">Ubah angka PIN langsung pada tabel di bawah dan klik Simpan.</div>
-        </div>
-        <button class="btn-primary" onclick="openAddCourseModal()">+ Tambah Mata Kuliah Baru</button>
-      </div>
-
-      <!-- Master Dosen PIN Card -->
-      <div style="background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.3);border-radius:var(--rs);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
-        <div>
-          <div style="font-size:13px;font-weight:700;color:#FDA4AF">🔑 PIN Master Dashboard Dosen</div>
-          <div style="font-size:11.5px;color:var(--txm)">PIN pengaman untuk masuk ke halaman Dashboard Dosen ini.</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <input type="text" id="modal_pin_DOSEN" value="7788" maxlength="8" class="pin-row-input" style="border-color:#F43F5E;color:#FDA4AF">
-          <button class="action-btn" onclick="saveSinglePin('DOSEN', 'modal_pin_DOSEN')">Simpan ✓</button>
-        </div>
-      </div>
-
-      <!-- Course PIN Table -->
-      <div style="border:1px solid var(--bd);border-radius:var(--rs);overflow:hidden;background:var(--sf)">
-        <table class="pin-table">
-          <thead>
-            <tr>
-              <th>Mata Kuliah</th>
-              <th>Folder Repositori</th>
-              <th style="width:110px;text-align:center">PIN Akses</th>
-              <th style="width:120px;text-align:center">Aksi</th>
-            </tr>
-          </thead>
-          <tbody id="pinTableBody">
-            <!-- Rendered by JS -->
-          </tbody>
-        </table>
-      </div>
-
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn-cancel" onclick="closePinManagerModal()">Tutup</button>
-      <button type="button" class="btn-orange" onclick="saveAllPinsFromModal()">💾 Simpan Semua PIN ke Cloud ✓</button>
-    </div>
-  </div>
-</div>
-
 <!-- ════════ MODAL: TAMBAH MATA KULIAH BARU ════════ -->
-<div id="addCourseModal" class="modal-overlay" style="z-index:1001">
+<div id="addCourseModal" class="modal-overlay">
   <div class="modal-box">
     <div class="modal-header">
       <h3 class="modal-title">Tambah Mata Kuliah / Kelas Baru</h3>
@@ -422,7 +412,7 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
 const DEFAULT_COURSES = [
   { code: 'SIA', name: 'Sistem Informasi Akuntansi (AKS-302)', folder: 'Sistem Informasi Akuntansi', pin: '3021', icon: '🏛️' },
   { code: 'ADA', name: 'Applied Data Analytics (DAT-301)', folder: 'Applied Data Analytics', pin: '3011', icon: '📊' },
-  { code: 'BIV', name: 'Business Intelligence & Visualization (BIV-301)', folder: 'Business Intelligence', pin: '3012', icon: '📈' }
+  { code: 'BIV', name: 'Business Intelligence & Visualization (BIV-301)', folder: 'Business Intelligence & Visualization', pin: '3012', icon: '📈' }
 ];
 
 let registeredCourses = [...DEFAULT_COURSES];
@@ -430,6 +420,13 @@ let activePins = { SIA: '3021', ADA: '3011', BIV: '3012', DOSEN: '7788' };
 let allQuizData = [];
 let allUsersMap = {};
 let dbRef = null;
+
+function switchTab(tabId) {
+  document.getElementById('tabBtnGrades').classList.toggle('active', tabId === 'grades');
+  document.getElementById('tabBtnPins').classList.toggle('active', tabId === 'pins');
+  document.getElementById('tabContentGrades').classList.toggle('active', tabId === 'grades');
+  document.getElementById('tabContentPins').classList.toggle('active', tabId === 'pins');
+}
 
 function initLecturerDashboard() {
   window.onCloudSyncReady((dbInstance) => {
@@ -443,12 +440,11 @@ function initLecturerDashboard() {
           registeredCourses = [...data.courses];
         }
       }
-      renderPinSummaryBar();
-      renderPinTableInsideModal();
+      renderPinTable();
       populateDropdowns();
+      document.getElementById('tabBadgeCourses').textContent = registeredCourses.length + ' Kelas';
     }, err => {
-      renderPinSummaryBar();
-      renderPinTableInsideModal();
+      renderPinTable();
       populateDropdowns();
     });
 
@@ -456,8 +452,7 @@ function initLecturerDashboard() {
     dbInstance.collection('settings').doc('access_pins').onSnapshot(doc => {
       if (doc.exists) {
         activePins = { ...activePins, ...doc.data() };
-        renderPinSummaryBar();
-        renderPinTableInsideModal();
+        renderPinTable();
       }
     });
 
@@ -488,8 +483,9 @@ function initLecturerDashboard() {
         });
       });
 
+      document.getElementById('tabBadgeSubmissions').textContent = allQuizData.length;
       updateKPIs();
-      renderTable();
+      renderGradeTable();
     }, err => {
       console.error("Error loading quiz data:", err);
       document.getElementById('tableBody').innerHTML = `
@@ -501,72 +497,41 @@ function initLecturerDashboard() {
   });
 }
 
-/* ════════ COMPACT PIN BAR & MODAL MANAGER ════════ */
-function renderPinSummaryBar() {
-  const container = document.getElementById('pinPillsContainer');
-  if (!container) return;
-
-  let html = '';
-  registeredCourses.forEach(c => {
-    const pinVal = activePins[c.code] || c.pin || '1234';
-    html += `
-      <div class="pin-pill" title="${escapeHtml(c.name)} (Folder: ${escapeHtml(c.folder)})">
-        <span>${c.icon || '📚'}</span>
-        <span class="pin-pill-code">${escapeHtml(c.code)}:</span>
-        <span class="pin-pill-val">${pinVal}</span>
-      </div>
-    `;
-  });
-
-  const dosenPin = activePins['DOSEN'] || '7788';
-  html += `
-    <div class="pin-pill" style="border-color:rgba(244,63,94,.3);background:rgba(244,63,94,.1)">
-      <span>🔑</span>
-      <span class="pin-pill-code" style="color:#FDA4AF">DOSEN:</span>
-      <span class="pin-pill-val" style="color:#FDA4AF">${dosenPin}</span>
-    </div>
-  `;
-
-  container.innerHTML = html;
-}
-
-function openPinManagerModal() {
-  renderPinTableInsideModal();
-  document.getElementById('pinManagerModal').classList.add('active');
-}
-
-function closePinManagerModal() {
-  document.getElementById('pinManagerModal').classList.remove('active');
-}
-
-function renderPinTableInsideModal() {
+/* ════════ TAB 2: PIN TABLE ENGINE ════════ */
+function renderPinTable() {
   const tbody = document.getElementById('pinTableBody');
   if (!tbody) return;
 
-  const dosenInput = document.getElementById('modal_pin_DOSEN');
+  const dosenInput = document.getElementById('pin_DOSEN');
   if (dosenInput) dosenInput.value = activePins['DOSEN'] || '7788';
 
   let html = '';
-  registeredCourses.forEach(c => {
+  registeredCourses.forEach((c, idx) => {
     const pinVal = activePins[c.code] || c.pin || '1234';
     const isDefault = ['SIA', 'ADA', 'BIV'].includes(c.code);
-    const deleteBtn = isDefault ? '' : `<button class="action-btn action-delete" title="Hapus Mata Kuliah" onclick="deleteCourse('${c.code}', '${escapeHtml(c.name)}')">🗑️</button>`;
+    const deleteBtn = isDefault ? '' : `<button class="action-btn action-delete" title="Hapus Mata Kuliah" onclick="deleteCourse('${c.code}', '${escapeHtml(c.name)}')">🗑️ Hapus</button>`;
 
     html += `
       <tr>
+        <td style="color:var(--txl);font-family:'Source Code Pro',monospace">${idx + 1}</td>
         <td>
-          <div style="font-weight:700;color:#fff">${c.icon || '📚'} ${escapeHtml(c.name)}</div>
-          <div style="font-size:11px;color:var(--txm);font-family:'Source Code Pro',monospace">ID: ${c.code}</div>
+          <div style="font-weight:700;color:#fff;font-size:14px">${c.icon || '📚'} ${escapeHtml(c.name)}</div>
         </td>
-        <td style="font-size:12px;color:var(--txm);font-family:'Source Code Pro',monospace">
-          ${escapeHtml(c.folder)}
+        <td>
+          <span style="background:var(--sf2);border:1px solid var(--bd);padding:2px 8px;border-radius:4px;font-family:'Source Code Pro',monospace;font-size:12px;color:var(--pri);font-weight:700">${escapeHtml(c.code)}</span>
+        </td>
+        <td style="font-family:'Source Code Pro',monospace;font-size:12.5px;color:var(--txm)">
+          📁 ${escapeHtml(c.folder)}
         </td>
         <td style="text-align:center">
-          <input type="text" id="modal_pin_${c.code}" value="${pinVal}" maxlength="8" class="pin-row-input">
+          <input type="text" id="table_pin_${c.code}" value="${pinVal}" maxlength="8" class="pin-row-input">
         </td>
         <td style="text-align:center">
-          <div style="display:inline-flex;gap:4px">
-            <button class="action-btn" onclick="saveSinglePin('${c.code}', 'modal_pin_${c.code}')">Simpan ✓</button>
+          <span class="badge-pass">TERKUNCI 🔒</span>
+        </td>
+        <td style="text-align:center">
+          <div style="display:inline-flex;gap:6px">
+            <button class="action-btn" onclick="saveSinglePin('${c.code}', 'table_pin_${c.code}')">Simpan ✓</button>
             ${deleteBtn}
           </div>
         </td>
@@ -594,7 +559,6 @@ function saveSinglePin(code, inputId) {
   dbRef.collection('settings').doc('access_pins').set(updateObj, { merge: true })
     .then(() => {
       activePins[code] = val;
-      renderPinSummaryBar();
       alert(`✅ PIN untuk ${code} berhasil diperbarui menjadi "${val}"!`);
     })
     .catch(err => {
@@ -602,15 +566,15 @@ function saveSinglePin(code, inputId) {
     });
 }
 
-function saveAllPinsFromModal() {
+function saveAllPinsFromTable() {
   if (!dbRef) return;
 
   const updateObj = {
-    DOSEN: document.getElementById('modal_pin_DOSEN').value.trim()
+    DOSEN: document.getElementById('pin_DOSEN').value.trim()
   };
 
   registeredCourses.forEach(c => {
-    const el = document.getElementById('modal_pin_' + c.code);
+    const el = document.getElementById('table_pin_' + c.code);
     if (el) updateObj[c.code] = el.value.trim();
   });
 
@@ -618,8 +582,6 @@ function saveAllPinsFromModal() {
 
   dbRef.collection('settings').doc('access_pins').set(updateObj, { merge: true })
     .then(() => {
-      closePinManagerModal();
-      renderPinSummaryBar();
       alert("✅ Seluruh PIN Akses Kelas Berhasil Disimpan ke Cloud!");
     })
     .catch(err => {
@@ -671,10 +633,10 @@ function handleAddCourseSubmit(e) {
       registeredCourses = updatedList;
       activePins[code] = pin;
       closeAddCourseModal();
-      renderPinSummaryBar();
-      renderPinTableInsideModal();
+      renderPinTable();
       populateDropdowns();
-      alert(`✅ Mata Kuliah "${name}" berhasil ditambahkan dengan PIN ${pin}!`);
+      document.getElementById('tabBadgeCourses').textContent = registeredCourses.length + ' Kelas';
+      alert(`✅ Mata Kuliah "${name}" berhasil ditambahkan ke tabel dengan PIN ${pin}!`);
     })
     .catch(err => {
       alert("❌ Gagal menambahkan mata kuliah: " + err.message);
@@ -682,7 +644,7 @@ function handleAddCourseSubmit(e) {
 }
 
 function deleteCourse(code, courseName) {
-  if (!confirm(`Hapus mata kuliah "${courseName}" (${code}) dari daftar PIN?`)) return;
+  if (!confirm(`Hapus mata kuliah "${courseName}" (${code}) dari tabel PIN?`)) return;
   if (!dbRef) return;
 
   const updatedList = registeredCourses.filter(c => c.code !== code);
@@ -693,9 +655,9 @@ function deleteCourse(code, courseName) {
   }, { merge: true })
     .then(() => {
       registeredCourses = updatedList;
-      renderPinSummaryBar();
-      renderPinTableInsideModal();
+      renderPinTable();
       populateDropdowns();
+      document.getElementById('tabBadgeCourses').textContent = registeredCourses.length + ' Kelas';
       alert(`✅ Mata Kuliah "${courseName}" berhasil dihapus.`);
     })
     .catch(err => {
@@ -745,7 +707,7 @@ function populateDropdowns() {
   filterSel.value = curFilter;
 }
 
-/* ════════ KPI & GRADEBOOK TABLE ════════ */
+/* ════════ TAB 1: GRADEBOOK TABLE & KPI ════════ */
 function updateKPIs() {
   document.getElementById('kpiSubmissions').textContent = allQuizData.length;
   if (allQuizData.length === 0) {
@@ -763,7 +725,7 @@ function updateKPIs() {
   document.getElementById('kpiPassRate').textContent = passRate + '%';
 }
 
-function renderTable() {
+function renderGradeTable() {
   const query = (document.getElementById('searchInput').value || '').toLowerCase();
   const filter = document.getElementById('courseFilter').value;
   const tbody = document.getElementById('tableBody');
