@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AIS Arena P02 — Ekspedisi Transaksi BMT: Data Relay &amp; COA Cipher Challenge</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;600;700&display=swap">
+<script src="../../cloud-sync.js"></script>
 <style>
 /* ═══ MEETING 02 THEME TOKENS (Deep Navy & Radiant Amber) ═══ */
 :root{
@@ -219,6 +220,17 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
 
     <div style="margin-top:14px;text-align:center">
       <button class="spin-btn" onclick="startCoopGame()" id="btnStartCoop">▶ Mulai Ekspedisi Relay (3 Ronde)</button>
+    </div>
+
+    <!-- LIVE REALTIME LEADERBOARD -->
+    <div style="margin-top:20px;background:var(--sf3);border:1.5px solid var(--bs);border-radius:var(--rs);padding:14px 18px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <h4 style="font-family:'Amiri',serif;font-size:17px;color:var(--pri);margin:0">🏆 Papan Peringkat Realtime Kelas (Live Cloud Leaderboard)</h4>
+        <span style="font-size:11px;background:#D0EEE2;color:#0A4020;padding:2px 8px;border-radius:10px;font-weight:700">● LIVE SYNC</span>
+      </div>
+      <div id="liveLeaderboardList" style="display:grid;gap:6px;font-size:13px">
+        <div style="color:var(--txl);font-style:italic">Memuat peringkat kelas dari cloud...</div>
+      </div>
     </div>
 
     <div class="guide-box">
@@ -595,7 +607,16 @@ function finishCoopGame(){
   clearInterval(coopTimer);
   playFanfareSound();
   launchConfetti();
-  alert(`🏆 Luar Biasa! Ekspedisi Relay Selesai!\nSkor Akhir Tim Anda: ${coopScore} Poin.\nKerjasama Input dan Verifikasi COA Anda sangat solid!`);
+  
+  // Sinkronkan ke Cloud Firestore Leaderboard & Log Quiz
+  if (window.RealtimeGameEngine) {
+    RealtimeGameEngine.submitPlayerScore(coopScore, coopCombo, 3);
+  }
+  if (window.saveScoreToCloud) {
+    saveScoreToCloud('Pertemuan 02', 'Game Relay Kolaborasi BMT', coopScore, 300, { combo: coopCombo });
+  }
+
+  alert(`🏆 Luar Biasa! Ekspedisi Relay Selesai!\nSkor Akhir Tim Anda: ${coopScore} Poin.\nData skor telah tersinkronisasi otomatis ke Cloud Firestore!`);
   document.getElementById('btnStartCoop').style.display = 'inline-flex';
   document.getElementById('btnStartCoop').textContent = '🔄 Ulangi Relay Tantangan';
 }
@@ -623,6 +644,7 @@ const ARENA_CASES = [
 ];
 
 let teamScores = [0, 0, 0, 0];
+const TEAM_NAMES = ["Tim 1: Wadiah", "Tim 2: Murabahah", "Tim 3: Mudharabah", "Tim 4: Ijarah"];
 
 function spinArenaWheel(){
   playTone(587.33, 'triangle', 0.15);
@@ -640,6 +662,11 @@ function addTeamScore(teamIdx, pts){
   document.getElementById(`scoreTeam${teamIdx}`).textContent = teamScores[teamIdx];
   if(pts > 0) playCorrectSound();
   else playWrongSound();
+
+  // Sinkronkan perubahan skor ke Cloud Firestore
+  if (window.RealtimeGameEngine && TEAM_NAMES[teamIdx]) {
+    RealtimeGameEngine.updateTeamScoreRealtime(TEAM_NAMES[teamIdx], pts);
+  }
 }
 
 /* ═══ MODE 3 DATA & LOGIC: DETEKTIF COA & ANTI-TADLIS ═══ */
@@ -716,6 +743,58 @@ function judgeTadlis(userSaysTadlis){
 }
 
 renderCipherItem();
+
+/* ═══ REALTIME CLOUD INTEGRATION (LEADERBOARD & ARENA SYNC) ═══ */
+function renderLiveLeaderboard(players){
+  const container = document.getElementById('liveLeaderboardList');
+  if(!container) return;
+  if(!players || players.length === 0){
+    container.innerHTML = '<div style="color:var(--txl);font-style:italic;padding:6px 0">Belum ada skor tersimpan hari ini. Jadilah yang pertama bermain!</div>';
+    return;
+  }
+  const medals = ['🥇', '🥈', '🥉'];
+  container.innerHTML = players.map((p, idx) => `
+    <div style="display:flex;align-items:center;justify-content:space-between;background:var(--sf);border:1px solid var(--bs);border-radius:6px;padding:8px 12px;font-size:12.5px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:15px;font-weight:700;width:24px;text-align:center">${medals[idx] || (idx + 1) + '.'}</span>
+        <div>
+          <strong style="color:var(--pri)">${p.nama || 'Mahasiswa'}</strong> <span style="color:var(--txm);font-size:11.5px">(${p.nim || '-'})</span>
+          <div style="font-size:11px;color:var(--txl)">Kombo: x${p.combo || 0} • Selesai: ${p.updatedAt || '-'}</div>
+        </div>
+      </div>
+      <div style="font-family:'Source Code Pro',monospace;font-weight:700;font-size:15px;color:var(--meet-acc)">
+        ${p.score} pts
+      </div>
+    </div>
+  `).join('');
+}
+
+function initCloudGameSync(){
+  if(window.RealtimeGameEngine){
+    // 1. Listen Live Leaderboard
+    RealtimeGameEngine.listenLeaderboard(renderLiveLeaderboard);
+
+    // 2. Join Mode 2 Classroom Arena Realtime Room
+    RealtimeGameEngine.joinRoom('BMT-ARENA-02', null, (data) => {
+      if(data && data.teams){
+        TEAM_NAMES.forEach((k, idx) => {
+          if(data.teams[k] && data.teams[k].score !== undefined){
+            teamScores[idx] = data.teams[k].score;
+            const el = document.getElementById(`scoreTeam${idx}`);
+            if(el) el.textContent = teamScores[idx];
+          }
+        });
+      }
+    });
+  }
+}
+
+// Inisialisasi saat window dimuat
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', initCloudGameSync);
+} else {
+  initCloudGameSync();
+}
 </script>
 </body>
 </html>
