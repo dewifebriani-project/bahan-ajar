@@ -97,6 +97,17 @@ function findStudentByNim(nim) {
 }
 window.findStudentByNim = findStudentByNim;
 
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+window.escapeHtml = escapeHtml;
+
 // Helper: Run callback when Firebase DB is ready
 window.onCloudSyncReady = function(cb) {
   if (isDbReady && db) {
@@ -104,6 +115,12 @@ window.onCloudSyncReady = function(cb) {
   } else {
     readyCallbacks.push(cb);
   }
+};
+
+window.getDbInstance = function() {
+  return new Promise((resolve) => {
+    window.onCloudSyncReady(resolve);
+  });
 };
 
 function markDbReady(firestoreInstance) {
@@ -423,6 +440,11 @@ function saveStudentIdentity() {
   localStorage.setItem('tazkia_student_nim', nim);
   localStorage.setItem('tazkia_student_nama', nama);
 
+  const labNim = document.getElementById('labStudentNim');
+  const labNama = document.getElementById('labStudentNama');
+  if (labNim) labNim.value = nim;
+  if (labNama) labNama.value = nama;
+
   // Sync to Firestore collection 'users'
   window.onCloudSyncReady((dbInstance) => {
     dbInstance.collection('users').doc(nim).set({
@@ -697,7 +719,20 @@ function formatBytes(bytes) {
 }
 
 window.submitLabReport = async function(formEvent) {
-  if (formEvent) formEvent.preventDefault();
+  if (formEvent) {
+    if (typeof formEvent.preventDefault === 'function') formEvent.preventDefault();
+    if (typeof formEvent.stopPropagation === 'function') formEvent.stopPropagation();
+  }
+
+  // Ensure currentStudent is populated from localStorage if empty
+  if (!currentStudent.nim) {
+    const savedNim = localStorage.getItem('tazkia_student_nim');
+    const savedNama = localStorage.getItem('tazkia_student_nama');
+    if (savedNim) {
+      currentStudent.nim = savedNim;
+      currentStudent.nama = savedNama || '';
+    }
+  }
 
   if (!currentStudent.nim || !currentStudent.nama) {
     showIdentityModal();
@@ -710,13 +745,13 @@ window.submitLabReport = async function(formEvent) {
   const submitBtn = document.getElementById('btnSubmitLab');
 
   if (!currentLabFileData && !labAnswer) {
-    alert("Harap unggah file laporan praktikum atau isi ringkasan jawaban praktikum Anda!");
+    alert("Harap pilih file laporan praktikum atau tulis ringkasan jawaban praktikum Anda terlebih dahulu!");
     return;
   }
 
   if (submitBtn) {
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '⏳ Mengunggah berkas ke Firestore...';
+    submitBtn.innerHTML = '⏳ Mengunggah berkas ke Cloud Firestore...';
   }
   if (statusArea) {
     statusArea.style.display = 'block';
@@ -724,85 +759,87 @@ window.submitLabReport = async function(formEvent) {
       <div style="background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.3);border-radius:10px;padding:16px;text-align:center;color:#38BDF8;font-family:'Source Sans 3',sans-serif">
         <div style="font-size:24px;margin-bottom:6px">⚡</div>
         <div style="font-weight:700;font-size:14px;color:#fff">Menyimpan berkas laporan ke Cloud Firestore...</div>
+        <div style="font-size:12px;color:#94A3B8;margin-top:4px">Mohon tunggu sebentar hingga proses selesai.</div>
       </div>
     `;
   }
+  if (resultArea) resultArea.style.display = 'none';
 
   const path = decodeURIComponent(window.location.pathname);
   const pageTitle = document.title || 'Praktikum Digital';
   const courseInfo = detectCurrentCourseInfo() || { code: 'LAB', name: 'Praktikum Terapan' };
 
   try {
-    window.onCloudSyncReady(async (dbInstance) => {
-      let isChunked = false;
-      let directBase64 = '';
+    const dbInstance = await window.getDbInstance();
 
-      if (currentLabFileData && currentLabFileData.fileBase64) {
-        if (currentLabFileData.fileBase64.length > 500000) { // > 500 KB string
-          isChunked = true;
-        } else {
-          directBase64 = currentLabFileData.fileBase64;
-        }
+    let isChunked = false;
+    let directBase64 = '';
+
+    if (currentLabFileData && currentLabFileData.fileBase64) {
+      if (currentLabFileData.fileBase64.length > 500000) { // > 500 KB string
+        isChunked = true;
+      } else {
+        directBase64 = currentLabFileData.fileBase64;
       }
+    }
 
-      const submissionDoc = {
-        nim: currentStudent.nim,
-        nama: currentStudent.nama,
-        mataKuliah: courseInfo.name,
-        kodeMK: courseInfo.code,
-        labTitle: pageTitle,
-        path: path,
-        fileName: currentLabFileData ? currentLabFileData.fileName : '',
-        fileSize: currentLabFileData ? currentLabFileData.fileSize : 0,
-        fileType: currentLabFileData ? currentLabFileData.fileType : '',
-        fileBase64: directBase64,
-        hasChunks: isChunked,
-        totalChunks: 1,
-        jawaban: labAnswer,
-        status: 'Terkumpul',
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        timestampClient: new Date().toISOString()
-      };
+    const submissionDoc = {
+      nim: currentStudent.nim,
+      nama: currentStudent.nama,
+      mataKuliah: courseInfo.name,
+      kodeMK: courseInfo.code,
+      labTitle: pageTitle,
+      path: path,
+      fileName: currentLabFileData ? currentLabFileData.fileName : '',
+      fileSize: currentLabFileData ? currentLabFileData.fileSize : 0,
+      fileType: currentLabFileData ? currentLabFileData.fileType : '',
+      fileBase64: directBase64,
+      hasChunks: isChunked,
+      totalChunks: 1,
+      jawaban: labAnswer,
+      status: 'Terkumpul',
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      timestampClient: new Date().toISOString()
+    };
 
-      // 1. Save to 'lab_submissions'
-      const docRef = await dbInstance.collection('lab_submissions').add(submissionDoc);
+    // 1. Save to 'lab_submissions'
+    const docRef = await dbInstance.collection('lab_submissions').add(submissionDoc);
 
-      // If chunked, split into chunks of 400,000 chars and save into subcollection
-      if (isChunked && currentLabFileData && currentLabFileData.fileBase64) {
-        const raw = currentLabFileData.fileBase64;
-        const chunkSize = 400000;
-        const numChunks = Math.ceil(raw.length / chunkSize);
-        
-        await docRef.update({ totalChunks: numChunks });
+    // If chunked, split into chunks of 400,000 chars and save into subcollection
+    if (isChunked && currentLabFileData && currentLabFileData.fileBase64) {
+      const raw = currentLabFileData.fileBase64;
+      const chunkSize = 400000;
+      const numChunks = Math.ceil(raw.length / chunkSize);
+      
+      await docRef.update({ totalChunks: numChunks });
 
-        // Batch upload chunks
-        for (let i = 0; i < numChunks; i += 10) {
-          const batch = dbInstance.batch();
-          for (let j = i; j < Math.min(i + 10, numChunks); j++) {
-            const chunkData = raw.substring(j * chunkSize, (j + 1) * chunkSize);
-            const chunkRef = dbInstance.collection('lab_submissions').doc(docRef.id).collection('chunks').doc('c_' + j);
-            batch.set(chunkRef, { index: j, data: chunkData });
-          }
-          await batch.commit();
+      // Batch upload chunks in batches of 10
+      for (let i = 0; i < numChunks; i += 10) {
+        const batch = dbInstance.batch();
+        for (let j = i; j < Math.min(i + 10, numChunks); j++) {
+          const chunkData = raw.substring(j * chunkSize, (j + 1) * chunkSize);
+          const chunkRef = dbInstance.collection('lab_submissions').doc(docRef.id).collection('chunks').doc('c_' + j);
+          batch.set(chunkRef, { index: j, data: chunkData });
         }
+        await batch.commit();
       }
+    }
 
-      // 2. Also register into 'quiz' collection for gradebook overview
-      await dbInstance.collection('quiz').add({
-        nim: currentStudent.nim,
-        nama: currentStudent.nama,
-        pertemuan: courseInfo.code + ' (Lab)',
-        aktivitas: 'Laporan: ' + (currentLabFileData ? currentLabFileData.fileName : pageTitle.substring(0, 30)),
-        skor: 100,
-        total: 100,
-        persentase: 100,
-        passed: true,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        timestampClient: new Date().toISOString()
-      });
-
-      console.log("✓ Laporan praktikum & berkas berhasil tersimpan di Cloud Firestore!");
+    // 2. Also register into 'quiz' collection for gradebook overview
+    await dbInstance.collection('quiz').add({
+      nim: currentStudent.nim,
+      nama: currentStudent.nama,
+      pertemuan: courseInfo.code + ' (Lab)',
+      aktivitas: 'Laporan: ' + (currentLabFileData ? currentLabFileData.fileName : pageTitle.substring(0, 30)),
+      skor: 100,
+      total: 100,
+      persentase: 100,
+      passed: true,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      timestampClient: new Date().toISOString()
     });
+
+    console.log("✓ Laporan praktikum & berkas berhasil tersimpan di Cloud Firestore!");
 
     if (statusArea) statusArea.style.display = 'none';
     if (resultArea) {
@@ -814,7 +851,7 @@ window.submitLabReport = async function(formEvent) {
               <span style="font-size:32px">✅</span>
               <div>
                 <h3 style="font-family:'Amiri',serif;font-size:22px;color:#fff;margin:0">Laporan Praktikum Berhasil Dikumpulkan!</h3>
-                <div style="font-size:12px;color:#94A3B8">Mahasiswa: <strong style="color:#fff">${currentStudent.nama} (${currentStudent.nim})</strong></div>
+                <div style="font-size:12px;color:#94A3B8">Mahasiswa: <strong style="color:#fff">${escapeHtml(currentStudent.nama)} (${escapeHtml(currentStudent.nim)})</strong></div>
               </div>
             </div>
             <span style="background:rgba(16,185,129,.15);color:#34D399;border:1px solid rgba(16,185,129,.3);padding:4px 12px;border-radius:12px;font-size:12px;font-weight:700">TERKUMPUL ✓</span>
@@ -827,18 +864,21 @@ window.submitLabReport = async function(formEvent) {
 
           <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:14px;padding-top:10px;border-top:1px solid #1E293B;font-size:12px;color:#64748B">
             <span>✓ Berkas dan data laporan telah tersimpan langsung di Cloud Firestore Dosen.</span>
-            <button onclick="resetLabSubmitForm()" style="background:transparent;border:1px solid #334155;color:#94A3B8;padding:5px 12px;border-radius:6px;font-size:11.5px;cursor:pointer">Unggah / Ganti Berkas Lain ↺</button>
+            <button type="button" onclick="resetLabSubmitForm()" style="background:transparent;border:1px solid #334155;color:#94A3B8;padding:5px 12px;border-radius:6px;font-size:11.5px;cursor:pointer">Unggah / Ganti Berkas Lain ↺</button>
           </div>
         </div>
       `;
     }
 
+    showCloudToast(`Laporan praktikum <strong>${currentStudent.nama}</strong> berhasil tersimpan ke Cloud!`);
+
   } catch (err) {
     console.error("Lab upload error:", err);
     if (statusArea) {
+      statusArea.style.display = 'block';
       statusArea.innerHTML = `
         <div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:12px;color:#FCA5A5;font-size:13px">
-          ⚠️ Terjadi kendala pengunggahan berkas: ${err.message}.
+          ⚠️ Terjadi kendala pengunggahan berkas: ${escapeHtml(err.message || 'Error koneksi')}.
         </div>
       `;
     }
@@ -883,15 +923,15 @@ function mountLabSubmissionWidget() {
         </div>
       </div>
 
-      <form onsubmit="submitLabReport(event)" style="display:grid;gap:14px">
+      <form id="labSubmissionForm" onsubmit="submitLabReport(event)" style="display:grid;gap:14px">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
           <div>
             <label style="display:block;font-size:12px;font-weight:700;color:#CBD5E1;margin-bottom:4px">NIM Mahasiswa:</label>
-            <input type="text" id="labStudentNim" value="${currentStudent.nim}" readonly style="width:100%;padding:9px 12px;border-radius:6px;border:1px solid #334155;background:#0F172A;color:#38BDF8;font-weight:700;box-sizing:border-box;font-family:'Source Code Pro',monospace">
+            <input type="text" id="labStudentNim" value="${currentStudent.nim || ''}" readonly style="width:100%;padding:9px 12px;border-radius:6px;border:1px solid #334155;background:#0F172A;color:#38BDF8;font-weight:700;box-sizing:border-box;font-family:'Source Code Pro',monospace">
           </div>
           <div>
             <label style="display:block;font-size:12px;font-weight:700;color:#CBD5E1;margin-bottom:4px">Nama Lengkap:</label>
-            <input type="text" id="labStudentNama" value="${currentStudent.nama}" readonly style="width:100%;padding:9px 12px;border-radius:6px;border:1px solid #334155;background:#0F172A;color:#fff;font-weight:700;box-sizing:border-box">
+            <input type="text" id="labStudentNama" value="${currentStudent.nama || ''}" readonly style="width:100%;padding:9px 12px;border-radius:6px;border:1px solid #334155;background:#0F172A;color:#fff;font-weight:700;box-sizing:border-box">
           </div>
         </div>
 
@@ -922,7 +962,7 @@ function mountLabSubmissionWidget() {
         </div>
 
         <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:6px">
-          <button type="submit" id="btnSubmitLab" style="background:linear-gradient(135deg,#0284C7,#0EA5E9);color:#fff;border:none;border-radius:8px;padding:12px 24px;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 16px rgba(14,165,233,.3);transition:all .15s">
+          <button type="button" id="btnSubmitLab" onclick="submitLabReport(event)" style="background:linear-gradient(135deg,#0284C7,#0EA5E9);color:#fff;border:none;border-radius:8px;padding:12px 24px;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 16px rgba(14,165,233,.3);transition:all .15s">
             <span>📁 Kumpulkan Laporan Praktikum ✓</span>
           </button>
           <span style="font-size:12px;color:#94A3B8">File otomatis tersimpan ke Cloud Firestore Tazkia</span>
