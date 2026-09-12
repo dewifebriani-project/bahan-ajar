@@ -167,6 +167,10 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
       <span>📑 Laporan Praktikum &amp; Review AI</span>
       <span id="tabBadgeLabs" class="tab-badge">0 Laporan</span>
     </button>
+    <button id="tabBtnRoster" class="tab-btn" onclick="switchTab('roster')">
+      <span>👥 Daftar Mahasiswa &amp; Roster</span>
+      <span id="tabBadgeRoster" class="tab-badge">37 Mahasiswa</span>
+    </button>
     <button id="tabBtnPins" class="tab-btn" onclick="switchTab('pins')">
       <span>🔐 Pengaturan PIN &amp; Mata Kuliah</span>
       <span id="tabBadgeCourses" class="tab-badge">0 Kelas</span>
@@ -289,7 +293,85 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
     </div>
   </div>
 
-  <!-- ════════ TAB 3: TABEL KHUSUS PENGATURAN PIN & AI CONFIG ════════ -->
+  <!-- ════════ TAB 3: DAFTAR MAHASISWA & ROSTER KELAS ════════ -->
+  <div id="tabContentRoster" class="tab-pane">
+    <!-- KPI SUMMARY -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-icon">🎓</div>
+        <div>
+          <div class="kpi-num" id="kpiRosterTotal">37</div>
+          <div class="kpi-lbl">Total Mahasiswa Terdaftar</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon">🏛️</div>
+        <div>
+          <div class="kpi-num" id="kpiRosterSiaKaryawan">11</div>
+          <div class="kpi-lbl">SIA — Kelas Karyawan</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon">🏛️</div>
+        <div>
+          <div class="kpi-num" id="kpiRosterSiaReguler">15</div>
+          <div class="kpi-lbl">SIA — Kelas Reguler</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon">📊</div>
+        <div>
+          <div class="kpi-num" id="kpiRosterAdaBiv">11</div>
+          <div class="kpi-lbl">Kelas ADA &amp; BIV</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTROLS & ACTIONS -->
+    <div class="controls">
+      <input type="text" id="rosterSearchInput" class="search-input" placeholder="🔍 Cari NIM atau Nama Mahasiswa..." oninput="renderRosterTable()">
+      
+      <select id="rosterClassFilter" class="filter-select" onchange="renderRosterTable()">
+        <option value="ALL">Semua Kelas &amp; Kelompok</option>
+        <option value="SIA - Karyawan">SIA — Kelas Karyawan (11)</option>
+        <option value="SIA - Reguler">SIA — Kelas Reguler (15)</option>
+        <option value="ADA / BIV">ADA &amp; BIV (11)</option>
+      </select>
+
+      <div class="btn-group">
+        <button class="btn-primary" onclick="openAddStudentModal()">+ Tambah Mahasiswa Baru</button>
+        <button class="btn-export" onclick="exportRosterToCSV()">📥 Export Roster (CSV)</button>
+        <button class="btn-orange" onclick="seedRosterToCloud()">⚡ Sinkronkan ke Cloud ✓</button>
+      </div>
+    </div>
+
+    <!-- ROSTER TABLE -->
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th style="width:40px">No</th>
+            <th>NIM Mahasiswa</th>
+            <th>Nama Lengkap</th>
+            <th>Kelompok Kelas</th>
+            <th>Mata Kuliah Terdaftar</th>
+            <th style="width:110px;text-align:center">Status</th>
+            <th style="text-align:center;width:140px">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="rosterTableBody">
+          <tr>
+            <td colspan="7" class="empty-state">
+              <div class="empty-icon">⏳</div>
+              <div>Memuat data roster mahasiswa...</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ════════ TAB 4: TABEL KHUSUS PENGATURAN PIN & AI CONFIG ════════ -->
   <div id="tabContentPins" class="tab-pane">
     
     <div class="controls">
@@ -471,6 +553,63 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
   </div>
 </div>
 
+<!-- ════════ MODAL: TAMBAH / EDIT MAHASISWA (ROSTER) ════════ -->
+<div id="studentRosterModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="studentModalTitle" class="modal-title">Tambah Mahasiswa Baru</h3>
+      <button class="modal-close" onclick="closeStudentRosterModal()">&times;</button>
+    </div>
+    <form id="studentRosterForm" onsubmit="handleStudentFormSubmit(event)">
+      <input type="hidden" id="editOriginalNim" value="">
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">NIM Mahasiswa (10 Digit) *</label>
+          <input type="text" id="formStudentNim" class="form-input" placeholder="Contoh: 2510102001" required style="font-family:'Source Code Pro',monospace;font-weight:700">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Nama Lengkap Mahasiswa *</label>
+          <input type="text" id="formStudentNama" class="form-input" placeholder="Nama Lengkap Sesuai SIAKAD" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Kelompok Kelas *</label>
+          <select id="formStudentGroup" class="form-select" required>
+            <option value="SIA - Karyawan">SIA — Kelas Karyawan</option>
+            <option value="SIA - Reguler">SIA — Kelas Reguler</option>
+            <option value="ADA / BIV">ADA &amp; BIV</option>
+            <option value="Lainnya">Kelas Lainnya</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Mata Kuliah yang Diambil (Pilih Minimal 1) *</label>
+          <div style="display:flex;gap:14px;flex-wrap:wrap;padding:10px 14px;background:var(--sf3);border:1px solid var(--bd);border-radius:var(--rs)">
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;color:#fff"><input type="checkbox" id="chkCourseSIA" value="SIA"> SIA</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;color:#fff"><input type="checkbox" id="chkCourseADA" value="ADA"> ADA</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;color:#fff"><input type="checkbox" id="chkCourseBIV" value="BIV"> BIV</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Status Akademik *</label>
+          <select id="formStudentStatus" class="form-select">
+            <option value="Aktif">Aktif</option>
+            <option value="Cuti">Cuti</option>
+            <option value="Lulus">Lulus</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" onclick="closeStudentRosterModal()">Batal</button>
+        <button type="submit" id="btnSubmitStudentModal" class="btn-primary">Simpan Mahasiswa ✓</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <footer class="ft">
   Fakultas Ekonomi &amp; Bisnis Islam · Universitas Tazkia · Sistem Integrasi Penilaian Cloud © 2026
 </footer>
@@ -483,6 +622,7 @@ var lecturerCourses = [
 ];
 
 var activePins = { SIA: '3021', ADA: '3011', BIV: '3012', DOSEN: '7788' };
+var lecturerRoster = (window.activeStudentsRoster && window.activeStudentsRoster.length > 0) ? [...window.activeStudentsRoster] : (window.DEFAULT_STUDENTS_ROSTER || []);
 var allQuizData = [];
 var allLabData = [];
 var allUsersMap = {};
@@ -491,22 +631,28 @@ var dbRef = null;
 window.switchTab = function(tabId) {
   const tGrades = document.getElementById('tabBtnGrades');
   const tLabs = document.getElementById('tabBtnLabs');
+  const tRoster = document.getElementById('tabBtnRoster');
   const tPins = document.getElementById('tabBtnPins');
   const cGrades = document.getElementById('tabContentGrades');
   const cLabs = document.getElementById('tabContentLabs');
+  const cRoster = document.getElementById('tabContentRoster');
   const cPins = document.getElementById('tabContentPins');
 
   if (tGrades) tGrades.classList.toggle('active', tabId === 'grades');
   if (tLabs) tLabs.classList.toggle('active', tabId === 'labs');
+  if (tRoster) tRoster.classList.toggle('active', tabId === 'roster');
   if (tPins) tPins.classList.toggle('active', tabId === 'pins');
   if (cGrades) cGrades.classList.toggle('active', tabId === 'grades');
   if (cLabs) cLabs.classList.toggle('active', tabId === 'labs');
+  if (cRoster) cRoster.classList.toggle('active', tabId === 'roster');
   if (cPins) cPins.classList.toggle('active', tabId === 'pins');
 };
 
 function initLecturerDashboard() {
   renderPinTable();
   populateDropdowns();
+  renderRosterTable();
+  updateRosterKPIs();
 
   window.onCloudSyncReady((dbInstance) => {
     dbRef = dbInstance;
@@ -543,7 +689,29 @@ function initLecturerDashboard() {
       }
     });
 
-    // 3. AI Config
+    // 3. Students Roster Collection
+    dbInstance.collection('settings').doc('students_roster').onSnapshot(doc => {
+      if (doc.exists) {
+        const data = doc.data();
+        if (data && Array.isArray(data.students) && data.students.length > 0) {
+          lecturerRoster = [...data.students];
+        }
+      } else {
+        const defaultList = window.DEFAULT_STUDENTS_ROSTER || lecturerRoster;
+        dbInstance.collection('settings').doc('students_roster').set({
+          students: defaultList,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+      }
+      renderRosterTable();
+      updateRosterKPIs();
+    }, err => {
+      console.warn("Error loading students_roster:", err);
+      renderRosterTable();
+      updateRosterKPIs();
+    });
+
+    // 4. AI Config
     dbInstance.collection('settings').doc('ai_config').onSnapshot(doc => {
       if (doc.exists) {
         const data = doc.data();
@@ -554,7 +722,7 @@ function initLecturerDashboard() {
       }
     });
 
-    // 4. Users
+    // 5. Users
     dbInstance.collection('users').onSnapshot(snapshot => {
       allUsersMap = {};
       snapshot.forEach(doc => {
@@ -770,7 +938,258 @@ function exportLabsToCSV() {
 }
 window.exportLabsToCSV = exportLabsToCSV;
 
-/* ════════ TAB 3: PIN TABLE ENGINE ════════ */
+/* ════════ TAB 3: STUDENT ROSTER ENGINE ════════ */
+function updateRosterKPIs() {
+  const total = lecturerRoster.length;
+  const siaKaryawan = lecturerRoster.filter(s => s.classGroup === 'SIA - Karyawan').length;
+  const siaReguler = lecturerRoster.filter(s => s.classGroup === 'SIA - Reguler').length;
+  const adaBiv = lecturerRoster.filter(s => s.classGroup === 'ADA / BIV' || (s.courses && (s.courses.includes('ADA') || s.courses.includes('BIV')))).length;
+
+  const kpiTot = document.getElementById('kpiRosterTotal');
+  const kpiSiaK = document.getElementById('kpiRosterSiaKaryawan');
+  const kpiSiaR = document.getElementById('kpiRosterSiaReguler');
+  const kpiAda = document.getElementById('kpiRosterAdaBiv');
+  const badgeRoster = document.getElementById('tabBadgeRoster');
+
+  if (kpiTot) kpiTot.textContent = total;
+  if (kpiSiaK) kpiSiaK.textContent = siaKaryawan;
+  if (kpiSiaR) kpiSiaR.textContent = siaReguler;
+  if (kpiAda) kpiAda.textContent = adaBiv;
+  if (badgeRoster) badgeRoster.textContent = total + ' Mahasiswa';
+}
+window.updateRosterKPIs = updateRosterKPIs;
+
+function renderRosterTable() {
+  const searchEl = document.getElementById('rosterSearchInput');
+  const filterEl = document.getElementById('rosterClassFilter');
+  const query = (searchEl ? searchEl.value : '').toLowerCase();
+  const filter = filterEl ? filterEl.value : 'ALL';
+  const tbody = document.getElementById('rosterTableBody');
+  if (!tbody) return;
+
+  const filtered = lecturerRoster.filter(s => {
+    const matchSearch = (s.nim || '').toLowerCase().includes(query) || (s.nama || '').toLowerCase().includes(query);
+    const matchFilter = filter === 'ALL' || s.classGroup === filter || (filter === 'ADA / BIV' && s.courses && (s.courses.includes('ADA') || s.courses.includes('BIV')));
+    return matchSearch && matchFilter;
+  });
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7" class="empty-state">
+          <div class="empty-icon">📭</div>
+          <div>Tidak ada data mahasiswa yang cocok dengan kriteria pencarian ini.</div>
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map((row, idx) => {
+    const coursesPills = (row.courses || []).map(c => {
+      let color = '#38BDF8';
+      if (c === 'SIA') color = '#E88030';
+      if (c === 'ADA') color = '#10B981';
+      if (c === 'BIV') color = '#F59E0B';
+      return `<span style="background:rgba(255,255,255,.06);border:1px solid ${color};color:${color};padding:2px 7px;border-radius:6px;font-size:11px;font-weight:700">${escapeHtml(c)}</span>`;
+    }).join(' ');
+
+    return `
+      <tr>
+        <td style="color:var(--txl);font-family:'Source Code Pro',monospace">${idx + 1}</td>
+        <td style="font-family:'Source Code Pro',monospace;font-weight:700;color:var(--pri);font-size:13.5px">${row.nim}</td>
+        <td><strong style="color:#fff">${escapeHtml(row.nama)}</strong></td>
+        <td><span style="background:var(--sf2);border:1px solid var(--bd);padding:3px 8px;border-radius:6px;font-size:12px;color:var(--txm)">${escapeHtml(row.classGroup || '-')}</span></td>
+        <td><div style="display:inline-flex;gap:4px;flex-wrap:wrap">${coursesPills}</div></td>
+        <td style="text-align:center"><span class="badge-pass">${escapeHtml(row.status || 'Aktif')}</span></td>
+        <td style="text-align:center">
+          <div style="display:inline-flex;gap:6px">
+            <button class="action-btn" title="Edit Mahasiswa" onclick="openEditStudentModal('${row.nim}')">✏️ Edit</button>
+            <button class="action-btn action-delete" title="Hapus dari Roster" onclick="deleteStudentFromRoster('${row.nim}', '${escapeHtml(row.nama)}')">🗑️</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+window.renderRosterTable = renderRosterTable;
+
+function openAddStudentModal() {
+  document.getElementById('editOriginalNim').value = '';
+  document.getElementById('studentModalTitle').textContent = 'Tambah Mahasiswa Baru';
+  document.getElementById('formStudentNim').value = '';
+  document.getElementById('formStudentNim').readOnly = false;
+  document.getElementById('formStudentNama').value = '';
+  document.getElementById('formStudentGroup').selectedIndex = 0;
+  document.getElementById('chkCourseSIA').checked = true;
+  document.getElementById('chkCourseADA').checked = false;
+  document.getElementById('chkCourseBIV').checked = false;
+  document.getElementById('formStudentStatus').value = 'Aktif';
+  document.getElementById('btnSubmitStudentModal').textContent = 'Simpan Mahasiswa ✓';
+  document.getElementById('studentRosterModal').classList.add('active');
+}
+window.openAddStudentModal = openAddStudentModal;
+
+function openEditStudentModal(nim) {
+  const student = lecturerRoster.find(s => s.nim === nim);
+  if (!student) return;
+
+  document.getElementById('editOriginalNim').value = nim;
+  document.getElementById('studentModalTitle').textContent = 'Edit Data Mahasiswa';
+  document.getElementById('formStudentNim').value = student.nim;
+  document.getElementById('formStudentNim').readOnly = true;
+  document.getElementById('formStudentNama').value = student.nama;
+  document.getElementById('formStudentGroup').value = student.classGroup || 'SIA - Karyawan';
+  
+  const courses = student.courses || [];
+  document.getElementById('chkCourseSIA').checked = courses.includes('SIA');
+  document.getElementById('chkCourseADA').checked = courses.includes('ADA');
+  document.getElementById('chkCourseBIV').checked = courses.includes('BIV');
+  
+  document.getElementById('formStudentStatus').value = student.status || 'Aktif';
+  document.getElementById('btnSubmitStudentModal').textContent = 'Simpan Perubahan ✓';
+  document.getElementById('studentRosterModal').classList.add('active');
+}
+window.openEditStudentModal = openEditStudentModal;
+
+function closeStudentRosterModal() {
+  document.getElementById('studentRosterModal').classList.remove('active');
+}
+window.closeStudentRosterModal = closeStudentRosterModal;
+
+function handleStudentFormSubmit(e) {
+  e.preventDefault();
+  const origNim = document.getElementById('editOriginalNim').value.trim();
+  const nim = document.getElementById('formStudentNim').value.trim();
+  const nama = document.getElementById('formStudentNama').value.trim();
+  const classGroup = document.getElementById('formStudentGroup').value;
+  const status = document.getElementById('formStudentStatus').value;
+
+  const courses = [];
+  if (document.getElementById('chkCourseSIA').checked) courses.push('SIA');
+  if (document.getElementById('chkCourseADA').checked) courses.push('ADA');
+  if (document.getElementById('chkCourseBIV').checked) courses.push('BIV');
+
+  if (courses.length === 0) {
+    alert("Pilih minimal satu mata kuliah untuk mahasiswa ini!");
+    return;
+  }
+
+  if (!origNim && lecturerRoster.some(s => s.nim === nim)) {
+    alert(`Mahasiswa dengan NIM "${nim}" sudah terdaftar! Gunakan tombol edit.`);
+    return;
+  }
+
+  let updatedList = [...lecturerRoster];
+  if (origNim) {
+    const idx = updatedList.findIndex(s => s.nim === origNim);
+    if (idx !== -1) {
+      updatedList[idx] = { nim, nama, classGroup, courses, status };
+    }
+  } else {
+    updatedList.push({ nim, nama, classGroup, courses, status });
+  }
+
+  lecturerRoster = updatedList;
+  renderRosterTable();
+  updateRosterKPIs();
+  closeStudentRosterModal();
+
+  if (dbRef) {
+    dbRef.collection('settings').doc('students_roster').set({
+      students: updatedList,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+
+    dbRef.collection('users').doc(nim).set({
+      nim: nim,
+      nama: nama,
+      classGroup: classGroup,
+      courses: courses,
+      lastActive: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+  }
+
+  alert(`✅ Data mahasiswa ${nama} (${nim}) berhasil disimpan ke Cloud!`);
+}
+window.handleStudentFormSubmit = handleStudentFormSubmit;
+
+function deleteStudentFromRoster(nim, nama) {
+  if (!confirm(`Apakah Anda yakin ingin menghapus mahasiswa "${nama}" (${nim}) dari roster kelas? Tindakan ini akan mencabut akses login mahasiswa ini.`)) return;
+
+  const updatedList = lecturerRoster.filter(s => s.nim !== nim);
+  lecturerRoster = updatedList;
+  renderRosterTable();
+  updateRosterKPIs();
+
+  if (dbRef) {
+    dbRef.collection('settings').doc('students_roster').set({
+      students: updatedList,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+  }
+
+  alert(`✅ Mahasiswa "${nama}" berhasil dihapus dari roster.`);
+}
+window.deleteStudentFromRoster = deleteStudentFromRoster;
+
+function exportRosterToCSV() {
+  if (lecturerRoster.length === 0) {
+    alert("Belum ada data mahasiswa dalam roster!");
+    return;
+  }
+  let csv = "data:text/csv;charset=utf-8,No,NIM,Nama Mahasiswa,Kelompok Kelas,Mata Kuliah,Status\n";
+  lecturerRoster.forEach((s, idx) => {
+    const cleanNama = (s.nama || '').replace(/"/g, '""');
+    const coursesStr = (s.courses || []).join('; ');
+    csv += `"${idx+1}","${s.nim}","${cleanNama}","${s.classGroup || '-'}","${coursesStr}","${s.status || 'Aktif'}"\n`;
+  });
+  const link = document.createElement("a");
+  link.href = encodeURI(csv);
+  link.download = `Roster_Mahasiswa_Tazkia_${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+window.exportRosterToCSV = exportRosterToCSV;
+
+function seedRosterToCloud() {
+  if (!confirm("Sinkronkan seluruh 37 mahasiswa resmi (SIA Karyawan, SIA Reguler, ADA & BIV) ke Cloud Firestore?")) return;
+  if (!dbRef) {
+    alert("Koneksi Firebase belum siap!");
+    return;
+  }
+
+  const defaultList = window.DEFAULT_STUDENTS_ROSTER || lecturerRoster;
+  lecturerRoster = [...defaultList];
+
+  dbRef.collection('settings').doc('students_roster').set({
+    students: defaultList,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }, { merge: true }).then(() => {
+    const batch = dbRef.batch();
+    defaultList.forEach(s => {
+      const ref = dbRef.collection('users').doc(s.nim);
+      batch.set(ref, {
+        nim: s.nim,
+        nama: s.nama,
+        classGroup: s.classGroup || '-',
+        courses: s.courses || [],
+        status: s.status || 'Aktif'
+      }, { merge: true });
+    });
+    return batch.commit();
+  }).then(() => {
+    renderRosterTable();
+    updateRosterKPIs();
+    alert("✅ Seluruh 37 Mahasiswa Resmi Berhasil Disinkronkan ke Cloud Firestore!");
+  }).catch(err => {
+    alert("❌ Gagal sinkronisasi roster: " + err.message);
+  });
+}
+window.seedRosterToCloud = seedRosterToCloud;
+
+/* ════════ TAB 4: PIN TABLE ENGINE ════════ */
 function renderPinTable() {
   const tbody = document.getElementById('pinTableBody');
   if (!tbody) return;

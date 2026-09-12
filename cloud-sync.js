@@ -37,6 +37,66 @@ const DEFAULT_COURSES = [
 let registeredCourses = [...DEFAULT_COURSES];
 let activeCoursePins = { 'SIA': '3021', 'ADA': '3011', 'BIV': '3012', 'DOSEN': '7788' };
 
+// Official Master Student Roster (37 Mahasiswa Terdaftar)
+const DEFAULT_STUDENTS_ROSTER = [
+  // --- SIA Kelas Karyawan (11 Mahasiswa) ---
+  { nim: "2510102001", nama: "Zahra Qatrun Nada", courses: ["SIA"], classGroup: "SIA - Karyawan", status: "Aktif" },
+  { nim: "2510102003", nama: "Nikita Rahma Alyssa Yuda", courses: ["SIA"], classGroup: "SIA - Karyawan", status: "Aktif" },
+  { nim: "2510102005", nama: "Muhammad Isnan Azuhri", courses: ["SIA"], classGroup: "SIA - Karyawan", status: "Aktif" },
+  { nim: "2510102006", nama: "Nurjanah", courses: ["SIA"], classGroup: "SIA - Karyawan", status: "Aktif" },
+  { nim: "2510102008", nama: "Tengku Airin Putri Rudyansyah", courses: ["SIA"], classGroup: "SIA - Karyawan", status: "Aktif" },
+  { nim: "2510102010", nama: "Muhammad Faisal Fadilah", courses: ["SIA"], classGroup: "SIA - Karyawan", status: "Aktif" },
+  { nim: "2510102011", nama: "Era Firda Fajriah", courses: ["SIA"], classGroup: "SIA - Karyawan", status: "Aktif" },
+  { nim: "2510102028", nama: "Farhan Reflyansyah Hutabarat", courses: ["SIA"], classGroup: "SIA - Karyawan", status: "Aktif" },
+  { nim: "2510102030", nama: "Khairunnisa Najla Salsabila", courses: ["SIA"], classGroup: "SIA - Karyawan", status: "Aktif" },
+  { nim: "2510102031", nama: "Safanah Sayidatus Sajil Hakim", courses: ["SIA"], classGroup: "SIA - Karyawan", status: "Aktif" },
+  { nim: "2510102034", nama: "Hanifah", courses: ["SIA"], classGroup: "SIA - Karyawan", status: "Aktif" },
+
+  // --- SIA Kelas Reguler (15 Mahasiswa) ---
+  { nim: "2510102007", nama: "Muhammad Annas Akbar", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
+  { nim: "2510102012", nama: "Parvez Athaya Rifa Adrian", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
+  { nim: "2510102013", nama: "Adibah Aulia Pulungan", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
+  { nim: "2510102014", nama: "Dinda Haselanova Putri", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
+  { nim: "2510102017", nama: "Zahwan Hanif Aghna Rahardjo", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
+  { nim: "2510102018", nama: "Akmal Husein", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
+  { nim: "2510102019", nama: "RAHMA MAUDILAH YUANA PUTRI", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
+  { nim: "2510102020", nama: "Zaydan Ilmi Taqiyudin", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
+  { nim: "2510102021", nama: "Mutia Adelah", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
+  { nim: "2510102022", nama: "LIVIA AZARAH", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
+  { nim: "2510102023", nama: "Aulia Nuzulul Fitria", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
+  { nim: "2510102024", nama: "Muhammad Ibrahim", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
+  { nim: "2510102025", nama: "Iffah Husnul Zahidah", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
+  { nim: "2510102026", nama: "Syamil Al Fayiz", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
+  { nim: "2510102033", nama: "RAGIL ADITIYA", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
+
+  // --- ADA & BIV (11 Mahasiswa) ---
+  { nim: "2410102002", nama: "Aliffa Rahmadanni", courses: ["ADA", "BIV"], classGroup: "ADA / BIV", status: "Aktif" },
+  { nim: "2410102004", nama: "Fairuz Alya Manora", courses: ["ADA", "BIV"], classGroup: "ADA / BIV", status: "Aktif" },
+  { nim: "2410102005", nama: "Suciyanti", courses: ["ADA", "BIV"], classGroup: "ADA / BIV", status: "Aktif" },
+  { nim: "2410102006", nama: "Zenieta Nijwa", courses: ["ADA", "BIV"], classGroup: "ADA / BIV", status: "Aktif" },
+  { nim: "2410102007", nama: "Rasti Septa Sari", courses: ["ADA", "BIV"], classGroup: "ADA / BIV", status: "Aktif" },
+  { nim: "2410102008", nama: "Liana Tasa", courses: ["ADA", "BIV"], classGroup: "ADA / BIV", status: "Aktif" },
+  { nim: "2410102009", nama: "Utami Apri Robi Laijah", courses: ["ADA", "BIV"], classGroup: "ADA / BIV", status: "Aktif" },
+  { nim: "2410102010", nama: "Izza Arydani", courses: ["ADA", "BIV"], classGroup: "ADA / BIV", status: "Aktif" },
+  { nim: "2410102011", nama: "Mohamad Fikri Zim Aufar", courses: ["ADA", "BIV"], classGroup: "ADA / BIV", status: "Aktif" },
+  { nim: "2410102012", nama: "Muhammad Waqif Al Ghifari", courses: ["ADA", "BIV"], classGroup: "ADA / BIV", status: "Aktif" },
+  { nim: "2410102013", nama: "Ibnu Hajar", courses: ["ADA", "BIV"], classGroup: "ADA / BIV", status: "Aktif" }
+];
+
+let activeStudentsRoster = [...DEFAULT_STUDENTS_ROSTER];
+window.DEFAULT_STUDENTS_ROSTER = DEFAULT_STUDENTS_ROSTER;
+window.activeStudentsRoster = activeStudentsRoster;
+
+function findStudentByNim(nim) {
+  if (!nim) return null;
+  const cleanNim = String(nim).trim();
+  if (cleanNim === '0206015') {
+    return { nim: '0206015', nama: 'Dewi Febriani', courses: ['SIA', 'ADA', 'BIV', 'DOSEN'], classGroup: 'Dosen Pengampu', status: 'Dosen' };
+  }
+  return activeStudentsRoster.find(s => s.nim === cleanNim) || null;
+}
+window.findStudentByNim = findStudentByNim;
+
 // Helper: Run callback when Firebase DB is ready
 window.onCloudSyncReady = function(cb) {
   if (isDbReady && db) {
@@ -52,6 +112,7 @@ function markDbReady(firestoreInstance) {
   window.firebaseDb = db;
   console.log("✓ Firebase Firestore 'akuntansi-syariah' siap digunakan!");
   listenDynamicCourses();
+  listenStudentsRoster();
   checkStudentIdentity();
   while (readyCallbacks.length > 0) {
     const cb = readyCallbacks.shift();
@@ -60,7 +121,29 @@ function markDbReady(firestoreInstance) {
   window.dispatchEvent(new CustomEvent('cloud-sync-ready', { detail: { db } }));
 }
 
-// 4. Confidential Course PIN Gate Engine (Dynamic Multi-Course)
+// 4. Confidential Course PIN Gate & Student Roster Engine
+function listenStudentsRoster() {
+  window.onCloudSyncReady(dbInstance => {
+    dbInstance.collection('settings').doc('students_roster').onSnapshot(doc => {
+      if (doc.exists) {
+        const data = doc.data();
+        if (data && Array.isArray(data.students) && data.students.length > 0) {
+          activeStudentsRoster = [...data.students];
+          window.activeStudentsRoster = activeStudentsRoster;
+        }
+      } else {
+        // Auto-seed roster to Firestore
+        dbInstance.collection('settings').doc('students_roster').set({
+          students: DEFAULT_STUDENTS_ROSTER,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+      }
+    }, err => {
+      console.warn("Using offline fallback for students roster:", err);
+    });
+  });
+}
+
 function listenDynamicCourses() {
   window.onCloudSyncReady(dbInstance => {
     // 1. Listen to courses_meta for dynamic courses list
@@ -215,7 +298,7 @@ window.submitCoursePin = function(courseCode) {
   }
 })();
 
-// 4. Modal Identitas Mahasiswa (NIM & Nama)
+// 4. Modal Identitas Mahasiswa (NIM Whitelist & Nama Otomatis)
 function checkStudentIdentity(forcePrompt = false) {
   if (!document.body) {
     document.addEventListener('DOMContentLoaded', () => checkStudentIdentity(forcePrompt));
@@ -228,6 +311,50 @@ function checkStudentIdentity(forcePrompt = false) {
   }
 }
 
+function handleNimLookup(typedNim) {
+  const clean = String(typedNim).trim();
+  const namaInput = document.getElementById('inputStudentNama');
+  const statusBox = document.getElementById('nimStatusBox');
+  const btnSave = document.getElementById('btnSaveIdentity');
+  if (!namaInput || !statusBox) return;
+
+  if (!clean) {
+    statusBox.innerHTML = '';
+    namaInput.value = '';
+    namaInput.readOnly = false;
+    return;
+  }
+
+  const student = findStudentByNim(clean);
+  if (student) {
+    namaInput.value = student.nama;
+    namaInput.readOnly = true;
+    namaInput.style.backgroundColor = '#0B132B';
+    namaInput.style.borderColor = '#10B981';
+    statusBox.innerHTML = `
+      <div style="background:rgba(16,185,129,.15);border:1px solid #10B981;color:#34D399;padding:6px 10px;border-radius:6px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px">
+        <span>✓</span> <span>Terdaftar Resmi: <strong>${student.classGroup || student.courses.join(', ')}</strong></span>
+      </div>
+    `;
+    if (btnSave) {
+      btnSave.disabled = false;
+      btnSave.style.opacity = '1';
+    }
+  } else if (clean.length >= 8) {
+    namaInput.readOnly = false;
+    namaInput.style.backgroundColor = '#0F172A';
+    namaInput.style.borderColor = '#EF4444';
+    statusBox.innerHTML = `
+      <div style="background:rgba(239,68,68,.15);border:1px solid #EF4444;color:#F87171;padding:6px 10px;border-radius:6px;font-size:11.5px;line-height:1.4">
+        ⚠️ NIM tidak ditemukan dalam daftar resmi kelas. Pastikan 10 digit NIM benar.
+      </div>
+    `;
+  } else {
+    statusBox.innerHTML = '';
+  }
+}
+window.handleNimLookup = handleNimLookup;
+
 function showIdentityModal() {
   if (!document.body) {
     document.addEventListener('DOMContentLoaded', () => showIdentityModal());
@@ -238,27 +365,33 @@ function showIdentityModal() {
     modal = document.createElement('div');
     modal.id = 'studentIdModal';
     modal.innerHTML = `
-      <div style="position:fixed;inset:0;background:rgba(7,15,28,.88);backdrop-filter:blur(6px);z-index:99999;display:flex;align-items:center;justify-content:center;padding:18px">
-        <div style="background:#121826;border:1.5px solid #22304A;border-radius:12px;padding:26px 22px;max-width:390px;width:100%;color:#fff;box-shadow:0 14px 40px rgba(0,0,0,.6);font-family:'Source Sans 3',sans-serif">
-          <div style="font-size:32px;text-align:center;margin-bottom:6px">🎓</div>
-          <h3 style="font-family:'Amiri',serif;font-size:22px;text-align:center;margin:0 0 6px;color:#38BDF8">Identitas Mahasiswa</h3>
-          <p style="font-size:12.5px;color:#94A3B8;text-align:center;margin-bottom:16px">Masukkan NIM &amp; Nama Anda untuk sinkronisasi nilai kuis, praktikum, dan skor game ke Cloud.</p>
+      <div style="position:fixed;inset:0;background:rgba(7,15,28,.92);backdrop-filter:blur(8px);z-index:99999;display:flex;align-items:center;justify-content:center;padding:18px">
+        <div style="background:#121826;border:1.5px solid #22304A;border-radius:14px;padding:28px 24px;max-width:420px;width:100%;color:#fff;box-shadow:0 20px 50px rgba(0,0,0,.7);font-family:'Source Sans 3',sans-serif">
+          <div style="font-size:36px;text-align:center;margin-bottom:6px">🎓</div>
+          <h3 style="font-family:'Amiri',serif;font-size:24px;text-align:center;margin:0 0 6px;color:#38BDF8">Autentikasi Mahasiswa</h3>
+          <p style="font-size:12.5px;color:#94A3B8;text-align:center;margin-bottom:16px">Masukkan NIM Anda untuk memuat identitas terdaftar dan menyinkronkan nilai kuis serta tugas praktikum.</p>
           
-          <div style="margin-bottom:12px">
-            <label style="display:block;font-size:12px;font-weight:700;color:#CBD5E1;margin-bottom:4px">NIM Mahasiswa:</label>
-            <input type="text" id="inputStudentNIM" placeholder="Contoh: 2310112001" value="${currentStudent.nim}" style="width:100%;padding:10px 12px;border-radius:6px;border:1px solid #334155;background:#0F172A;color:#fff;font-size:14px;box-sizing:border-box">
+          <div style="margin-bottom:10px">
+            <label style="display:block;font-size:12px;font-weight:700;color:#CBD5E1;margin-bottom:4px">NIM Mahasiswa (10 Digit):</label>
+            <input type="text" id="inputStudentNIM" placeholder="Contoh: 2510102001" value="${currentStudent.nim}" oninput="handleNimLookup(this.value)" style="width:100%;padding:11px 12px;border-radius:6px;border:1.5px solid #334155;background:#0F172A;color:#FFD488;font-size:15px;font-family:'Source Code Pro',monospace;font-weight:700;box-sizing:border-box;outline:none">
           </div>
+
+          <div id="nimStatusBox" style="margin-bottom:12px"></div>
 
           <div style="margin-bottom:18px">
-            <label style="display:block;font-size:12px;font-weight:700;color:#CBD5E1;margin-bottom:4px">Nama Lengkap:</label>
-            <input type="text" id="inputStudentNama" placeholder="Nama Mahasiswa" value="${currentStudent.nama}" style="width:100%;padding:10px 12px;border-radius:6px;border:1px solid #334155;background:#0F172A;color:#fff;font-size:14px;box-sizing:border-box">
+            <label style="display:block;font-size:12px;font-weight:700;color:#CBD5E1;margin-bottom:4px">Nama Lengkap (Otomatis):</label>
+            <input type="text" id="inputStudentNama" placeholder="Nama Mahasiswa Terdaftar" value="${currentStudent.nama}" style="width:100%;padding:10px 12px;border-radius:6px;border:1px solid #334155;background:#0F172A;color:#fff;font-size:14px;box-sizing:border-box" ${currentStudent.nama ? 'readonly' : ''}>
           </div>
 
-          <button onclick="saveStudentIdentity()" style="width:100%;background:linear-gradient(135deg,#D46020,#E88030);color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s">Simpan &amp; Hubungkan Cloud ✓</button>
+          <button id="btnSaveIdentity" onclick="saveStudentIdentity()" style="width:100%;background:linear-gradient(135deg,#D46020,#E88030);color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;box-shadow:0 4px 16px rgba(212,96,32,.3)">Simpan &amp; Masuk Kelas ✓</button>
         </div>
       </div>
     `;
     document.body.appendChild(modal);
+
+    if (currentStudent.nim) {
+      setTimeout(() => handleNimLookup(currentStudent.nim), 50);
+    }
   }
 }
 
@@ -268,11 +401,21 @@ function saveStudentIdentity() {
   if (!nimInput || !namaInput) return;
 
   const nim = nimInput.value.trim();
-  const nama = namaInput.value.trim();
+  let nama = namaInput.value.trim();
 
-  if (!nim || !nama) {
-    alert("Mohon isi NIM dan Nama Lengkap Anda!");
+  if (!nim) {
+    alert("Mohon masukkan NIM Mahasiswa Anda!");
     return;
+  }
+
+  const student = findStudentByNim(nim);
+  if (!student && nim !== '0206015') {
+    alert(`❌ Akses Ditolak: NIM "${nim}" tidak terdaftar dalam daftar mahasiswa resmi kelas FEBI Tazkia.\n\nSilakan periksa kembali NIM Anda atau hubungi Dosen pengampu di kelas jika Anda mahasiswa baru.`);
+    return;
+  }
+
+  if (student) {
+    nama = student.nama;
   }
 
   currentStudent.nim = nim;
@@ -285,6 +428,8 @@ function saveStudentIdentity() {
     dbInstance.collection('users').doc(nim).set({
       nim: nim,
       nama: nama,
+      classGroup: student ? (student.classGroup || '-') : 'Dosen',
+      courses: student ? (student.courses || []) : ['ALL'],
       lastActive: firebase.firestore.FieldValue.serverTimestamp()
     }, { merge: true })
       .then(() => {
@@ -293,7 +438,6 @@ function saveStudentIdentity() {
       })
       .catch(err => {
         console.error("Error saving user:", err);
-        showCloudToast(`Gagal menghubungkan profil: ${err.message}`, true);
       });
   });
 
