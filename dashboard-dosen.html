@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard Dosen &amp; Gradebook Akademik — FEBI Universitas Tazkia</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;600;700&display=swap">
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 <script src="cloud-sync.js"></script>
 <style>
 :root{
@@ -474,27 +476,33 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
 </footer>
 
 <script>
-const DEFAULT_COURSES = [
+var lecturerCourses = [
   { code: 'SIA', name: 'Sistem Informasi Akuntansi (AKS-302)', folder: 'Sistem Informasi Akuntansi', pin: '3021', icon: '🏛️' },
   { code: 'ADA', name: 'Applied Data Analytics (DAT-301)', folder: 'Applied Data Analytics', pin: '3011', icon: '📊' },
   { code: 'BIV', name: 'Business Intelligence & Visualization (BIV-301)', folder: 'Business Intelligence', pin: '3012', icon: '📈' }
 ];
 
-let registeredCourses = [...DEFAULT_COURSES];
-let activePins = { SIA: '3021', ADA: '3011', BIV: '3012', DOSEN: '7788' };
-let allQuizData = [];
-let allLabData = [];
-let allUsersMap = {};
-let dbRef = null;
+var activePins = { SIA: '3021', ADA: '3011', BIV: '3012', DOSEN: '7788' };
+var allQuizData = [];
+var allLabData = [];
+var allUsersMap = {};
+var dbRef = null;
 
-function switchTab(tabId) {
-  document.getElementById('tabBtnGrades').classList.toggle('active', tabId === 'grades');
-  document.getElementById('tabBtnLabs').classList.toggle('active', tabId === 'labs');
-  document.getElementById('tabBtnPins').classList.toggle('active', tabId === 'pins');
-  document.getElementById('tabContentGrades').classList.toggle('active', tabId === 'grades');
-  document.getElementById('tabContentLabs').classList.toggle('active', tabId === 'labs');
-  document.getElementById('tabContentPins').classList.toggle('active', tabId === 'pins');
-}
+window.switchTab = function(tabId) {
+  const tGrades = document.getElementById('tabBtnGrades');
+  const tLabs = document.getElementById('tabBtnLabs');
+  const tPins = document.getElementById('tabBtnPins');
+  const cGrades = document.getElementById('tabContentGrades');
+  const cLabs = document.getElementById('tabContentLabs');
+  const cPins = document.getElementById('tabContentPins');
+
+  if (tGrades) tGrades.classList.toggle('active', tabId === 'grades');
+  if (tLabs) tLabs.classList.toggle('active', tabId === 'labs');
+  if (tPins) tPins.classList.toggle('active', tabId === 'pins');
+  if (cGrades) cGrades.classList.toggle('active', tabId === 'grades');
+  if (cLabs) cLabs.classList.toggle('active', tabId === 'labs');
+  if (cPins) cPins.classList.toggle('active', tabId === 'pins');
+};
 
 function initLecturerDashboard() {
   renderPinTable();
@@ -508,19 +516,23 @@ function initLecturerDashboard() {
       if (doc.exists) {
         const data = doc.data();
         if (data && Array.isArray(data.courses) && data.courses.length > 0) {
-          registeredCourses = [...data.courses];
+          lecturerCourses = [...data.courses];
         }
       } else {
         dbInstance.collection('settings').doc('courses_meta').set({
-          courses: DEFAULT_COURSES,
+          courses: lecturerCourses,
           updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         }, { merge: true });
       }
       renderPinTable();
       populateDropdowns();
       if (document.getElementById('tabBadgeCourses')) {
-        document.getElementById('tabBadgeCourses').textContent = registeredCourses.length + ' Kelas';
+        document.getElementById('tabBadgeCourses').textContent = lecturerCourses.length + ' Kelas';
       }
+    }, err => {
+      console.warn("Error loading courses_meta:", err);
+      renderPinTable();
+      populateDropdowns();
     });
 
     // 2. Access PINs
@@ -756,6 +768,7 @@ function exportLabsToCSV() {
   link.click();
   document.body.removeChild(link);
 }
+window.exportLabsToCSV = exportLabsToCSV;
 
 /* ════════ TAB 3: PIN TABLE ENGINE ════════ */
 function renderPinTable() {
@@ -766,7 +779,7 @@ function renderPinTable() {
   if (dosenInput) dosenInput.value = activePins['DOSEN'] || '7788';
 
   let html = '';
-  registeredCourses.forEach((c, idx) => {
+  lecturerCourses.forEach((c, idx) => {
     const pinVal = activePins[c.code] || c.pin || '1234';
     const isDefault = ['SIA', 'ADA', 'BIV'].includes(c.code);
     const deleteBtn = isDefault ? '' : `<button class="action-btn action-delete" title="Hapus Mata Kuliah" onclick="deleteCourse('${c.code}', '${escapeHtml(c.name)}')">🗑️ Hapus</button>`;
@@ -801,6 +814,7 @@ function renderPinTable() {
 
   tbody.innerHTML = html;
 }
+window.renderPinTable = renderPinTable;
 
 function saveSinglePin(code, inputId) {
   const el = document.getElementById(inputId);
@@ -825,6 +839,7 @@ function saveSinglePin(code, inputId) {
       alert("❌ Gagal menyimpan PIN: " + err.message);
     });
 }
+window.saveSinglePin = saveSinglePin;
 
 function saveAllPinsFromTable() {
   if (!dbRef) return;
@@ -833,7 +848,7 @@ function saveAllPinsFromTable() {
     DOSEN: document.getElementById('pin_DOSEN').value.trim()
   };
 
-  registeredCourses.forEach(c => {
+  lecturerCourses.forEach(c => {
     const el = document.getElementById('table_pin_' + c.code);
     if (el) updateObj[c.code] = el.value.trim();
   });
@@ -848,6 +863,7 @@ function saveAllPinsFromTable() {
       alert("❌ Gagal menyimpan PIN: " + err.message);
     });
 }
+window.saveAllPinsFromTable = saveAllPinsFromTable;
 
 function openAddCourseModal() {
   document.getElementById('newCourseCode').value = '';
@@ -856,10 +872,12 @@ function openAddCourseModal() {
   document.getElementById('newCoursePin').value = '';
   document.getElementById('addCourseModal').classList.add('active');
 }
+window.openAddCourseModal = openAddCourseModal;
 
 function closeAddCourseModal() {
   document.getElementById('addCourseModal').classList.remove('active');
 }
+window.closeAddCourseModal = closeAddCourseModal;
 
 function handleAddCourseSubmit(e) {
   e.preventDefault();
@@ -871,13 +889,13 @@ function handleAddCourseSubmit(e) {
   const folder = document.getElementById('newCourseFolder').value.trim();
   const pin = document.getElementById('newCoursePin').value.trim();
 
-  if (registeredCourses.some(c => c.code === code)) {
+  if (lecturerCourses.some(c => c.code === code)) {
     alert(`Kode Mata Kuliah "${code}" sudah terdaftar! Gunakan kode lain.`);
     return;
   }
 
   const newCourse = { code, icon, name, folder, pin };
-  const updatedList = [...registeredCourses, newCourse];
+  const updatedList = [...lecturerCourses, newCourse];
 
   dbRef.collection('settings').doc('courses_meta').set({
     courses: updatedList,
@@ -888,44 +906,47 @@ function handleAddCourseSubmit(e) {
   pinObj[code] = pin;
   dbRef.collection('settings').doc('access_pins').set(pinObj, { merge: true })
     .then(() => {
-      registeredCourses = updatedList;
+      lecturerCourses = updatedList;
       activePins[code] = pin;
       closeAddCourseModal();
       renderPinTable();
       populateDropdowns();
-      document.getElementById('tabBadgeCourses').textContent = registeredCourses.length + ' Kelas';
+      document.getElementById('tabBadgeCourses').textContent = lecturerCourses.length + ' Kelas';
       alert(`✅ Mata Kuliah "${name}" berhasil ditambahkan ke tabel dengan PIN ${pin}!`);
     })
     .catch(err => {
       alert("❌ Gagal menambahkan mata kuliah: " + err.message);
     });
 }
+window.handleAddCourseSubmit = handleAddCourseSubmit;
 
 function deleteCourse(code, courseName) {
   if (!confirm(`Hapus mata kuliah "${courseName}" (${code}) dari tabel PIN?`)) return;
   if (!dbRef) return;
 
-  const updatedList = registeredCourses.filter(c => c.code !== code);
+  const updatedList = lecturerCourses.filter(c => c.code !== code);
 
   dbRef.collection('settings').doc('courses_meta').set({
     courses: updatedList,
     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
   }, { merge: true })
     .then(() => {
-      registeredCourses = updatedList;
+      lecturerCourses = updatedList;
       renderPinTable();
       populateDropdowns();
-      document.getElementById('tabBadgeCourses').textContent = registeredCourses.length + ' Kelas';
+      document.getElementById('tabBadgeCourses').textContent = lecturerCourses.length + ' Kelas';
       alert(`✅ Mata Kuliah "${courseName}" berhasil dihapus.`);
     })
     .catch(err => {
       alert("❌ Gagal menghapus mata kuliah: " + err.message);
     });
 }
+window.deleteCourse = deleteCourse;
 
 function populateDropdowns() {
   const filterSel = document.getElementById('courseFilter');
   const formSel = document.getElementById('formPertemuan');
+  if (!filterSel || !formSel) return;
 
   const curFilter = filterSel.value;
   let filterHtml = '<option value="ALL">Semua Modul / Pertemuan</option>';
@@ -951,7 +972,7 @@ function populateDropdowns() {
     formHtml += `<option value="${opt.val}">${opt.text}</option>`;
   });
 
-  registeredCourses.forEach(c => {
+  lecturerCourses.forEach(c => {
     if (!['SIA', 'ADA', 'BIV'].includes(c.code)) {
       filterHtml += `<option value="${c.code}">${c.name}</option>`;
       formHtml += `<option value="${c.code} - P01">${c.name} — P01</option>`;
@@ -964,29 +985,37 @@ function populateDropdowns() {
   formSel.innerHTML = formHtml;
   filterSel.value = curFilter;
 }
+window.populateDropdowns = populateDropdowns;
 
 /* ════════ TAB 1: GRADEBOOK TABLE & KPI ════════ */
 function updateKPIs() {
-  document.getElementById('kpiSubmissions').textContent = allQuizData.length;
+  const kpiSub = document.getElementById('kpiSubmissions');
+  const kpiAvg = document.getElementById('kpiAvgScore');
+  const kpiPass = document.getElementById('kpiPassRate');
+
+  if (kpiSub) kpiSub.textContent = allQuizData.length;
   if (allQuizData.length === 0) {
-    document.getElementById('kpiAvgScore').textContent = '0%';
-    document.getElementById('kpiPassRate').textContent = '0%';
+    if (kpiAvg) kpiAvg.textContent = '0%';
+    if (kpiPass) kpiPass.textContent = '0%';
     return;
   }
 
   const sumPct = allQuizData.reduce((acc, curr) => acc + (curr.persentase || 0), 0);
   const avg = Math.round(sumPct / allQuizData.length);
-  document.getElementById('kpiAvgScore').textContent = avg + '%';
+  if (kpiAvg) kpiAvg.textContent = avg + '%';
 
   const passedCount = allQuizData.filter(q => q.persentase >= 70).length;
   const passRate = Math.round((passedCount / allQuizData.length) * 100);
-  document.getElementById('kpiPassRate').textContent = passRate + '%';
+  if (kpiPass) kpiPass.textContent = passRate + '%';
 }
 
 function renderGradeTable() {
-  const query = (document.getElementById('searchInput').value || '').toLowerCase();
-  const filter = document.getElementById('courseFilter').value;
+  const searchEl = document.getElementById('searchInput');
+  const filterEl = document.getElementById('courseFilter');
+  const query = (searchEl ? searchEl.value : '').toLowerCase();
+  const filter = filterEl ? filterEl.value : 'ALL';
   const tbody = document.getElementById('tableBody');
+  if (!tbody) return;
 
   const filtered = allQuizData.filter(item => {
     const matchSearch = item.nim.toLowerCase().includes(query) || 
@@ -1031,11 +1060,13 @@ function renderGradeTable() {
     `;
   }).join('');
 }
+window.renderGradeTable = renderGradeTable;
 
 function escapeHtml(text) {
   if (!text) return '';
   return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
+window.escapeHtml = escapeHtml;
 
 /* ════════ CRUD MODAL HANDLERS ════════ */
 function openCreateModal() {
@@ -1050,6 +1081,7 @@ function openCreateModal() {
   document.getElementById('btnSubmitModal').textContent = 'Tambah Nilai ke Cloud ✓';
   document.getElementById('crudModal').classList.add('active');
 }
+window.openCreateModal = openCreateModal;
 
 function openEditModal(docId) {
   const item = allQuizData.find(q => q.id === docId);
@@ -1081,10 +1113,12 @@ function openEditModal(docId) {
   document.getElementById('btnSubmitModal').textContent = 'Simpan Perubahan ✓';
   document.getElementById('crudModal').classList.add('active');
 }
+window.openEditModal = openEditModal;
 
 function closeCrudModal() {
   document.getElementById('crudModal').classList.remove('active');
 }
+window.closeCrudModal = closeCrudModal;
 
 function handleCrudSubmit(e) {
   e.preventDefault();
@@ -1142,6 +1176,7 @@ function handleCrudSubmit(e) {
       });
   }
 }
+window.handleCrudSubmit = handleCrudSubmit;
 
 function deleteQuizEntry(docId, studentName) {
   if (!confirm(`Apakah Anda yakin ingin menghapus data submission milik "${studentName}" dari Cloud? Tindakan ini tidak dapat dibatalkan.`)) {
@@ -1157,6 +1192,7 @@ function deleteQuizEntry(docId, studentName) {
       alert("❌ Gagal menghapus data: " + err.message);
     });
 }
+window.deleteQuizEntry = deleteQuizEntry;
 
 function exportToCSV() {
   if (allQuizData.length === 0) {
@@ -1179,6 +1215,12 @@ function exportToCSV() {
   link.click();
   document.body.removeChild(link);
 }
+window.exportToCSV = exportToCSV;
+
+window.openLabDetailModal = openLabDetailModal;
+window.closeLabDetailModal = closeLabDetailModal;
+window.deleteLabSubmission = deleteLabSubmission;
+window.saveGeminiApiKey = saveGeminiApiKey;
 
 // Inisialisasi saat window dimuat
 if (document.readyState === 'loading') {
