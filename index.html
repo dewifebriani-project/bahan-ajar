@@ -86,7 +86,7 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
   <div id="courseGrid" class="course-grid">
     
     <!-- ════════ ACCOUNTING INFORMATION SYSTEMS (AIS) ════════ -->
-    <div class="course-card card-sia">
+    <div id="card_AIS" class="course-card card-sia">
       <div class="c-header">
         <div class="c-icon">🏛️</div>
         <span class="c-pin" title="Hubungi Dosen Pengampu" style="background:rgba(232,128,48,.15);border:1px solid rgba(232,128,48,.35);color:#FFB885">PIN: ****</span>
@@ -108,7 +108,7 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
     </div>
 
     <!-- ════════ APPLIED DATA ANALYTICS (ADA) ════════ -->
-    <div class="course-card card-ada">
+    <div id="card_ADA" class="course-card card-ada">
       <div class="c-header">
         <div class="c-icon">📊</div>
         <span class="c-pin" title="Hubungi Dosen Pengampu" style="background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.35);color:#7DD3FC">PIN: ****</span>
@@ -130,7 +130,7 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
     </div>
 
     <!-- ════════ BUSINESS INTELLIGENCE & VISUALIZATION (BIV) ════════ -->
-    <div class="course-card card-biv">
+    <div id="card_BIV" class="course-card card-biv">
       <div class="c-header">
         <div class="c-icon">📈</div>
         <span class="c-pin" title="Hubungi Dosen Pengampu" style="background:rgba(52,211,153,.15);border:1px solid rgba(52,211,153,.35);color:#6EE7B7">PIN: ****</span>
@@ -172,7 +172,7 @@ window.onCloudSyncReady((dbInstance) => {
 });
 
 function renderDynamicCourses(courses) {
-  const customCourses = courses.filter(c => !['SIA', 'ADA', 'BIV'].includes(c.code));
+  const customCourses = courses.filter(c => !['AIS', 'SIA', 'ADA', 'DAT', 'BIV'].includes(c.code));
   if (customCourses.length === 0) return;
 
   const grid = document.getElementById('courseGrid');

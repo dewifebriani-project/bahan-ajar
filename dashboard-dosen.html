@@ -566,8 +566,8 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
         <div class="form-group">
           <label class="form-label">Kelompok Kelas *</label>
           <select id="formStudentGroup" class="form-select" required>
-            <option value="SIA - Karyawan">SIA — Kelas Karyawan</option>
-            <option value="SIA - Reguler">SIA — Kelas Reguler</option>
+            <option value="AIS - Karyawan">AIS — Kelas Karyawan</option>
+            <option value="AIS - Reguler">AIS — Kelas Reguler</option>
             <option value="ADA / BIV">ADA &amp; BIV</option>
             <option value="Lainnya">Kelas Lainnya</option>
           </select>
@@ -576,7 +576,7 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
         <div class="form-group">
           <label class="form-label">Mata Kuliah yang Diambil (Pilih Minimal 1) *</label>
           <div style="display:flex;gap:14px;flex-wrap:wrap;padding:10px 14px;background:var(--sf3);border:1px solid var(--bd);border-radius:var(--rs)">
-            <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;color:#fff"><input type="checkbox" id="chkCourseSIA" value="SIA"> SIA</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;color:#fff"><input type="checkbox" id="chkCourseAIS" value="AIS"> AIS</label>
             <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;color:#fff"><input type="checkbox" id="chkCourseADA" value="ADA"> ADA</label>
             <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;color:#fff"><input type="checkbox" id="chkCourseBIV" value="BIV"> BIV</label>
           </div>
@@ -1018,8 +1018,8 @@ function renderRosterTable() {
   tbody.innerHTML = filtered.map((row, idx) => {
     const coursesPills = (row.courses || []).map(c => {
       let color = '#38BDF8';
-      if (c === 'SIA') color = '#E88030';
-      if (c === 'ADA') color = '#10B981';
+      if (c === 'AIS' || c === 'SIA') color = '#E88030';
+      if (c === 'ADA' || c === 'DAT') color = '#10B981';
       if (c === 'BIV') color = '#F59E0B';
       return `<span style="background:rgba(255,255,255,.06);border:1px solid ${color};color:${color};padding:2px 7px;border-radius:6px;font-size:11px;font-weight:700">${escapeHtml(c)}</span>`;
     }).join(' ');
@@ -1051,7 +1051,7 @@ function openAddStudentModal() {
   document.getElementById('formStudentNim').readOnly = false;
   document.getElementById('formStudentNama').value = '';
   document.getElementById('formStudentGroup').selectedIndex = 0;
-  document.getElementById('chkCourseSIA').checked = true;
+  document.getElementById('chkCourseAIS').checked = true;
   document.getElementById('chkCourseADA').checked = false;
   document.getElementById('chkCourseBIV').checked = false;
   document.getElementById('formStudentStatus').value = 'Aktif';
@@ -1069,11 +1069,11 @@ function openEditStudentModal(nim) {
   document.getElementById('formStudentNim').value = student.nim;
   document.getElementById('formStudentNim').readOnly = true;
   document.getElementById('formStudentNama').value = student.nama;
-  document.getElementById('formStudentGroup').value = student.classGroup || 'SIA - Karyawan';
+  document.getElementById('formStudentGroup').value = student.classGroup || 'AIS - Karyawan';
   
   const courses = student.courses || [];
-  document.getElementById('chkCourseSIA').checked = courses.includes('SIA');
-  document.getElementById('chkCourseADA').checked = courses.includes('ADA');
+  document.getElementById('chkCourseAIS').checked = courses.includes('AIS') || courses.includes('SIA');
+  document.getElementById('chkCourseADA').checked = courses.includes('ADA') || courses.includes('DAT');
   document.getElementById('chkCourseBIV').checked = courses.includes('BIV');
   
   document.getElementById('formStudentStatus').value = student.status || 'Aktif';
@@ -1096,7 +1096,7 @@ function handleStudentFormSubmit(e) {
   const status = document.getElementById('formStudentStatus').value;
 
   const courses = [];
-  if (document.getElementById('chkCourseSIA').checked) courses.push('SIA');
+  if (document.getElementById('chkCourseAIS').checked) courses.push('AIS');
   if (document.getElementById('chkCourseADA').checked) courses.push('ADA');
   if (document.getElementById('chkCourseBIV').checked) courses.push('BIV');
 
@@ -1230,7 +1230,7 @@ function renderPinTable() {
   let html = '';
   lecturerCourses.forEach((c, idx) => {
     const pinVal = activePins[c.code] || c.pin || '1234';
-    const isDefault = ['SIA', 'ADA', 'BIV'].includes(c.code);
+    const isDefault = ['AIS', 'SIA', 'ADA', 'DAT', 'BIV'].includes(c.code);
     const deleteBtn = isDefault ? '' : `<button class="action-btn action-delete" title="Hapus Mata Kuliah" onclick="deleteCourse('${c.code}', '${escapeHtml(c.name)}')">🗑️ Hapus</button>`;
 
     html += `
@@ -1402,14 +1402,14 @@ function populateDropdowns() {
   let formHtml = '';
 
   const defaultOptions = [
-    { val: 'Pertemuan 01', text: 'SIA — Pertemuan 01 (Pengantar AIS)' },
-    { val: 'Pertemuan 02', text: 'SIA — Pertemuan 02 (Proses & Data)' },
-    { val: 'Pertemuan 03', text: 'SIA — Pertemuan 03 (Enterprise Systems)' },
-    { val: 'Pertemuan 04', text: 'SIA — Pertemuan 04 (Etika & Fraud)' },
-    { val: 'Pertemuan 05', text: 'SIA — Pertemuan 05 (COSO Controls)' },
-    { val: 'Pertemuan 06', text: 'SIA — Pertemuan 06 (Cybersecurity)' },
-    { val: 'Pertemuan 07', text: 'SIA — Pertemuan 07 (ITGC & Controls)' },
-    { val: 'Pertemuan 08', text: 'SIA — Pertemuan 08 (Evaluasi UTS)' },
+    { val: 'Pertemuan 01', text: 'AIS — Pertemuan 01 (Pengantar AIS)' },
+    { val: 'Pertemuan 02', text: 'AIS — Pertemuan 02 (Proses & Data)' },
+    { val: 'Pertemuan 03', text: 'AIS — Pertemuan 03 (Enterprise Systems)' },
+    { val: 'Pertemuan 04', text: 'AIS — Pertemuan 04 (Etika & Fraud)' },
+    { val: 'Pertemuan 05', text: 'AIS — Pertemuan 05 (COSO Controls)' },
+    { val: 'Pertemuan 06', text: 'AIS — Pertemuan 06 (Cybersecurity)' },
+    { val: 'Pertemuan 07', text: 'AIS — Pertemuan 07 (ITGC & Controls)' },
+    { val: 'Pertemuan 08', text: 'AIS — Pertemuan 08 (Evaluasi UTS)' },
     { val: 'ADA - Pertemuan 01', text: 'ADA — Pertemuan 01 (Python & Colab)' },
     { val: 'ADA - Pertemuan 02', text: 'ADA — Pertemuan 02 (Pandas Groupby)' },
     { val: 'ADA - Pertemuan 03', text: 'ADA — Pertemuan 03 (Data Wrangling)' },
@@ -1422,7 +1422,7 @@ function populateDropdowns() {
   });
 
   lecturerCourses.forEach(c => {
-    if (!['SIA', 'ADA', 'BIV'].includes(c.code)) {
+    if (!['AIS', 'SIA', 'ADA', 'DAT', 'BIV'].includes(c.code)) {
       filterHtml += `<option value="${c.code}">${c.name}</option>`;
       formHtml += `<option value="${c.code} - P01">${c.name} — P01</option>`;
       formHtml += `<option value="${c.code} - P02">${c.name} — P02</option>`;

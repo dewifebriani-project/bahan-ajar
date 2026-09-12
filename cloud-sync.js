@@ -91,7 +91,7 @@ function findStudentByNim(nim) {
   if (!nim) return null;
   const cleanNim = String(nim).trim();
   if (cleanNim === '0206015') {
-    return { nim: '0206015', nama: 'Dewi Febriani', courses: ['SIA', 'ADA', 'BIV', 'DOSEN'], classGroup: 'Dosen Pengampu', status: 'Dosen' };
+    return { nim: '0206015', nama: 'Dewi Febriani', courses: ['AIS', 'SIA', 'ADA', 'DAT', 'BIV', 'DOSEN'], classGroup: 'Dosen Pengampu', status: 'Dosen' };
   }
   return activeStudentsRoster.find(s => s.nim === cleanNim) || null;
 }
