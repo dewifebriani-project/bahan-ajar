@@ -1,0 +1,637 @@
+<title>ADA Lab 2 — Data Wrangling & Cleaning</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --meet-from:#041820;--meet-mid:#082840;--meet-to:#104060;
+  --meet-acc:#20C8D0;--meet-acc2:#30D8E0;
+  --bg:#EDF1F6;--sf:#fff;--sf2:#E8F6F8;--sf3:#F4FAFB;
+  --bd:#C4CDD8;--bs:#DDE3EC;
+  --tx:#0C1824;--txm:#475569;--txl:#8A9AB0;
+  --pri:#082840;--pril:#D8EEF6;--prx:#EAF6F8;
+  --acc:#20C8D0;--accl:#D0F4F6;
+  --sya:#1F9060;--syal:#D0EEE2;--syab:#40B080;
+  --done-bg:#D0EEE2;--done-bd:#40B080;--done-tx:#0A4020;
+  --r:8px;--rs:5px;
+  --shadow:0 4px 20px rgba(8,40,64,.1);--shadow-sm:0 2px 8px rgba(8,40,64,.06);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#030E18;--sf:#071828;--sf2:#071C28;--sf3:#041220;
+  --bd:#0C2840;--bs:#081830;
+  --tx:#C8E8F8;--txm:#6090B0;--txl:#2A5070;
+  --pri:#20C8D0;--pril:#051830;--prx:#040E18;
+  --acc:#20C8D0;--accl:#041820;
+  --sya:#40C890;--syal:#031410;
+  --done-bg:#031810;--done-bd:#40C890;--done-tx:#40C890;
+}}
+:root[data-theme=dark]{
+  --bg:#030E18;--sf:#071828;--sf2:#071C28;--sf3:#041220;
+  --bd:#0C2840;--bs:#081830;
+  --tx:#C8E8F8;--txm:#6090B0;--txl:#2A5070;
+  --pri:#20C8D0;--pril:#051830;--prx:#040E18;
+  --acc:#20C8D0;--accl:#041820;
+  --sya:#40C890;--syal:#031410;
+  --done-bg:#031810;--done-bd:#40C890;--done-tx:#40C890;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.65}
+
+.hd{background:linear-gradient(160deg,var(--meet-from) 0%,var(--meet-mid) 55%,var(--meet-to) 100%);color:#fff;position:relative;overflow:hidden}
+.hd-ornament{position:absolute;inset:0;pointer-events:none;opacity:.12}
+.hd-inner{max-width:820px;margin:0 auto;padding:32px 24px 12px;position:relative;z-index:1}
+.hd-eyebrow{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.hd-line{width:24px;height:1px;background:var(--meet-acc)}
+.hd-eye{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--meet-acc)}
+.hd-badge{font-size:11px;background:rgba(32,200,208,.15);border:1px solid rgba(32,200,208,.3);border-radius:12px;padding:2px 11px;color:var(--meet-acc2);margin-left:auto}
+.hd-title{font-family:'Amiri',serif;font-size:28px;font-weight:700;line-height:1.2;margin-bottom:5px}
+.hd-sub{font-size:13.5px;color:rgba(255,255,255,.5);margin-bottom:16px}
+.hd-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px}
+.hpill{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:2px 11px;font-size:11.5px;color:rgba(255,255,255,.7)}
+.hpill strong{color:#fff}
+.hd-arch{line-height:0}
+.hd-arch svg{display:block;width:100%;height:24px}
+
+.tracker-wrap{background:var(--sf);border-bottom:1px solid var(--bs);position:sticky;top:0;z-index:40;box-shadow:var(--shadow-sm)}
+.tracker{max-width:820px;margin:0 auto;padding:8px 20px;display:flex;align-items:center;gap:6px;overflow-x:auto}
+.tr-step{display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0}
+.tr-circle{width:30px;height:30px;border-radius:50%;border:2px solid var(--bs);background:var(--sf3);display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;color:var(--txl);transition:all .3s}
+.tr-circle.active{border-color:var(--acc);background:var(--accl);color:var(--pri)}
+.tr-circle.done{border-color:var(--sya);background:var(--syal);color:var(--sya)}
+.tr-label{font-size:9.5px;color:var(--txl);white-space:nowrap;text-align:center;max-width:62px;overflow:hidden;text-overflow:ellipsis}
+.tr-label.active{color:var(--acc);font-weight:600}
+.tr-label.done{color:var(--sya);font-weight:600}
+.tr-line{width:20px;height:2px;background:var(--bs);border-radius:1px;flex-shrink:0;margin-bottom:10px}
+.tr-line.done{background:var(--sya)}
+
+.main{max-width:820px;margin:0 auto;padding:24px 20px 80px}
+
+.step-card{background:var(--sf);border:1px solid var(--bs);border-radius:var(--r);margin-bottom:14px;box-shadow:var(--shadow-sm);overflow:hidden;transition:opacity .3s,filter .3s}
+.step-card.locked{opacity:.35;filter:grayscale(.5);pointer-events:none}
+.step-card.unlocked{opacity:1;filter:none}
+.step-card.completed{border-color:var(--done-bd)}
+.step-hd{display:flex;align-items:center;gap:11px;padding:13px 20px;background:var(--sf3);border-bottom:1px solid var(--bs)}
+.step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc))}
+.step-num.done{background:var(--sya)}
+.step-title{font-family:'Amiri',serif;font-size:17px;font-weight:700;color:var(--pri)}
+.step-est{font-size:11.5px;color:var(--txl);margin-left:auto;white-space:nowrap}
+.step-body{padding:18px 22px}
+
+.code-wrap{margin:12px 0}
+.code-hd{display:flex;align-items:center;justify-content:space-between;background:#082840;padding:7px 14px;border-radius:var(--rs) var(--rs) 0 0}
+.code-hd span{font-size:11px;font-weight:700;color:#4090C0;letter-spacing:.06em;text-transform:uppercase}
+.code-hd .copy-btn{font-size:11px;background:rgba(32,200,208,.12);border:1px solid rgba(32,200,208,.25);border-radius:8px;padding:2px 9px;color:var(--acc);cursor:pointer;font-family:inherit}
+.code-hd .copy-btn:hover{background:rgba(32,200,208,.22)}
+pre.code{background:#1E2C38;border-radius:0 0 var(--rs) var(--rs);padding:14px 16px;overflow-x:auto;margin:0;font-family:'Source Code Pro','Courier New',monospace;font-size:13px;line-height:1.75;color:#C9D8E0}
+.kw{color:#20C8D0}.fn{color:#79D0FF}.st{color:#A5E6FF}.cm{color:#4A7090;font-style:italic}.nm{color:#F8C555}.op{color:#E0A060}
+
+.out-wrap{background:#F4FAFC;border:1px solid #A0D8E0;border-radius:var(--rs);padding:12px 16px;margin:8px 0;font-size:12.5px;line-height:1.65;color:#0A2830;font-family:'Source Code Pro',monospace}
+.out-wrap::before{content:'▶ Output yang diharapkan:';display:block;font-family:'Source Sans 3',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--acc);margin-bottom:7px}
+
+.callout{border-radius:var(--rs);padding:11px 15px;margin:10px 0;font-size:13.5px}
+.callout.tip{background:var(--prx);border-left:4px solid var(--acc);color:var(--txm)}
+.callout.warn{background:#FEF3E0;border-left:4px solid #D46020;color:#5A2C04}
+.callout.sya{background:var(--syal);border-left:4px solid var(--sya);color:var(--txm)}
+.callout.info{background:var(--sf3);border-left:4px solid var(--pri);color:var(--txm)}
+
+.unlock-row{display:flex;align-items:center;gap:12px;margin-top:20px;padding-top:18px;border-top:1px solid var(--bs)}
+.btn-unlock{background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc));color:#fff;border:none;border-radius:24px;padding:11px 26px;font-family:'Source Sans 3',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;transition:opacity .2s}
+.btn-unlock:hover{opacity:.88}
+.btn-unlock.done-state{background:var(--sya);cursor:default}
+.unlock-hint{font-size:12.5px;color:var(--txl)}
+
+.challenge-box{background:linear-gradient(135deg,#082840,#104060);border-radius:var(--r);padding:18px 20px;color:#fff;margin:14px 0}
+.challenge-box h4{font-family:'Amiri',serif;font-size:17px;font-weight:700;margin-bottom:12px;color:var(--meet-acc)}
+.challenge-q{background:rgba(255,255,255,.08);border-radius:var(--rs);padding:10px 14px;margin-bottom:8px;font-size:13.5px;color:rgba(255,255,255,.85)}
+.challenge-q strong{color:#fff}
+
+.completion{display:none;background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;border-radius:var(--r);padding:28px;text-align:center;margin-top:18px}
+.completion.show{display:block}
+.completion h2{font-family:'Amiri',serif;font-size:24px;font-weight:700;margin-bottom:8px}
+.completion p{color:rgba(255,255,255,.65);font-size:13.5px;margin-bottom:14px}
+.completion .next-btn{display:inline-block;background:var(--meet-acc);color:var(--meet-from);border-radius:20px;padding:10px 24px;font-weight:700;font-size:14px;text-decoration:none}
+
+p{color:var(--txm);margin-bottom:9px;font-size:14px}
+h3.sh{font-family:'Amiri',serif;font-size:18px;font-weight:700;color:var(--pri);margin:16px 0 9px;display:flex;align-items:center;gap:8px}
+h3.sh::before{content:'';width:4px;height:16px;background:var(--meet-acc);border-radius:2px;flex-shrink:0}
+ul.lst{list-style:none;padding:0;margin-bottom:12px}
+ul.lst li{padding:5px 0 5px 20px;position:relative;color:var(--txm);font-size:14px;border-bottom:1px solid var(--bs)}
+ul.lst li:last-child{border-bottom:none}
+ul.lst li::before{content:'▸';position:absolute;left:0;color:var(--acc);font-size:11px;top:7px}
+ul.lst li strong{color:var(--tx)}
+@media(max-width:580px){.main{padding:14px 12px 60px}.step-body{padding:14px 14px}pre.code{font-size:11.5px}}
+</style>
+
+<!-- HEADER -->
+<div class="hd">
+  <svg class="hd-ornament" viewBox="0 0 400 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs><pattern id="hex3" width="56" height="48" patternUnits="userSpaceOnUse">
+      <path d="M28,4 L52,18 L52,46 L28,60 L4,46 L4,18 Z" fill="none" stroke="#20C8D0" stroke-width=".9"/>
+      <circle cx="28" cy="4" r="2" fill="#20C8D0" opacity=".7"/>
+    </pattern></defs>
+    <rect width="100%" height="100%" fill="url(#hex3)"/>
+  </svg>
+  <div class="hd-inner">
+    <div class="hd-eyebrow">
+      <div class="hd-line"></div>
+      <span class="hd-eye">Applied Data Analytics · Lembar Praktikum</span>
+      <span class="hd-badge">LAB 2 · P03</span>
+    </div>
+    <h1 class="hd-title">Data Wrangling &amp; Cleaning —<br>Pipeline Pembersihan E-Commerce Halal</h1>
+    <p class="hd-sub">Deduplikasi · String Cleaning · Currency Casting · Outlier IQR · Imputasi Cerdas · Dataset Transaksi</p>
+    <div class="hd-pills">
+      <span class="hpill">⏱ <strong>~75 menit</strong></span>
+      <span class="hpill">🐍 <strong>Google Colab</strong></span>
+      <span class="hpill">📄 <strong>dataset-ecommerce-dirty-p03.csv</strong></span>
+      <span class="hpill">📝 <strong>6 Langkah</strong></span>
+    </div>
+  </div>
+  <div class="hd-arch"><svg viewBox="0 0 1200 24" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,24 L0,14 Q20,4 40,14 Q60,24 80,14 Q100,4 120,14 Q140,24 160,14 Q180,4 200,14 Q220,24 240,14 Q260,4 280,14 Q300,24 320,14 Q340,4 360,14 Q380,24 400,14 Q420,4 440,14 Q460,24 480,14 Q500,4 520,14 Q540,24 560,14 Q580,4 600,14 Q620,24 640,14 Q660,4 680,14 Q700,24 720,14 Q740,4 760,14 Q780,24 800,14 Q820,4 840,14 Q860,24 880,14 Q900,4 920,14 Q940,24 960,14 Q980,4 1000,14 Q1020,24 1040,14 Q1060,4 1080,14 Q1100,24 1120,14 Q1140,4 1160,14 Q1180,24 1200,14 L1200,24 Z" fill="var(--bg)"/>
+  </svg></div>
+</div>
+
+<!-- STEP TRACKER -->
+<div class="tracker-wrap">
+  <div class="tracker">
+    <div class="tr-step"><div class="tr-circle active" id="tc0">1</div><div class="tr-label active" id="tl0">Audit Data</div></div>
+    <div class="tr-line" id="tln0"></div>
+    <div class="tr-step"><div class="tr-circle" id="tc1">2</div><div class="tr-label" id="tl1">Deduplikasi</div></div>
+    <div class="tr-line" id="tln1"></div>
+    <div class="tr-step"><div class="tr-circle" id="tc2">3</div><div class="tr-label" id="tl2">Harga &amp; Tgl</div></div>
+    <div class="tr-line" id="tln2"></div>
+    <div class="tr-step"><div class="tr-circle" id="tc3">4</div><div class="tr-label" id="tl3">Outlier IQR</div></div>
+    <div class="tr-line" id="tln3"></div>
+    <div class="tr-step"><div class="tr-circle" id="tc4">5</div><div class="tr-label" id="tl4">Imputasi &amp; Omset</div></div>
+    <div class="tr-line" id="tln4"></div>
+    <div class="tr-step"><div class="tr-circle" id="tc5">6</div><div class="tr-label" id="tl5">Tantangan</div></div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- ╔══ LANGKAH 1: AUDIT DATA ══╗ -->
+<div class="step-card unlocked" id="step0">
+  <div class="step-hd">
+    <div class="step-num" id="sn0">1</div>
+    <div class="step-title">Load Dataset Kotor &amp; Audit Anomali Data</div>
+    <span class="step-est">⏱ ~10 menit</span>
+  </div>
+  <div class="step-body">
+    <p>Buka Google Colab (<strong>colab.research.google.com</strong>), buat notebook baru dengan nama <code>Lab2_[NIM]_[Nama].ipynb</code>. Upload file <code>dataset-ecommerce-dirty-p03.csv</code> ke Colab.</p>
+
+    <h3 class="sh">Cell 1 — Import &amp; Load Dataset</h3>
+    <div class="code-wrap">
+      <div class="code-hd"><span>Python · Cell 1 — Memuat data kotor</span><button class="copy-btn" onclick="copyCode(0)">Copy</button></div>
+      <pre class="code"><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># Load dataset kotor</span>
+df_raw = pd.read_csv(<span class="st">'dataset-ecommerce-dirty-p03.csv'</span>)
+
+<span class="fn">print</span>(<span class="st">f"Dimensi Awal: {df_raw.shape}"</span>)
+df_raw.head(<span class="nm">3</span>)</pre>
+    </div>
+    <div class="out-wrap">Dimensi Awal: (105, 13)
+      order_id  order_date customer_id    customer_name customer_city product_category ...
+0  TRX-2026001  2026-02-21    CUST-109   Fajar Ramadhan         YOGYA   Fashion Muslim ...
+1  TRX-2026002  2026-10-15    CUST-106     Dewi Sartika           SBY   Fashion Muslim ...
+2  TRX-2026003  2026-06-01    CUST-114   Khadijah Putri       Bandung    Kuliner Halal ...</div>
+
+    <h3 class="sh">Cell 2 — Audit Missing Values &amp; Tipe Data</h3>
+    <div class="code-wrap">
+      <div class="code-hd"><span>Python · Cell 2 — Tabel Audit Lengkap</span><button class="copy-btn" onclick="copyCode(1)">Copy</button></div>
+      <pre class="code"><span class="cm"># Buat DataFrame audit ringkas</span>
+audit = pd.DataFrame({
+    <span class="st">'Tipe Data'</span>: df_raw.dtypes,
+    <span class="st">'Jumlah Null'</span>: df_raw.isna().sum(),
+    <span class="st">'Persen Null (%)'</span>: (df_raw.isna().mean() * <span class="nm">100</span>).round(<span class="nm">2</span>),
+    <span class="st">'Contoh Nilai'</span>: [df_raw[c].dropna().iloc[<span class="nm">0</span>] <span class="kw">if</span> len(df_raw[c].dropna()) &gt; <span class="nm">0</span> <span class="kw">else</span> <span class="st">''</span> <span class="kw">for</span> c <span class="kw">in</span> df_raw.columns]
+})
+<span class="fn">print</span>(audit)
+<span class="fn">print</span>(<span class="st">f"\nJumlah Baris Duplikat: {df_raw.duplicated().sum()}"</span>)</pre>
+    </div>
+    <div class="out-wrap">                   Tipe Data  Jumlah Null  Persen Null (%)            Contoh Nilai
+order_id              object            0             0.00             TRX-2026001
+order_date            object            0             0.00              2026-02-21
+customer_id           object            6             5.71                CUST-109
+customer_name         object            0             0.00          Fajar Ramadhan
+customer_city         object            0             0.00                   YOGYA
+product_category      object            0             0.00          Fashion Muslim
+product_name          object            0             0.00  Koko Kurta Pria Modern
+price_raw             object            0             0.00                  175000
+quantity              object            0             0.00                       2
+shipping_cost_raw     object            9             8.57               Rp 30.000
+payment_method        object            7             6.67   Transfer Bank Syariah
+order_status          object            3             2.86                Refunded
+customer_rating       object            7             6.67                     4.0
+
+Jumlah Baris Duplikat: 5</div>
+
+    <div class="callout tip">
+      💡 <strong>Temuan Audit:</strong> Dataset memiliki 5 baris duplikat persis, missing values pada <code>customer_id</code>, <code>shipping_cost_raw</code>, <code>payment_method</code>, <code>order_status</code>, dan <code>customer_rating</code>, serta kolom numerik yang tersimpan sebagai tipe <code>object</code>.
+    </div>
+
+    <div class="unlock-row">
+      <button class="btn-unlock" id="btn0" onclick="completeStep(0)">✓ Langkah 1 Selesai — Audit Berhasil</button>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══ LANGKAH 2: DEDUPLIKASI & STRING ══╗ -->
+<div class="step-card locked" id="step1">
+  <div class="step-hd">
+    <div class="step-num" id="sn1">2</div>
+    <div class="step-title">Deduplikasi &amp; Standardisasi Teks (String Cleaning)</div>
+    <span class="step-est">⏱ ~12 menit</span>
+  </div>
+  <div class="step-body">
+    <p>Langkah pertama dalam transformasi adalah membuang data duplikat dan membersihkan teks agar konsisten.</p>
+
+    <h3 class="sh">Cell 3 — Hapus Duplikasi &amp; Format Nama Customer</h3>
+    <div class="code-wrap">
+      <div class="code-hd"><span>Python · Cell 3 — drop_duplicates &amp; title case</span><button class="copy-btn" onclick="copyCode(2)">Copy</button></div>
+      <pre class="code"><span class="cm"># 1. Buang baris duplikat</span>
+df = df_raw.drop_duplicates().copy()
+<span class="fn">print</span>(<span class="st">f"Dimensi setelah drop_duplicates: {df.shape}"</span>) <span class="cm"># Menjadi (100, 13)</span>
+
+<span class="cm"># 2. Bersihkan spasi liar dan buat Title Case untuk nama customer</span>
+df[<span class="st">'customer_name'</span>] = df[<span class="st">'customer_name'</span>].str.strip().str.title()
+<span class="fn">print</span>(<span class="st">"Contoh nama setelah dibersihkan:"</span>)
+<span class="fn">print</span>(df[<span class="st">'customer_name'</span>].head(<span class="nm">4</span>).tolist())</pre>
+    </div>
+    <div class="out-wrap">Dimensi setelah drop_duplicates: (100, 13)
+Contoh nama setelah dibersihkan:
+['Fajar Ramadhan', 'Dewi Sartika', 'Khadijah Putri', 'Maryam Jameelah']</div>
+
+    <h3 class="sh">Cell 4 — Standardisasi Nama Kota &amp; Kategori Produk</h3>
+    <div class="code-wrap">
+      <div class="code-hd"><span>Python · Cell 4 — Mapping Kamus Konsistensi</span><button class="copy-btn" onclick="copyCode(3)">Copy</button></div>
+      <pre class="code"><span class="cm"># Kamus standardisasi nama kota</span>
+city_map = {
+    <span class="st">'JKT Selatan'</span>: <span class="st">'Jakarta Selatan'</span>, <span class="st">'jak-sel'</span>: <span class="st">'Jakarta Selatan'</span>,
+    <span class="st">'JKT TIMUR'</span>: <span class="st">'Jakarta Timur'</span>,     <span class="st">'Jakarta Timur'</span>: <span class="st">'Jakarta Timur'</span>,
+    <span class="st">'bdg'</span>: <span class="st">'Bandung'</span>,                 <span class="st">'BANDUNG'</span>: <span class="st">'Bandung'</span>,
+    <span class="st">'BOGOR'</span>: <span class="st">'Bogor'</span>,                 <span class="st">'bogor'</span>: <span class="st">'Bogor'</span>,
+    <span class="st">'DEPOK'</span>: <span class="st">'Depok'</span>,                 <span class="st">'Tangsel'</span>: <span class="st">'Tangerang Selatan'</span>,
+    <span class="st">'SBY'</span>: <span class="st">'Surabaya'</span>,                <span class="st">'surabaya'</span>: <span class="st">'Surabaya'</span>,
+    <span class="st">'Jogja'</span>: <span class="st">'Yogyakarta'</span>,            <span class="st">'YOGYA'</span>: <span class="st">'Yogyakarta'</span>
+}
+df[<span class="st">'customer_city'</span>] = df[<span class="st">'customer_city'</span>].str.strip().replace(city_map)
+
+<span class="cm"># Kamus standardisasi kategori</span>
+cat_map = {
+    <span class="st">'FASHION MUSLIM'</span>: <span class="st">'Fashion Muslim'</span>,       <span class="st">'fashion muslim'</span>: <span class="st">'Fashion Muslim'</span>,
+    <span class="st">'KULINER HALAL'</span>: <span class="st">'Kuliner Halal'</span>,         <span class="st">'kuliner halal'</span>: <span class="st">'Kuliner Halal'</span>,
+    <span class="st">'Makanan Halal'</span>: <span class="st">'Kuliner Halal'</span>,         <span class="st">'KOSMETIK HALAL'</span>: <span class="st">'Kosmetik Halal'</span>,
+    <span class="st">'kosmetik halal'</span>: <span class="st">'Kosmetik Halal'</span>,       <span class="st">'Skincare & Kosmetik'</span>: <span class="st">'Kosmetik Halal'</span>,
+    <span class="st">'HERBAL & SUPLEMEN'</span>: <span class="st">'Herbal & Suplemen'</span>, <span class="st">'herbal & suplemen'</span>: <span class="st">'Herbal & Suplemen'</span>,
+    <span class="st">'Herbal'</span>: <span class="st">'Herbal & Suplemen'</span>,            <span class="st">'Herbal Suplemen'</span>: <span class="st">'Herbal & Suplemen'</span>,
+    <span class="st">'PERLENGKAPAN IBADAH'</span>: <span class="st">'Perlengkapan Ibadah'</span>, <span class="st">'perlengkapan ibadah'</span>: <span class="st">'Perlengkapan Ibadah'</span>,
+    <span class="st">'Ibadah Tools'</span>: <span class="st">'Perlengkapan Ibadah'</span>
+}
+df[<span class="st">'product_category'</span>] = df[<span class="st">'product_category'</span>].str.strip().replace(cat_map)
+
+<span class="fn">print</span>(<span class="st">"Frekuensi Kategori Produk Sekarang:"</span>)
+<span class="fn">print</span>(df[<span class="st">'product_category'</span>].value_counts())</pre>
+    </div>
+    <div class="out-wrap">Frekuensi Kategori Produk Sekarang:
+Fashion Muslim         28
+Kuliner Halal          25
+Perlengkapan Ibadah    17
+Herbal & Suplemen      16
+Kosmetik Halal         14
+Name: count, dtype: int64</div>
+
+    <div class="unlock-row">
+      <button class="btn-unlock" id="btn1" onclick="completeStep(1)">✓ Langkah 2 Selesai — Teks &amp; Kategori Rapi</button>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══ LANGKAH 3: HARGA, ONGKIR & TANGGAL ══╗ -->
+<div class="step-card locked" id="step2">
+  <div class="step-hd">
+    <div class="step-num" id="sn2">3</div>
+    <div class="step-title">Pembersihan Harga, Ongkir &amp; Parsing Tanggal</div>
+    <span class="step-est">⏱ ~12 menit</span>
+  </div>
+  <div class="step-body">
+    <p>Kolom finansial harus diubah menjadi <code>float</code> murni, dan tanggal dikonversi ke objek <code>datetime64</code>.</p>
+
+    <h3 class="sh">Cell 5 — Membersihkan Harga Satuan &amp; Biaya Kirim</h3>
+    <div class="code-wrap">
+      <div class="code-hd"><span>Python · Cell 5 — Regex &amp; Currency Converter</span><button class="copy-btn" onclick="copyCode(4)">Copy</button></div>
+      <pre class="code"><span class="cm"># Fungsi pembersih harga</span>
+<span class="kw">def</span> <span class="fn">clean_currency</span>(val):
+    <span class="kw">if</span> pd.isna(val) <span class="kw">or</span> val == <span class="st">''</span>: <span class="kw">return</span> np.nan
+    s = str(val).replace(<span class="st">'Rp'</span>, <span class="st">''</span>).replace(<span class="st">' '</span>, <span class="st">''</span>).strip().replace(<span class="st">'.'</span>, <span class="st">''</span>).replace(<span class="st">','</span>, <span class="st">''</span>)
+    <span class="kw">try</span>: <span class="kw">return</span> float(s)
+    <span class="kw">except</span>: <span class="kw">return</span> np.nan
+
+df[<span class="st">'price'</span>] = df[<span class="st">'price_raw'</span>].apply(clean_currency)
+
+<span class="cm"># Penanganan harga typo (misal salah ketik nol berlebih > Rp 500.000)</span>
+df.loc[df[<span class="st">'price'</span>] &gt; <span class="nm">500000</span>, <span class="st">'price'</span>] = df.loc[df[<span class="st">'price'</span>] &gt; <span class="nm">500000</span>, <span class="st">'price'</span>] / <span class="nm">100</span>
+
+<span class="cm"># Imputasi harga kosong dengan median harga produk yang sama di katalog</span>
+df[<span class="st">'price'</span>] = df.groupby(<span class="st">'product_name'</span>)[<span class="st">'price'</span>].transform(<span class="kw">lambda</span> x: x.fillna(x.median()))
+
+<span class="cm"># Fungsi pembersih ongkir (GRATIS/FREE → 0)</span>
+<span class="kw">def</span> <span class="fn">clean_ship</span>(val):
+    <span class="kw">if</span> pd.isna(val) <span class="kw">or</span> val == <span class="st">''</span> <span class="kw">or</span> str(val).upper() <span class="kw">in</span> [<span class="st">'GRATIS'</span>, <span class="st">'FREE'</span>, <span class="st">'0'</span>]: <span class="kw">return</span> <span class="nm">0.0</span>
+    s = str(val).replace(<span class="st">'Rp'</span>, <span class="st">''</span>).replace(<span class="st">' '</span>, <span class="st">''</span>).replace(<span class="st">'.'</span>, <span class="st">''</span>).replace(<span class="st">','</span>, <span class="st">''</span>).strip()
+    <span class="kw">try</span>: <span class="kw">return</span> min(float(s), <span class="nm">50000.0</span>) <span class="cm"># Capping ongkir wajar maks 50k</span>
+    <span class="kw">except</span>: <span class="kw">return</span> <span class="nm">0.0</span>
+
+df[<span class="st">'shipping_cost'</span>] = df[<span class="st">'shipping_cost_raw'</span>].apply(clean_ship)
+
+<span class="fn">print</span>(df[[<span class="st">'price'</span>, <span class="st">'shipping_cost'</span>]].describe().round(<span class="nm">2</span>))</pre>
+    </div>
+    <div class="out-wrap">           price  shipping_cost
+count     100.00         100.00
+mean   126670.00       13850.00
+std     87358.90       12828.61
+min     25000.00           0.00
+25%     75000.00           0.00
+50%     98000.00       15000.00
+75%    145000.00       25000.00
+max    350000.00       50000.00</div>
+
+    <h3 class="sh">Cell 6 — Parsing Tanggal Kuat</h3>
+    <div class="code-wrap">
+      <div class="code-hd"><span>Python · Cell 6 — pd.to_datetime dengan errors='coerce'</span><button class="copy-btn" onclick="copyCode(5)">Copy</button></div>
+      <pre class="code"><span class="cm"># Parsing tanggal dengan format campuran</span>
+df[<span class="st">'order_date'</span>] = pd.to_datetime(df[<span class="st">'order_date'</span>], format=<span class="st">'mixed'</span>, errors=<span class="st">'coerce'</span>)
+
+<span class="cm"># Imputasi tanggal yang rusak (NaT) dengan median tanggal transaksi</span>
+tgl_median = df[<span class="st">'order_date'</span>].dropna().median()
+df[<span class="st">'order_date'</span>] = df[<span class="st">'order_date'</span>].fillna(tgl_median)
+
+<span class="fn">print</span>(<span class="st">f"Rentang tanggal: {df['order_date'].min().date()} s/d {df['order_date'].max().date()}"</span>)
+<span class="fn">print</span>(<span class="st">f"Sisa missing date: {df['order_date'].isna().sum()}"</span>)</pre>
+    </div>
+    <div class="out-wrap">Rentang tanggal: 2026-01-12 s/d 2026-12-27
+Sisa missing date: 0</div>
+
+    <div class="unlock-row">
+      <button class="btn-unlock" id="btn2" onclick="completeStep(2)">✓ Langkah 3 Selesai — Finansial &amp; Tanggal Berhasil Dikonversi</button>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══ LANGKAH 4: OUTLIER KUANTITAS (IQR) ══╗ -->
+<div class="step-card locked" id="step3">
+  <div class="step-hd">
+    <div class="step-num" id="sn3">4</div>
+    <div class="step-title">Deteksi &amp; Penanganan Outlier Kuantitas (Metode IQR)</div>
+    <span class="step-est">⏱ ~12 menit</span>
+  </div>
+  <div class="step-body">
+    <p>Mari kita deteksi apakah ada kuantitas beli yang bernilai anomali (negatif, nol, atau angka ekstrim 99) menggunakan prinsip statistik IQR.</p>
+
+    <h3 class="sh">Cell 7 — Perhitungan Kuartil &amp; Batas IQR</h3>
+    <div class="code-wrap">
+      <div class="code-hd"><span>Python · Cell 7 — Formula IQR</span><button class="copy-btn" onclick="copyCode(6)">Copy</button></div>
+      <pre class="code">df[<span class="st">'quantity'</span>] = pd.to_numeric(df[<span class="st">'quantity'</span>], errors=<span class="st">'coerce'</span>)
+
+Q1 = df[<span class="st">'quantity'</span>].quantile(<span class="nm">0.25</span>)
+Q3 = df[<span class="st">'quantity'</span>].quantile(<span class="nm">0.75</span>)
+IQR = Q3 - Q1
+lower_bound = max(<span class="nm">1</span>, Q1 - <span class="nm">1.5</span> * IQR) <span class="cm"># Minimal pembelian retail adalah 1</span>
+upper_bound = Q3 + <span class="nm">1.5</span> * IQR
+
+<span class="fn">print</span>(<span class="st">f"Q1: {Q1}, Q3: {Q3}, IQR: {IQR}"</span>)
+<span class="fn">print</span>(<span class="st">f"Batas Wajar Kuantitas Retail: {lower_bound} s/d {upper_bound}"</span>)
+
+<span class="cm"># Cek baris anomali</span>
+anomali_qty = df[(df[<span class="st">'quantity'</span>] &lt; lower_bound) | (df[<span class="st">'quantity'</span>] &gt; upper_bound)]
+<span class="fn">print</span>(<span class="st">f"\nJumlah Anomali Kuantitas: {len(anomali_qty)}"</span>)
+<span class="fn">print</span>(anomali_qty[[<span class="st">'order_id'</span>, <span class="st">'product_name'</span>, <span class="st">'quantity'</span>]])</pre>
+    </div>
+    <div class="out-wrap">Q1: 1.0, Q3: 4.0, IQR: 3.0
+Batas Wajar Kuantitas Retail: 1 s/d 8.5
+
+Jumlah Anomali Kuantitas: 5
+       order_id               product_name  quantity
+17  TRX-2026018  Kurma Ajwa Madinah 500g         -1
+34  TRX-2026035  Hijab Voal Segiempat            99
+62  TRX-2026063  Sajadah Bulu Tebal Turki         0
+...</div>
+
+    <h3 class="sh">Cell 8 — Winsorization &amp; Koreksi Kuantitas</h3>
+    <div class="code-wrap">
+      <div class="code-hd"><span>Python · Cell 8 — Koreksi Outlier</span><button class="copy-btn" onclick="copyCode(7)">Copy</button></div>
+      <pre class="code"><span class="cm"># 1. Nilai <= 0 dikoreksi menjadi 1 (asumsi minimal beli 1)</span>
+df.loc[df[<span class="st">'quantity'</span>] &lt;= <span class="nm">0</span>, <span class="st">'quantity'</span>] = <span class="nm">1</span>
+
+<span class="cm"># 2. Outlier ekstrim (> 20) diganti dengan median kuantitas</span>
+df.loc[df[<span class="st">'quantity'</span>] &gt; <span class="nm">20</span>, <span class="st">'quantity'</span>] = df[<span class="st">'quantity'</span>].median()
+
+<span class="fn">print</span>(<span class="st">"Statistik Kuantitas Bersih:"</span>)
+<span class="fn">print</span>(df[<span class="st">'quantity'</span>].describe())</pre>
+    </div>
+    <div class="out-wrap">Statistik Kuantitas Bersih:
+count    100.00000
+mean       3.26000
+min        1.00000
+50%        3.00000
+max       10.00000
+dtype: float64</div>
+
+    <div class="unlock-row">
+      <button class="btn-unlock" id="btn3" onclick="completeStep(3)">✓ Langkah 4 Selesai — Outlier Kuantitas Tertangani</button>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══ LANGKAH 5: IMPUTASI RATING & OMSET ══╗ -->
+<div class="step-card locked" id="step4">
+  <div class="step-hd">
+    <div class="step-num" id="sn4">5</div>
+    <div class="step-title">Imputasi Cerdas Rating &amp; Rekayasa Total Omset</div>
+    <span class="step-est">⏱ ~12 menit</span>
+  </div>
+  <div class="step-body">
+    <p>Langkah akhir: selesaikan rating, metode bayar, dan hitung <code>total_amount</code> untuk menghasilkan dataset bersih siap pakai.</p>
+
+    <h3 class="sh">Cell 9 — Imputasi Rating &amp; Status Transaksi</h3>
+    <div class="code-wrap">
+      <div class="code-hd"><span>Python · Cell 9 — Imputasi &amp; Standardisasi Pembayaran</span><button class="copy-btn" onclick="copyCode(8)">Copy</button></div>
+      <pre class="code"><span class="cm"># 1. Filter rating invalid (misal 6 atau -1)</span>
+df[<span class="st">'customer_rating'</span>] = pd.to_numeric(df[<span class="st">'customer_rating'</span>], errors=<span class="st">'coerce'</span>)
+df.loc[(df[<span class="st">'customer_rating'</span>] &lt; <span class="nm">1</span>) | (df[<span class="st">'customer_rating'</span>] &gt; <span class="nm">5</span>), <span class="st">'customer_rating'</span>] = np.nan
+
+<span class="cm"># 2. Imputasi rating per kategori produk</span>
+df[<span class="st">'customer_rating'</span>] = df.groupby(<span class="st">'product_category'</span>)[<span class="st">'customer_rating'</span>].transform(
+    <span class="kw">lambda</span> x: x.fillna(x.median())
+).round(<span class="nm">1</span>)
+
+<span class="cm"># 3. Standardisasi metode pembayaran</span>
+pay_clean = {<span class="st">'qris'</span>: <span class="st">'QRIS'</span>, <span class="st">'QRIS Barcode'</span>: <span class="st">'QRIS'</span>, <span class="st">'Transfer Bank'</span>: <span class="st">'Transfer Bank Syariah'</span>}
+df[<span class="st">'payment_method'</span>] = df[<span class="st">'payment_method'</span>].fillna(<span class="st">'Transfer Bank Syariah'</span>).str.strip().replace(pay_clean)
+
+<span class="cm"># 4. Status pesanan & Customer ID</span>
+df[<span class="st">'order_status'</span>] = df[<span class="st">'order_status'</span>].fillna(<span class="st">'Processing'</span>).str.strip().str.title()
+df[<span class="st">'customer_id'</span>] = df[<span class="st">'customer_id'</span>].fillna(<span class="st">'CUST-UNKNOWN'</span>)</pre>
+    </div>
+
+    <h3 class="sh">Cell 10 — Rekayasa Fitur Total Amount &amp; Ekspor</h3>
+    <div class="code-wrap">
+      <div class="code-hd"><span>Python · Cell 10 — Feature Engineering &amp; to_csv</span><button class="copy-btn" onclick="copyCode(9)">Copy</button></div>
+      <pre class="code"><span class="cm"># Hitung omset per transaksi: (Harga * Qty) + Ongkir</span>
+df[<span class="st">'total_amount'] = (df['price'] * df['quantity']) + df['shipping_cost']
+
+<span class="cm"># Pilih kolom bersih terurut</span>
+clean_cols = [
+    <span class="st">'order_id'</span>, <span class="st">'order_date'</span>, <span class="st">'customer_id'</span>, <span class="st">'customer_name'</span>, <span class="st">'customer_city'</span>,
+    <span class="st">'product_category'</span>, <span class="st">'product_name'</span>, <span class="st">'price'</span>, <span class="st">'quantity'</span>, <span class="st">'shipping_cost'</span>,
+    <span class="st">'total_amount'</span>, <span class="st">'payment_method'</span>, <span class="st">'order_status'</span>, <span class="st">'customer_rating'</span>
+]
+df_clean = df[clean_cols].copy()
+
+<span class="cm"># Ekspor file bersih</span>
+df_clean.to_csv(<span class="st">'dataset-ecommerce-clean-p03.csv'</span>, index=<span class="kw">False</span>)
+
+<span class="fn">print</span>(<span class="st">f"Dimensi Bersih Final: {df_clean.shape}"</span>)
+<span class="fn">print</span>(<span class="st">f"Total Nilai Transaksi: Rp {df_clean['total_amount'].sum():,.0f}"</span>)
+<span class="fn">print</span>(<span class="st">f"Total Sisa Null: {df_clean.isna().sum().sum()}"</span>)
+df_clean.head(<span class="nm">3</span>)</pre>
+    </div>
+    <div class="out-wrap">Dimensi Bersih Final: (100, 14)
+Total Nilai Transaksi: Rp 42,171,000
+Total Sisa Null: 0
+
+      order_id  order_date customer_id   customer_name customer_city product_category ...
+0  TRX-2026001  2026-02-21    CUST-109  Fajar Ramadhan    Yogyakarta   Fashion Muslim ...
+1  TRX-2026002  2026-10-15    CUST-106    Dewi Sartika      Surabaya   Fashion Muslim ...
+2  TRX-2026003  2026-06-01    CUST-114  Khadijah Putri       Bandung    Kuliner Halal ...</div>
+
+    <div class="callout sya">
+      <strong>☾ Makna Taharah Data:</strong> Alhamdulillah! Data berhasil disucikan dari 5 baris duplikat, anomali harga Rp 6,5 juta berhasil dikoreksi, rating hilang terimputasi secara objektif, dan omset riil Rp 42,17 juta kini dapat dipertanggungjawabkan secara akurat.
+    </div>
+
+    <div class="unlock-row">
+      <button class="btn-unlock" id="btn4" onclick="completeStep(4)">✓ Langkah 5 Selesai — Dataset Bersih Siap Digunakan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══ LANGKAH 6: TANTANGAN ══╗ -->
+<div class="step-card locked" id="step5">
+  <div class="step-hd">
+    <div class="step-num" id="sn5">6</div>
+    <div class="step-title">Tantangan Mandiri — Analisis Pasca Pembersihan</div>
+    <span class="step-est">⏱ ~15 menit</span>
+  </div>
+  <div class="step-body">
+    <p>Kerjakan 3 soal tantangan berikut menggunakan <code>df_clean</code> yang sudah kamu hasilkan. Buat sel kode baru di Colab beserta sel Markdown penjelasannya.</p>
+
+    <div class="challenge-box">
+      <h4>🎯 3 Tantangan Analitik Mandiri</h4>
+      <div class="challenge-q"><strong>Tantangan 1 — Analisis Kontribusi Kategori Produk:</strong> Gunakan <code>groupby('product_category')</code> untuk menghitung: (a) Total omset (sum dari <code>total_amount</code>), (b) Total unit terjual (sum dari <code>quantity</code>), dan (c) Rata-rata rating kepuasan. Urutkan dari kategori dengan omset tertinggi. Kategori manakah yang menjadi mesin pendapatan utama?</div>
+      <div class="challenge-q"><strong>Tantangan 2 — Pola Pembayaran Antar Kota:</strong> Buat pivot table atau groupby antara <code>customer_city</code> dan <code>payment_method</code> untuk melihat jumlah transaksi. Apakah kota di luar Jabodetabek (seperti Surabaya atau Yogyakarta) memiliki preferensi metode pembayaran yang berbeda dibandingkan Jakarta/Bandung?</div>
+      <div class="challenge-q"><strong>Tantangan 3 — Evaluasi Kualitas Layanan &amp; Status Pesanan:</strong> Hitung persentase transaksi yang berstatus <code>Cancelled</code> atau <code>Refunded</code> dibandingkan total transaksi. Bandingkan rata-rata <code>customer_rating</code> antara pesanan yang <code>Delivered</code> vs yang <code>Refunded</code>. Berikan rekomendasi bisnis 2 kalimat untuk manajemen operasional!</div>
+    </div>
+
+    <h3 class="sh">Ketentuan Pengumpulan Lab Report</h3>
+    <ul class="lst">
+      <li><strong>Format File:</strong> Notebook Google Colab <code>.ipynb</code> dengan nama <code>Lab2_[NIM]_[Nama].ipynb</code></li>
+      <li><strong>Isi Wajib:</strong> Seluruh sel kode Langkah 1–5 + jawaban 3 tantangan analitik mandiri</li>
+      <li><strong>Interpretasi Bisnis:</strong> Setiap tabel/output tantangan wajib disertai sel Markdown yang menjelaskan maknanya bagi pengambil keputusan bisnis UMKM halal</li>
+      <li><strong>Refleksi Syariah:</strong> Tulis 1 paragraf singkat: mengapa integritas pembersihan data (Taharah Data) merupakan amanah penting seorang analis Muslim?</li>
+    </ul>
+
+    <div class="unlock-row">
+      <button class="btn-unlock" id="btn5" onclick="completeStep(5)">✓ Tantangan Selesai — Notebook Siap Dikumpulkan</button>
+      <span class="unlock-hint">Klik setelah seluruh tantangan selesai dikerjakan</span>
+    </div>
+  </div>
+</div>
+
+<!-- COMPLETION -->
+<div class="completion" id="completion">
+  <h2>🎉 Lab 2 Selesai! Kamu Resmi Menguasai Data Wrangling!</h2>
+  <p>Kamu sudah membuktikan kemampuan membersihkan data kotor: menangani duplikasi, standardisasi teks, casting numerik, deteksi outlier IQR, dan imputasi cerdas.</p>
+  <p style="margin-top:8px;font-size:12.5px;color:rgba(255,255,255,.5)">Jangan lupa mendownload file <code>.ipynb</code> kamu dan kumpulkan ke Google Drive kelas.</p>
+  <a class="next-btn" href="Pertemuan-03-ADA.html">← Kembali ke Slide Teori P03</a>
+</div>
+
+</div><!-- end .main -->
+
+<script>
+const LAB_KEY = 'tazkia-ada-p03-lab-v1';
+const TOTAL_STEPS = 6;
+let labState = {done:[]};
+function loadLabState(){try{const s=JSON.parse(localStorage.getItem(LAB_KEY));if(s)labState=s;}catch(e){}}
+function saveLabState(){try{localStorage.setItem(LAB_KEY,JSON.stringify(labState));}catch(e){}}
+
+function applyLabState(){
+  labState.done.forEach(i=>applyDone(i));
+  updateTracker();
+  if(labState.done.length===TOTAL_STEPS) document.getElementById('completion').classList.add('show');
+}
+function applyDone(i){
+  const card=document.getElementById('step'+i);
+  if(!card) return;
+  card.className='step-card unlocked completed';
+  const num=document.getElementById('sn'+i);
+  if(num){num.style.background='var(--sya)';num.textContent='✓';}
+  const btn=document.getElementById('btn'+i);
+  if(btn){btn.className='btn-unlock done-state';btn.disabled=true;btn.textContent='✓ Selesai';}
+  const next=document.getElementById('step'+(i+1));
+  if(next) next.className='step-card unlocked';
+}
+function completeStep(i){
+  if(labState.done.includes(i)) return;
+  labState.done.push(i);
+  saveLabState();
+  applyDone(i);
+  updateTracker();
+  const next=document.getElementById('step'+(i+1));
+  if(next) next.scrollIntoView({behavior:'smooth',block:'start'});
+  if(labState.done.length===TOTAL_STEPS){
+    document.getElementById('completion').classList.add('show');
+    document.getElementById('completion').scrollIntoView({behavior:'smooth'});
+  }
+}
+function updateTracker(){
+  for(let i=0;i<TOTAL_STEPS;i++){
+    const c=document.getElementById('tc'+i);
+    const l=document.getElementById('tl'+i);
+    const ln=document.getElementById('tln'+i);
+    if(!c) continue;
+    if(labState.done.includes(i)){
+      c.className='tr-circle done';c.textContent='✓';
+      l.className='tr-label done';
+      if(ln) ln.className='tr-line done';
+    } else if(i===labState.done.length){
+      c.className='tr-circle active';l.className='tr-label active';
+    } else {c.className='tr-circle';l.className='tr-label';}
+  }
+}
+
+const CODE_TEXTS = [
+  `import pandas as pd\nimport numpy as np\n\ndf_raw = pd.read_csv('dataset-ecommerce-dirty-p03.csv')\nprint(f"Dimensi Awal: {df_raw.shape}")\ndf_raw.head(3)`,
+  `audit = pd.DataFrame({\n    'Tipe Data': df_raw.dtypes,\n    'Jumlah Null': df_raw.isna().sum(),\n    'Persen Null (%)': (df_raw.isna().mean() * 100).round(2),\n    'Contoh Nilai': [df_raw[c].dropna().iloc[0] if len(df_raw[c].dropna()) > 0 else '' for c in df_raw.columns]\n})\nprint(audit)\nprint(f"\\nJumlah Baris Duplikat: {df_raw.duplicated().sum()}")`,
+  `df = df_raw.drop_duplicates().copy()\nprint(f"Dimensi setelah drop_duplicates: {df.shape}")\n\ndf['customer_name'] = df['customer_name'].str.strip().str.title()\nprint("Contoh nama setelah dibersihkan:")\nprint(df['customer_name'].head(4).tolist())`,
+  `city_map = {\n    'JKT Selatan': 'Jakarta Selatan', 'jak-sel': 'Jakarta Selatan',\n    'JKT TIMUR': 'Jakarta Timur',     'Jakarta Timur': 'Jakarta Timur',\n    'bdg': 'Bandung',                 'BANDUNG': 'Bandung',\n    'BOGOR': 'Bogor',                 'bogor': 'Bogor',\n    'DEPOK': 'Depok',                 'Tangsel': 'Tangerang Selatan',\n    'SBY': 'Surabaya',                'surabaya': 'Surabaya',\n    'Jogja': 'Yogyakarta',            'YOGYA': 'Yogyakarta'\n}\ndf['customer_city'] = df['customer_city'].str.strip().replace(city_map)\n\ncat_map = {\n    'FASHION MUSLIM': 'Fashion Muslim',       'fashion muslim': 'Fashion Muslim',\n    'KULINER HALAL': 'Kuliner Halal',         'kuliner halal': 'Kuliner Halal',\n    'Makanan Halal': 'Kuliner Halal',         'KOSMETIK HALAL': 'Kosmetik Halal',\n    'kosmetik halal': 'Kosmetik Halal',       'Skincare & Kosmetik': 'Kosmetik Halal',\n    'HERBAL & SUPLEMEN': 'Herbal & Suplemen', 'herbal & suplemen': 'Herbal & Suplemen',\n    'Herbal': 'Herbal & Suplemen',            'Herbal Suplemen': 'Herbal & Suplemen',\n    'PERLENGKAPAN IBADAH': 'Perlengkapan Ibadah', 'perlengkapan ibadah': 'Perlengkapan Ibadah',\n    'Ibadah Tools': 'Perlengkapan Ibadah'\n}\ndf['product_category'] = df['product_category'].str.strip().replace(cat_map)\n\nprint("Frekuensi Kategori Produk Sekarang:")\nprint(df['product_category'].value_counts())`,
+  `def clean_currency(val):\n    if pd.isna(val) or val == '': return np.nan\n    s = str(val).replace('Rp', '').replace(' ', '').strip().replace('.', '').replace(',', '')\n    try: return float(s)\n    except: return np.nan\n\ndf['price'] = df['price_raw'].apply(clean_currency)\ndf.loc[df['price'] > 500000, 'price'] = df.loc[df['price'] > 500000, 'price'] / 100\ndf['price'] = df.groupby('product_name')['price'].transform(lambda x: x.fillna(x.median()))\n\ndef clean_ship(val):\n    if pd.isna(val) or val == '' or str(val).upper() in ['GRATIS', 'FREE', '0']: return 0.0\n    s = str(val).replace('Rp', '').replace(' ', '').replace('.', '').replace(',', '').strip()\n    try: return min(float(s), 50000.0)\n    except: return 0.0\n\ndf['shipping_cost'] = df['shipping_cost_raw'].apply(clean_ship)\nprint(df[['price', 'shipping_cost']].describe().round(2))`,
+  `df['order_date'] = pd.to_datetime(df['order_date'], format='mixed', errors='coerce')\ntgl_median = df['order_date'].dropna().median()\ndf['order_date'] = df['order_date'].fillna(tgl_median)\n\nprint(f"Rentang tanggal: {df['order_date'].min().date()} s/d {df['order_date'].max().date()}")\nprint(f"Sisa missing date: {df['order_date'].isna().sum()}")`,
+  `df['quantity'] = pd.to_numeric(df['quantity'], errors='coerce')\nQ1 = df['quantity'].quantile(0.25)\nQ3 = df['quantity'].quantile(0.75)\nIQR = Q3 - Q1\nlower_bound = max(1, Q1 - 1.5 * IQR)\nupper_bound = Q3 + 1.5 * IQR\n\nprint(f"Q1: {Q1}, Q3: {Q3}, IQR: {IQR}")\nprint(f"Batas Wajar Kuantitas Retail: {lower_bound} s/d {upper_bound}")\nanomali_qty = df[(df['quantity'] < lower_bound) | (df['quantity'] > upper_bound)]\nprint(f"\\nJumlah Anomali Kuantitas: {len(anomali_qty)}")\nprint(anomali_qty[['order_id', 'product_name', 'quantity']])`,
+  `df.loc[df['quantity'] <= 0, 'quantity'] = 1\ndf.loc[df['quantity'] > 20, 'quantity'] = df['quantity'].median()\nprint("Statistik Kuantitas Bersih:")\nprint(df['quantity'].describe())`,
+  `df['customer_rating'] = pd.to_numeric(df['customer_rating'], errors='coerce')\ndf.loc[(df['customer_rating'] < 1) | (df['customer_rating'] > 5), 'customer_rating'] = np.nan\ndf['customer_rating'] = df.groupby('product_category')['customer_rating'].transform(\n    lambda x: x.fillna(x.median())\n).round(1)\n\npay_clean = {'qris': 'QRIS', 'QRIS Barcode': 'QRIS', 'Transfer Bank': 'Transfer Bank Syariah'}\ndf['payment_method'] = df['payment_method'].fillna('Transfer Bank Syariah').str.strip().replace(pay_clean)\ndf['order_status'] = df['order_status'].fillna('Processing').str.strip().str.title()\ndf['customer_id'] = df['customer_id'].fillna('CUST-UNKNOWN')`,
+  `df['total_amount'] = (df['price'] * df['quantity']) + df['shipping_cost']\nclean_cols = [\n    'order_id', 'order_date', 'customer_id', 'customer_name', 'customer_city',\n    'product_category', 'product_name', 'price', 'quantity', 'shipping_cost',\n    'total_amount', 'payment_method', 'order_status', 'customer_rating'\n]\ndf_clean = df[clean_cols].copy()\ndf_clean.to_csv('dataset-ecommerce-clean-p03.csv', index=False)\nprint(f"Dimensi Bersih Final: {df_clean.shape}")\nprint(f"Total Nilai Transaksi: Rp {df_clean['total_amount'].sum():,.0f}")\nprint(f"Total Sisa Null: {df_clean.isna().sum().sum()}")\ndf_clean.head(3)`
+];
+
+function copyCode(i){
+  if(i>=CODE_TEXTS.length) return;
+  navigator.clipboard.writeText(CODE_TEXTS[i]).then(()=>{
+    const btns=document.querySelectorAll('.copy-btn');
+    const btn=btns[i];if(!btn) return;
+    const old=btn.textContent;btn.textContent='✓ Copied!';
+    setTimeout(()=>btn.textContent=old,1500);
+  });
+}
+
+loadLabState(); applyLabState();
+</script>

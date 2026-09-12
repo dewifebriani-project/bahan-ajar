@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pertemuan 4 — Etika, Penipuan &amp; Tanggung Jawab Sosial</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap">
+<style>
+/* ═══ MEETING COLOR VARIABLES (P04 = Amber Flame & Crimson Burgundy) ═══ */
+:root{
+  --meet-from:#1A0800; --meet-mid:#2E1005; --meet-to:#481808;
+  --meet-acc:#D46020;  --meet-acc2:#E88030; --meet-star:#D46020;
+  /* SYSTEM TOKENS */
+  --bg:#EDF1F6;--sf:#FFFFFF;--sf2:#FBF2EC;--sf3:#F6ECE4;
+  --bd:#D8C4B8;--bs:#EADFD8;
+  --tx:#1C0C04;--txm:#4A3830;--txl:#8C756B;
+  --pri:#2E1005;--pmid:#D46020;--pril:#FCEBD8;--prx:#FAF0E8;
+  --acc:#D46020;--accl:#FCEBD8;
+  --sya:#1F9060;--syal:#D0EEE2;--syab:#40B080;
+  --ok:#1F9060;--okl:#D0EEE2;
+  --warn:#C03818;--warnl:#FCDBD0;
+  /* MATCHING PAIR COLORS */
+  --p0:#D46020;--p0l:#FCEBD8; --p1:#1F9060;--p1l:#D0EEE2;
+  --p2:#7040B0;--p2l:#EEE0FA; --p3:#1B7898;--p3l:#D8EEF6;
+  --p4:#C03818;--p4l:#FCDBD0; --p5:#9E6800;--p5l:#FDF0D0;
+  --r:8px;--rs:5px;
+  --shadow:0 4px 20px rgba(46,16,5,.12);
+  --shadow-sm:0 2px 8px rgba(46,16,5,.08);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#0E0604;--sf:#1A0D08;--sf2:#140804;--sf3:#1E100A;
+  --bd:#361C12;--bs:#28140C;
+  --tx:#F4E8E2;--txm:#B0988E;--txl:#6E554B;
+  --pri:#E88030;--pmid:#D46020;--pril:#2A1006;--prx:#1F0B04;
+  --acc:#E88030;--accl:#2A1006;
+  --sya:#30B878;--syal:#041410;--syab:#186040;
+  --ok:#30B878;--okl:#041410;
+  --warn:#E05030;--warnl:#280800;
+  --p0l:#281000;--p1l:#041410;--p2l:#180828;--p3l:#0A2030;--p4l:#200408;--p5l:#241800;
+}}
+:root[data-theme=dark]{
+  --bg:#0E0604;--sf:#1A0D08;--sf2:#140804;--sf3:#1E100A;
+  --bd:#361C12;--bs:#28140C;
+  --tx:#F4E8E2;--txm:#B0988E;--txl:#6E554B;
+  --pri:#E88030;--pmid:#D46020;--pril:#2A1006;--prx:#1F0B04;
+  --acc:#E88030;--accl:#2A1006;
+  --sya:#30B878;--syal:#041410;--syab:#186040;
+  --ok:#30B878;--okl:#041410;
+  --warn:#E05030;--warnl:#280800;
+  --p0l:#281000;--p1l:#041410;--p2l:#180828;--p3l:#0A2030;--p4l:#200408;--p5l:#241800;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color:var(--tx);margin:0;font-size:15px;line-height:1.65}
+
+/* ── TOPBAR ── */
+.topbar{background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.back-btn{color:rgba(255,255,255,.65);font-size:13px;font-weight:600;cursor:pointer;border:none;background:none;display:flex;align-items:center;gap:4px;transition:color .15s;text-decoration:none}
+.back-btn:hover{color:#fff}
+.top-div{width:1px;height:20px;background:rgba(255,255,255,.15)}
+.top-course{font-size:11.5px;color:rgba(255,255,255,.5)}
+.top-meeting{font-size:13px;font-weight:700;color:rgba(255,255,255,.95)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.top-badge{font-size:11px;font-weight:700;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:2px 10px;color:rgba(255,255,255,.85)}
+.prog-wrap{width:120px;height:5px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden}
+.prog-bar{height:100%;background:var(--meet-acc2);border-radius:3px;transition:width .4s ease}
+.prog-txt{font-size:11px;color:rgba(255,255,255,.5);text-align:right}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(160deg,var(--meet-from) 0%,var(--meet-mid) 55%,var(--meet-to) 100%);color:#fff;padding:38px 24px 0;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;pointer-events:none;opacity:.15}
+.hero-inner{max-width:840px;margin:0 auto;position:relative;z-index:1;padding-bottom:30px}
+.hero-ew{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.hero-line{width:22px;height:1px;background:var(--meet-acc2)}
+.hero-tag{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--meet-acc2)}
+.hero-bignum{font-family:'Amiri',serif;font-size:72px;font-weight:700;line-height:1;color:rgba(255,255,255,.07);position:absolute;right:0;top:-8px;letter-spacing:-.02em;-webkit-user-select:none;user-select:none}
+.hero-title{font-family:'Amiri',serif;font-size:30px;font-weight:700;margin:0 0 6px;line-height:1.2}
+.hero-sub{font-size:14.5px;color:rgba(255,255,255,.7);margin:0 0 18px}
+.hero-chips{display:flex;flex-wrap:wrap;gap:6px}
+.hchip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:3px 11px;font-size:12px;color:rgba(255,255,255,.8)}
+.hchip strong{color:#fff}
+.hero-arch{line-height:0;margin-top:-1px}
+.hero-arch svg{display:block;width:100%;height:26px}
+
+/* ── STEPS CONNECTOR ── */
+.steps-wrap{background:var(--sf);border-bottom:1px solid var(--bs);padding:12px 24px;overflow-x:auto;position:sticky;top:52px;z-index:90;box-shadow:var(--shadow-sm)}
+.steps{display:flex;align-items:center;max-width:840px;margin:0 auto}
+.step{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--txl);white-space:nowrap;cursor:default}
+.sdot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:var(--sf3);border:2px solid var(--bs);color:var(--txl);flex-shrink:0;transition:all .25s}
+.step.done .sdot{background:var(--ok);border-color:var(--ok);color:#fff}
+.step.active .sdot{background:var(--pmid);border-color:var(--pmid);color:#fff}
+.step.quiz .sdot{background:var(--accl);border-color:var(--acc);color:var(--acc)}
+.step.quiz.done .sdot{background:var(--ok);border-color:var(--ok);color:#fff}
+.slabel{display:none}
+@media(min-width:580px){.slabel{display:inline}}
+.sconn{flex:1;height:2px;background:var(--bs);min-width:10px;transition:background .25s}
+.sconn.done{background:var(--ok)}
+
+/* ── BODY ── */
+.body{max-width:840px;margin:0 auto;padding:26px 18px 80px}
+@media(min-width:640px){.body{padding:30px 26px 80px}}
+
+/* ── SECTION CARD ── */
+.sec{background:var(--sf);border:1px solid var(--bs);border-radius:var(--r);margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow-sm);transition:opacity .4s,filter .4s}
+.sec.locked{opacity:.38;filter:grayscale(.45);pointer-events:none;user-select:none}
+.sec.unlocking{animation:sIn .35s ease both}
+@keyframes sIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.sec-hd{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--bs);background:var(--sf3)}
+.sec-num{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:var(--pmid);color:#fff;flex-shrink:0;transition:background .3s}
+.sec.done-sec .sec-num{background:var(--ok)}
+.sec-title-wrap{flex:1}
+.sec-title{font-family:'Amiri',serif;font-size:17.5px;font-weight:700;color:var(--pri);margin:0}
+.sec-sub2{font-size:12px;color:var(--txl);margin:1px 0 0}
+.sec-chk{font-size:18px;color:var(--ok);flex-shrink:0;display:none}
+.sec.done-sec .sec-chk{display:block}
+.sec-body{padding:20px 22px}
+@media(max-width:480px){.sec-body{padding:14px 14px}}
+.sec-foot{padding:14px 22px;border-top:1px solid var(--bs);display:flex;justify-content:flex-end;align-items:center;gap:10px;background:var(--sf3)}
+.done-msg{font-size:12.5px;color:var(--ok);font-weight:600;display:none}
+.sec.done-sec .done-msg{display:block}
+.sec.done-sec .paham-btn{display:none}
+.paham-btn{background:var(--pmid);color:#fff;border:none;border-radius:var(--r);padding:9px 20px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s;font-family:'Source Sans 3',sans-serif}
+.paham-btn:hover{background:#E88030}
+.paham-btn::after{content:'→'}
+
+/* ── TYPOGRAPHY ── */
+.lead{font-size:15.5px;color:var(--txm);line-height:1.7;margin:0 0 16px}
+h3.sub{font-family:'Amiri',serif;font-size:18px;font-weight:700;color:var(--pri);margin:20px 0 9px;display:flex;align-items:center;gap:8px}
+h3.sub::before{content:'';width:4px;height:16px;background:var(--meet-acc2);border-radius:2px;flex-shrink:0}
+h4.sub2{font-size:13.5px;font-weight:700;color:var(--pmid);margin:14px 0 6px;text-transform:uppercase;letter-spacing:.06em}
+p{color:var(--txm);margin:0 0 11px;line-height:1.65}
+ul.detail{padding-left:0;list-style:none;margin:0 0 13px}
+ul.detail li{padding:6px 0 6px 18px;position:relative;color:var(--txm);border-bottom:1px solid var(--bs);font-size:14px;line-height:1.5}
+ul.detail li:last-child{border-bottom:none}
+ul.detail li::before{content:'▸';position:absolute;left:0;color:var(--pmid);font-size:11px;top:8px}
+ul.detail li strong{color:var(--tx)}
+ul.bullet{padding-left:20px;margin:0 0 13px}
+ul.bullet li{margin-bottom:5px;color:var(--txm);font-size:14px;line-height:1.5}
+
+/* ── CALLOUT ── */
+.callout{border-radius:var(--rs);padding:13px 16px;margin:12px 0;font-size:14px;line-height:1.6}
+.callout.info{background:var(--prx);border-left:4px solid var(--pmid);color:var(--txm)}
+.callout.info strong{color:var(--pri)}
+.callout.warn{background:var(--warnl);border-left:4px solid var(--warn);color:var(--txm)}
+.callout.warn strong{color:var(--warn)}
+.callout.sya{background:var(--syal);border-left:4px solid var(--sya);color:var(--txm)}
+.callout.sya strong{color:var(--sya)}
+.callout.case{background:var(--sf3);border:1px solid var(--bs);border-left:4px solid var(--meet-acc2);color:var(--txm)}
+.case-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--meet-acc2);margin-bottom:5px}
+
+/* ── DIAGRAM & CARDS ── */
+.diagram-wrap{margin:16px 0;border:1px solid var(--bs);border-radius:var(--r);overflow:hidden;background:var(--sf)}
+.diag-hd{background:linear-gradient(90deg,var(--pri),var(--meet-mid));color:#fff;padding:9px 14px;font-size:12px;font-weight:700;letter-spacing:.06em}
+.diag-body{padding:14px}
+
+.pillars-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+@media(max-width:640px){.pillars-grid{grid-template-columns:1fr}}
+.pillar-card{background:var(--sf3);border:1.5px solid var(--bs);border-radius:var(--rs);padding:13px;position:relative}
+.pillar-card.hl{border-color:var(--pmid);background:var(--prx)}
+.pillar-badge{font-size:10px;font-weight:700;background:var(--pmid);color:#fff;padding:2px 7px;border-radius:10px;display:inline-block;margin-bottom:6px}
+.pillar-title{font-family:'Amiri',serif;font-size:15px;font-weight:700;color:var(--pri);margin-bottom:4px}
+.pillar-desc{font-size:12.5px;color:var(--txm);line-height:1.45}
+
+.triangle-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+@media(max-width:600px){.triangle-grid{grid-template-columns:1fr}}
+.tri-card{background:var(--sf3);border:1.5px solid var(--bs);border-radius:var(--rs);padding:14px;transition:all .2s;text-align:center}
+.tri-card:hover{border-color:var(--pmid);box-shadow:var(--shadow-sm)}
+.tri-icon{font-size:26px;margin-bottom:6px;display:block}
+.tri-name{font-family:'Amiri',serif;font-size:16px;font-weight:700;color:var(--pri);margin-bottom:4px}
+.tri-desc{font-size:12.5px;color:var(--txm);line-height:1.45;text-align:left}
+.tri-ais{margin-top:8px;padding-top:8px;border-top:1px dashed var(--bs);font-size:11.5px;color:var(--pmid);font-weight:600;text-align:left}
+
+.tree-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+@media(max-width:640px){.tree-grid{grid-template-columns:1fr}}
+.tree-card{background:var(--sf3);border:1.5px solid var(--bs);border-radius:var(--rs);padding:14px}
+.tree-hd{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.tree-tag{font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;background:var(--meet-acc);color:#fff}
+.tree-title{font-weight:700;font-size:14px;color:var(--tx)}
+.tree-items{list-style:none;padding:0;margin:0;font-size:12.5px;color:var(--txm)}
+.tree-items li{padding:4px 0;border-bottom:1px solid var(--bs)}
+.tree-items li:last-child{border-bottom:none}
+.tree-items li strong{color:var(--pri)}
+
+/* ── TABLE ── */
+.cmp-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13.5px}
+.cmp-table th{background:var(--pri);color:#fff;padding:9px 12px;text-align:left;font-size:12px}
+.cmp-table td{padding:9px 12px;border-bottom:1px solid var(--bs);color:var(--txm);vertical-align:top}
+.cmp-table tr:last-child td{border-bottom:none}
+.cmp-table tr:nth-child(even) td{background:var(--sf3)}
+
+/* ── AYAT & SYARIAH ── */
+.sya-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:540px){.sya-grid{grid-template-columns:1fr}}
+.sya-card{background:var(--sf3);border:1px solid var(--bs);border-top:3px solid var(--sya);border-radius:var(--rs);padding:14px}
+.sya-card-title{font-family:'Amiri',serif;font-size:16px;font-weight:700;color:var(--sya);margin-bottom:4px}
+.sya-card-desc{font-size:13px;color:var(--txm);line-height:1.55}
+.sya-card-ref{font-size:11.5px;color:var(--syab);margin-top:6px;font-weight:600}
+
+.ayat-box{background:linear-gradient(135deg,var(--meet-from),var(--meet-mid));border-radius:var(--r);padding:18px 22px;margin:14px 0;color:#fff}
+.ayat-ar{font-family:'Amiri',serif;font-size:20px;line-height:1.85;text-align:right;direction:rtl;color:#FCEBD8;margin-bottom:12px}
+.ayat-trans{font-style:italic;color:rgba(255,255,255,.8);font-size:13.5px;line-height:1.6;margin-bottom:8px;border-top:1px solid rgba(255,255,255,.15);padding-top:9px}
+.ayat-ref{font-size:12px;color:var(--meet-acc2);font-weight:600}
+
+/* ── QUIZ STYLES ── */
+.quiz-sec{background:var(--sf);border:2px solid var(--acc);border-radius:var(--r);margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow);transition:opacity .4s,filter .4s}
+.quiz-sec.locked{opacity:.38;filter:grayscale(.45);pointer-events:none;user-select:none}
+.quiz-hd{background:linear-gradient(135deg,var(--meet-from),var(--meet-mid));color:#fff;padding:15px 22px;display:flex;align-items:center;gap:11px}
+.quiz-icon{font-size:22px}
+.quiz-hd-text{flex:1}
+.quiz-hd-title{font-family:'Amiri',serif;font-size:19px;font-weight:700;margin:0}
+.quiz-hd-sub{font-size:12px;color:rgba(255,255,255,.65);margin:2px 0 0}
+.quiz-body{padding:20px 22px}
+
+.q-item{margin-bottom:22px}
+.q-text{font-size:14.5px;font-weight:600;color:var(--tx);margin-bottom:11px;line-height:1.5}
+.q-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--pmid);color:#fff;border-radius:50%;font-size:10.5px;font-weight:700;margin-right:7px;flex-shrink:0;vertical-align:middle}
+.options{display:flex;flex-direction:column;gap:6px}
+.opt{padding:9px 14px;border-radius:var(--rs);border:2px solid var(--bs);background:var(--sf3);cursor:pointer;font-size:13.5px;color:var(--txm);transition:all .15s;display:flex;align-items:flex-start;gap:9px;-webkit-user-select:none;user-select:none}
+.opt:hover{border-color:var(--pmid);background:var(--prx);color:var(--pri)}
+.opt.selected{border-color:var(--pmid);background:var(--pril);color:var(--pri);font-weight:600}
+.opt.correct{border-color:var(--ok);background:var(--okl);color:#0A3020;font-weight:600}
+.opt.wrong{border-color:var(--warn);background:var(--warnl);color:#6A1808}
+.opt-ltr{width:20px;height:20px;border-radius:50%;background:var(--bs);display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;flex-shrink:0;transition:all .15s}
+.opt.selected .opt-ltr{background:var(--pmid);color:#fff}
+.opt.correct .opt-ltr{background:var(--ok);color:#fff}
+.opt.wrong .opt-ltr{background:var(--warn);color:#fff}
+.opt-txt{flex:1;line-height:1.5}
+.opt-fb{font-size:11.5px;font-style:italic;margin-top:4px;display:none;color:inherit;opacity:.85}
+.opt.correct .opt-fb,.opt.wrong .opt-fb{display:block}
+
+/* MATCHING */
+.match-intro{font-size:13.5px;color:var(--txm);margin-bottom:14px;line-height:1.55;padding:10px 14px;background:var(--prx);border-radius:var(--rs)}
+.match-container{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:520px){.match-container{grid-template-columns:1fr}}
+.match-col-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--txl);margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--bs)}
+.match-terms,.match-defs{display:flex;flex-direction:column;gap:5px}
+.match-term,.match-def{padding:9px 12px;border:2px solid var(--bs);border-radius:var(--rs);cursor:pointer;font-size:13px;color:var(--txm);background:var(--sf3);transition:all .15s;-webkit-user-select:none;user-select:none;line-height:1.4}
+.match-term{font-weight:700;color:var(--tx)}
+.match-term:hover,.match-def:hover{border-color:var(--pmid);background:var(--prx)}
+.match-term.selected{border-color:var(--pmid);background:var(--pril);color:var(--pri)}
+
+.quiz-foot{padding:14px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;background:var(--sf3);border-top:1px solid var(--bs)}
+.submit-btn{background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc2));color:#fff;border:none;border-radius:var(--r);padding:10px 24px;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s;font-family:'Source Sans 3',sans-serif}
+.submit-btn:hover{opacity:.9}
+.score-badge{font-size:14px;font-weight:700;padding:6px 14px;border-radius:20px;display:none}
+.score-badge.pass{background:var(--okl);color:var(--ok);border:1px solid var(--ok)}
+.score-badge.fail{background:var(--warnl);color:var(--warn);border:1px solid var(--warn)}
+
+.completion{display:none;background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;border-radius:var(--r);padding:28px;text-align:center;margin-top:18px}
+.completion.show{display:block}
+.completion h2{font-family:'Amiri',serif;font-size:24px;font-weight:700;margin-bottom:8px}
+.completion p{color:rgba(255,255,255,.75);font-size:13.5px;margin-bottom:14px}
+.completion .lab-btn{display:inline-block;background:var(--meet-acc2);color:#fff;border-radius:20px;padding:10px 24px;font-weight:700;font-size:14px;text-decoration:none;transition:transform .15s}
+.completion .lab-btn:hover{transform:translateY(-2px)}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <a class="back-btn" href="../RPS-SIA.html">← RPS</a>
+    <div class="top-div"></div>
+    <div>
+      <div class="top-course">Sistem Informasi Akuntansi · FEBI Universitas Tazkia</div>
+      <div class="top-meeting">Pertemuan 04 — Etika, Penipuan &amp; Tanggung Jawab Sosial</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span class="top-badge">CPMK-3 · Romney Ch. 3</span>
+    <div class="prog-wrap"><div class="prog-bar" id="topProg" style="width:14%"></div></div>
+    <span class="prog-txt" id="topPct">14%</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <svg class="hero-bg" viewBox="0 0 600 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs><pattern id="dots-p4" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="20" cy="20" r="1.8" fill="#D46020" opacity=".5"/>
+      <path d="M0,20 L40,20 M20,0 L20,40" stroke="#D46020" stroke-width=".3" opacity=".25"/>
+    </pattern></defs>
+    <rect width="100%" height="100%" fill="url(#dots-p4)"/>
+  </svg>
+  <div class="hero-inner">
+    <div class="hero-bignum">04</div>
+    <div class="hero-ew"><div class="hero-line"></div><span class="hero-tag">Sistem Informasi Akuntansi — Modul Teori Mendalam</span></div>
+    <h1 class="hero-title">Etika, Penipuan &amp; Tanggung Jawab Sosial</h1>
+    <p class="hero-sub">Anatomi Fraud Triangle &amp; Hexagon · ACFE Occupational Fraud Tree · Mitigasi Kontrol Sistem Informasi · Doktrin Hisbah &amp; Nilai Amanah</p>
+    <div class="hero-chips">
+      <span class="hchip"><strong>CPMK-3</strong> C4 — Menganalisis</span>
+      <span class="hchip">Romney &amp; Steinbart Ch. 3 &amp; ACFE</span>
+      <span class="hchip">Audit Forensik &amp; Prinsip Hisbah</span>
+      <span class="hchip">Ganjil 2026/2027</span>
+    </div>
+  </div>
+  <div class="hero-arch"><svg viewBox="0 0 1200 26" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,26 L0,14 Q20,4 40,14 Q60,26 80,14 Q100,4 120,14 Q140,26 160,14 Q180,4 200,14 Q220,26 240,14 Q260,4 280,14 Q300,26 320,14 Q340,4 360,14 Q380,26 400,14 Q420,4 440,14 Q460,26 480,14 Q500,4 520,14 Q540,26 560,14 Q580,4 600,14 Q620,26 640,14 Q660,4 680,14 Q700,26 720,14 Q740,4 760,14 Q780,26 800,14 Q820,4 840,14 Q860,26 880,14 Q900,4 920,14 Q940,26 960,14 Q980,4 1000,14 Q1020,26 1040,14 Q1060,4 1080,14 Q1100,26 1120,14 Q1140,4 1160,14 Q1180,26 1200,14 L1200,26 Z" fill="var(--bg)"/>
+  </svg></div>
+</div>
+
+<!-- STEP INDICATOR TRACK -->
+<div class="steps-wrap">
+  <div class="steps" id="stepTrack">
+    <div class="step active" id="st0"><div class="sdot">1</div><span class="slabel">Tujuan</span></div>
+    <div class="sconn" id="sc0"></div>
+    <div class="step" id="st1"><div class="sdot">2</div><span class="slabel">Teori Fraud</span></div>
+    <div class="sconn" id="sc1"></div>
+    <div class="step" id="st2"><div class="sdot">3</div><span class="slabel">Pohon ACFE</span></div>
+    <div class="sconn" id="sc2"></div>
+    <div class="step" id="st3"><div class="sdot">4</div><span class="slabel">Peran SIA</span></div>
+    <div class="sconn" id="sc3"></div>
+    <div class="step" id="st4"><div class="sdot">5</div><span class="slabel">Nilai Syariah</span></div>
+    <div class="sconn" id="sc4"></div>
+    <div class="step" id="st5"><div class="sdot">6</div><span class="slabel">Kasus BMT</span></div>
+    <div class="sconn" id="sc5"></div>
+    <div class="step quiz" id="st6"><div class="sdot">★</div><span class="slabel">Kuis</span></div>
+  </div>
+</div>
+
+<!-- MAIN BODY -->
+<div class="body">
+
+  <!-- SEKSI 0: TUJUAN & PETA KONSEP -->
+  <div class="sec" id="sec0">
+    <div class="sec-hd">
+      <div class="sec-num">01</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">Tujuan Pembelajaran &amp; Peta Mitigasi Fraud SIA</h2>
+        <div class="sec-sub2">Capaian CPMK-3 (Bloom C4 Menganalisis) · Fondasi Pengendalian Internal</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Dalam lanskap bisnis modern yang terdigitalisasi, Sistem Informasi Akuntansi (SIA) bukan sekadar alat pencatat transaksi, melainkan <strong>garis pertahanan pertama (first line of defense)</strong> dalam mendeteksi dan mencegah kecurangan (<em>fraud</em>). Kerusakan akibat fraud bukan hanya berupa kerugian finansial, melainkan kehancuran reputasi, kepatuhan regulasi, dan kepercayaan publik.</p>
+      
+      <h3 class="sub">Target Capaian Pembelajaran (CPMK-3)</h3>
+      <ul class="detail">
+        <li><strong>Membedah Teori Perilaku Kecurangan:</strong> Menguraikan evolusi dari <em>Fraud Triangle</em> (Cressey), <em>Diamond</em>, hingga <em>Hexagon</em> (S.C.C.O.R.E) dalam konteks kelemahan tata kelola sistem.</li>
+        <li><strong>Mengklasifikasikan Skema ACFE:</strong> Mendiagnosis 3 cabang utama <em>Occupational Fraud Tree</em> (Korupsi, Penyalahgunaan Aset seperti <em>Lapping</em> &amp; <em>Skimming</em>, serta Manipulasi Laporan Keuangan).</li>
+        <li><strong>Merancang Arsitektur Kontrol SIA Anti-Fraud:</strong> Mengonfigurasi pemisahan tugas (<em>Segregation of Duties</em>), log jejak audit kekal (<em>Immutable Audit Trail</em>), dan deteksi pengecualian otomatis (<em>Automated Exception Alerts</em>).</li>
+        <li><strong>Mengintegrasikan Etika Islam &amp; Doktrin Hisbah:</strong> Membumikan nilai <em>Sidq</em> (kejujuran), <em>Amanah</em> (tanggung jawab), dan <em>Raqabah</em> (pengawasan Ilahiah) sebagai pengendali internal intrinsik dalam sistem akuntansi syariah.</li>
+      </ul>
+
+      <h3 class="sub">5 Pilar Mitigasi Fraud Berbasis SIA</h3>
+      <div class="pillars-grid">
+        <div class="pillar-card hl">
+          <span class="pillar-badge">Pilar 1</span>
+          <div class="pillar-title">Preventive Controls</div>
+          <div class="pillar-desc">Pemisahan tugas (SoD), otorisasi ganda (Dual Control), validasi input otomatis, pembatasan hak akses berbasis peran (RBAC).</div>
+        </div>
+        <div class="pillar-card">
+          <span class="pillar-badge">Pilar 2</span>
+          <div class="pillar-title">Detective Controls</div>
+          <div class="pillar-desc">Log jejak audit (Audit Trail), rekonsiliasi otomatis harian, deteksi anomali algoritma (Benford's Law), audit kejutan sistem.</div>
+        </div>
+        <div class="pillar-card">
+          <span class="pillar-badge">Pilar 3</span>
+          <div class="pillar-title">Corrective Controls</div>
+          <div class="pillar-desc">SOP suspensi akun instan, pemulihan data transaksi (Disaster Recovery), pelaporan insiden, dan penegakan hukum.</div>
+        </div>
+        <div class="pillar-card">
+          <span class="pillar-badge">Pilar 4</span>
+          <div class="pillar-title">Forensic Analytics</div>
+          <div class="pillar-desc">Pencocokan stempel waktu (Timestamping), deteksi pola <em>delay</em> posting (Lapping), analisis penarikan di luar jam kerja.</div>
+        </div>
+        <div class="pillar-card hl">
+          <span class="pillar-badge">Pilar 5</span>
+          <div class="pillar-title">Islamic Governance</div>
+          <div class="pillar-desc">Penerapan budaya hisbah (pengawasan pasar), larangan khianat dan ghasab, whistleblowing syariah tanpa intimidasi.</div>
+        </div>
+        <div class="pillar-card">
+          <span class="pillar-badge">Output</span>
+          <div class="pillar-title">Sistem Akuntansi Kredibel</div>
+          <div class="pillar-desc">Laporan keuangan yang bebas dari salah saji material, akuntabel bagi pemangku kepentingan dan bernilai ibadah.</div>
+        </div>
+      </div>
+
+      <div class="callout info">
+        <strong>Refleksi Akademik:</strong> Romney &amp; Steinbart (Ch. 3) menegaskan bahwa lebih dari <strong>80% kasus kecurangan internal</strong> terjadi karena adanya <em>Opportunity</em> yang diciptakan oleh lemahnya kontrol sistem atau longgarnya pengawasan operasional. Menguasai SIA berarti menutup pintu-pintu peluang tersebut.
+      </div>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(0)">Saya Paham, Lanjut ke Teori Fraud</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 1: TEORI KECURANGAN (TRIANGLE TO HEXAGON) -->
+  <div class="sec locked" id="sec1">
+    <div class="sec-hd">
+      <div class="sec-num">02</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">Anatomi Fraud: Dari Triangle ke Hexagon</h2>
+        <div class="sec-sub2">Evolusi Teori Perilaku · Mengapa Seseorang Berbuat Curang dalam Sistem?</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Kecurangan (<em>fraud</em>) adalah tindakan penipuan yang disengaja yang dilakukan oleh individu atau entitas dengan tujuan memperoleh keuntungan pribadi yang tidak sah, yang mengakibatkan kerugian finansial atau materiil bagi pihak lain. Memahami motif di balik fraud adalah langkah awal merancang sistem informasi yang kokoh.</p>
+
+      <h3 class="sub">1. Cressey's Fraud Triangle (1953)</h3>
+      <p>Donald R. Cressey merumuskan tiga elemen kunci yang hadir secara simultan ketika seseorang melakukan kecurangan kepercayaan:</p>
+      
+      <div class="triangle-grid">
+        <div class="tri-card">
+          <span class="tri-icon">⚡</span>
+          <div class="tri-name">Pressure (Tekanan)</div>
+          <div class="tri-desc">Motivasi atau dorongan berbuat curang. Dapat berupa tekanan finansial (utang, gaya hidup hedonis, judi online) maupun non-finansial (target penjualan/KPI yang tidak realistis dari manajemen).</div>
+          <div class="tri-ais">SIA Implication: Pemantauan anomali lonjakan transaksi menjelang akhir periode cut-off.</div>
+        </div>
+        <div class="tri-card" style="border-color:var(--pmid);background:var(--prx)">
+          <span class="tri-icon">🔓</span>
+          <div class="tri-name">Opportunity (Peluang)</div>
+          <div class="tri-desc">Kondisi yang memungkinkan kecurangan dilakukan dan disembunyikan. Disebabkan oleh tidak adanya pemisahan tugas (SoD), absennya jejak audit, atau kata sandi yang dipakai bersama.</div>
+          <div class="tri-ais">SIA Implication: Pintu utama yang BISA dan HARUS ditutup 100% oleh arsitektur kontrol SIA.</div>
+        </div>
+        <div class="tri-card">
+          <span class="tri-icon">🧠</span>
+          <div class="tri-name">Rationalization (Pembenaran)</div>
+          <div class="tri-desc">Justifikasi mental pelaku bahwa tindakannya sah secara moral. Contoh: <em>"Saya hanya meminjam uang ini sementara"</em>, <em>"Perusahaan ini menggaji saya terlalu rendah"</em>.</div>
+          <div class="tri-ais">SIA Implication: Dibentengi melalui budaya integritas, kode etik perusahaan, dan nilai syariah.</div>
+        </div>
+      </div>
+
+      <h3 class="sub">2. Evolusi Teori: Dari Diamond hingga Hexagon</h3>
+      <p>Seiring berkembangnya kompleksitas teknologi dan kejahatan korporasi, para akademisi memperluas teori Cressey:</p>
+      <ul class="bullet">
+        <li><strong>Fraud Diamond (Wolfe &amp; Hermanson, 2004):</strong> Menambahkan elemen <em>Capability</em> (Kemampuan). Pelaku tidak hanya butuh peluang, tetapi harus memiliki kecerdasan teknis, posisi wewenang, dan ketahanan psikologis untuk membobol dan memanipulasi celah sistem.</li>
+        <li><strong>Fraud Pentagon (Crowe Horwath, 2011):</strong> Menambahkan elemen <em>Competence</em> dan <em>Arrogance</em> (Kesombongan/Ego bahwa dirinya kebal hukum dan sistem tidak mampu melacaknya).</li>
+        <li><strong>Fraud Hexagon / S.C.C.O.R.E Model (Vousinas, 2019):</strong> Menggabungkan 6 dimensi komprehensif: <strong>S</strong>timulus (Tekanan), <strong>C</strong>apability (Kemampuan), <strong>C</strong>ollusion (Kolusi/Kerjasama antar oknum), <strong>O</strong>pportunity (Peluang), <strong>R</strong>ationalization (Pembenaran), dan <strong>E</strong>go (Kesombongan).</li>
+      </ul>
+
+      <div class="callout warn">
+        <strong>Titik Rawan SIA — Kolusi &amp; Superuser Override:</strong> Pengendalian sistem tercanggih sekalipun dapat lumpuh jika terjadi <em>Collusion</em> (kolusi antara kasir dan supervisor) atau <em>Management Override</em> (pimpinan memaksa staf akuntansi mematikan validasi sistem). Oleh karena itu, SIA modern wajib mengadopsi prinsip <strong>Immutable Audit Trail</strong> di server terpisah.
+      </div>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(1)">Lanjut ke Pohon Kecurangan ACFE</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 2: POHON KECURANGAN ACFE -->
+  <div class="sec locked" id="sec2">
+    <div class="sec-hd">
+      <div class="sec-num">03</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">Pohon Kecurangan ACFE (Occupational Fraud Tree)</h2>
+        <div class="sec-sub2">Klasifikasi Standar Dunia · 3 Cabang Utama Kecurangan di Tempat Kerja</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead"><em>Association of Certified Fraud Examiners (ACFE)</em> memetakan kecurangan operasional ke dalam tiga kategori utama yang saling berkaitan dalam sistem akuntansi perusahaan:</p>
+
+      <div class="tree-grid">
+        <div class="tree-card">
+          <div class="tree-hd">
+            <span class="tree-tag">Cabang 1</span>
+            <div class="tree-title">Asset Misappropriation</div>
+          </div>
+          <p style="font-size:12px;color:var(--txl);margin-bottom:8px">Penyalahgunaan/Pencurian Aset Perusahaan (86% kasus, median loss terendah).</p>
+          <ul class="tree-items">
+            <li><strong>Skimming:</strong> Pencurian kas sebelum transaksi dicatat dalam sistem buku besar.</li>
+            <li><strong>Lapping Scheme:</strong> Menutup pencurian kas dari nasabah A menggunakan setoran nasabah B berikutnya secara berantai.</li>
+            <li><strong>Check Kiting:</strong> Memanfaatkan <em>float time</em> transfer antar rekening bank untuk merekayasa saldo semu.</li>
+            <li><strong>Ghost Employee:</strong> Menambahkan nama fiktif dalam master payroll untuk mencairkan gaji ilegal.</li>
+            <li><strong>Fictitious Billing:</strong> Pembuatan invoice vendor fiktif untuk menyedot kas perusahaan.</li>
+          </ul>
+        </div>
+
+        <div class="tree-card">
+          <div class="tree-hd">
+            <span class="tree-tag" style="background:#7040B0">Cabang 2</span>
+            <div class="tree-title">Corruption (Korupsi)</div>
+          </div>
+          <p style="font-size:12px;color:var(--txl);margin-bottom:8px">Penyalahgunaan Wewenang untuk Keuntungan Pribadi (50% kasus, kerugian menengah).</p>
+          <ul class="tree-items">
+            <li><strong>Bribery &amp; Kickbacks:</strong> Pemberian atau penerimaan suap/komisi terselubung dalam pengadaan barang (procurement).</li>
+            <li><strong>Conflict of Interest:</strong> Transaksi bisnis dengan perusahaan milik keluarga/pribadi tanpa pengungkapan resmi.</li>
+            <li><strong>Economic Extortion:</strong> Pemerasan oleh pejabat/petugas yang meminta imbalan untuk meloloskan persetujuan.</li>
+            <li><strong>Illegal Gratuities:</strong> Pemberian hadiah setelah keputusan bisnis diambil sebagai bentuk gratifikasi.</li>
+          </ul>
+        </div>
+
+        <div class="tree-card">
+          <div class="tree-hd">
+            <span class="tree-tag" style="background:var(--warn)">Cabang 3</span>
+            <div class="tree-title">Financial Statement Fraud</div>
+          </div>
+          <p style="font-size:12px;color:var(--txl);margin-bottom:8px">Manipulasi Laporan Keuangan (9% kasus, namun <strong>median loss tertinggi &gt; $1 Juta</strong>).</p>
+          <ul class="tree-items">
+            <li><strong>Fictitious Revenues:</strong> Pengakuan penjualan semu kepada entitas fiktif untuk mendongkrak laba.</li>
+            <li><strong>Capitalization of Expenses:</strong> Mengakui beban operasional sebagai aset investasi agar laba tahun berjalan tidak turun.</li>
+            <li><strong>Improper Timing (Cut-off):</strong> Membuka buku penjualan periode berikutnya lebih awal untuk mengejar target tahun berjalan.</li>
+            <li><strong>Hidden Liabilities:</strong> Menyembunyikan utang dan beban dari neraca (Off-Balance Sheet Entities).</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 class="sub">Perbandingan Dampak &amp; Metode Deteksi SIA</h3>
+      <table class="cmp-table">
+        <thead>
+          <tr>
+            <th>Kategori Fraud</th>
+            <th>Frekuensi Kasus</th>
+            <th>Dampak Finansial</th>
+            <th>Fitur Kontrol SIA Pendeteksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Asset Misappropriation</strong></td>
+            <td>Sangat Tinggi (~86%)</td>
+            <td>Rendah - Menengah</td>
+            <td>Rekonsiliasi bank otomatis harian, sequential pre-numbering invoice, approval limit.</td>
+          </tr>
+          <tr>
+            <td><strong>Corruption</strong></td>
+            <td>Menengah (~50%)</td>
+            <td>Menengah - Tinggi</td>
+            <td>Vendor master file auditing, conflict of interest disclosure portal, three-way matching.</td>
+          </tr>
+          <tr>
+            <td><strong>Financial Statement Fraud</strong></td>
+            <td>Paling Jarang (~9%)</td>
+            <td><strong>Sangat Katastropik</strong></td>
+            <td>Journal entry testing, analytics Benford's law, automated cut-off period lock.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(2)">Lanjut ke Peran SIA &amp; Audit Forensik</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 3: PERAN SIA & AUDIT FORENSIK -->
+  <div class="sec locked" id="sec3">
+    <div class="sec-hd">
+      <div class="sec-num">04</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">Peran SIA &amp; Audit Forensik dalam Deteksi Fraud</h2>
+        <div class="sec-sub2">Segregation of Duties · Immutable Audit Trail · Analisis Anomali Data</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Sistem Informasi Akuntansi modern dirancang bukan hanya untuk efisiensi pemrosesan data, tetapi sebagai instrumen audit forensik otomatis. Ketika sebuah insiden fraud terjadi, SIA harus menyediakan bukti digital yang valid di hadapan hukum.</p>
+
+      <h3 class="sub">1. Segregation of Duties (SoD) — Matriks Pemisahan Fungsi</h3>
+      <p>Prinsip SoD menuntut bahwa tidak boleh ada satu pun pegawai yang memegang lebih dari satu fungsi kritis berikut secara bersamaan:</p>
+      
+      <div class="diagram-wrap">
+        <div class="diag-hd">4 PILAR PEMISAHAN FUNGSI (SEGREGATION OF DUTIES)</div>
+        <div class="diag-body">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center">
+            <div style="background:var(--sf3);padding:10px;border-radius:4px;border:1px solid var(--bs)">
+              <div style="font-weight:700;color:var(--pri);font-size:13px">1. Otorisasi (A)</div>
+              <div style="font-size:11.5px;color:var(--txm)">Menyetujui transaksi, pembiayaan, atau diskon harga.</div>
+            </div>
+            <div style="background:var(--sf3);padding:10px;border-radius:4px;border:1px solid var(--bs)">
+              <div style="font-weight:700;color:var(--pmid);font-size:13px">2. Pencatatan (R)</div>
+              <div style="font-size:11.5px;color:var(--txm)">Input data transaksi, posting jurnal ke buku besar.</div>
+            </div>
+            <div style="background:var(--sf3);padding:10px;border-radius:4px;border:1px solid var(--bs)">
+              <div style="font-weight:700;color:var(--acc);font-size:13px">3. Penyimpanan (C)</div>
+              <div style="font-size:11.5px;color:var(--txm)">Memegang kas fisik, buku cek, atau kunci brankas.</div>
+            </div>
+            <div style="background:var(--sf3);padding:10px;border-radius:4px;border:1px solid var(--bs)">
+              <div style="font-weight:700;color:var(--sya);font-size:13px">4. Rekonsiliasi (Re)</div>
+              <div style="font-size:11.5px;color:var(--txm)">Memverifikasi kesesuaian buku vs fisik secara independen.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="sub">2. Immutable Audit Trail (Jejak Audit Kekal)</h3>
+      <p>Jejak audit adalah rekaman kronologis aktivitas sistem yang mencatat setiap peristiwa transaksi. Komponen wajib dalam tabel log audit SIA adalah:</p>
+      <ul class="detail">
+        <li><strong>Timestamp Presisi Tinggi:</strong> Tanggal, jam, menit, dan detik (ISO-8601 UTC+7).</li>
+        <li><strong>User Identification &amp; Role:</strong> Username pelaku, NIK pegawai, dan IP address / MAC address perangkat.</li>
+        <li><strong>Event Description:</strong> Aksi yang dilakukan (INSERT, UPDATE, DELETE, VIEW, APPROVE, OVERRIDE).</li>
+        <li><strong>Data Delta (Old Value vs New Value):</strong> Snapshot data sebelum diubah dan sesudah diubah.</li>
+        <li><strong>Write-Once-Read-Many (WORM):</strong> Log audit disimpan pada media penyimpanan yang tidak dapat diubah maupun dihapus bahkan oleh Administrator Database.</li>
+      </ul>
+
+      <h3 class="sub">3. Deteksi Anomali Statistik: Hukum Benford (Benford's Law)</h3>
+      <p>Hukum Benford menyatakan bahwa dalam kumpulan data angka alami (seperti transaksi pembayaran, nilai invoice, dan saldo piutang), digit pertama angka bukanlah berpeluang seragam (11,1% untuk tiap digit), melainkan mengikuti distribusi logaritmik: angka <strong>'1' muncul sekitar 30,1%</strong>, angka '2' muncul 17,6%, dan angka '9' hanya muncul 4,6%.</p>
+      
+      <div class="callout info">
+        <strong>Aplikasi Forensik SIA:</strong> Jika seorang pegawai membuat <em>fictitious reimbursement</em> dengan mengarang angka acak (misal sering menginput nilai berawalan angka 7 atau 8 mendekati batas otorisasi Rp 1.000.000), grafik distribusi frekuensi digit pertama akan menyimpang tajam dari kurva Benford, memicu alarm investigasi otomatis pada modul audit internal.
+      </div>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(3)">Lanjut ke Integrasi Nilai Syariah</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 4: NILAI SYARIAH & HISBAH -->
+  <div class="sec locked" id="sec4">
+    <div class="sec-hd">
+      <div class="sec-num">05</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">Integrasi Nilai Syariah: Sidq, Amanah &amp; Doktrin Hisbah</h2>
+        <div class="sec-sub2">Pemberantasan Kecurangan dalam Perspektif Islam · Institusi Pengawasan Pasar</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Dalam peradaban Islam, kecurangan bukan sekadar pelanggaran hukum positif atau kerugian material, melainkan dosa besar (<em>khianat</em>, <em>ghasab</em>, dan <em>aklu amwal an-nas bil bathil</em>) yang berimplikasi pada pertanggungjawaban ukhrawi. Pengendalian internal sejati dibangun dari kesadaran <strong>Raqabah (pengawasan Allah yang Maha Mengetahui)</strong>.</p>
+
+      <div class="ayat-box">
+        <div class="ayat-ar">وَيْلٌ لِّلْمُطَفِّفِينَ ۝ الَّذِينَ إِذَا اكْتَالُوا عَلَى النَّاسِ يَسْتَوْفُونَ ۝ وَإِذَا كَالُوهُمْ أَوْ وَّزَنُوهُمْ يُخْسِرُونَ</div>
+        <div class="ayat-trans">"Celakalah bagi orang-orang yang curang (dalam menakar dan menimbang)! (Yaitu) orang-orang yang apabila menerima takaran dari orang lain mereka minta dipenuhi, dan apabila mereka menakar atau menimbang (untuk orang lain), mereka mengurangi."</div>
+        <div class="ayat-ref">QS. Al-Mutaffifin [83]: 1–3 — Prinsip Kejujuran Takaran &amp; Integritas Data Akuntansi</div>
+      </div>
+
+      <div class="ayat-box" style="background:linear-gradient(135deg,#1E0C06,#2E1005)">
+        <div class="ayat-ar">يَا أَيُّهَا الَّذِينَ آمَنُوا لَا تَخُونُوا اللَّهَ وَالرَّسُولَ وَتَخُونُوا أَمَانَاتِكُمْ وَأَنتُمْ تَعْلَمُونَ</div>
+        <div class="ayat-trans">"Wahai orang-orang yang beriman! Janganlah kamu mengkhianati Allah dan Rasul, dan (juga) janganlah kamu mengkhianati amanat yang dipercayakan kepadamu, sedang kamu mengetahui."</div>
+        <div class="ayat-ref">QS. Al-Anfal [8]: 27 — Larangan Penyalahgunaan Jabatan &amp; Wewenang (Fraud)</div>
+      </div>
+
+      <h3 class="sub">Doktrin Hisbah: Institusi Pengawas Syariah &amp; Pasar</h3>
+      <p>Institusi <strong>Al-Hisbah</strong> yang dipimpin oleh seorang <em>Muhtasib</em> adalah model tata kelola dan pengawasan pasar independen pertama dalam sejarah akuntansi dunia. Muhtasib bertugas menginspeksi timbangan, mengaudit kualitas barang, mencegah penimbunan (<em>ikhtikar</em>), memberantas riba, dan memastikan tidak ada kecurangan administratif dalam transaksi publik.</p>
+
+      <div class="sya-grid">
+        <div class="sya-card">
+          <div class="sya-card-title">1. As-Sidq (Integritas Data)</div>
+          <div class="sya-card-desc">Kewajiban menyajikan data akuntansi yang benar, akurat, dan tanpa rekayasa. Menghilangkan transaksi fiktif dan manipulasi laba.</div>
+          <div class="sya-card-ref">Prinsip Keandalan Informasi SIA</div>
+        </div>
+        <div class="sya-card">
+          <div class="sya-card-title">2. Al-Amanah (Akuntabilitas Wewenang)</div>
+          <div class="sya-card-desc">Menjaga mandat hak akses sistem. Menggunakan wewenang otorisasi hanya untuk kemaslahatan organisasi, bukan kepentingan pribadi.</div>
+          <div class="sya-card-ref">Prinsip Segregation of Duties</div>
+        </div>
+        <div class="sya-card">
+          <div class="sya-card-title">3. Ar-Raqabah (Muraqabatullah)</div>
+          <div class="sya-card-desc">Kesadaran bahwa setiap ketukan tombol keyboard dan input angka selalu diawasi oleh Allah SWT. Mengeliminasi <em>Rationalization</em>.</div>
+          <div class="sya-card-ref">Internal Control Spiritual</div>
+        </div>
+        <div class="sya-card">
+          <div class="sya-card-title">4. Al-Adl (Keadilan Pelaporan)</div>
+          <div class="sya-card-desc">Menyajikan laporan keuangan secara berimbang tanpa menyembunyikan kewajiban maupun melebih-lebihkan aset (full disclosure).</div>
+          <div class="sya-card-ref">Fair Presentation Standards</div>
+        </div>
+      </div>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(4)">Lanjut ke Studi Kasus Forensik BMT</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 5: STUDI KASUS FORENSIK BMT AL-AMANAH -->
+  <div class="sec locked" id="sec5">
+    <div class="sec-hd">
+      <div class="sec-num">06</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">Studi Kasus Forensik: Pembongkaran Fraud BMT Al-Amanah</h2>
+        <div class="sec-sub2">Bedah Kasus Nyata · Investigasi Skema Lapping, Pembiayaan Fiktif &amp; Akses Malam</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">BMT Al-Amanah Cabang Timur menghadapi krisis likuiditas mendadak dan menerima komplain dari sejumlah anggota teladan yang mendapati catatan tunggakan angsuran murabahah di sistem, padahal mereka merasa telah melunasi angsuran secara tunai kepada petugas lapangan.</p>
+
+      <div class="callout case">
+        <div class="case-label">TEMUAN AUDIT INTERNAL AWAL</div>
+        Tim Auditor Forensik melakukan penarikan log data transaksi sistem periode Januari–Juni 2026 (tercatat dalam <code>dataset-fraud-investigation-p04.csv</code>) dan menemukan tiga pola kejahatan sistemik yang melibatkan 2 oknum internal.
+      </div>
+
+      <h3 class="sub">1. Modus Skema Lapping Berantai (AO-03 Hendra Wijaya)</h3>
+      <p>Petugas Account Officer (AO-03) menerima setoran tunai angsuran murabahah di lapangan dari nasabah CUST-104 (Nurul Hidayah) sebesar Rp 1.500.000 pada 10 Maret 2026 dan memberikan <em>Kwitansi Manual Offline</em>. Uang tersebut tidak disetor ke kas BMT, melainkan digunakan untuk keperluan pribadi (judi online).</p>
+      <ul class="bullet">
+        <li>Pada 15 Maret 2026, nasabah CUST-108 (Umar Al-Faruq) menyetor angsuran Rp 1.500.000 secara tunai. Uang ini dipakai AO-03 untuk mem-posting setoran nasabah CUST-104 yang tertunda 5 hari!</li>
+        <li>Pada 20 Maret 2026, nasabah CUST-112 (Aisyah Humaira) menyetor Rp 1.500.000. Uang ini dipakai untuk mem-posting setoran nasabah CUST-108!</li>
+        <li><strong>Kelemahan SIA BMT:</strong> Sistem tidak mewajibkan penggunaan <em>Mobile E-Receipt real-time</em> terhubung SMS/WhatsApp gateway saat uang diterima di lapangan, dan sistem mengizinkan input tanggal mundur (backdating).</li>
+      </ul>
+
+      <h3 class="sub">2. Modus Pembiayaan Fiktif &amp; Self-Approval (AO-01 Budi Santoso)</h3>
+      <p>Memanfaatkan posisinya sebagai AO senior yang juga memiliki hak akses otorisasi di sistem, AO-01 membuat dua profil nasabah fiktif tanpa berkas KTP dan jaminan fisik:</p>
+      <ul class="bullet">
+        <li><strong>TRX-2026-029:</strong> Pencairan Murabahah fiktif Rp 25.000.000 pada 12 April 2026 pukul 22:30 WIB. Diinput oleh AO-01 dan <strong>di-approve sendiri (Self-Approved)</strong>.</li>
+        <li><strong>TRX-2026-030:</strong> Pencairan Murabahah fiktif Rp 30.000.000 pada 20 April 2026 pukul 23:45 WIB. Diinput oleh AO-01 dan di-approve sendiri tanpa verifikasi Branch Manager.</li>
+        <li><strong>Kelemahan SIA BMT:</strong> Pelanggaran fatal <em>Segregation of Duties</em> (pembuat permohonan bisa sekaligus menjadi penyetujui) dan sistem tidak memblokir akses transaksi di luar jam kerja operasional (tengah malam).</li>
+      </ul>
+
+      <h3 class="sub">3. Modus Penarikan Tabungan Ilegal Midnight (TRX-2026-031)</h3>
+      <p>Pada tanggal 2 Mei 2026 pukul 23:15 WIB, terjadi penarikan tabungan wadiah milik nasabah CUST-115 senilai Rp 7.500.000 tanpa bukti slip penarikan nasabah dengan memanfaatkan <em>Override PIN</em> supervisor yang bocor.</p>
+
+      <div class="callout warn">
+        <strong>Pelajaran Penting bagi Perancang SIA:</strong> Semua kejahatan di atas meninggalkan <strong>jejak digital (digital footprints)</strong> yang tak terbantahkan di log database. Pada sesi Praktikum 04, Anda akan berperan sebagai Auditor Forensik independen untuk membongkar seluruh bukti transaksi janggal tersebut menggunakan SQL dan Excel!
+      </div>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(5)">Lanjut ke Kuis Uji Pemahaman</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 6: KUIS INTERAKTIF -->
+  <div class="quiz-sec locked" id="sec6">
+    <div class="quiz-hd">
+      <span class="quiz-icon">📝</span>
+      <div class="quiz-hd-text">
+        <h2 class="quiz-hd-title">Uji Pemahaman: Evaluasi Modul 04</h2>
+        <div class="quiz-hd-sub">4 Pilihan Ganda + 1 Permainan Pencocokan Istilah Forensik SIA (Batas Kelulusan: 75%)</div>
+      </div>
+    </div>
+    <div class="quiz-body">
+
+      <!-- SOAL 1 -->
+      <div class="q-item" id="mcq0">
+        <div class="q-text"><span class="q-num">1</span> Menurut Cressey's Fraud Triangle, elemen mana yang <strong>paling dapat dikendalikan dan ditekan secara langsung</strong> melalui arsitektur desain Sistem Informasi Akuntansi (SIA)?</div>
+        <div class="options">
+          <div class="opt" onclick="selectMCQ(0, 0)">
+            <span class="opt-ltr">A</span>
+            <div class="opt-txt">Pressure (Tekanan finansial atau beban utang pribadi karyawan).<div class="opt-fb">Kurang tepat. Tekanan finansial bersifat eksternal dan berada di ranah pribadi individu, bukan kontrol sistem.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(0, 1)">
+            <span class="opt-ltr">B</span>
+            <div class="opt-txt">Opportunity (Peluang akibat celah sistem dan ketiadaan pemisahan tugas).<div class="opt-fb">Benar! SIA dirancang secara spesifik untuk menutup peluang melalui SoD, pembatasan akses RBAC, dan audit trail.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(0, 2)">
+            <span class="opt-ltr">C</span>
+            <div class="opt-txt">Rationalization (Pembenaran moral dalam pikiran pelaku kecurangan).<div class="opt-fb">Kurang tepat. Rasionalisasi adalah proses psikologis kognitif yang ditangani lewat etika dan budaya organisasi.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(0, 3)">
+            <span class="opt-ltr">D</span>
+            <div class="opt-txt">Arrogance (Tingkat kesombongan pelaku bahwa dirinya tidak akan tertangkap).<div class="opt-fb">Kurang tepat. Arrogance adalah sifat kepribadian psikologis (Fraud Pentagon).</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOAL 2 -->
+      <div class="q-item" id="mcq1">
+        <div class="q-text"><span class="q-num">2</span> Seorang kasir menahan uang pelunasan piutang dari Pelanggan A untuk kepentingan pribadi, kemudian 5 hari kemudian menggunakan uang setoran dari Pelanggan B untuk menutupi piutang Pelanggan A di sistem. Skema kecurangan ini disebut:</div>
+        <div class="options">
+          <div class="opt" onclick="selectMCQ(1, 0)">
+            <span class="opt-ltr">A</span>
+            <div class="opt-txt">Skimming.<div class="opt-fb">Kurang tepat. Skimming adalah pencurian kas sebelum dicatat di sistem tanpa skema gali-lubang-tutup-lubang berantai.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(1, 1)">
+            <span class="opt-ltr">B</span>
+            <div class="opt-txt">Check Kiting.<div class="opt-fb">Kurang tepat. Kiting memanfaatkan float time transfer antar rekening bank.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(1, 2)">
+            <span class="opt-ltr">C</span>
+            <div class="opt-txt">Lapping Scheme.<div class="opt-fb">Benar! Lapping adalah penutupan piutang secara berantai dari satu nasabah ke nasabah berikutnya untuk menyembunyikan pencurian kas.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(1, 3)">
+            <span class="opt-ltr">D</span>
+            <div class="opt-txt">Ghost Employee.<div class="opt-fb">Kurang tepat. Ghost employee terjadi pada siklus penggajian/HR.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOAL 3 -->
+      <div class="q-item" id="mcq2">
+        <div class="q-text"><span class="q-num">3</span> Dalam prinsip <em>Segregation of Duties</em> (SoD), kelemahan kontrol fatal terjadi apabila seorang staf pembiayaan memiliki hak akses sistem untuk sekaligus melakukan:</div>
+        <div class="options">
+          <div class="opt" onclick="selectMCQ(2, 0)">
+            <span class="opt-ltr">A</span>
+            <div class="opt-txt">Menginput permohonan data nasabah baru dan mencetak formulir survei.<div class="opt-fb">Kurang tepat. Ini adalah fungsi input operasional yang sejalan.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(2, 1)">
+            <span class="opt-ltr">B</span>
+            <div class="opt-txt">Menginput permohonan pembiayaan sekaligus menyetujui (Authorize/Approve) pencairan dana tersebut.<div class="opt-fb">Benar! Menggabungkan fungsi inisiasi transaksi dan otorisasi melanggar SoD dan membuka celah pencairan fiktif (Self-Approval).</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(2, 2)">
+            <span class="opt-ltr">C</span>
+            <div class="opt-txt">Melakukan penagihan angsuran ke lapangan dan menyerahkan uang ke kasir teller.<div class="opt-fb">Kurang tepat. Penagihan fisik diserahkan ke kasir untuk dicatat adalah prosedur normal pemisahan tugas.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(2, 3)">
+            <span class="opt-ltr">D</span>
+            <div class="opt-txt">Melihat laporan mutasi rekening nasabah binaannya sendiri tanpa hak edit saldo.<div class="opt-fb">Kurang tepat. Akses Read-Only untuk monitoring portofolio diperbolehkan.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOAL 4 -->
+      <div class="q-item" id="mcq3">
+        <div class="q-text"><span class="q-num">4</span> Lembaga pengawasan pasar dan tata kelola transparansi publik dalam sejarah Islam yang berfungsi sebagai prototipe <em>internal audit &amp; regulatory compliance</em> disebut:</div>
+        <div class="options">
+          <div class="opt" onclick="selectMCQ(3, 0)">
+            <span class="opt-ltr">A</span>
+            <div class="opt-txt">Baitul Mal.<div class="opt-fb">Kurang tepat. Baitul Mal adalah perbendaharaan negara/kas publik, bukan badan pemeriksa pengawasan.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(3, 1)">
+            <span class="opt-ltr">B</span>
+            <div class="opt-txt">Al-Hisbah (dengan pejabat pengawas Al-Muhtasib).<div class="opt-fb">Benar! Hisbah bertugas menegakkan amar ma'ruf nahi munkar dalam transaksi pasar, menakar kejujuran timbangan, dan mengaudit kepatuhan syariah.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(3, 2)">
+            <span class="opt-ltr">C</span>
+            <div class="opt-txt">Diwan Al-Kharaj.<div class="opt-fb">Kurang tepat. Diwan Al-Kharaj adalah kementerian perpajakan tanah.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(3, 3)">
+            <span class="opt-ltr">D</span>
+            <div class="opt-txt">Mahkamah Syar'iyah.<div class="opt-fb">Kurang tepat. Mahkamah adalah lembaga peradilan yudisial umum, bukan pengawas pasar berkala.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MATCHING GAME -->
+      <div class="match-intro">
+        <strong>Tantangan Pencocokan Istilah Forensik SIA:</strong> Klik satu istilah di kolom kiri, lalu klik definisi yang tepat di kolom kanan untuk membuat pasangan berwarna!
+      </div>
+      <div class="match-container">
+        <div>
+          <div class="match-col-title">Istilah / Konsep Forensik</div>
+          <div class="match-terms" id="terms">
+            <div class="match-term" onclick="selectTerm(0)">1. Lapping Scheme</div>
+            <div class="match-term" onclick="selectTerm(1)">2. Segregation of Duties</div>
+            <div class="match-term" onclick="selectTerm(2)">3. Immutable Audit Trail</div>
+            <div class="match-term" onclick="selectTerm(3)">4. Hukum Benford</div>
+            <div class="match-term" onclick="selectTerm(4)">5. Financial Statement Fraud</div>
+            <div class="match-term" onclick="selectTerm(5)">6. Doktrin Hisbah</div>
+          </div>
+        </div>
+        <div>
+          <div class="match-col-title">Definisi / Mekanisme Kontrol</div>
+          <div class="match-defs" id="defs">
+            <div class="match-def" onclick="selectDef(0)">A. Distribusi statistik logaritmik frekuensi kemunculan digit pertama angka alami untuk deteksi rekayasa data.</div>
+            <div class="match-def" onclick="selectDef(1)">B. Institusi pengawasan publik dalam peradaban Islam untuk menegakkan kejujuran takaran dan etika transaksi pasar.</div>
+            <div class="match-def" onclick="selectDef(2)">C. Menutup kekurangan penerimaan kas nasabah A menggunakan setoran nasabah B berikutnya secara berkesinambungan.</div>
+            <div class="match-def" onclick="selectDef(3)">D. Pemisahan wewenang antara otorisasi, pencatatan transaksi, penyimpanan aset fisik, dan rekonsiliasi.</div>
+            <div class="match-def" onclick="selectDef(4)">E. Catatan log aktivitas transaksi terenkripsi yang tidak dapat diubah maupun dihapus oleh pengguna.</div>
+            <div class="match-def" onclick="selectDef(5)">F. Manipulasi material laporan keuangan melalui pendapatan fiktif atau kapitalisasi beban operasional.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="quiz-foot">
+      <button class="submit-btn" onclick="submitQuiz()">Kirim Jawaban &amp; Hitung Nilai</button>
+      <span class="score-badge" id="scoreBadge"></span>
+    </div>
+  </div>
+
+  <!-- COMPLETION BOX -->
+  <div class="completion" id="completion">
+    <h2>🎉 Selamat! Anda Telah Menguasai Materi Pertemuan 04</h2>
+    <p>Pemahaman teoritis tentang Fraud Triangle, ACFE Tree, Arsitektur Kontrol SIA, dan Nilai Syariah Hisbah telah tuntas. Lanjutkan ke sesi investigasi langsung di laboratorium komputer!</p>
+    <a class="lab-btn" href="Praktikum-04-AIS.html">Buka Lembar Praktikum 04 (Lab 3) →</a>
+  </div>
+
+</div>
+
+<script>
+/* ═══ APPLICATION STATE MANAGEMENT ═══ */
+const STORAGE_KEY = 'tazkia-ais-p04-v1';
+const TOTAL_SECS = 7;
+const MCQ_ANSWERS = [1, 2, 1, 1]; // B, C, B, B
+const MATCH_CORRECT = {0:2, 1:3, 2:4, 3:0, 4:5, 5:1}; // 1->C, 2->D, 3->E, 4->A, 5->F, 6->B
+const PAIR_COLORS = ['#D46020', '#1F9060', '#7040B0', '#1B7898', '#C03818', '#9E6800'];
+
+let state = {
+  done: [0],
+  mcqSel: [null, null, null, null],
+  matchPairs: {},
+  submitted: false
+};
+
+let selTerm = null;
+let selDef = null;
+
+function saveState(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+}
+
+function loadState(){
+  try{
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if(saved) state = Object.assign(state, JSON.parse(saved));
+  }catch(e){}
+}
+
+function updateProgress(){
+  const doneCount = state.done.length;
+  const pct = Math.round((doneCount / TOTAL_SECS) * 100);
+  document.getElementById('topProg').style.width = pct + '%';
+  document.getElementById('topPct').textContent = pct + '%';
+
+  for(let i=0; i<TOTAL_SECS; i++){
+    const st = document.getElementById('st' + i);
+    const sc = document.getElementById('sc' + i);
+    if(!st) continue;
+    if(state.done.includes(i)){
+      st.className = (i === 6) ? 'step quiz done' : 'step done';
+      if(sc) sc.className = 'sconn done';
+    } else if(i === state.done.length){
+      st.className = (i === 6) ? 'step quiz active' : 'step active';
+      if(sc) sc.className = 'sconn';
+    } else {
+      st.className = (i === 6) ? 'step quiz' : 'step';
+      if(sc) sc.className = 'sconn';
+    }
+  }
+}
+
+function paham(idx){
+  if(!state.done.includes(idx)) state.done.push(idx);
+  const nextIdx = idx + 1;
+  if(nextIdx < TOTAL_SECS && !state.done.includes(nextIdx)){
+    state.done.push(nextIdx);
+  }
+  saveState();
+  applyState();
+
+  const nextSec = document.getElementById('sec' + nextIdx);
+  if(nextSec){
+    nextSec.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+}
+
+function selectMCQ(q, optIdx){
+  if(state.submitted) return;
+  state.mcqSel[q] = optIdx;
+  saveState();
+  const opts = document.querySelectorAll('#mcq' + q + ' .opt');
+  opts.forEach((o, i)=>o.classList.toggle('selected', i === optIdx));
+}
+
+function selectTerm(idx){
+  if(state.submitted) return;
+  selTerm = idx;
+  document.querySelectorAll('#terms .match-term').forEach((el, j)=>el.classList.toggle('selected', j === idx));
+  checkMatch();
+}
+
+function selectDef(idx){
+  if(state.submitted) return;
+  selDef = idx;
+  document.querySelectorAll('#defs .match-def').forEach((el, j)=>el.classList.toggle('selected', j === idx));
+  checkMatch();
+}
+
+function checkMatch(){
+  if(selTerm === null || selDef === null) return;
+  state.matchPairs[selTerm] = selDef;
+  saveState();
+
+  const color = PAIR_COLORS[selTerm % PAIR_COLORS.length];
+  const termEl = document.querySelectorAll('#terms .match-term')[selTerm];
+  const defEl = document.querySelectorAll('#defs .match-def')[selDef];
+
+  if(termEl){
+    termEl.style.borderColor = color;
+    termEl.style.background = color + '18';
+    termEl.style.color = color;
+  }
+  if(defEl){
+    defEl.style.borderColor = color;
+    defEl.style.background = color + '18';
+    defEl.style.color = color;
+  }
+
+  selTerm = null;
+  selDef = null;
+  document.querySelectorAll('#terms .match-term, #defs .match-def').forEach(el=>el.classList.remove('selected'));
+}
+
+function submitQuiz(){
+  state.submitted = true;
+  saveState();
+  let score = 0;
+  const total = MCQ_ANSWERS.length + Object.keys(MATCH_CORRECT).length;
+
+  // Grade MCQs
+  MCQ_ANSWERS.forEach((ans, q)=>{
+    const sel = state.mcqSel[q];
+    const opts = document.querySelectorAll('#mcq' + q + ' .opt');
+    opts.forEach((o, idx)=>{
+      if(idx === ans) o.className = 'opt correct';
+      else if(idx === sel && sel !== ans) o.className = 'opt wrong';
+    });
+    if(sel === ans) score++;
+  });
+
+  // Grade Matching
+  Object.entries(MATCH_CORRECT).forEach(([t, d])=>{
+    if(state.matchPairs[t] === d) score++;
+  });
+
+  const pct = Math.round((score / total) * 100);
+  const badge = document.getElementById('scoreBadge');
+  badge.style.display = 'inline-block';
+  badge.textContent = `Skor: ${score}/${total} (${pct}%)`;
+
+  if(pct >= 75){
+    badge.className = 'score-badge pass';
+    if(!state.done.includes(6)) state.done.push(6);
+    saveState();
+    updateProgress();
+    document.getElementById('completion').classList.add('show');
+    document.getElementById('completion').scrollIntoView({behavior:'smooth'});
+  } else {
+    badge.className = 'score-badge fail';
+    badge.textContent += ' — Pelajari kembali materi dan coba lagi!';
+  }
+}
+
+function applyState(){
+  for(let i=0; i<TOTAL_SECS; i++){
+    const sec = document.getElementById('sec' + i);
+    if(!sec) continue;
+    if(state.done.includes(i)){
+      sec.classList.remove('locked');
+      const isDone = (i < state.done.length - 1) || (state.done.length === TOTAL_SECS);
+      sec.classList.toggle('done-sec', isDone);
+    } else {
+      if(!sec.classList.contains('locked')) sec.classList.add('locked');
+      sec.classList.remove('done-sec');
+    }
+  }
+
+  state.mcqSel.forEach((sel, q)=>{
+    if(sel === null) return;
+    document.querySelectorAll('#mcq' + q + ' .opt')[sel]?.classList.add('selected');
+  });
+
+  Object.entries(state.matchPairs).forEach(([t, d])=>{
+    const color = PAIR_COLORS[t % PAIR_COLORS.length];
+    const termEl = document.querySelectorAll('#terms .match-term')[t];
+    const defEl = document.querySelectorAll('#defs .match-def')[d];
+    if(termEl){
+      termEl.style.borderColor = color;
+      termEl.style.background = color + '18';
+      termEl.style.color = color;
+    }
+    if(defEl){
+      defEl.style.borderColor = color;
+      defEl.style.background = color + '18';
+      defEl.style.color = color;
+    }
+  });
+
+  if(state.submitted) submitQuiz();
+  updateProgress();
+}
+
+loadState();
+applyState();
+</script>
+</body>
+</html>

@@ -1,0 +1,1069 @@
+<title>Pertemuan 2 — Proses Bisnis &amp; Data dalam AIS</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap">
+<style>
+/* ═══ MEETING COLOR VARIABLES (P02 = Deep Navy & Amber Gold) ═══ */
+:root{
+  --meet-from:#070F1C; --meet-mid:#0C1D30; --meet-to:#112538;
+  --meet-acc:#D46020;  --meet-acc2:#E88030; --meet-star:#D46020;
+  /* SYSTEM TOKENS */
+  --bg:#EDF1F6;--sf:#FFFFFF;--sf2:#E4EFF8;--sf3:#F5F7FA;
+  --bd:#C4CDD8;--bs:#DDE3EC;
+  --tx:#0C1824;--txm:#475569;--txl:#8A9AB0;
+  --pri:#0C1D30;--pmid:#1B7898;--pril:#C8E2F0;--prx:#E0EFF8;
+  --acc:#D46020;--accl:#FCEBD8;
+  --sya:#1F9060;--syal:#D0EEE2;--syab:#40B080;
+  --ok:#1F9060;--okl:#D0EEE2;
+  --warn:#C03818;--warnl:#FCDBD0;
+  /* MATCHING PAIR COLORS */
+  --p0:#1B7898;--p0l:#D8EEF6; --p1:#D46020;--p1l:#FCEBD8;
+  --p2:#1F9060;--p2l:#D0EEE2; --p3:#7040B0;--p3l:#EEE0FA;
+  --p4:#C03818;--p4l:#FCDBD0; --p5:#2A50B0;--p5l:#D8E4F8;
+  --r:8px;--rs:5px;
+  --shadow:0 4px 20px rgba(12,29,48,.10);
+  --shadow-sm:0 2px 8px rgba(12,29,48,.07);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#08111C;--sf:#0E1E2E;--sf2:#08182A;--sf3:#0C1620;
+  --bd:#1A2A3A;--bs:#142230;
+  --tx:#E0EAF4;--txm:#7A98B0;--txl:#3A5568;
+  --pri:#2A90C0;--pmid:#48B0D8;--pril:#062030;--prx:#040E1C;
+  --acc:#E07838;--accl:#200C00;
+  --sya:#30B878;--syal:#041410;--syab:#186040;
+  --ok:#30B878;--okl:#041410;
+  --warn:#E05030;--warnl:#280800;
+  --p0l:#0A2030;--p1l:#180800;--p2l:#041410;--p3l:#180828;--p4l:#200408;--p5l:#080A28;
+}}
+:root[data-theme=dark]{
+  --bg:#08111C;--sf:#0E1E2E;--sf2:#08182A;--sf3:#0C1620;
+  --bd:#1A2A3A;--bs:#142230;
+  --tx:#E0EAF4;--txm:#7A98B0;--txl:#3A5568;
+  --pri:#2A90C0;--pmid:#48B0D8;--pril:#062030;--prx:#040E1C;
+  --acc:#E07838;--accl:#200C00;
+  --sya:#30B878;--syal:#041410;--syab:#186040;
+  --ok:#30B878;--okl:#041410;
+  --warn:#E05030;--warnl:#280800;
+  --p0l:#0A2030;--p1l:#180800;--p2l:#041410;--p3l:#180828;--p4l:#200408;--p5l:#080A28;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color:var(--tx);margin:0;font-size:15px;line-height:1.65}
+
+/* ── TOPBAR ── */
+.topbar{background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.back-btn{color:rgba(255,255,255,.6);font-size:13px;font-weight:600;cursor:pointer;border:none;background:none;display:flex;align-items:center;gap:4px;transition:color .15s;text-decoration:none}
+.back-btn:hover{color:#fff}
+.top-div{width:1px;height:20px;background:rgba(255,255,255,.15)}
+.top-course{font-size:11.5px;color:rgba(255,255,255,.45)}
+.top-meeting{font-size:13px;font-weight:700;color:rgba(255,255,255,.9)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.top-badge{font-size:11px;font-weight:700;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:2px 10px;color:rgba(255,255,255,.75)}
+.prog-wrap{width:120px;height:5px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden}
+.prog-bar{height:100%;background:var(--meet-acc);border-radius:3px;transition:width .4s ease}
+.prog-txt{font-size:11px;color:rgba(255,255,255,.45);text-align:right}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(160deg,var(--meet-from) 0%,var(--meet-mid) 55%,var(--meet-to) 100%);color:#fff;padding:38px 24px 0;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;pointer-events:none;opacity:.14}
+.hero-inner{max-width:820px;margin:0 auto;position:relative;z-index:1;padding-bottom:30px}
+.hero-ew{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.hero-line{width:22px;height:1px;background:var(--meet-acc)}
+.hero-tag{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--meet-acc)}
+.hero-bignum{font-family:'Amiri',serif;font-size:70px;font-weight:700;line-height:1;color:rgba(255,255,255,.07);position:absolute;right:0;top:-8px;letter-spacing:-.02em;-webkit-user-select:none;user-select:none}
+.hero-title{font-family:'Amiri',serif;font-size:29px;font-weight:700;margin:0 0 6px;line-height:1.2}
+.hero-sub{font-size:14.5px;color:rgba(255,255,255,.55);margin:0 0 18px}
+.hero-chips{display:flex;flex-wrap:wrap;gap:6px}
+.hchip{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:14px;padding:3px 11px;font-size:12px;color:rgba(255,255,255,.7)}
+.hchip strong{color:#fff}
+.hero-arch{line-height:0;margin-top:-1px}
+.hero-arch svg{display:block;width:100%;height:26px}
+
+/* ── STEPS ── */
+.steps-wrap{background:var(--sf);border-bottom:1px solid var(--bs);padding:12px 24px;overflow-x:auto;position:sticky;top:52px;z-index:90;box-shadow:var(--shadow-sm)}
+.steps{display:flex;align-items:center;max-width:820px;margin:0 auto}
+.step{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--txl);white-space:nowrap;cursor:default}
+.sdot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:var(--sf3);border:2px solid var(--bs);color:var(--txl);flex-shrink:0;transition:all .25s}
+.step.done .sdot{background:var(--ok);border-color:var(--ok);color:#fff}
+.step.active .sdot{background:var(--pmid);border-color:var(--pmid);color:#fff}
+.step.quiz .sdot{background:var(--accl);border-color:var(--acc);color:var(--acc)}
+.step.quiz.done .sdot{background:var(--ok);border-color:var(--ok);color:#fff}
+.slabel{display:none}
+@media(min-width:580px){.slabel{display:inline}}
+.sconn{flex:1;height:2px;background:var(--bs);min-width:10px;transition:background .25s}
+.sconn.done{background:var(--ok)}
+
+/* ── BODY ── */
+.body{max-width:820px;margin:0 auto;padding:26px 18px 80px}
+@media(min-width:640px){.body{padding:30px 26px 80px}}
+
+/* ── SECTION CARD ── */
+.sec{background:var(--sf);border:1px solid var(--bs);border-radius:var(--r);margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow-sm);transition:opacity .4s,filter .4s}
+.sec.locked{opacity:.38;filter:grayscale(.45);pointer-events:none;user-select:none}
+.sec.unlocking{animation:sIn .35s ease both}
+@keyframes sIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.sec-hd{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--bs);background:var(--sf3)}
+.sec-num{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:var(--pmid);color:#fff;flex-shrink:0;transition:background .3s}
+.sec.done-sec .sec-num{background:var(--ok)}
+.sec-title-wrap{flex:1}
+.sec-title{font-family:'Amiri',serif;font-size:17px;font-weight:700;color:var(--pri);margin:0}
+.sec-sub2{font-size:12px;color:var(--txl);margin:1px 0 0}
+.sec-chk{font-size:18px;color:var(--ok);flex-shrink:0;display:none}
+.sec.done-sec .sec-chk{display:block}
+.sec-body{padding:20px 22px}
+@media(max-width:480px){.sec-body{padding:14px 14px}}
+.sec-foot{padding:14px 22px;border-top:1px solid var(--bs);display:flex;justify-content:flex-end;align-items:center;gap:10px;background:var(--sf3)}
+.done-msg{font-size:12.5px;color:var(--ok);font-weight:600;display:none}
+.sec.done-sec .done-msg{display:block}
+.sec.done-sec .paham-btn{display:none}
+.paham-btn{background:var(--pmid);color:#fff;border:none;border-radius:var(--r);padding:9px 20px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s;font-family:'Source Sans 3',sans-serif}
+.paham-btn:hover{background:#1A90B8}
+.paham-btn::after{content:'→'}
+
+/* ── TYPOGRAPHY ── */
+.lead{font-size:15.5px;color:var(--txm);line-height:1.7;margin:0 0 16px}
+h3.sub{font-family:'Amiri',serif;font-size:18px;font-weight:700;color:var(--pri);margin:20px 0 9px;display:flex;align-items:center;gap:8px}
+h3.sub::before{content:'';width:4px;height:16px;background:var(--meet-acc);border-radius:2px;flex-shrink:0}
+h4.sub2{font-size:13.5px;font-weight:700;color:var(--pmid);margin:14px 0 6px;text-transform:uppercase;letter-spacing:.06em}
+p{color:var(--txm);margin:0 0 11px;line-height:1.65}
+ul.detail{padding-left:0;list-style:none;margin:0 0 13px}
+ul.detail li{padding:6px 0 6px 18px;position:relative;color:var(--txm);border-bottom:1px solid var(--bs);font-size:14px;line-height:1.5}
+ul.detail li:last-child{border-bottom:none}
+ul.detail li::before{content:'▸';position:absolute;left:0;color:var(--pmid);font-size:11px;top:8px}
+ul.detail li strong{color:var(--tx)}
+ul.bullet{padding-left:20px;margin:0 0 13px}
+ul.bullet li{margin-bottom:5px;color:var(--txm);font-size:14px;line-height:1.5}
+
+/* ── CALLOUT ── */
+.callout{border-radius:var(--rs);padding:13px 16px;margin:12px 0;font-size:14px;line-height:1.6}
+.callout.info{background:var(--prx);border-left:4px solid var(--pmid);color:var(--txm)}
+.callout.info strong{color:var(--pri)}
+.callout.warn{background:var(--accl);border-left:4px solid var(--acc);color:var(--txm)}
+.callout.sya{background:var(--syal);border-left:4px solid var(--sya);color:var(--txm)}
+.callout.case{background:var(--sf3);border:1px solid var(--bs);border-left:4px solid var(--meet-acc);color:var(--txm)}
+.case-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--meet-acc);margin-bottom:5px}
+
+/* ── DEFINITION & GRID ── */
+.def-box{background:linear-gradient(135deg,var(--meet-from),var(--meet-mid));color:#fff;border-radius:var(--r);padding:18px 22px;margin:13px 0;position:relative;overflow:hidden}
+.def-box::before{content:'"';font-family:'Amiri',serif;font-size:70px;color:rgba(255,255,255,.07);position:absolute;top:-10px;left:8px;line-height:1}
+.def-text{font-family:'Amiri',serif;font-size:16px;line-height:1.7;position:relative}
+.def-src{font-size:11px;color:rgba(255,255,255,.45);margin-top:7px;font-style:italic;position:relative}
+
+/* ── FLOW DIAGRAMS & GRIDS ── */
+.cycle-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:14px 0}
+@media(max-width:600px){.cycle-grid{grid-template-columns:1fr}}
+.cycle-card{background:var(--sf3);border:1.5px solid var(--bs);border-radius:var(--rs);padding:13px 15px;transition:all .2s}
+.cycle-card:hover{border-color:var(--pmid);box-shadow:0 3px 12px rgba(12,29,48,.08)}
+.cycle-ico{font-size:24px;margin-bottom:6px}
+.cycle-name{font-weight:700;color:var(--tx);font-size:13.5px;margin-bottom:3px}
+.cycle-desc{font-size:12.5px;color:var(--txm);line-height:1.45}
+.cycle-sub{font-size:11.5px;color:var(--pmid);margin-top:5px;font-weight:600}
+
+.dpc-wrap{display:flex;align-items:center;gap:6px;margin:16px 0;overflow-x:auto;padding-bottom:6px}
+.dpc-box{background:var(--sf3);border:1.5px solid var(--bs);border-radius:var(--rs);padding:11px 14px;text-align:center;min-width:140px;flex:1}
+.dpc-box strong{display:block;font-size:13px;color:var(--pri);margin-bottom:2px}
+.dpc-box span{font-size:11px;color:var(--txl)}
+.dpc-box.hl{border-color:var(--meet-acc);background:var(--accl)}
+.dpc-box.hl strong{color:var(--acc)}
+.dpc-arr{font-size:18px;color:var(--txl);flex-shrink:0}
+
+.cmp-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13.5px}
+.cmp-table th{background:var(--pri);color:#fff;padding:8px 12px;text-align:left;font-size:12px}
+.cmp-table td{padding:8px 12px;border-bottom:1px solid var(--bs);color:var(--txm);vertical-align:top}
+.cmp-table tr:last-child td{border-bottom:none}
+.cmp-table tr:nth-child(even) td{background:var(--sf3)}
+
+/* ── DFD SHAPES ── */
+.dfd-symbols{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}
+@media(max-width:560px){.dfd-symbols{grid-template-columns:1fr 1fr}}
+.dfd-card{background:var(--sf3);border:1px solid var(--bs);border-radius:var(--rs);padding:12px;text-align:center}
+.dfd-icon-box{height:44px;display:flex;align-items:center;justify-content:center;margin-bottom:6px}
+.dfd-title{font-weight:700;font-size:13px;color:var(--tx);margin-bottom:3px}
+.dfd-desc{font-size:11.5px;color:var(--txm);line-height:1.4}
+
+/* ── SYARIAH BOXES ── */
+.sya-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:520px){.sya-grid{grid-template-columns:1fr}}
+.sya-card{background:var(--sf3);border:1px solid var(--bs);border-top:3px solid var(--sya);border-radius:var(--rs);padding:14px}
+.sya-card-title{font-family:'Amiri',serif;font-size:16px;font-weight:700;color:var(--sya);margin-bottom:4px}
+.sya-card-desc{font-size:13px;color:var(--txm);line-height:1.55}
+.sya-card-ref{font-size:11.5px;color:var(--syab);margin-top:6px;font-weight:600}
+
+.ayat-box{background:linear-gradient(135deg,#051018,#0C1D30);border-radius:var(--r);padding:18px 22px;margin:14px 0;color:#fff}
+.ayat-ar{font-family:'Amiri',serif;font-size:20px;line-height:1.85;text-align:right;direction:rtl;color:#D8EEF8;margin-bottom:12px}
+.ayat-trans{font-style:italic;color:rgba(255,255,255,.7);font-size:13.5px;line-height:1.6;margin-bottom:8px;border-top:1px solid rgba(255,255,255,.1);padding-top:9px}
+.ayat-ref{font-size:12px;color:var(--meet-acc);font-weight:600}
+
+/* ── QUIZ STYLES ── */
+.quiz-sec{background:var(--sf);border:2px solid var(--acc);border-radius:var(--r);margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow);transition:opacity .4s,filter .4s}
+.quiz-sec.locked{opacity:.38;filter:grayscale(.45);pointer-events:none;user-select:none}
+.quiz-hd{background:linear-gradient(135deg,var(--meet-from),var(--meet-mid));color:#fff;padding:15px 22px;display:flex;align-items:center;gap:11px}
+.quiz-icon{font-size:22px}
+.quiz-hd-text{flex:1}
+.quiz-hd-title{font-family:'Amiri',serif;font-size:19px;font-weight:700;margin:0}
+.quiz-hd-sub{font-size:12px;color:rgba(255,255,255,.55);margin:2px 0 0}
+.quiz-body{padding:20px 22px}
+
+.q-item{margin-bottom:22px}
+.q-text{font-size:14.5px;font-weight:600;color:var(--tx);margin-bottom:11px;line-height:1.5}
+.q-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--pmid);color:#fff;border-radius:50%;font-size:10.5px;font-weight:700;margin-right:7px;flex-shrink:0;vertical-align:middle}
+.options{display:flex;flex-direction:column;gap:6px}
+.opt{padding:9px 14px;border-radius:var(--rs);border:2px solid var(--bs);background:var(--sf3);cursor:pointer;font-size:13.5px;color:var(--txm);transition:all .15s;display:flex;align-items:flex-start;gap:9px;-webkit-user-select:none;user-select:none}
+.opt:hover{border-color:var(--pmid);background:var(--prx);color:var(--pri)}
+.opt.selected{border-color:var(--pmid);background:var(--pril);color:var(--pri);font-weight:600}
+.opt.correct{border-color:var(--ok);background:var(--okl);color:#0A3020;font-weight:600}
+.opt.wrong{border-color:var(--warn);background:var(--warnl);color:#6A1808}
+.opt-ltr{width:20px;height:20px;border-radius:50%;background:var(--bs);display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;flex-shrink:0;transition:all .15s}
+.opt.selected .opt-ltr{background:var(--pmid);color:#fff}
+.opt.correct .opt-ltr{background:var(--ok);color:#fff}
+.opt.wrong .opt-ltr{background:var(--warn);color:#fff}
+.opt-txt{flex:1;line-height:1.5}
+.opt-fb{font-size:11.5px;font-style:italic;margin-top:4px;display:none;color:inherit;opacity:.85}
+.opt.correct .opt-fb,.opt.wrong .opt-fb{display:block}
+
+/* MATCHING */
+.match-intro{font-size:13.5px;color:var(--txm);margin-bottom:14px;line-height:1.55;padding:10px 14px;background:var(--prx);border-radius:var(--rs)}
+.match-container{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:520px){.match-container{grid-template-columns:1fr}}
+.match-col-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--txl);margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--bs)}
+.match-terms,.match-defs{display:flex;flex-direction:column;gap:5px}
+.match-term,.match-def{padding:9px 12px;border:2px solid var(--bs);border-radius:var(--rs);cursor:pointer;font-size:13px;color:var(--txm);background:var(--sf3);transition:all .15s;-webkit-user-select:none;user-select:none;line-height:1.4}
+.match-term{font-weight:700;color:var(--tx)}
+.match-term:hover,.match-def:hover{border-color:var(--pmid);background:var(--prx)}
+.match-term.selected{border-color:var(--pmid);background:var(--pril);color:var(--pri)}
+
+.quiz-foot{padding:14px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;background:var(--sf3);border-top:1px solid var(--bs)}
+.submit-btn{background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc));color:#fff;border:none;border-radius:var(--r);padding:10px 24px;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s;font-family:'Source Sans 3',sans-serif}
+.submit-btn:hover{opacity:.9}
+.score-badge{font-size:14px;font-weight:700;padding:6px 14px;border-radius:20px;display:none}
+.score-badge.pass{background:var(--okl);color:var(--ok);border:1px solid var(--ok)}
+.score-badge.fail{background:var(--warnl);color:var(--warn);border:1px solid var(--warn)}
+
+.completion{display:none;background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;border-radius:var(--r);padding:28px;text-align:center;margin-top:18px}
+.completion.show{display:block}
+.completion h2{font-family:'Amiri',serif;font-size:24px;font-weight:700;margin-bottom:8px}
+.completion p{color:rgba(255,255,255,.7);font-size:13.5px;margin-bottom:14px}
+.completion .lab-btn{display:inline-block;background:var(--meet-acc);color:#fff;border-radius:20px;padding:10px 24px;font-weight:700;font-size:14px;text-decoration:none}
+</style>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <a class="back-btn" href="../RPS-SIA.html">← RPS</a>
+    <div class="top-div"></div>
+    <div>
+      <div class="top-course">Sistem Informasi Akuntansi · FEBI Universitas Tazkia</div>
+      <div class="top-meeting">Pertemuan 02 — Proses Bisnis &amp; Data dalam AIS</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span class="top-badge">CPMK-1 · Romney Ch. 2</span>
+    <div class="prog-wrap"><div class="prog-bar" id="topProg" style="width:14%"></div></div>
+    <span class="prog-txt" id="topPct">14%</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <svg class="hero-bg" viewBox="0 0 600 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs><pattern id="dots" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="20" cy="20" r="1.5" fill="#D46020" opacity=".6"/>
+      <line x1="0" y1="20" x2="40" y2="20" stroke="#1B7898" stroke-width=".3" opacity=".3"/>
+      <line x1="20" y1="0" x2="20" y2="40" stroke="#1B7898" stroke-width=".3" opacity=".3"/>
+    </pattern></defs>
+    <rect width="100%" height="100%" fill="url(#dots)"/>
+  </svg>
+  <div class="hero-inner">
+    <div class="hero-bignum">02</div>
+    <div class="hero-ew"><div class="hero-line"></div><span class="hero-tag">Sistem Informasi Akuntansi — Modul Teori</span></div>
+    <h1 class="hero-title">Proses Bisnis &amp; Pemrosesan Data</h1>
+    <p class="hero-sub">Siklus Transaksi Bisnis · Siklus Pemrosesan Data · Hierarki Data · Bagan Akun · DFD Dasar · Halalan Thayyiban</p>
+    <div class="hero-chips">
+      <span class="hchip"><strong>CPMK-1</strong> C2 &amp; C3</span>
+      <span class="hchip">Romney &amp; Steinbart Ch. 2</span>
+      <span class="hchip">Siklus Transaksi &amp; DFD</span>
+      <span class="hchip">Ganjil 2026/2027</span>
+    </div>
+  </div>
+  <div class="hero-arch"><svg viewBox="0 0 1200 26" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,26 L0,14 Q20,4 40,14 Q60,26 80,14 Q100,4 120,14 Q140,26 160,14 Q180,4 200,14 Q220,26 240,14 Q260,4 280,14 Q300,26 320,14 Q340,4 360,14 Q380,26 400,14 Q420,4 440,14 Q460,26 480,14 Q500,4 520,14 Q540,26 560,14 Q580,4 600,14 Q620,26 640,14 Q660,4 680,14 Q700,26 720,14 Q740,4 760,14 Q780,26 800,14 Q820,4 840,14 Q860,26 880,14 Q900,4 920,14 Q940,26 960,14 Q980,4 1000,14 Q1020,26 1040,14 Q1060,4 1080,14 Q1100,26 1120,14 Q1140,4 1160,14 Q1180,26 1200,14 L1200,26 Z" fill="var(--bg)"/>
+  </svg></div>
+</div>
+
+<!-- STEP INDICATOR -->
+<div class="steps-wrap">
+  <div class="steps" id="stepTrack">
+    <div class="step active" id="st0"><div class="sdot">1</div><span class="slabel">Tujuan</span></div>
+    <div class="sconn" id="sc0"></div>
+    <div class="step" id="st1"><div class="sdot">2</div><span class="slabel">Siklus Bisnis</span></div>
+    <div class="sconn" id="sc1"></div>
+    <div class="step" id="st2"><div class="sdot">3</div><span class="slabel">Siklus Data</span></div>
+    <div class="sconn" id="sc2"></div>
+    <div class="step" id="st3"><div class="sdot">4</div><span class="slabel">Hierarki Data</span></div>
+    <div class="sconn" id="sc3"></div>
+    <div class="step" id="st4"><div class="sdot">5</div><span class="slabel">DFD &amp; Bagan</span></div>
+    <div class="sconn" id="sc4"></div>
+    <div class="step" id="st5"><div class="sdot">6</div><span class="slabel">Nilai Syariah</span></div>
+    <div class="sconn" id="sc5"></div>
+    <div class="step quiz" id="st6"><div class="sdot">★</div><span class="slabel">Kuis P02</span></div>
+  </div>
+</div>
+
+<!-- BODY CONTENT -->
+<div class="body">
+
+<!-- ╔══ SEKSI 1: TUJUAN PEMBELAJARAN ══╗ -->
+<div class="sec" id="sec0">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn0">1</div>
+    <div class="sec-title-wrap">
+      <h2 class="sec-title">Tujuan Pembelajaran &amp; Peta Konsep</h2>
+      <div class="sec-sub2">CPMK-1 · Fondasi Proses Bisnis dan Pemrosesan Data Akuntansi</div>
+    </div>
+    <span class="sec-chk">✓</span>
+  </div>
+  <div class="sec-body">
+    <p class="lead">Dalam organisasi modern, akuntansi bukan sekadar seni menjurnal di buku kas, melainkan <strong>sistem pemrosesan peristiwa bisnis (<em>business events</em>)</strong> menjadi informasi yang andal dan terstruktur.</p>
+
+    <h3 class="sub">Setelah mempelajari materi ini, kamu diharapkan mampu:</h3>
+    <ul class="detail">
+      <li><strong>1. Mengidentifikasi Siklus Transaksi:</strong> Menjelaskan 5 siklus transaksi utama (Pendapatan, Pengeluaran, Produksi, Penggajian/SDM, Pendanaan) dan siklus Buku Besar.</li>
+      <li><strong>2. Memahami 4 Tahap Siklus Data:</strong> Menguraikan alur <em>Data Processing Cycle</em> (Input data, Pemrosesan CRUD, Penyimpanan, dan Output Informasi).</li>
+      <li><strong>3. Menjelaskan Hierarki &amp; Struktur Penyimpanan:</strong> Membedakan Bit, Byte, Field, Record, File (Master vs Transaksi), Database, serta konsep Jurnal Khusus, Buku Besar Pembantu, dan <em>Chart of Accounts</em>.</li>
+      <li><strong>4. Mengenal Dasar Pemodelan DFD:</strong> Memahami simbol-simbol Data Flow Diagram (<em>Context Diagram</em>, Level 0, Level 1) untuk mendokumentasikan proses bisnis.</li>
+      <li><strong>5. Menghubungkan Nilai Syariah:</strong> Mengintegrasikan prinsip <em>Halalan Thayyiban</em> dan integritas pencatatan transaksi bebas <em>tadlis</em> (penipuan) dan <em>gharar</em>.</li>
+    </ul>
+
+    <div class="callout warn" style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;border-left:4px solid var(--meet-acc);padding:14px 18px;border-radius:var(--rs)">
+      <div>
+        <div style="font-size:11px;color:var(--meet-acc2);font-weight:700;text-transform:uppercase;letter-spacing:.08em">🎮 ICE BREAKING &amp; MULTI-STUDENT GAME</div>
+        <div style="font-family:'Amiri',serif;font-size:17px;font-weight:700;color:#fff;margin:2px 0 3px">Ekspedisi Transaksi BMT: Data Relay &amp; COA Cipher Challenge</div>
+        <div style="font-size:12.5px;color:rgba(255,255,255,.8)">Mainkan game kolaboratif antar mahasiswa: Relay Alur Transaksi, Tebak Kode Akun (COA), dan Deteksi Kejujuran Data (Anti-Tadlis)!</div>
+      </div>
+      <a href="Game-02-AIS.html" target="_blank" style="background:var(--meet-acc);color:#fff;font-size:13px;font-weight:700;padding:9px 18px;border-radius:20px;text-decoration:none;white-space:nowrap;box-shadow:0 3px 10px rgba(0,0,0,.3);transition:background .15s">Mainkan Game Kelas ↗</a>
+    </div>
+
+    <div class="callout info">
+      <strong>💡 Kaitan dengan Pertemuan 01:</strong> Jika P01 membahas <em>apa itu AIS</em> (6 komponen dan 3 perannya), maka P02 membahas <em>bagaimana data mengalir dan diproses</em> di dalam mesin akuntansi organisasi.
+    </div>
+  </div>
+  <div class="sec-foot">
+    <span class="done-msg">✓ Seksi 1 Selesai</span>
+    <button class="paham-btn" id="pb0" onclick="unlockNext(0)">Saya Paham — Lanjut</button>
+  </div>
+</div>
+
+<!-- ╔══ SEKSI 2: SIKLUS TRANSAKSI BISNIS ══╗ -->
+<div class="sec locked" id="sec1">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn1">2</div>
+    <div class="sec-title-wrap">
+      <h2 class="sec-title">Siklus Transaksi Bisnis (Transaction Cycles)</h2>
+      <div class="sec-sub2">Aktivitas Utama &amp; Alur Pertukaran Nilai Organisasi</div>
+    </div>
+    <span class="sec-chk">✓</span>
+  </div>
+  <div class="sec-body">
+    <p>Sebagian besar organisasi melakukan serangkaian aktivitas bisnis yang berulang (<em>business events</em>). Transaksi adalah peristiwa pertukaran nilai ekonomi antara dua pihak. AIS mengelompokkan aktivitas bisnis ke dalam <strong>5 Siklus Transaksi Utama</strong>:</p>
+
+    <div class="cycle-grid">
+      <div class="cycle-card">
+        <div class="cycle-ico">💰</div>
+        <div class="cycle-name">1. Siklus Pendapatan</div>
+        <div class="cycle-desc">Interaksi dengan <strong>Pelanggan</strong>. Menjual barang/jasa dan menerima pembayaran tunai atau menagih piutang.</div>
+        <div class="cycle-sub">Give Goods → Get Cash</div>
+      </div>
+      <div class="cycle-card">
+        <div class="cycle-ico">📦</div>
+        <div class="cycle-name">2. Siklus Pengeluaran</div>
+        <div class="cycle-desc">Interaksi dengan <strong>Pemasok/Vendor</strong>. Membeli bahan baku/persediaan dan membayar kas atau melunasi utang.</div>
+        <div class="cycle-sub">Get Goods → Give Cash</div>
+      </div>
+      <div class="cycle-card">
+        <div class="cycle-ico">⚙️</div>
+        <div class="cycle-name">3. Siklus Produksi / Konversi</div>
+        <div class="cycle-desc">Proses internal organisasi. Mengubah bahan baku mentah dan tenaga kerja menjadi produk jadi bernilai tambah.</div>
+        <div class="cycle-sub">Give Raw Material → Get Finished Goods</div>
+      </div>
+      <div class="cycle-card">
+        <div class="cycle-ico">👥</div>
+        <div class="cycle-name">4. Siklus Penggajian &amp; SDM</div>
+        <div class="cycle-desc">Interaksi dengan <strong>Karyawan</strong>. Merekrut, melatih, mengevaluasi kinerja, dan membayar upah/gaji (ujrah).</div>
+        <div class="cycle-sub">Get Labor → Give Cash (Salary)</div>
+      </div>
+      <div class="cycle-card">
+        <div class="cycle-ico">🏛️</div>
+        <div class="cycle-name">5. Siklus Pendanaan (Financing)</div>
+        <div class="cycle-desc">Interaksi dengan <strong>Investor &amp; Kreditur</strong>. Menerima setoran modal/pembiayaan dan membagikan dividen/bagi hasil.</div>
+        <div class="cycle-sub">Get Capital → Give Return/Dividen</div>
+      </div>
+      <div class="cycle-card" style="border-color:var(--pmid);background:var(--prx)">
+        <div class="cycle-ico">📊</div>
+        <div class="cycle-name">Buku Besar &amp; Pelaporan (GLARS)</div>
+        <div class="cycle-desc">Pusat integrasi data dari ke-5 siklus di atas untuk menghasilkan Laporan Keuangan dan Laporan Manajerial.</div>
+        <div class="cycle-sub">Integrate All Data → Financial Reports</div>
+      </div>
+    </div>
+
+    <div class="callout case">
+      <div class="case-label">Contoh Kasus: Lembaga Keuangan Syariah (BMT / BPRS)</div>
+      <p>Pada BMT (Baitul Maal wat Tamwil), siklus transaksi mencakup: <strong>Siklus Pendanaan</strong> (menghimpun simpanan wadiah / deposito mudharabah), <strong>Siklus Pengeluaran &amp; Pembiayaan</strong> (menyalurkan pembiayaan murabahah / ijarah kepada nasabah), <strong>Siklus Pendapatan</strong> (menerima angsuran pokok dan margin/bagi hasil), dan <strong>Siklus ZIS</strong> (menghimpun dan menyalurkan zakat, infaq, dan shadaqah).</p>
+    </div>
+  </div>
+  <div class="sec-foot">
+    <span class="done-msg">✓ Seksi 2 Selesai</span>
+    <button class="paham-btn" id="pb1" onclick="unlockNext(1)">Saya Paham — Lanjut</button>
+  </div>
+</div>
+
+<!-- ╔══ SEKSI 3: SIKLUS PEMROSESAN DATA ══╗ -->
+<div class="sec locked" id="sec2">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn2">3</div>
+    <div class="sec-title-wrap">
+      <h2 class="sec-title">Siklus Pemrosesan Data (Data Processing Cycle)</h2>
+      <div class="sec-sub2">4 Langkah Transformasi Data Menjadi Informasi</div>
+    </div>
+    <span class="sec-chk">✓</span>
+  </div>
+  <div class="sec-body">
+    <p>Setiap kali transaksi terjadi, AIS menjalankan <strong>Data Processing Cycle</strong> yang terdiri dari 4 tahapan utama:</p>
+
+    <div class="dpc-wrap">
+      <div class="dpc-box hl">
+        <strong>1. Data Input</strong>
+        <span>Menangkap data transaksi via dokumen sumber / otomasi</span>
+      </div>
+      <div class="dpc-arr">→</div>
+      <div class="dpc-box">
+        <strong>2. Data Processing</strong>
+        <span>Aktivitas CRUD (Create, Read, Update, Delete)</span>
+      </div>
+      <div class="dpc-arr">→</div>
+      <div class="dpc-box hl">
+        <strong>3. Data Storage</strong>
+        <span>Penyimpanan di Buku Besar, Master/Transaction File</span>
+      </div>
+      <div class="dpc-arr">→</div>
+      <div class="dpc-box">
+        <strong>4. Information Output</strong>
+        <span>Laporan keuangan, dashboard &amp; dokumen operasional</span>
+      </div>
+    </div>
+
+    <h3 class="sub">1. Data Input &amp; Otomasi Pengumpulan Data</h3>
+    <ul class="detail">
+      <li><strong>Source Documents (Dokumen Sumber):</strong> Dokumen fisik/digital yang mencatat awal mula transaksi, seperti <em>Purchase Order (PO)</em>, <em>Faktur Penjualan</em>, atau <em>Slip Setoran Tabungan</em>.</li>
+      <li><strong>Turnaround Documents:</strong> Dokumen yang dikirim perusahaan ke pihak eksternal, kemudian dikembalikan oleh pihak eksternal dengan data tambahan (contoh: tagihan listrik/telepon dengan barcode yang discan saat bayar).</li>
+      <li><strong>Source Data Automation:</strong> Pengambilan data transaksi secara otomatis langsung dari perangkat mesin tanpa ketik manual (contoh: Barcode Scanner POS, chip RFID, mesin EDC, QRIS, dan biometric). Mengurangi <em>human error</em> hingga 90%.</li>
+    </ul>
+
+    <h3 class="sub">2. Data Processing: Operasi CRUD</h3>
+    <p>Inti dari tahap pemrosesan adalah 4 operasi dasar CRUD yang bekerja pada data yang tersimpan:</p>
+    <div class="cycle-grid">
+      <div class="cycle-card">
+        <div class="cycle-ico">➕</div>
+        <div class="cycle-name">Create (Buat Baru)</div>
+        <div class="cycle-desc">Menambahkan record baru. Contoh: nasabah baru mendaftar, sistem meng-INSERT baris baru ke <code>Tabel_Master_Anggota</code>.</div>
+        <div class="cycle-sub">INSERT INTO tabel VALUES (…)</div>
+      </div>
+      <div class="cycle-card">
+        <div class="cycle-ico">🔍</div>
+        <div class="cycle-name">Read (Baca / Query)</div>
+        <div class="cycle-desc">Mengambil data untuk ditampilkan atau dihitung. Contoh: teller melihat saldo tabungan nasabah saat ini.</div>
+        <div class="cycle-sub">SELECT * FROM tabel WHERE id=X</div>
+      </div>
+      <div class="cycle-card">
+        <div class="cycle-ico">✏️</div>
+        <div class="cycle-name">Update (Perbarui)</div>
+        <div class="cycle-desc">Memodifikasi nilai di record yang ada. Contoh: saldo rekening nasabah diperbarui setelah setoran masuk.</div>
+        <div class="cycle-sub">UPDATE tabel SET saldo=… WHERE id=X</div>
+      </div>
+      <div class="cycle-card" style="border-color:var(--warn,#C03818)">
+        <div class="cycle-ico">🗑️</div>
+        <div class="cycle-name">Delete (Hapus)</div>
+        <div class="cycle-desc">Menghapus record yang tidak diperlukan. Contoh: anggota tutup rekening — status diubah INACTIVE (soft delete) untuk menjaga jejak audit.</div>
+        <div class="cycle-sub">UPDATE tabel SET status='CLOSED'</div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <strong>💡 Soft Delete vs Hard Delete:</strong> Sistem AIS yang andal menggunakan <em>soft delete</em> (menandai record sebagai tidak aktif) bukan hard delete (hapus permanen). Ini mempertahankan <strong>Jejak Audit (<em>Audit Trail</em>)</strong> — catatan kronologis seluruh perubahan data beserta <em>siapa</em>, <em>kapan</em>, dan <em>apa</em> yang diubah, yang wajib ada untuk keperluan audit dan kepatuhan regulasi OJK.
+    </div>
+
+    <h3 class="sub">3. Batch vs Real-Time Processing</h3>
+    <table class="cmp-table">
+      <thead><tr><th>Karakteristik</th><th>Batch Processing</th><th>Online, Real-Time Processing</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Waktu Pemrosesan</strong></td><td>Data dikumpulkan berkelompok, diproses periodik (malam/mingguan)</td><td>Data langsung diproses seketika saat transaksi terjadi</td></tr>
+        <tr><td><strong>Kemutakhiran Data</strong></td><td>Laporan tertunda hingga batch selesai dijalankan</td><td>Informasi selalu mutakhir (<em>up-to-the-second</em>)</td></tr>
+        <tr><td><strong>Risiko Kesalahan</strong></td><td>Kesalahan baru diketahui setelah batch — sulit dilacak ke transaksi asal</td><td>Validasi langsung saat input; kesalahan segera tertangkap</td></tr>
+        <tr><td><strong>Contoh Penggunaan</strong></td><td>Hitung gaji bulanan (payroll), amortisasi akhir bulan, rekonsiliasi</td><td>Penarikan ATM, mobile banking, QRIS, e-commerce marketplace</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="sub">4. Output Informasi — 3 Jenis Laporan AIS</h3>
+    <ul class="detail">
+      <li><strong>Laporan Terjadwal (<em>Scheduled Reports</em>):</strong> Dicetak atau dikirim secara otomatis pada interval tetap (harian, bulanan, tahunan). Contoh: Laporan Laba Rugi bulanan, Daftar Gaji.</li>
+      <li><strong>Laporan atas Permintaan (<em>On-Demand / Ad-Hoc</em>):</strong> Dibuat sewaktu-waktu sesuai kebutuhan manajemen atau auditor. Contoh: posisi piutang pembiayaan per nasabah pada tanggal tertentu.</li>
+      <li><strong>Laporan Trigger (<em>Exception Reports</em>):</strong> Dibuat secara otomatis saat kondisi tertentu terpenuhi. Contoh: peringatan NPF > 5%, saldo kas teller mendekati limit minimum, atau tagihan yang jatuh tempo tidak dibayar dalam 3 hari.</li>
+    </ul>
+
+    <h3 class="sub">Melihat Lengkap: 1 Transaksi → 4 Tahap → 1 Entri Jurnal</h3>
+    <div class="callout case">
+      <div class="case-label">Studi Kasus: Anggota BMT Setor Simpanan Wadiah Rp 500.000</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0">
+        <div style="background:var(--prx);border:1px solid var(--pmid);border-radius:var(--rs);padding:9px;text-align:center">
+          <div style="font-size:10px;font-weight:700;color:var(--pmid);text-transform:uppercase;margin-bottom:4px">① Input</div>
+          <div style="font-size:12px;color:var(--tx);line-height:1.4">Teller menerima uang tunai + anggota isi <em>Slip Setoran</em> (Source Document)</div>
+        </div>
+        <div style="background:var(--prx);border:1px solid var(--pmid);border-radius:var(--rs);padding:9px;text-align:center">
+          <div style="font-size:10px;font-weight:700;color:var(--pmid);text-transform:uppercase;margin-bottom:4px">② Processing</div>
+          <div style="font-size:12px;color:var(--tx);line-height:1.4">AIS jalankan <strong>CREATE</strong> — record mutasi baru di-INSERT ke Tabel Transaksi</div>
+        </div>
+        <div style="background:var(--prx);border:1px solid var(--pmid);border-radius:var(--rs);padding:9px;text-align:center">
+          <div style="font-size:10px;font-weight:700;color:var(--pmid);text-transform:uppercase;margin-bottom:4px">③ Storage</div>
+          <div style="font-size:12px;color:var(--tx);line-height:1.4">Master File Anggota di-<strong>UPDATE</strong>: saldo +Rp 500.000. Entri masuk Jurnal Umum.</div>
+        </div>
+        <div style="background:var(--okl);border:1px solid var(--ok);border-radius:var(--rs);padding:9px;text-align:center">
+          <div style="font-size:10px;font-weight:700;color:var(--ok);text-transform:uppercase;margin-bottom:4px">④ Output</div>
+          <div style="font-size:12px;color:var(--tx);line-height:1.4">Slip bukti tercetak, Buku Tabungan diperbarui, saldo dashboard mutakhir</div>
+        </div>
+      </div>
+      <div style="padding:10px 14px;background:var(--sf);border:1px solid var(--bs);border-radius:var(--rs)">
+        <div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--pmid);margin-bottom:7px">Entri Jurnal yang Dibuat Otomatis oleh AIS (Akad Wadiah Yad Dhamanah)</div>
+        <table style="width:100%;font-size:13px;border-collapse:collapse">
+          <thead><tr style="border-bottom:1px solid var(--bs)">
+            <th style="text-align:left;padding:4px 8px;color:var(--txm);font-weight:600;width:55%">Akun</th>
+            <th style="text-align:right;padding:4px 8px;color:var(--ok)">Debit (Rp)</th>
+            <th style="text-align:right;padding:4px 8px;color:var(--acc)">Kredit (Rp)</th>
+          </tr></thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--bs)">
+              <td style="padding:4px 8px"><code>11101</code> Kas Operasional Teller</td>
+              <td style="text-align:right;padding:4px 8px;color:var(--ok);font-weight:700">500.000</td>
+              <td style="text-align:right;padding:4px 8px;color:var(--txl)">—</td>
+            </tr>
+            <tr>
+              <td style="padding:4px 8px"><code>21101</code> Simpanan Anggota Wadiah</td>
+              <td style="text-align:right;padding:4px 8px;color:var(--txl)">—</td>
+              <td style="text-align:right;padding:4px 8px;color:var(--acc);font-weight:700">500.000</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="font-size:12px;color:var(--txm);margin-top:8px;margin-bottom:0">Inilah <em>Data Processing Cycle</em> secara utuh — dari kejadian bisnis hingga menghasilkan entri akuntansi berpasangan yang seimbang.</p>
+      </div>
+    </div>
+  </div>
+  <div class="sec-foot">
+    <span class="done-msg">✓ Seksi 3 Selesai</span>
+    <button class="paham-btn" id="pb2" onclick="unlockNext(2)">Saya Paham — Lanjut</button>
+  </div>
+</div>
+
+<!-- ╔══ SEKSI 4: HIERARKI DATA & PENYIMPANAN ══╗ -->
+<div class="sec locked" id="sec3">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn3">4</div>
+    <div class="sec-title-wrap">
+      <h2 class="sec-title">Hierarki Data &amp; Struktur Penyimpanan Akuntansi</h2>
+      <div class="sec-sub2">Bit, Field, Record, File, Database, Jurnal &amp; Buku Besar</div>
+    </div>
+    <span class="sec-chk">✓</span>
+  </div>
+  <div class="sec-body">
+    <p>Agar laporan akuntansi dapat dihasilkan dengan cepat, data disimpan dalam struktur hierarki yang teratur:</p>
+
+    <div class="dpc-wrap">
+      <div class="dpc-box"><strong>Bit (0/1)</strong><span>Biner komputer</span></div>
+      <div class="dpc-arr">→</div>
+      <div class="dpc-box"><strong>Byte (Karakter)</strong><span>Huruf / Angka</span></div>
+      <div class="dpc-arr">→</div>
+      <div class="dpc-box hl"><strong>Field (Atribut)</strong><span>Kolom data: 'Nama_Akun'</span></div>
+      <div class="dpc-arr">→</div>
+      <div class="dpc-box hl"><strong>Record (Baris)</strong><span>Satu baris entitas transaksi</span></div>
+      <div class="dpc-arr">→</div>
+      <div class="dpc-box"><strong>File / Tabel</strong><span>Kumpulan record sejenis</span></div>
+      <div class="dpc-arr">→</div>
+      <div class="dpc-box hl"><strong>Database</strong><span>Kumpulan tabel terintegrasi</span></div>
+    </div>
+
+    <h3 class="sub">Master File vs Transaction File</h3>
+    <ul class="detail">
+      <li><strong>Master File (File Induk):</strong> Menyimpan data kumulatif yang bersifat permanen dan relatif jarang berubah. Berisi saldo terkini (contoh: <em>Master Nasabah</em>, <em>Master Akun COA</em>, <em>Master Karyawan</em>). Konseptualnya setara dengan <strong>Buku Besar</strong>.</li>
+      <li><strong>Transaction File (File Transaksi):</strong> Menyimpan rekaman transaksi individual yang terjadi dalam periode tertentu. Bersifat sementara dan digunakan untuk memperbarui (<em>update</em>) Master File (contoh: <em>Tabel Transaksi Setoran Hari Ini</em>). Konseptualnya setara dengan <strong>Jurnal</strong>.</li>
+    </ul>
+
+    <h3 class="sub">Bagan Akun (Chart of Accounts - COA) &amp; Teknik Pengkodean</h3>
+    <p>Bagan akun adalah daftar terstruktur dari seluruh akun buku besar organisasi. Pengkodean memudahkan pencarian dan pengelompokan data:</p>
+    <table class="cmp-table">
+      <thead><tr><th>Teknik Pengkodean</th><th>Penjelasan</th><th>Contoh di Lembaga Keuangan Syariah</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Group Coding</strong></td><td>Setiap digit / segmen memiliki makna hierarkis khusus</td><td><code>11301</code>: <code>1</code>=Aset, <code>1</code>=Lancar, <code>3</code>=Piutang, <code>01</code>=Murabahah</td></tr>
+        <tr><td><strong>Block Coding</strong></td><td>Rentang angka dicadangkan untuk kategori tertentu</td><td><code>1000-1999</code>: Aset; <code>2000-2999</code>: Liabilitas; <code>4000-4999</code>: Pendapatan</td></tr>
+        <tr><td><strong>Sequence Coding</strong></td><td>Penomoran urut berurutan tanpa makna kode</td><td>Nomor Faktur: <code>INV-001</code>, <code>INV-002</code>, <code>INV-003</code></td></tr>
+        <tr><td><strong>Mnemonic Coding</strong></td><td>Huruf singkatan untuk memudahkan daya ingat manusia</td><td><code>IDR</code>, <code>USD</code>, <code>KAS-JKT</code>, <code>MRB-01</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="sub">Hubungan Buku Besar Pembantu &amp; Akun Kontrol</h3>
+    <p>Ini konsep penting yang sering muncul di UTS — hubungan antara rincian individual dan totalnya:</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0">
+      <div style="background:var(--prx);border:1.5px solid var(--pmid);border-radius:var(--rs);padding:14px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--pmid);margin-bottom:7px">Buku Besar Pembantu (Subsidiary Ledger)</div>
+        <p style="font-size:13px;color:var(--txm);margin:0 0 8px">Berisi rincian individual per entitas. Contoh: <strong>Buku Pembantu Piutang Murabahah</strong> mencatat saldo masing-masing anggota:</p>
+        <div style="font-size:12.5px;color:var(--tx);line-height:1.8;padding:6px 10px;background:var(--sf);border-radius:4px">
+          Ahmad Fauzi &nbsp;&nbsp; Rp 2.000.000<br>
+          Budi Santoso &nbsp;&nbsp;&nbsp; Rp 1.500.000<br>
+          Cici Rahayu &nbsp;&nbsp;&nbsp;&nbsp; Rp &nbsp; 500.000
+        </div>
+      </div>
+      <div style="background:var(--accl);border:1.5px solid var(--acc);border-radius:var(--rs);padding:14px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--acc);margin-bottom:7px">Akun Kontrol / Buku Besar Umum (Control Account)</div>
+        <p style="font-size:13px;color:var(--txm);margin:0 0 8px">Berisi <strong>total gabungan</strong> seluruh buku pembantu. Contoh: akun <code>11301</code> Piutang Pembiayaan Murabahah di Buku Besar Umum:</p>
+        <div style="font-size:18px;font-weight:700;color:var(--acc);text-align:center;margin-top:10px;padding:8px;background:var(--sf);border-radius:4px">Rp 4.000.000 ✓</div>
+      </div>
+    </div>
+    <div class="callout info">
+      <strong>⚖️ Aturan Emas Rekonsiliasi:</strong> Total seluruh saldo di Buku Besar Pembantu <em>harus selalu sama</em> dengan saldo Akun Kontrol di Buku Besar Umum. Jika tidak sama → ada transaksi yang salah posting atau terlewat. Wajib diinvestigasi sebelum laporan keuangan dicetak.
+    </div>
+  </div>
+  <div class="sec-foot">
+    <span class="done-msg">✓ Seksi 4 Selesai</span>
+    <button class="paham-btn" id="pb3" onclick="unlockNext(3)">Saya Paham — Lanjut</button>
+  </div>
+</div>
+
+<!-- ╔══ SEKSI 5: PENGANTAR DFD ══╗ -->
+<div class="sec locked" id="sec4">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn4">5</div>
+    <div class="sec-title-wrap">
+      <h2 class="sec-title">Dokumentasi Sistem: Data Flow Diagram (DFD)</h2>
+      <div class="sec-sub2">Pemodelan Visual Arus Data &amp; Proses Bisnis</div>
+    </div>
+    <span class="sec-chk">✓</span>
+  </div>
+  <div class="sec-body">
+    <p>Seorang akuntan profesional dan auditor wajib mampu membaca serta membuat diagram alur sistem. <strong>Data Flow Diagram (DFD)</strong> adalah representasi grafis dari sumber data, arus data, proses transformasi, penyimpanan data, dan tujuan data.</p>
+
+    <h3 class="sub">4 Simbol Dasar DFD (Notasi Gane-Sarson / Yourdon)</h3>
+    <div class="dfd-symbols">
+      <div class="dfd-card">
+        <div class="dfd-icon-box"><div style="width:38px;height:32px;border:2px solid var(--pri);border-radius:3px;background:var(--pril);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px">Entitas</div></div>
+        <div class="dfd-title">Data Source / Destination</div>
+        <div class="dfd-desc">Entitas eksternal pengirim atau penerima data (Pelanggan, Bank, Vendor).</div>
+      </div>
+      <div class="dfd-card">
+        <div class="dfd-icon-box"><span style="font-size:24px;color:var(--acc)">➔</span></div>
+        <div class="dfd-title">Data Flow (Arus Data)</div>
+        <div class="dfd-desc">Arah perpindahan data antar entitas, proses, dan penyimpanan data.</div>
+      </div>
+      <div class="dfd-card">
+        <div class="dfd-icon-box"><div style="width:36px;height:36px;border-radius:50%;border:2px solid var(--pmid);background:var(--prx);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px">1.0</div></div>
+        <div class="dfd-title">Transformation Process</div>
+        <div class="dfd-desc">Aktivitas yang memproses/mengubah data (misal: "Verifikasi Kelayakan Pembiayaan").</div>
+      </div>
+      <div class="dfd-card">
+        <div class="dfd-icon-box"><div style="width:42px;height:24px;border-top:2px solid var(--sya);border-bottom:2px solid var(--sya);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px;color:var(--sya)">M-Nasabah</div></div>
+        <div class="dfd-title">Data Store (Penyimpanan)</div>
+        <div class="dfd-desc">Tempat data disimpan sementara/permanen (tabel master, buku besar).</div>
+      </div>
+    </div>
+
+    <h3 class="sub">Tingkatan Level DFD</h3>
+    <ul class="detail">
+      <li><strong>Context Diagram (Level Konteks):</strong> Tingkat paling tinggi (<em>highest summary view</em>). Seluruh sistem digambarkan sebagai <em>satu lingkaran proses tunggal</em> yang berinteraksi dengan entitas luar.</li>
+      <li><strong>Level 0 DFD:</strong> Dekomposisi dari Diagram Konteks yang menguraikan sistem menjadi sub-proses utama (misal: Proses 1.0 Penghimpunan Dana, 2.0 Penyaluran Pembiayaan, 3.0 Pelaporan).</li>
+      <li><strong>Level 1 DFD:</strong> Rincian lebih mendalam dari salah satu proses di Level 0 (misal: memecah Proses 1.0 menjadi 1.1 Terima Setoran, 1.2 Validasi Anggota, 1.3 Update Saldo, 1.4 Cetak Buku Tabungan).</li>
+    </ul>
+
+    <h3 class="sub">Contoh: Context Diagram Sistem AIS BMT</h3>
+    <div class="callout case">
+      <div class="case-label">Studi Kasus: BMT Berkah Mandiri — Siklus Simpanan & Pembiayaan</div>
+      <div style="background:var(--sf2);border-radius:var(--rs);padding:12px 14px;margin-top:8px;overflow-x:auto">
+        <svg viewBox="0 0 640 200" style="width:100%;max-width:640px;display:block;font-family:'Source Sans 3',sans-serif" aria-label="Context Diagram BMT">
+          <!-- Entities -->
+          <rect x="10" y="60" width="110" height="50" rx="4" fill="none" stroke="var(--pri)" stroke-width="1.5"/>
+          <text x="65" y="81" text-anchor="middle" font-size="10" font-weight="700" fill="var(--tx)">Anggota /</text>
+          <text x="65" y="93" text-anchor="middle" font-size="10" font-weight="700" fill="var(--tx)">Nasabah BMT</text>
+          <rect x="10" y="130" width="110" height="50" rx="4" fill="none" stroke="var(--pri)" stroke-width="1.5"/>
+          <text x="65" y="151" text-anchor="middle" font-size="10" font-weight="700" fill="var(--tx)">Pemasok /</text>
+          <text x="65" y="163" text-anchor="middle" font-size="10" font-weight="700" fill="var(--tx)">Dealer Barang</text>
+          <!-- Center Process -->
+          <circle cx="320" cy="100" r="62" fill="var(--prx)" stroke="var(--pmid)" stroke-width="2"/>
+          <text x="320" y="89" text-anchor="middle" font-size="11" font-weight="700" fill="var(--pri)">0.0 SISTEM AIS</text>
+          <text x="320" y="101" text-anchor="middle" font-size="10" fill="var(--pmid)">BMT BERKAH</text>
+          <text x="320" y="113" text-anchor="middle" font-size="10" fill="var(--pmid)">MANDIRI</text>
+          <!-- Entities right -->
+          <rect x="520" y="30" width="115" height="50" rx="4" fill="none" stroke="var(--pri)" stroke-width="1.5"/>
+          <text x="577" y="51" text-anchor="middle" font-size="10" font-weight="700" fill="var(--tx)">Dewan Pengawas</text>
+          <text x="577" y="63" text-anchor="middle" font-size="10" font-weight="700" fill="var(--tx)">Syariah &amp; RUPS</text>
+          <rect x="520" y="130" width="115" height="50" rx="4" fill="none" stroke="var(--pri)" stroke-width="1.5"/>
+          <text x="577" y="151" text-anchor="middle" font-size="10" font-weight="700" fill="var(--tx)">Regulator OJK /</text>
+          <text x="577" y="163" text-anchor="middle" font-size="10" font-weight="700" fill="var(--tx)">BI &amp; Kementerian</text>
+          <!-- Arrows left -->
+          <line x1="120" y1="78" x2="255" y2="92" stroke="var(--acc)" stroke-width="1.5" marker-end="url(#arrow)"/>
+          <text x="185" y="79" text-anchor="middle" font-size="9" fill="var(--acc)">Form Setoran / Angsuran</text>
+          <line x1="255" y1="108" x2="120" y2="92" stroke="var(--pmid)" stroke-width="1.5" marker-end="url(#arrow2)"/>
+          <text x="185" y="107" text-anchor="middle" font-size="9" fill="var(--pmid)">Slip Bukti / Buku Tabungan</text>
+          <line x1="120" y1="150" x2="262" y2="118" stroke="var(--acc)" stroke-width="1.5" marker-end="url(#arrow)"/>
+          <text x="188" y="142" text-anchor="middle" font-size="9" fill="var(--acc)">Faktur Beli Barang</text>
+          <!-- Arrows right -->
+          <line x1="382" y1="72" x2="520" y2="56" stroke="var(--pmid)" stroke-width="1.5" marker-end="url(#arrow2)"/>
+          <text x="454" y="56" text-anchor="middle" font-size="9" fill="var(--pmid)">Lap. Keuangan Syariah</text>
+          <line x1="382" y1="120" x2="520" y2="148" stroke="var(--pmid)" stroke-width="1.5" marker-end="url(#arrow2)"/>
+          <text x="454" y="148" text-anchor="middle" font-size="9" fill="var(--pmid)">Laporan Regulasi</text>
+          <defs>
+            <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="var(--acc)"/></marker>
+            <marker id="arrow2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="var(--pmid)"/></marker>
+          </defs>
+        </svg>
+      </div>
+      <p style="font-size:12.5px;color:var(--txl);margin-top:8px;margin-bottom:0">Panah oranye = aliran data <strong>masuk</strong> ke sistem. Panah biru = aliran data <strong>keluar</strong> dari sistem (output informasi).</p>
+    </div>
+  </div>
+  <div class="sec-foot">
+    <span class="done-msg">✓ Seksi 5 Selesai</span>
+    <button class="paham-btn" id="pb4" onclick="unlockNext(4)">Saya Paham — Lanjut</button>
+  </div>
+</div>
+
+<!-- ╔══ SEKSI 6: NILAI SYARIAH ══╗ -->
+<div class="sec locked" id="sec5">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn5">6</div>
+    <div class="sec-title-wrap">
+      <h2 class="sec-title">Integrasi Nilai Syariah — Halalan Thayyiban &amp; Kejujuran Data</h2>
+      <div class="sec-sub2">Integritas Transaksi &amp; Amanah Pencatatan Keuangan Islam</div>
+    </div>
+    <span class="sec-chk">✓</span>
+  </div>
+  <div class="sec-body">
+    <div class="ayat-box">
+      <div class="ayat-ar">يَٰٓأَيُّهَا ٱلنَّاسُ كُلُوا۟ مِمَّا فِى ٱلْأَرْضِ حَلَٰلًا طَيِّبًا وَلَا تَتَّبِعُوا۟ خُطُوَٰتِ ٱلشَّيْطَٰنِ ۚ إِنَّهُۥ لَكُمْ عَدُوٌّ مُّبِينٌ</div>
+      <div class="ayat-trans">"Wahai manusia! Makanlah dari (makanan) yang halal dan baik yang terdapat di bumi, dan janganlah kamu mengikuti langkah-langkah setan. Sungguh, setan itu musuh yang nyata bagimu."</div>
+      <div class="ayat-ref">QS. Al-Baqarah: 168</div>
+    </div>
+
+    <div class="sya-grid">
+      <div class="sya-card">
+        <div class="sya-card-title">1. Prinsip Halalan Thayyiban dalam Business Events</div>
+        <div class="sya-card-desc">Siklus transaksi dalam AIS Islam hanya boleh memproses <em>business events</em> yang halal secara zat maupun cara perolehannya. Transaksi yang melibatkan riba, maysir (spekulasi/judi), dan komoditas haram ditolak sejak tahap <em>Data Input</em>.</div>
+        <div class="sya-card-ref">QS. Al-Baqarah: 275 · Larangan Riba</div>
+      </div>
+      <div class="sya-card">
+        <div class="sya-card-title">2. Larangan Tadlis (Manipulasi Catatan Transaksi)</div>
+        <div class="sya-card-desc">Data transaksi adalah amanah. Memanipulasi angka penjualan (<em>fictitious revenue</em>), menyembunyikan biaya, atau memalsukan dokumen sumber adalah dosa besar <em>tadlis</em> (penipuan) yang merusak keadilan (<em>Adl</em>).</div>
+        <div class="sya-card-ref">HR. Tirmidzi: "Pedagang yang jujur dan amanah bersama para nabi"</div>
+      </div>
+    </div>
+
+    <div class="callout sya">
+      <strong>☾ Relevansi dengan Ayat Mudayanah (QS. Al-Baqarah: 282):</strong> Allah memerintahkan agar setiap transaksi tidak tunai dicatat dengan adil oleh seorang juru tulis yang jujur. Dalam konteks modern, AIS yang dirancang dengan <em>audit trail</em> yang kokoh adalah wujud implementasi perintah Allah dalam menjaga kepatuhan dan keadilan ekonomi.
+    </div>
+  </div>
+  <div class="sec-foot">
+    <span class="done-msg">✓ Seksi 6 Selesai</span>
+    <button class="paham-btn" id="pb5" onclick="unlockNext(5)">Saya Paham — Masuk ke Kuis P02</button>
+  </div>
+</div>
+
+<!-- ╔══ SEKSI 7: KUIS P02 ══╗ -->
+<div class="quiz-sec locked" id="sec6">
+  <div class="quiz-hd">
+    <div class="quiz-icon">📝</div>
+    <div class="quiz-hd-text">
+      <h3 class="quiz-hd-title">Uji Pemahaman — Kuis Pertemuan 02</h3>
+      <div class="quiz-hd-sub">4 Soal Pilihan Ganda + 1 Matching Game · Ambang Lulus 75%</div>
+    </div>
+  </div>
+  <div class="quiz-body">
+
+    <!-- MCQ 1 -->
+    <div class="q-item">
+      <div class="q-text"><span class="q-num">1</span>Aktivitas pembelian bahan baku secara kredit dari pemasok dan pelunasan utang pada saat jatuh tempo merupakan bagian dari siklus transaksi:</div>
+      <div class="options" id="mcq0">
+        <div class="opt" onclick="selectMCQ(0,0)"><div class="opt-ltr">A</div><div class="opt-txt">Siklus Pendapatan (Revenue Cycle)<div class="opt-fb">Salah. Siklus pendapatan berhubungan dengan penjualan ke pelanggan.</div></div></div>
+        <div class="opt" onclick="selectMCQ(0,1)"><div class="opt-ltr">B</div><div class="opt-txt">Siklus Pengeluaran (Expenditure Cycle)<div class="opt-fb">Benar! Siklus pengeluaran mencakup pengadaan persediaan dan pembayaran kas ke vendor.</div></div></div>
+        <div class="opt" onclick="selectMCQ(0,2)"><div class="opt-ltr">C</div><div class="opt-txt">Siklus Pendanaan (Financing Cycle)<div class="opt-fb">Salah. Siklus pendanaan berkaitan dengan setoran modal dan dividen.</div></div></div>
+        <div class="opt" onclick="selectMCQ(0,3)"><div class="opt-ltr">D</div><div class="opt-txt">Siklus Produksi (Conversion Cycle)<div class="opt-fb">Salah. Siklus produksi mengolah bahan mentah menjadi barang jadi.</div></div></div>
+      </div>
+    </div>
+
+    <!-- MCQ 2 -->
+    <div class="q-item">
+      <div class="q-text"><span class="q-num">2</span>Dalam struktur penyimpanan data akuntansi, file yang menyimpan informasi saldo terkini secara kumulatif dan relatif permanen (seperti data nasabah dan bagan akun) disebut:</div>
+      <div class="options" id="mcq1">
+        <div class="opt" onclick="selectMCQ(1,0)"><div class="opt-ltr">A</div><div class="opt-txt">Transaction File<div class="opt-fb">Salah. Transaction file hanya menyimpan rekaman transaksi harian.</div></div></div>
+        <div class="opt" onclick="selectMCQ(1,1)"><div class="opt-ltr">B</div><div class="opt-txt">Batch File<div class="opt-fb">Salah. Batch file adalah sekumpulan perintah eksekusi otomatis.</div></div></div>
+        <div class="opt" onclick="selectMCQ(1,2)"><div class="opt-ltr">C</div><div class="opt-txt">Master File<div class="opt-fb">Benar! Master file menyimpan saldo kumulatif terkini yang setara dengan buku besar.</div></div></div>
+        <div class="opt" onclick="selectMCQ(1,3)"><div class="opt-ltr">D</div><div class="opt-txt">Turnaround File<div class="opt-fb">Salah. Turnaround document adalah dokumen input keluaran yang dikembalikan.</div></div></div>
+      </div>
+    </div>
+
+    <!-- MCQ 3 -->
+    <div class="q-item">
+      <div class="q-text"><span class="q-num">3</span>Pada bagan akun BMT Syariah, kode akun <code>11301</code> dirancang dengan teknik <em>Group Coding</em>. Digit pertama <code>1</code> menunjukkan:</div>
+      <div class="options" id="mcq2">
+        <div class="opt" onclick="selectMCQ(2,0)"><div class="opt-ltr">A</div><div class="opt-txt">Kelompok Klasifikasi Utama: Aset<div class="opt-fb">Benar! Digit pertama mengelompokkan kategori neraca utama (1 = Aset).</div></div></div>
+        <div class="opt" onclick="selectMCQ(2,1)"><div class="opt-ltr">B</div><div class="opt-txt">Kewajiban Lancar<div class="opt-fb">Salah. Kewajiban umumnya diawali angka 2.</div></div></div>
+        <div class="opt" onclick="selectMCQ(2,2)"><div class="opt-ltr">C</div><div class="opt-txt">Pendapatan Bagi Hasil<div class="opt-fb">Salah. Pendapatan umumnya diawali angka 4.</div></div></div>
+        <div class="opt" onclick="selectMCQ(2,3)"><div class="opt-ltr">D</div><div class="opt-txt">Nomor Urut Transaksi<div class="opt-fb">Salah. Itu adalah fungsi sequence coding.</div></div></div>
+      </div>
+    </div>
+
+    <!-- MCQ 4 -->
+    <div class="q-item">
+      <div class="q-text"><span class="q-num">4</span>Dalam pemodelan Data Flow Diagram (DFD), diagram tingkat tertinggi yang menggambarkan keseluruhan sistem sebagai satu lingkaran tunggal disebut:</div>
+      <div class="options" id="mcq3">
+        <div class="opt" onclick="selectMCQ(3,0)"><div class="opt-ltr">A</div><div class="opt-txt">Level 0 DFD<div class="opt-fb">Salah. Level 0 sudah memecah sistem menjadi beberapa subproses.</div></div></div>
+        <div class="opt" onclick="selectMCQ(3,1)"><div class="opt-ltr">B</div><div class="opt-txt">Context Diagram (Diagram Konteks)<div class="opt-fb">Benar! Context diagram memberikan ringkasan cakupan sistem secara menyeluruh.</div></div></div>
+        <div class="opt" onclick="selectMCQ(3,2)"><div class="opt-ltr">C</div><div class="opt-txt">Level 1 DFD<div class="opt-fb">Salah. Level 1 adalah rincian subproses mendalam.</div></div></div>
+        <div class="opt" onclick="selectMCQ(3,3)"><div class="opt-ltr">D</div><div class="opt-txt">Entity-Relationship Diagram (ERD)<div class="opt-fb">Salah. ERD adalah model relasi data, bukan DFD.</div></div></div>
+      </div>
+    </div>
+
+    <!-- MATCHING GAME -->
+    <div class="q-item">
+      <div class="q-text"><span class="q-num">5</span>Matching Game: Pasangkan Konsep AIS dengan Definisinya</div>
+      <div class="match-intro">Klik satu item di kolom kiri, lalu klik pasangannya di kolom kanan. Pasangan yang cocok akan diwarnai sama.</div>
+      <div class="match-container">
+        <div>
+          <div class="match-col-title">Istilah AIS</div>
+          <div class="match-terms" id="terms">
+            <div class="match-term" data-idx="0" onclick="selectTerm(0)">Source Data Automation</div>
+            <div class="match-term" data-idx="1" onclick="selectTerm(1)">Turnaround Document</div>
+            <div class="match-term" data-idx="2" onclick="selectTerm(2)">Subsidiary Ledger</div>
+            <div class="match-term" data-idx="3" onclick="selectTerm(3)">Real-Time Processing</div>
+            <div class="match-term" data-idx="4" onclick="selectTerm(4)">Tadlis</div>
+          </div>
+        </div>
+        <div>
+          <div class="match-col-title">Deskripsi / Fungsi</div>
+          <div class="match-defs" id="defs">
+            <div class="match-def" data-idx="0" onclick="selectDef(0)">Buku pembantu yang mencatat rincian perorangan nasabah/vendor</div>
+            <div class="match-def" data-idx="1" onclick="selectDef(1)">Pengambilan data transaksi secara otomatis via barcode/QRIS</div>
+            <div class="match-def" data-idx="2" onclick="selectDef(2)">Manipulasi data transaksi yang diharamkan dalam Islam</div>
+            <div class="match-def" data-idx="3" onclick="selectDef(3)">Dokumen keluaran perusahaan yang dikembalikan pelanggan untuk di-input</div>
+            <div class="match-def" data-idx="4" onclick="selectDef(4)">Pemrosesan transaksi seketika sehingga saldo selalu mutakhir</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="quiz-foot">
+    <button class="submit-btn" onclick="submitQuiz()">Submit Jawaban Kuis</button>
+    <div class="score-badge" id="scoreBadge"></div>
+  </div>
+</div>
+
+<!-- COMPLETION BOX -->
+<div class="completion" id="completion">
+  <h2>🎉 Selamat! Kamu Telah Menguasai Pertemuan 02 AIS!</h2>
+  <p>Kamu sudah memahami siklus transaksi, siklus pemrosesan data, hierarki data, bagan akun, dasar DFD, dan etika kejujuran data syariah.</p>
+  <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap">
+    <a class="lab-btn" href="Game-02-AIS.html" style="background:#1B7898">🎮 Mainkan Game Kolaboratif P02 ▸</a>
+    <a class="lab-btn" href="Praktikum-02-AIS.html">Buka Lembar Praktikum P02 (Lab 1) ▸</a>
+  </div>
+</div>
+
+</div><!-- end .body -->
+
+<script>
+const STORAGE_KEY = 'tazkia-ais-p02-v1';
+const TOTAL_SECS = 7;
+const MCQ_ANSWERS = [1, 2, 0, 1]; // B, C, A, B
+
+// Matching: term idx -> def idx
+// 0 (SDA) -> 1
+// 1 (Turnaround) -> 3
+// 2 (Sub Ledger) -> 0
+// 3 (Real-Time) -> 4
+// 4 (Tadlis) -> 2
+const MATCH_CORRECT = {0:1, 1:3, 2:0, 3:4, 4:2};
+const PAIR_COLORS = ['#1B7898', '#D46020', '#1F9060', '#7040B0', '#C03818'];
+
+let state = {
+  done: [0], // Step 0 unlocked by default
+  mcqSel: [null, null, null, null],
+  matchPairs: {},
+  submitted: false
+};
+
+function loadState(){
+  try{
+    const s = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if(s) state = s;
+  }catch(e){}
+}
+function saveState(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+}
+
+function unlockNext(i){
+  if(!state.done.includes(i+1)){
+    state.done.push(i+1);
+    saveState();
+  }
+  applyState();
+  const next = document.getElementById('sec' + (i+1));
+  if(next){
+    next.classList.add('unlocking');
+    setTimeout(()=>next.classList.remove('unlocking'), 400);
+    next.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+}
+
+function updateProgress(){
+  const pct = Math.round((state.done.length / TOTAL_SECS) * 100);
+  document.getElementById('topProg').style.width = pct + '%';
+  document.getElementById('topPct').textContent = pct + '%';
+
+  for(let i=0; i<TOTAL_SECS; i++){
+    const st = document.getElementById('st' + i);
+    const sc = document.getElementById('sc' + i);
+    if(!st) continue;
+    if(state.done.includes(i)){
+      st.className = 'step done' + (i===6?' quiz':'');
+      if(sc) sc.className = 'sconn done';
+    } else if(i === state.done.length){
+      st.className = 'step active' + (i===6?' quiz':'');
+    } else {
+      st.className = 'step' + (i===6?' quiz':'');
+    }
+  }
+}
+
+function selectMCQ(q, opt){
+  if(state.submitted) return;
+  state.mcqSel[q] = opt;
+  saveState();
+  document.querySelectorAll('#mcq' + q + ' .opt').forEach((el, idx)=>{
+    el.className = 'opt' + (idx === opt ? ' selected' : '');
+  });
+}
+
+let selTerm = null;
+let selDef = null;
+
+function selectTerm(idx){
+  if(state.submitted) return;
+  selTerm = idx;
+  document.querySelectorAll('#terms .match-term').forEach((el, j)=>el.classList.toggle('selected', j===idx));
+  checkMatch();
+}
+
+function selectDef(idx){
+  if(state.submitted) return;
+  selDef = idx;
+  document.querySelectorAll('#defs .match-def').forEach((el, j)=>el.classList.toggle('selected', j===idx));
+  checkMatch();
+}
+
+function checkMatch(){
+  if(selTerm === null || selDef === null) return;
+  state.matchPairs[selTerm] = selDef;
+  saveState();
+
+  const color = PAIR_COLORS[selTerm % PAIR_COLORS.length];
+  const termEl = document.querySelectorAll('#terms .match-term')[selTerm];
+  const defEl = document.querySelectorAll('#defs .match-def')[selDef];
+
+  if(termEl){
+    termEl.style.borderColor = color;
+    termEl.style.background = color + '18';
+    termEl.style.color = color;
+  }
+  if(defEl){
+    defEl.style.borderColor = color;
+    defEl.style.background = color + '18';
+    defEl.style.color = color;
+  }
+
+  selTerm = null;
+  selDef = null;
+  document.querySelectorAll('#terms .match-term, #defs .match-def').forEach(el=>el.classList.remove('selected'));
+}
+
+function submitQuiz(){
+  state.submitted = true;
+  saveState();
+  let score = 0;
+  const total = MCQ_ANSWERS.length + Object.keys(MATCH_CORRECT).length;
+
+  // Grade MCQs
+  MCQ_ANSWERS.forEach((ans, q)=>{
+    const sel = state.mcqSel[q];
+    const opts = document.querySelectorAll('#mcq' + q + ' .opt');
+    opts.forEach((o, idx)=>{
+      if(idx === ans) o.className = 'opt correct';
+      else if(idx === sel && sel !== ans) o.className = 'opt wrong';
+    });
+    if(sel === ans) score++;
+  });
+
+  // Grade Matching
+  Object.entries(MATCH_CORRECT).forEach(([t, d])=>{
+    if(state.matchPairs[t] === d) score++;
+  });
+
+  const pct = Math.round((score / total) * 100);
+  const badge = document.getElementById('scoreBadge');
+  badge.style.display = 'inline-block';
+  badge.textContent = `Skor: ${score}/${total} (${pct}%)`;
+
+  if(pct >= 75){
+    badge.className = 'score-badge pass';
+    document.getElementById('completion').classList.add('show');
+    document.getElementById('completion').scrollIntoView({behavior:'smooth'});
+  } else {
+    badge.className = 'score-badge fail';
+    badge.textContent += ' — Pelajari kembali materi dan coba lagi!';
+  }
+}
+
+function applyState(){
+  // Unlock all sections in state.done
+  for(let i=0; i<TOTAL_SECS; i++){
+    const sec = document.getElementById('sec' + i);
+    if(!sec) continue;
+    if(state.done.includes(i)){
+      sec.classList.remove('locked');
+      // Mark done-sec: all completed sections except the latest unlocked one
+      const isDone = (i < state.done.length - 1) || (state.done.length === TOTAL_SECS);
+      sec.classList.toggle('done-sec', isDone);
+    } else {
+      // Keep locked — ensure it has the locked class
+      if(!sec.classList.contains('locked')) sec.classList.add('locked');
+      sec.classList.remove('done-sec');
+    }
+  }
+
+  state.mcqSel.forEach((sel, q)=>{
+    if(sel === null) return;
+    document.querySelectorAll('#mcq' + q + ' .opt')[sel]?.classList.add('selected');
+  });
+
+  Object.entries(state.matchPairs).forEach(([t, d])=>{
+    const color = PAIR_COLORS[t % PAIR_COLORS.length];
+    const termEl = document.querySelectorAll('#terms .match-term')[t];
+    const defEl = document.querySelectorAll('#defs .match-def')[d];
+    if(termEl){
+      termEl.style.borderColor = color;
+      termEl.style.background = color + '18';
+      termEl.style.color = color;
+    }
+    if(defEl){
+      defEl.style.borderColor = color;
+      defEl.style.background = color + '18';
+      defEl.style.color = color;
+    }
+  });
+
+  if(state.submitted) submitQuiz();
+  updateProgress();
+}
+
+loadState();
+applyState();
+</script>

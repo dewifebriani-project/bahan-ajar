@@ -1,0 +1,826 @@
+<title>ADA P03 — Data Wrangling & Cleaning</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── ADA P03 · TEAL DATA SCIENCE ── */
+:root{
+  --meet-from:#041820;--meet-mid:#082840;--meet-to:#104060;
+  --meet-acc:#20C8D0;--meet-acc2:#30D8E0;
+  --bg:#EDF1F6;--sf:#fff;--sf2:#E8F6F8;--sf3:#F4FAFB;
+  --bd:#C4CDD8;--bs:#DDE3EC;
+  --tx:#0C1824;--txm:#475569;--txl:#8A9AB0;
+  --pri:#082840;--pril:#D8EEF6;--prx:#EAF6F8;
+  --acc:#20C8D0;--accl:#D0F4F6;
+  --sya:#1F9060;--syal:#D0EEE2;--syab:#40B080;
+  --p0:#1B7898;--p0l:#D8EEF6;
+  --p1:#D46020;--p1l:#FCEBD8;
+  --p2:#1F9060;--p2l:#D0EEE2;
+  --p3:#7040B0;--p3l:#EEE0FA;
+  --p4:#2A50B0;--p4l:#D8E4F8;
+  --r:8px;--rs:5px;
+  --shadow:0 4px 20px rgba(8,40,64,.1);--shadow-sm:0 2px 8px rgba(8,40,64,.06);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#030E18;--sf:#071828;--sf2:#071C28;--sf3:#041220;
+  --bd:#0C2840;--bs:#081830;
+  --tx:#C8E8F8;--txm:#6090B0;--txl:#2A5070;
+  --pri:#20C8D0;--pril:#051830;--prx:#040E18;
+  --acc:#20C8D0;--accl:#041820;
+  --sya:#40C890;--syal:#031410;
+  --p0l:#0A2030;--p1l:#180A00;--p2l:#041410;--p3l:#0E0820;--p4l:#060C20;
+}}
+:root[data-theme=dark]{
+  --bg:#030E18;--sf:#071828;--sf2:#071C28;--sf3:#041220;
+  --bd:#0C2840;--bs:#081830;
+  --tx:#C8E8F8;--txm:#6090B0;--txl:#2A5070;
+  --pri:#20C8D0;--pril:#051830;--prx:#040E18;
+  --acc:#20C8D0;--accl:#041820;
+  --sya:#40C890;--syal:#031410;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.65}
+
+/* ── HEADER ── */
+.hd{background:linear-gradient(160deg,var(--meet-from) 0%,var(--meet-mid) 55%,var(--meet-to) 100%);color:#fff;position:relative;overflow:hidden}
+.hd-ornament{position:absolute;inset:0;pointer-events:none;opacity:.12}
+.hd-inner{max-width:860px;margin:0 auto;padding:38px 28px 12px;position:relative;z-index:1}
+.hd-eyebrow{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.hd-line{width:28px;height:1px;background:var(--meet-acc)}
+.hd-eye{font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--meet-acc)}
+.hd-kode{font-size:12px;background:rgba(32,200,208,.15);border:1px solid rgba(32,200,208,.3);border-radius:12px;padding:2px 12px;color:var(--meet-acc2);margin-left:auto}
+.hd-title{font-family:'Amiri',serif;font-size:34px;font-weight:700;line-height:1.15;margin-bottom:6px}
+.hd-sub{font-size:14.5px;color:rgba(255,255,255,.55);margin-bottom:18px}
+.hd-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.hpill{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:3px 12px;font-size:12px;color:rgba(255,255,255,.7)}
+.hpill strong{color:#fff}
+.hd-arch{line-height:0}
+.hd-arch svg{display:block;width:100%;height:28px}
+
+/* ── PROGRESS BAR ── */
+.prog-wrap{background:var(--sf);border-bottom:1px solid var(--bs);position:sticky;top:0;z-index:40;box-shadow:var(--shadow-sm)}
+.prog-inner{max-width:860px;margin:0 auto;padding:10px 24px;display:flex;align-items:center;gap:12px}
+.prog-label{font-size:12px;font-weight:700;color:var(--txl);white-space:nowrap;flex-shrink:0}
+.prog-steps{display:flex;gap:5px;flex:1}
+.prog-dot{width:28px;height:6px;border-radius:3px;background:var(--bs);transition:background .3s}
+.prog-dot.done{background:var(--meet-acc)}
+.prog-dot.active{background:rgba(32,200,208,.4)}
+.prog-pct{font-size:12px;font-weight:700;color:var(--acc);white-space:nowrap}
+
+.main{max-width:860px;margin:0 auto;padding:28px 24px 80px}
+
+.sec-card{background:var(--sf);border:1px solid var(--bs);border-radius:var(--r);margin-bottom:16px;box-shadow:var(--shadow-sm);overflow:hidden;transition:opacity .3s,filter .3s}
+.sec-card.locked{opacity:.45;filter:grayscale(.4);pointer-events:none}
+.sec-card.unlocked{opacity:1;filter:none;pointer-events:auto}
+.sec-hd{display:flex;align-items:center;gap:12px;padding:15px 22px;background:var(--sf3);border-bottom:1px solid var(--bs)}
+.sec-num{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc));color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.sec-num.done{background:var(--sya)}
+.sec-title{font-family:'Amiri',serif;font-size:19px;font-weight:700;color:var(--pri)}
+.sec-cpmk{font-size:11px;color:var(--acc);font-weight:700;margin-left:auto;background:var(--accl);padding:2px 9px;border-radius:10px;white-space:nowrap}
+.sec-body{padding:22px 26px}
+
+h3.sh{font-family:'Amiri',serif;font-size:20px;font-weight:700;color:var(--pri);margin:22px 0 10px;display:flex;align-items:center;gap:9px}
+h3.sh::before{content:'';width:4px;height:18px;background:var(--meet-acc);border-radius:2px;flex-shrink:0}
+h4.shs{font-size:14.5px;font-weight:700;color:var(--tx);margin:16px 0 8px}
+p{color:var(--txm);margin-bottom:10px;font-size:14.5px}
+ul.lst{list-style:none;padding:0;margin-bottom:12px}
+ul.lst li{padding:6px 0 6px 22px;position:relative;color:var(--txm);font-size:14px;border-bottom:1px solid var(--bs)}
+ul.lst li:last-child{border-bottom:none}
+ul.lst li::before{content:'▸';position:absolute;left:0;color:var(--acc);font-size:11px;top:8px}
+ul.lst li strong{color:var(--tx)}
+.callout{border-radius:var(--rs);padding:12px 16px;margin:12px 0;font-size:13.5px}
+.callout.info{background:var(--prx);border-left:4px solid var(--acc);color:var(--txm)}
+.callout.sya{background:var(--syal);border-left:4px solid var(--sya);color:var(--txm)}
+.callout.warn{background:#FEF3E0;border-left:4px solid #D46020;color:#5A2C04}
+.callout.tip{background:var(--sf3);border-left:4px solid var(--p3);color:var(--txm)}
+
+.cpmk-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:14px}
+.cpmk-table th{background:var(--meet-mid);color:#fff;padding:7px 12px;text-align:left;font-size:11.5px}
+.cpmk-table td{padding:7px 12px;border-bottom:1px solid var(--bs);color:var(--txm)}
+.cpmk-table tr:last-child td{border-bottom:none}
+.cpmk-table tr:nth-child(even) td{background:var(--sf3)}
+.badge{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:9px}
+.badge-c3{background:#E8E0FA;color:#5020A0}
+
+.sec-map{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
+@media(max-width:480px){.sec-map{grid-template-columns:1fr 1fr}}
+.sec-map-item{background:var(--sf3);border:1px solid var(--bs);border-radius:var(--rs);padding:10px 13px;display:flex;align-items:center;gap:9px}
+.sec-map-item .ico{font-size:20px;flex-shrink:0}
+.sec-map-item .lbl{font-size:12.5px;font-weight:600;color:var(--tx);line-height:1.3}
+.sec-map-item .sub{font-size:11px;color:var(--txl);margin-top:2px}
+
+/* CODE BLOCK */
+.code-wrap{margin:14px 0}
+.code-hd{display:flex;align-items:center;justify-content:space-between;background:#082840;padding:8px 14px;border-radius:var(--rs) var(--rs) 0 0}
+.code-hd span{font-size:11px;font-weight:700;color:#4090C0;letter-spacing:.06em;text-transform:uppercase}
+.code-hd .copy-btn{font-size:11px;background:rgba(32,200,208,.12);border:1px solid rgba(32,200,208,.25);border-radius:8px;padding:2px 9px;color:var(--acc);cursor:pointer;font-family:inherit}
+.code-hd .copy-btn:hover{background:rgba(32,200,208,.22)}
+pre.code{background:#1E2C38;border-radius:0 0 var(--rs) var(--rs);padding:16px 18px;overflow-x:auto;margin:0;font-family:'Source Code Pro','Courier New',monospace;font-size:13.5px;line-height:1.75;color:#C9D8E0}
+.kw{color:#20C8D0}.fn{color:#79D0FF}.st{color:#A5E6FF}.cm{color:#4A7090;font-style:italic}.nm{color:#F8C555}.op{color:#E0A060}.va{color:#D4C0A0}
+
+.out-wrap{background:#F4FAFC;border:1px solid #A0D8E0;border-radius:var(--rs);padding:12px 16px;margin:8px 0;font-size:13px;line-height:1.6;color:#0A2830;font-family:'Source Code Pro',monospace}
+.out-wrap::before{content:'▶ Output:';display:block;font-family:'Source Sans 3',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--acc);margin-bottom:7px}
+
+/* COMPARISON GRID */
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+@media(max-width:500px){.cmp-grid{grid-template-columns:1fr}}
+.cmp-card{border-radius:var(--r);padding:16px;border:1px solid var(--bs)}
+.cmp-card.bad{background:#FFF5F5;border-color:#E57373}
+.cmp-card.good{background:var(--prx);border-color:var(--acc)}
+.cmp-card h4{font-size:14.5px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.cmp-card.bad h4{color:#C62828}
+.cmp-card.good h4{color:var(--pri)}
+.cmp-row{display:flex;align-items:flex-start;gap:7px;margin-bottom:7px;font-size:13px;color:var(--txm)}
+
+/* CONCEPT TABLE */
+.concept-table{width:100%;border-collapse:collapse;font-size:13px;margin:14px 0}
+.concept-table th{background:var(--meet-mid);color:#fff;padding:8px 14px;text-align:left;font-size:12px}
+.concept-table td{padding:8px 14px;border-bottom:1px solid var(--bs);color:var(--txm);vertical-align:top}
+.concept-table td:first-child{font-family:'Source Code Pro',monospace;font-size:12.5px;color:var(--p0);font-weight:700;white-space:nowrap}
+.concept-table tr:nth-child(even) td{background:var(--sf3)}
+.concept-table tr:last-child td{border-bottom:none}
+
+/* FLOW DIAGRAM */
+.flow-wrap{display:flex;gap:6px;align-items:center;margin:14px 0;flex-wrap:wrap}
+.flow-box{background:var(--sf3);border:1.5px solid var(--bs);border-radius:var(--rs);padding:10px 14px;font-size:13px;text-align:center;min-width:110px}
+.flow-box strong{display:block;font-size:12px;color:var(--tx);margin-bottom:3px}
+.flow-box span{font-size:11px;color:var(--txl)}
+.flow-box.hl{border-color:var(--acc);background:var(--accl)}
+.flow-box.hl strong{color:var(--pri)}
+.flow-arr{font-size:18px;color:var(--txl);flex-shrink:0}
+
+/* NILAI SYARIAH */
+.nilai-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+@media(max-width:500px){.nilai-grid{grid-template-columns:1fr}}
+.nilai-card{background:var(--sf3);border:1px solid var(--bs);border-radius:var(--r);padding:16px;border-top:3px solid var(--sya)}
+.nilai-name{font-family:'Amiri',serif;font-size:18px;font-weight:700;color:var(--sya);margin-bottom:4px}
+.nilai-ar{font-family:'Amiri',serif;font-size:22px;color:var(--tx);text-align:right;direction:rtl;margin:10px 0;line-height:1.8}
+.nilai-tr{font-size:13px;color:var(--txm);font-style:italic;margin-bottom:8px}
+.nilai-ref{font-size:11.5px;color:var(--syab);font-weight:600}
+.nilai-app{font-size:13px;color:var(--txm);margin-top:8px;border-top:1px solid var(--bs);padding-top:8px}
+
+/* QUIZ */
+.quiz-head{background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;padding:16px 22px;border-radius:var(--r) var(--r) 0 0;display:flex;align-items:center;gap:10px}
+.quiz-head h3{font-family:'Amiri',serif;font-size:18px;font-weight:700}
+.quiz-head .q-info{font-size:12.5px;color:rgba(255,255,255,.6);margin-left:auto}
+.quiz-body{background:var(--sf);border:1px solid var(--bs);border-radius:0 0 var(--r) var(--r);padding:22px}
+.q-block{margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--bs)}
+.q-block:last-of-type{border-bottom:none}
+.q-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--acc);margin-bottom:6px}
+.q-text{font-size:14.5px;font-weight:600;color:var(--tx);margin-bottom:12px;line-height:1.5}
+.q-code{font-family:'Source Code Pro',monospace;font-size:12.5px;background:#1E2C38;color:#A5E6FF;border-radius:var(--rs);padding:8px 14px;margin:8px 0;display:block;overflow-x:auto}
+.q-opts{display:flex;flex-direction:column;gap:7px}
+.q-opt{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border:1.5px solid var(--bs);border-radius:var(--rs);cursor:pointer;transition:all .18s;font-size:13.5px;color:var(--txm);background:var(--sf3)}
+.q-opt:hover{border-color:var(--acc);background:var(--accl)}
+.q-opt.selected{border-color:var(--acc);background:var(--accl);color:var(--tx)}
+.q-opt.correct{border-color:var(--sya)!important;background:var(--syal)!important;color:var(--sya)!important}
+.q-opt.wrong{border-color:#D44040!important;background:#FEE0E0!important;color:#A01010!important}
+.q-opt-letter{width:22px;height:22px;border-radius:50%;background:var(--bs);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--txl);flex-shrink:0;margin-top:1px}
+.q-opt.selected .q-opt-letter{background:var(--acc);color:#fff}
+.q-feedback{font-size:13px;color:var(--txm);background:var(--prx);border-radius:var(--rs);padding:10px 14px;margin-top:10px;display:none;border-left:3px solid var(--acc)}
+.q-feedback.show{display:block}
+.match-wrap{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:500px){.match-wrap{grid-template-columns:1fr}}
+.match-col-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--txl);margin-bottom:7px}
+.match-items{display:flex;flex-direction:column;gap:7px}
+.match-term,.match-def{padding:10px 14px;border:1.5px solid var(--bs);border-radius:var(--rs);cursor:pointer;font-size:13px;color:var(--txm);background:var(--sf3);transition:all .18s;line-height:1.45;user-select:none}
+.match-term:hover,.match-def:hover{border-color:var(--acc);background:var(--accl)}
+.match-term.selected,.match-def.selected{border-color:var(--acc)!important;box-shadow:0 0 0 2px var(--accl)}
+.match-term strong{display:block;font-size:12px;color:var(--tx);margin-bottom:2px}
+.match-hint{font-size:12.5px;color:var(--txl);margin-bottom:10px}
+.quiz-submit-row{display:flex;align-items:center;gap:12px;margin-top:20px}
+.btn-submit{background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc));color:#fff;border:none;border-radius:var(--r);padding:12px 28px;font-family:'Source Sans 3',sans-serif;font-size:14.5px;font-weight:700;cursor:pointer;transition:opacity .2s}
+.btn-submit:hover{opacity:.88}
+.quiz-score{font-size:14px;color:var(--txm);display:none}
+.quiz-result{display:none;margin-top:16px;border-radius:var(--r);padding:16px 20px;text-align:center}
+.quiz-result.pass{background:var(--syal);border:1.5px solid var(--sya)}
+.quiz-result.fail{background:#FEE8D8;border:1.5px solid #D46020}
+.quiz-result .big{font-family:'Amiri',serif;font-size:28px;font-weight:700}
+.quiz-result.pass .big{color:var(--sya)}
+.quiz-result.fail .big{color:#A04010}
+.quiz-result p{font-size:13.5px;color:var(--txm);margin-top:6px}
+
+.paham-row{display:flex;justify-content:flex-end;margin-top:22px}
+.btn-paham{background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc));color:#fff;border:none;border-radius:24px;padding:11px 28px;font-family:'Source Sans 3',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;transition:opacity .2s}
+.btn-paham:hover{opacity:.88}
+.btn-paham.done{background:var(--sya);cursor:default}
+
+.completion{display:none;background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;border-radius:var(--r);padding:30px;text-align:center;margin-top:20px}
+.completion.show{display:block}
+.completion h2{font-family:'Amiri',serif;font-size:26px;font-weight:700;margin-bottom:8px}
+.completion p{color:rgba(255,255,255,.7);font-size:14px}
+.completion .lab-link{display:inline-block;margin-top:16px;background:var(--meet-acc);color:var(--meet-from);border-radius:20px;padding:10px 24px;font-weight:700;font-size:14px;text-decoration:none}
+
+@media(max-width:600px){
+  .hd-inner{padding:28px 18px 10px}
+  .main{padding:18px 14px 60px}
+  .sec-body{padding:16px 16px}
+  .hd-title{font-size:26px}
+  .cmp-grid,.nilai-grid,.match-wrap{grid-template-columns:1fr}
+}
+</style>
+
+<!-- HEADER -->
+<div class="hd">
+  <svg class="hd-ornament" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs><pattern id="mesh" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M30,0 L60,30 L30,60 L0,30 Z" fill="none" stroke="#20C8D0" stroke-width="1"/>
+      <circle cx="30" cy="30" r="2.5" fill="#20C8D0" opacity=".6"/>
+      <circle cx="0" cy="30" r="1.5" fill="#20C8D0" opacity=".4"/>
+      <circle cx="60" cy="30" r="1.5" fill="#20C8D0" opacity=".4"/>
+    </pattern></defs>
+    <rect width="100%" height="100%" fill="url(#mesh)"/>
+  </svg>
+  <div class="hd-inner">
+    <div class="hd-eyebrow">
+      <div class="hd-line"></div>
+      <span class="hd-eye">Applied Data Analytics · Universitas Tazkia</span>
+      <span class="hd-kode">DTA-402 · P03</span>
+    </div>
+    <h1 class="hd-title">Data Wrangling &amp; Cleaning —<br>Dari Data Kotor Menjadi Insight Berkah</h1>
+    <p class="hd-sub">Missing Values · Outliers (IQR &amp; Z-Score) · Tipe Data · String Operations · Taharah (Kesucian Data)</p>
+    <div class="hd-pills">
+      <span class="hpill"><strong>CPMK-2</strong></span>
+      <span class="hpill">Bloom C3 — Menerapkan</span>
+      <span class="hpill">LAB 2</span>
+      <span class="hpill">Ganjil 2026/2027</span>
+    </div>
+  </div>
+  <div class="hd-arch"><svg viewBox="0 0 1200 28" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,28 L0,16 Q20,4 40,16 Q60,28 80,16 Q100,4 120,16 Q140,28 160,16 Q180,4 200,16 Q220,28 240,16 Q260,4 280,16 Q300,28 320,16 Q340,4 360,16 Q380,28 400,16 Q420,4 440,16 Q460,28 480,16 Q500,4 520,16 Q540,28 560,16 Q580,4 600,16 Q620,28 640,16 Q660,4 680,16 Q700,28 720,16 Q740,4 760,16 Q780,28 800,16 Q820,4 840,16 Q860,28 880,16 Q900,4 920,16 Q940,28 960,16 Q980,4 1000,16 Q1020,28 1040,16 Q1060,4 1080,16 Q1100,28 1120,16 Q1140,4 1160,16 Q1180,28 1200,16 L1200,28 Z" fill="var(--bg)"/>
+  </svg></div>
+</div>
+
+<!-- PROGRESS -->
+<div class="prog-wrap">
+  <div class="prog-inner">
+    <span class="prog-label">Progress P03</span>
+    <div class="prog-steps" id="progSteps">
+      <div class="prog-dot active" id="pd0"></div>
+      <div class="prog-dot" id="pd1"></div>
+      <div class="prog-dot" id="pd2"></div>
+      <div class="prog-dot" id="pd3"></div>
+      <div class="prog-dot" id="pd4"></div>
+      <div class="prog-dot" id="pd5"></div>
+      <div class="prog-dot" id="pd6"></div>
+    </div>
+    <span class="prog-pct" id="progPct">0%</span>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ╔══ SEKSI 1: TUJUAN PEMBELAJARAN ══╗ -->
+<div class="sec-card unlocked" id="sec0">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn0">1</div>
+    <div class="sec-title">Tujuan Pembelajaran &amp; Peta Konsep</div>
+    <span class="sec-cpmk">CPMK-2</span>
+  </div>
+  <div class="sec-body">
+    <p>Di dunia industri nyata, <strong>80% waktu seorang data analyst/scientist</strong> dihabiskan untuk membersihkan dan menyiapkan data (<em>data wrangling</em>). Data bisnis jarang datang dalam keadaan rapi: ada nilai hilang (<em>missing values</em>), angka tidak wajar (<em>outliers</em>), format tanggal rancu, serta teks berantakan.</p>
+
+    <h3 class="sh">Setelah pertemuan ini kamu mampu...</h3>
+    <table class="cpmk-table">
+      <thead><tr><th>Sub-CPMK</th><th>Bloom</th><th>Kemampuan Kunci</th></tr></thead>
+      <tbody>
+        <tr><td><strong>C3.1</strong></td><td><span class="badge badge-c3">C3</span></td><td>Mendiagnosis kualitas data (missing values, duplikasi, inkonsistensi tipe data, dan outlier) secara sistematis</td></tr>
+        <tr><td><strong>C3.2</strong></td><td><span class="badge badge-c3">C3</span></td><td>Menerapkan strategi penanganan missing values (<code>dropna</code>, <code>fillna</code> konstan, mean, median, forward-fill, dan imputasi grup)</td></tr>
+        <tr><td><strong>C3.3</strong></td><td><span class="badge badge-c3">C3</span></td><td>Mendeteksi dan menangani outlier menggunakan metode statistik Interquartile Range (IQR) dan Z-score (winsorization / capping)</td></tr>
+        <tr><td><strong>C3.4</strong></td><td><span class="badge badge-c3">C3</span></td><td>Melakukan pembersihan teks dan standardisasi string (<code>.str.strip()</code>, <code>.str.replace()</code>, mapping kamus)</td></tr>
+        <tr><td><strong>C3.5</strong></td><td><span class="badge badge-c3">C3</span></td><td>Mengonversi dan memvalidasi tipe data numerik dan datetime (<code>pd.to_datetime</code>, casting aman)</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="sh">Peta 6 Pilar Data Wrangling P03</h3>
+    <div class="sec-map">
+      <div class="sec-map-item"><div class="ico">🩺</div><div><div class="lbl">Data Audit &amp; Profiling</div><div class="sub">Seksi 2 · isna(), dtypes, dups</div></div></div>
+      <div class="sec-map-item"><div class="ico">🩹</div><div><div class="lbl">Missing Values Strategy</div><div class="sub">Seksi 3 · dropna vs fillna</div></div></div>
+      <div class="sec-map-item"><div class="ico">📐</div><div><div class="lbl">Outlier IQR &amp; Z-Score</div><div class="sub">Seksi 4 · Deteksi &amp; Capping</div></div></div>
+      <div class="sec-map-item"><div class="ico">🔤</div><div><div class="lbl">String &amp; Type Casting</div><div class="sub">Seksi 5 · .str.* &amp; to_datetime</div></div></div>
+      <div class="sec-map-item"><div class="ico">🕊️</div><div><div class="lbl">Taharah &amp; Data Hygiene</div><div class="sub">Seksi 6 · Nilai Syariah</div></div></div>
+      <div class="sec-map-item"><div class="ico">📝</div><div><div class="lbl">Uji Pemahaman</div><div class="sub">Seksi 7 · Kuis Interaktif</div></div></div>
+    </div>
+
+    <div class="callout info">
+      <strong>📦 Dataset Studi Kasus:</strong> <code>dataset-ecommerce-dirty-p03.csv</code> — Dataset transaksi e-commerce produk halal &amp; Muslim lifestyle Indonesia yang sengaja memiliki berbagai anomali nyata (missing rating/ongkir, format harga 'Rp', salah ketik tanggal, outlier kuantitas, dan kategori tidak seragam).
+    </div>
+    <div class="paham-row"><button class="btn-paham" id="bp0" onclick="unlock(0)">Saya Paham — Lanjut ▸</button></div>
+  </div>
+</div>
+
+<!-- ╔══ SEKSI 2: DIAGNOSA DATA KOTOR ══╗ -->
+<div class="sec-card locked" id="sec1">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn1">2</div>
+    <div class="sec-title">Anatomi Data Kotor &amp; Diagnosa Sistematis</div>
+    <span class="sec-cpmk">C3.1</span>
+  </div>
+  <div class="sec-body">
+    <p>Sebelum menulis kode pembersih, langkah wajib seorang analis adalah <strong>audit data</strong>. Apa saja tipe kotoran data yang sering ditemui?</p>
+
+    <div class="flow-wrap">
+      <div class="flow-box hl"><strong>1. Missing Data</strong><span>NaN, None, "", "?"</span></div>
+      <div class="flow-arr">→</div>
+      <div class="flow-box"><strong>2. Duplikasi</strong><span>Baris ganda / repeat</span></div>
+      <div class="flow-arr">→</div>
+      <div class="flow-box hl"><strong>3. Tipe Salah</strong><span>Angka tersimpan teks</span></div>
+      <div class="flow-arr">→</div>
+      <div class="flow-box"><strong>4. Outlier</strong><span>Harga Rp 35 jt (typo)</span></div>
+      <div class="flow-arr">→</div>
+      <div class="flow-box hl"><strong>5. Inkonsisten</strong><span>'JKT', 'jak-sel'</span></div>
+    </div>
+
+    <h3 class="sh">Toolkit Diagnosa Kualitas Data</h3>
+    <div class="code-wrap">
+      <div class="code-hd"><span>Python · Diagnosa Kualitas Data Awal</span><button class="copy-btn" onclick="copyCode(0)">Copy</button></div>
+      <pre class="code"><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+df = pd.read_csv(<span class="st">'dataset-ecommerce-dirty-p03.csv'</span>)
+
+<span class="cm"># 1. Cek ukuran & duplikasi</span>
+<span class="fn">print</span>(<span class="st">f"Dimensi Awal : {df.shape}"</span>)
+<span class="fn">print</span>(<span class="st">f"Jumlah Duplikat: {df.duplicated().sum()}"</span>)
+
+<span class="cm"># 2. Ringkasan Missing Values & Tipe Data</span>
+audit = pd.DataFrame({
+    <span class="st">'Tipe Data'</span>: df.dtypes,
+    <span class="st">'Jumlah Null'</span>: df.isna().sum(),
+    <span class="st">'Persen Null (%)'</span>: (df.isna().mean() * <span class="nm">100</span>).round(<span class="nm">2</span>),
+    <span class="st">'Contoh Nilai'</span>: [df[c].dropna().iloc[<span class="nm">0</span>] <span class="kw">if</span> len(df[c].dropna()) &gt; <span class="nm">0</span> <span class="kw">else</span> <span class="st">''</span> <span class="kw">for</span> c <span class="kw">in</span> df.columns]
+})
+<span class="fn">print</span>(audit)</pre>
+    </div>
+    <div class="out-wrap">Dimensi Awal : (105, 13)
+Jumlah Duplikat: 5
+
+                   Tipe Data  Jumlah Null  Persen Null (%)       Contoh Nilai
+order_id              object            0             0.00        TRX-2026001
+order_date            object            0             0.00         2026-02-21
+customer_id           object            6             5.71           CUST-119
+customer_name         object            0             0.00        AHMAD FAUZI
+customer_city         object            0             0.00        JKT Selatan
+product_category      object            0             0.00     Fashion Muslim
+product_name          object            0             0.00  Mukena Dewasa ...
+price_raw             object            0             0.00         Rp 195.000
+quantity              object            0             0.00                  2
+shipping_cost_raw     object            9             8.57           Rp 20.000
+payment_method        object            7             6.67               QRIS
+order_status          object            3             2.86          Delivered
+customer_rating       object            7             6.67                  5</div>
+
+    <div class="callout warn">
+      ⚠️ <strong>Perhatikan:</strong> Kolom <code>price_raw</code>, <code>quantity</code>, <code>shipping_cost_raw</code>, dan <code>customer_rating</code> terbaca sebagai <code>object</code> (string)! Hal ini terjadi karena ada teks seperti "Rp", "GRATIS", atau simbol lainnya. Kita tidak bisa menghitung rata-rata maupun korelasi sebelum kolom ini dikonversi ke numerik.
+    </div>
+
+    <div class="paham-row"><button class="btn-paham" id="bp1" onclick="unlock(1)">Saya Paham — Lanjut ke Missing Values ▸</button></div>
+  </div>
+</div>
+
+<!-- ╔══ SEKSI 3: HANDLING MISSING VALUES ══╗ -->
+<div class="sec-card locked" id="sec2">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn2">3</div>
+    <div class="sec-title">Strategi Handling Missing Values</div>
+    <span class="sec-cpmk">C3.2</span>
+  </div>
+  <div class="sec-body">
+    <p>Ketika menemukan data hilang (<code>NaN</code>/<code>None</code>), jangan langsung sembarangan menghapus baris (<code>dropna()</code>)! Menghapus baris secara serampangan akan menghilangkan informasi penting dan menimbulkan <strong>seleksi bias</strong>.</p>
+
+    <table class="concept-table">
+      <thead><tr><th>Situasi Data Hilang</th><th>Strategi yang Tepat</th><th>Contoh Kode</th></tr></thead>
+      <tbody>
+        <tr><td>Data hilang &gt; 60% dan tidak krusial</td><td>Drop kolom</td><td><code>df.drop(columns=['kolom_rusak'])</code></td></tr>
+        <tr><td>Baris duplikat atau ID esensial hilang</td><td>Drop baris</td><td><code>df.dropna(subset=['order_id'])</code></td></tr>
+        <tr><td>Numerik berdistribusi normal (simetris)</td><td>Imputasi Mean</td><td><code>df['kolom'].fillna(df['kolom'].mean())</code></td></tr>
+        <tr><td>Numerik ada outlier / miring (skewed)</td><td>Imputasi Median</td><td><code>df['kolom'].fillna(df['kolom'].median())</code></td></tr>
+        <tr><td>Kategorikal (metode bayar / status)</td><td>Imputasi Modus / Nilai Default</td><td><code>df['status'].fillna('Processing')</code></td></tr>
+        <tr><td>Karakteristik spesifik per segmen</td><td>Imputasi Berbasis Grup</td><td><code>df.groupby('kat')['rating'].transform('median')</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="sh">Kode Imputasi Cerdas Berbasis Grup</h3>
+    <div class="code-wrap">
+      <div class="code-hd"><span>Python · Imputasi Median per Kategori Produk</span><button class="copy-btn" onclick="copyCode(1)">Copy</button></div>
+      <pre class="code"><span class="cm"># Imputasi rating kosong menggunakan MEDIAN kategori produknya</span>
+<span class="cm"># Contoh: Rating kosong untuk Kosmetik diisi median rating Kosmetik, bukan global</span>
+df[<span class="st">'customer_rating'</span>] = pd.to_numeric(df[<span class="st">'customer_rating'</span>], errors=<span class="st">'coerce'</span>)
+
+<span class="cm"># Filter rating di luar rentang sah (1-5) menjadi NaN dulu</span>
+df.loc[(df[<span class="st">'customer_rating'</span>] &lt; <span class="nm">1</span>) | (df[<span class="st">'customer_rating'</span>] &gt; <span class="nm">5</span>), <span class="st">'customer_rating'</span>] = np.nan
+
+<span class="cm"># Imputasi berbasis grup</span>
+df[<span class="st">'customer_rating'</span>] = df.groupby(<span class="st">'product_category'</span>)[<span class="st">'customer_rating'</span>].transform(
+    <span class="kw">lambda</span> grp: grp.fillna(grp.median())
+)
+
+<span class="fn">print</span>(<span class="st">f"Sisa null rating: {df['customer_rating'].isna().sum()}"</span>)</pre>
+    </div>
+
+    <div class="callout tip">
+      💡 <strong>Mengapa Median Lebih Aman dari Mean?</strong> Jika suatu kategori memiliki rating [5, 5, 4, 5, 1], mean-nya adalah 4.0 (tertarik ke bawah oleh angka 1), sedangkan median adalah 5.0. Median adalah ukuran pemusatan data yang tangguh (<em>robust</em>) terhadap nilai ekstrem.
+    </div>
+
+    <div class="paham-row"><button class="btn-paham" id="bp2" onclick="unlock(2)">Saya Paham — Lanjut ke Outliers ▸</button></div>
+  </div>
+</div>
+
+<!-- ╔══ SEKSI 4: DETEKSI & HANDLING OUTLIER ══╗ -->
+<div class="sec-card locked" id="sec3">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn3">4</div>
+    <div class="sec-title">Deteksi &amp; Penanganan Outlier (IQR &amp; Z-Score)</div>
+    <span class="sec-cpmk">C3.3</span>
+  </div>
+  <div class="sec-body">
+    <p><strong>Outlier</strong> adalah nilai pengamatan yang menyimpang secara drastis dari keseluruhan data. Outlier bisa berupa <em>kesalahan input manusia</em> (misal kuantitas beli tertulis 999 bukannya 9), atau <em>anomali bisnis nyata</em> (misal pembelian borongan B2B).</p>
+
+    <h3 class="sh">Metode Interquartile Range (IQR)</h3>
+    <p>Metode IQR tidak mengasumsikan data harus berdistribusi normal. Data dibagi menjadi 4 kuartil: Q1 (persentil 25), Q2 (median), dan Q3 (persentil 75).</p>
+
+    <div class="cmp-grid">
+      <div class="cmp-card good">
+        <h4>📐 Rumus Batas IQR</h4>
+        <div class="cmp-row"><span>1.</span><span><strong>IQR</strong> = Q3 - Q1</span></div>
+        <div class="cmp-row"><span>2.</span><span><strong>Batas Bawah</strong> = Q1 - (1.5 × IQR)</span></div>
+        <div class="cmp-row"><span>3.</span><span><strong>Batas Atas</strong> = Q3 + (1.5 × IQR)</span></div>
+        <div class="cmp-row"><span>4.</span><span>Nilai di luar rentang ini diklasifikasikan sebagai <strong>Outlier</strong></span></div>
+      </div>
+      <div class="cmp-card good">
+        <h4>🛡️ Strategi Penanganan Outlier</h4>
+        <div class="cmp-row"><span>A.</span><span><strong>Trimming (Drop):</strong> Hapus baris jika dipastikan kesalahan sistemik</span></div>
+        <div class="cmp-row"><span>B.</span><span><strong>Capping (Winsorization):</strong> Batasi nilai ekstrem ke batas bawah / batas atas maksimum yang wajar</span></div>
+        <div class="cmp-row"><span>C.</span><span><strong>Imputasi:</strong> Ganti dengan median produk sejenis jika terbukti salah ketik</span></div>
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-hd"><span>Python · Deteksi Outlier dengan IQR Method</span><button class="copy-btn" onclick="copyCode(2)">Copy</button></div>
+      <pre class="code"><span class="cm"># Deteksi outlier pada kolom kuantitas</span>
+df[<span class="st">'quantity'</span>] = pd.to_numeric(df[<span class="st">'quantity'</span>], errors=<span class="st">'coerce'</span>)
+
+Q1 = df[<span class="st">'quantity'</span>].quantile(<span class="nm">0.25</span>)
+Q3 = df[<span class="st">'quantity'</span>].quantile(<span class="nm">0.75</span>)
+IQR = Q3 - Q1
+lower_bound = Q1 - <span class="nm">1.5</span> * IQR
+upper_bound = Q3 + <span class="nm">1.5</span> * IQR
+
+outliers = df[(df[<span class="st">'quantity'</span>] &lt; lower_bound) | (df[<span class="st">'quantity'</span>] &gt; upper_bound)]
+<span class="fn">print</span>(<span class="st">f"Batas Bawah: {lower_bound:.2f}, Batas Atas: {upper_bound:.2f}"</span>)
+<span class="fn">print</span>(<span class="st">f"Ditemukan {len(outliers)} baris outlier kuantitas:"</span>)
+<span class="fn">print</span>(outliers[[<span class="st">'order_id'</span>, <span class="st">'product_name'</span>, <span class="st">'quantity'</span>]])
+
+<span class="cm"># Penanganan: Capping (Winsorization) nilai ekstrem ke nilai yang valid</span>
+df.loc[df[<span class="st">'quantity'</span>] &lt;= <span class="nm">0</span>, <span class="st">'quantity'</span>] = <span class="nm">1</span>                    <span class="cm"># Nilai negatif/-1/0 di-set 1</span>
+df.loc[df[<span class="st">'quantity'</span>] &gt; upper_bound, <span class="st">'quantity'</span>] = upper_bound  <span class="cm"># Capping nilai ekstrim</span></pre>
+    </div>
+    <div class="out-wrap">Batas Bawah: -2.50, Batas Atas: 9.50
+Ditemukan 5 baris outlier kuantitas:
+       order_id               product_name  quantity
+17  TRX-2026018  Kurma Ajwa Madinah 500g         -1
+34  TRX-2026035  Hijab Voal Segiempat            99
+62  TRX-2026063  Sajadah Bulu Tebal Turki         0
+...</div>
+
+    <div class="paham-row"><button class="btn-paham" id="bp3" onclick="unlock(3)">Saya Paham — Lanjut ke String &amp; Tipe Data ▸</button></div>
+  </div>
+</div>
+
+<!-- ╔══ SEKSI 5: TIPE DATA & STRINGS ══╗ -->
+<div class="sec-card locked" id="sec4">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn4">5</div>
+    <div class="sec-title">Konversi Tipe Data &amp; Operasi Teks (String Cleaning)</div>
+    <span class="sec-cpmk">C3.4, C3.5</span>
+  </div>
+  <div class="sec-body">
+    <p>Seringkali data teks memiliki inkonsistensi penulisan: ada spasi di awal/akhir (<em>leading/trailing whitespace</em>), kombinasi huruf besar-kecil tidak seragam, atau singkatan berbeda untuk entitas yang sama (misal <em>'JKT Selatan'</em>, <em>'jak-sel'</em>, dan <em>'Jakarta Selatan'</em>).</p>
+
+    <h3 class="sh">Pembersihan Teks Terstruktur</h3>
+    <div class="code-wrap">
+      <div class="code-hd"><span>Python · Pembersihan String &amp; Standardisasi Kamus</span><button class="copy-btn" onclick="copyCode(3)">Copy</button></div>
+      <pre class="code"><span class="cm"># 1. Menghapus spasi liar & kapitalisasi rapi nama customer</span>
+df[<span class="st">'customer_name'</span>] = df[<span class="st">'customer_name'</span>].str.strip().str.title()
+
+<span class="cm"># 2. Standardisasi Nama Kota menggunakan Dictionary Mapping</span>
+city_map = {
+    <span class="st">'JKT Selatan'</span>: <span class="st">'Jakarta Selatan'</span>, <span class="st">'jak-sel'</span>: <span class="st">'Jakarta Selatan'</span>,
+    <span class="st">'JKT TIMUR'</span>: <span class="st">'Jakarta Timur'</span>,     <span class="st">'bdg'</span>: <span class="st">'Bandung'</span>,
+    <span class="st">'BANDUNG'</span>: <span class="st">'Bandung'</span>,             <span class="st">'BOGOR'</span>: <span class="st">'Bogor'</span>,
+    <span class="st">'bogor'</span>: <span class="st">'Bogor'</span>,                 <span class="st">'DEPOK'</span>: <span class="st">'Depok'</span>,
+    <span class="st">'Tangsel'</span>: <span class="st">'Tangerang Selatan'</span>,   <span class="st">'SBY'</span>: <span class="st">'Surabaya'</span>,
+    <span class="st">'surabaya'</span>: <span class="st">'Surabaya'</span>,           <span class="st">'Jogja'</span>: <span class="st">'Yogyakarta'</span>,
+    <span class="st">'YOGYA'</span>: <span class="st">'Yogyakarta'</span>
+}
+df[<span class="st">'customer_city'</span>] = df[<span class="st">'customer_city'</span>].str.strip().replace(city_map)
+
+<span class="cm"># 3. Membersihkan String Angka dengan regex & konversi ke Float</span>
+<span class="kw">def</span> <span class="fn">clean_currency</span>(val):
+    <span class="kw">if</span> pd.isna(val) <span class="kw">or</span> val == <span class="st">''</span>: <span class="kw">return</span> np.nan
+    s = str(val).replace(<span class="st">'Rp'</span>, <span class="st">''</span>).replace(<span class="st">' '</span>, <span class="st">''</span>).strip()
+    s = s.replace(<span class="st">'.'</span>, <span class="st">''</span>).replace(<span class="st">','</span>, <span class="st">''</span>)
+    <span class="kw">try</span>:
+        <span class="kw">return</span> float(s)
+    <span class="kw">except</span>:
+        <span class="kw">return</span> np.nan
+
+df[<span class="st">'price'</span>] = df[<span class="st">'price_raw'</span>].apply(clean_currency)
+
+<span class="cm"># 4. Parsing Tanggal Aman dengan errors='coerce'</span>
+df[<span class="st">'order_date'</span>] = pd.to_datetime(df[<span class="st">'order_date'</span>], format=<span class="st">'mixed'</span>, errors=<span class="st">'coerce'</span>)</pre>
+    </div>
+
+    <div class="callout tip">
+      💡 <strong>Parameter <code>errors='coerce'</code> pada pd.to_datetime:</strong> Jika ada format tanggal yang cacat (seperti 'INVALID_DATE' atau '99/99/2026'), pandas tidak akan memunculkan program error yang menghentikan eksekusi, melainkan mengubah nilai rusak tersebut menjadi <code>NaT</code> (Not a Time) sehingga mudah kita saring atau imputasi.
+    </div>
+
+    <div class="paham-row"><button class="btn-paham" id="bp4" onclick="unlock(4)">Saya Paham — Lanjut ke Nilai Syariah ▸</button></div>
+  </div>
+</div>
+
+<!-- ╔══ SEKSI 6: NILAI SYARIAH ══╗ -->
+<div class="sec-card locked" id="sec5">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn5">6</div>
+    <div class="sec-title">Integrasi Nilai Syariah — Taharah &amp; Itqan dalam Data Hygiene</div>
+    <span class="sec-cpmk">Integritas &amp; Etika</span>
+  </div>
+  <div class="sec-body">
+    <p>Dalam syariat Islam, data wrangling bukan sekadar keahlian teknis pembersihan baris kode, melainkan perwujudan langsung dari <strong>prinsip kesucian (<em>Taharah</em>) dan ketelitian (<em>Itqan</em>)</strong>.</p>
+
+    <div class="nilai-grid">
+      <div class="nilai-card">
+        <div class="nilai-name">1. Taharah (Kesucian) — Syarat Sahnya Keputusan</div>
+        <div class="nilai-ar">إِنَّ اللَّهَ يُحِبُّ التَّوَّابِينَ وَيُحِبُّ الْمُتَطَهِّرِينَ</div>
+        <div class="nilai-tr">"Sesungguhnya Allah menyukai orang-orang yang bertaubat dan menyukai orang-orang yang menyucikan diri."</div>
+        <div class="nilai-ref">QS. Al-Baqarah: 222 · HR. Muslim: "Kebersihan adalah sebagian dari iman"</div>
+        <div class="nilai-app"><strong>Refleksi Analitik:</strong> Dalam fikih, salat tidak sah tanpa wudhu/taharah. Demikian pula dalam analitik: model machine learning dan keputusan bisnis <strong>tidak sah/batal secara moral</strong> jika dibangun di atas data kotor yang penuh distorsi, duplikasi fiktif, dan outlier manipulatif (<em>Garbage In, Garbage Out</em>).</div>
+      </div>
+
+      <div class="nilai-card">
+        <div class="nilai-name">2. Menghindari Gharar (Ketidakpastian &amp; Penipuan)</div>
+        <div class="nilai-ar">نَهَى رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ عَنْ بَيْعِ الْغَرَرِ</div>
+        <div class="nilai-tr">"Rasulullah SAW melarang jual beli yang mengandung gharar (ketidakjelasan/penipuan)."</div>
+        <div class="nilai-ref">HR. Muslim no. 1513</div>
+        <div class="nilai-app"><strong>Refleksi Analitik:</strong> Menyajikan laporan kepada pimpinan atau klien tanpa membersihkan anomali data adalah bentuk <em>Gharar</em> (menutupi cacat informasi). Data hygiene memastikan transparansi dan keadilan (<em>Adl</em>) bagi seluruh pemangku kepentingan.</div>
+      </div>
+    </div>
+
+    <div class="paham-row"><button class="btn-paham" id="bp5" onclick="unlock(5)">Saya Paham — Lanjut ke Kuis Pemahaman ▸</button></div>
+  </div>
+</div>
+
+<!-- ╔══ SEKSI 7: KUIS ══╗ -->
+<div class="sec-card locked" id="sec6">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn6">7</div>
+    <div class="sec-title">Uji Pemahaman — Kuis P03</div>
+    <span class="sec-cpmk">C3.1–C3.5</span>
+  </div>
+  <div class="sec-body">
+    <div class="quiz-head">
+      <h3>Kuis Pertemuan 03 — Data Wrangling &amp; Cleaning</h3>
+      <span class="q-info">3 MCQ + 1 Matching · Skor Kelulusan 75%</span>
+    </div>
+    <div class="quiz-body">
+
+      <!-- MCQ 1 -->
+      <div class="q-block">
+        <div class="q-label">Pertanyaan 1 dari 3</div>
+        <div class="q-text">Sebuah kolom gaji karyawan memiliki 10 baris dengan nilai rata-rata Rp 5 juta, namun terdapat 1 orang eksekutif dengan gaji Rp 250 juta. Jika terdapat 2 nilai hilang (missing values), metode pengisian manakah yang paling aman agar tidak mendistorsi statistik keseluruhan?</div>
+        <div class="q-opts" id="mcq0">
+          <div class="q-opt" onclick="selectMCQ(0,0)"><div class="q-opt-letter">A</div>Imputasi Mean (Rata-rata)</div>
+          <div class="q-opt" onclick="selectMCQ(0,1)"><div class="q-opt-letter">B</div>Imputasi Median (Nilai Tengah)</div>
+          <div class="q-opt" onclick="selectMCQ(0,2)"><div class="q-opt-letter">C</div>Mengisi dengan 0 (Nol)</div>
+          <div class="q-opt" onclick="selectMCQ(0,3)"><div class="q-opt-letter">D</div>Menghapus seluruh kolom gaji</div>
+        </div>
+        <div class="q-feedback" id="fb0">✅ <strong>Benar! Jawaban B.</strong> Median bersifat <em>robust</em> (tahan) terhadap outlier ekstrim. Mean akan tertarik tinggi oleh nilai Rp 250 juta sehingga memberikan estimasi gaji yang terlalu tinggi bagi staf biasa.</div>
+      </div>
+
+      <!-- MCQ 2 -->
+      <div class="q-block">
+        <div class="q-label">Pertanyaan 2 dari 3</div>
+        <div class="q-text">Dalam metode deteksi outlier Interquartile Range (IQR), jika Q1 = 20 dan Q3 = 50, maka batas atas (upper bound) untuk menentukan nilai outlier adalah:</div>
+        <div class="q-opts" id="mcq1">
+          <div class="q-opt" onclick="selectMCQ(1,0)"><div class="q-opt-letter">A</div>65</div>
+          <div class="q-opt" onclick="selectMCQ(1,1)"><div class="q-opt-letter">B</div>80</div>
+          <div class="q-opt" onclick="selectMCQ(1,2)"><div class="q-opt-letter">C</div>95</div>
+          <div class="q-opt" onclick="selectMCQ(1,3)"><div class="q-opt-letter">D</div>125</div>
+        </div>
+        <div class="q-feedback" id="fb1">✅ <strong>Benar! Jawaban C.</strong> IQR = Q3 - Q1 = 50 - 20 = 30. Batas Atas = Q3 + (1.5 × IQR) = 50 + (1.5 × 30) = 50 + 45 = <strong>95</strong>.</div>
+      </div>
+
+      <!-- MCQ 3 -->
+      <div class="q-block">
+        <div class="q-label">Pertanyaan 3 dari 3</div>
+        <div class="q-text">Saat membaca kolom tanggal transaksi penjualan yang tercampur format string kotor seperti <code>'INVALID_DATE'</code>, parameter apakah yang harus digunakan pada <code>pd.to_datetime()</code> agar proses tidak error dan otomatis mengubah nilai rusak menjadi <code>NaT</code>?</div>
+        <div class="q-opts" id="mcq2">
+          <div class="q-opt" onclick="selectMCQ(2,0)"><div class="q-opt-letter">A</div><code>errors='ignore'</code></div>
+          <div class="q-opt" onclick="selectMCQ(2,1)"><div class="q-opt-letter">B</div><code>errors='raise'</code></div>
+          <div class="q-opt" onclick="selectMCQ(2,2)"><div class="q-opt-letter">C</div><code>errors='coerce'</code></div>
+          <div class="q-opt" onclick="selectMCQ(2,3)"><div class="q-opt-letter">D</div><code>dropna=True</code></div>
+        </div>
+        <div class="q-feedback" id="fb2">✅ <strong>Benar! Jawaban C.</strong> <code>errors='coerce'</code> akan memaksa nilai yang tidak dapat di-parse menjadi <code>NaT</code> (Not a Time/Null) tanpa memicu fatal exception.</div>
+      </div>
+
+      <!-- MATCHING -->
+      <div class="q-block">
+        <div class="q-label">Matching — Pasangkan Fungsi Data Wrangling dengan Tujuannya</div>
+        <div class="match-hint">Klik satu item di kolom kiri, lalu klik pasangannya di kolom kanan. Pasangan yang cocok akan diberi warna yang sama.</div>
+        <div class="match-wrap">
+          <div>
+            <div class="match-col-label">Fungsi / Metode pandas</div>
+            <div class="match-items" id="terms">
+              <div class="match-term" data-idx="0" onclick="selectTerm(0)"><strong>.str.strip()</strong>Pembersihan String</div>
+              <div class="match-term" data-idx="1" onclick="selectTerm(1)"><strong>.drop_duplicates()</strong>Deduplikasi</div>
+              <div class="match-term" data-idx="2" onclick="selectTerm(2)"><strong>.fillna()</strong>Missing Values</div>
+              <div class="match-term" data-idx="3" onclick="selectTerm(3)"><strong>.quantile([0.25, 0.75])</strong>Statistik Kuartil</div>
+              <div class="match-term" data-idx="4" onclick="selectTerm(4)"><strong>pd.to_datetime()</strong>Parsing Tanggal</div>
+            </div>
+          </div>
+          <div>
+            <div class="match-col-label">Tujuan Penggunaan</div>
+            <div class="match-items" id="defs">
+              <div class="match-def" data-idx="0" onclick="selectDef(0)">Menghilangkan baris identik ganda yang tersimpan berulang kali</div>
+              <div class="match-def" data-idx="1" onclick="selectDef(1)">Menghitung batas Q1 dan Q3 untuk penentuan IQR batas outlier</div>
+              <div class="match-def" data-idx="2" onclick="selectDef(2)">Mengonversi string teks tanggal beragam menjadi objek datetime terstandar</div>
+              <div class="match-def" data-idx="3" onclick="selectDef(3)">Menghapus spasi liar di awal dan akhir teks secara otomatis</div>
+              <div class="match-def" data-idx="4" onclick="selectDef(4)">Mengisi sel kosong/NaN dengan nilai konstan, mean, atau median</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quiz-submit-row">
+        <button class="btn-submit" onclick="submitQuiz()">Submit Jawaban</button>
+        <span class="quiz-score" id="quizScore"></span>
+      </div>
+      <div class="quiz-result" id="quizResult">
+        <div class="big" id="quizBig"></div>
+        <p id="quizMsg"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPLETION -->
+<div class="completion" id="completion">
+  <h2>✅ Materi Teori P03 Selesai!</h2>
+  <p>Kamu sudah menguasai teori data wrangling: diagnosa data kotor, strategi handling missing values, deteksi outlier IQR/Z-score, pembersihan string, konversi datetime, serta nilai syariah Taharah.</p>
+  <p style="margin-top:8px;font-size:12.5px;color:rgba(255,255,255,.5)">Saatnya menerapkan seluruh teknik ini langsung pada dataset transaksi e-commerce di Lembar Praktikum P03.</p>
+  <a class="lab-link" href="Praktikum-03-ADA.html">Buka Praktikum P03 — Lab 2 ▸</a>
+</div>
+
+</div><!-- end .main -->
+
+<script>
+const STORAGE_KEY = 'tazkia-ada-p03-v1';
+const TOTAL_SEC = 7;
+const MCQ_ANSWERS = [1, 2, 2]; // B, C, C
+
+// MATCH: term idx → correct def idx
+// str.strip → 3, drop_duplicates → 0, fillna → 4, quantile → 1, to_datetime → 2
+const MATCH_CORRECT = {0:3, 1:0, 2:4, 3:1, 4:2};
+const MATCH_COLORS = ['#20C8D0','#D46020','#1F9060','#7040B0','#C09030'];
+
+let state = {done:[], mcqSel:[null,null,null], matchPairs:{}, matchTerm:null, submitted:false};
+function load(){try{const s=JSON.parse(localStorage.getItem(STORAGE_KEY));if(s)state=s;}catch(e){}}
+function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}}
+
+function unlock(i){
+  if(state.done.includes(i)) return;
+  state.done.push(i);
+  save();
+  const btn=document.getElementById('bp'+i);
+  if(btn){btn.className='btn-paham done';btn.disabled=true;btn.textContent='✓ Selesai';}
+  const sn=document.getElementById('sn'+i);if(sn) sn.className='sec-num done';
+  const next=document.getElementById('sec'+(i+1));
+  if(next) next.className='sec-card unlocked';
+  updateProg();
+  if(next) next.scrollIntoView({behavior:'smooth',block:'start'});
+  if(state.done.length===TOTAL_SEC-1) document.getElementById('completion').classList.add('show');
+}
+
+function updateProg(){
+  const pct=Math.round((state.done.length/(TOTAL_SEC-1))*100);
+  document.getElementById('progPct').textContent=pct+'%';
+  for(let i=0;i<TOTAL_SEC;i++){
+    const d=document.getElementById('pd'+i);if(!d)continue;
+    if(i<state.done.length) d.className='prog-dot done';
+    else if(i===state.done.length) d.className='prog-dot active';
+    else d.className='prog-dot';
+  }
+}
+
+function selectMCQ(q,opt){
+  if(state.submitted) return;
+  state.mcqSel[q]=opt; save();
+  document.querySelectorAll('#mcq'+q+' .q-opt').forEach((el,i)=>{
+    el.className='q-opt'+(i===opt?' selected':'');
+  });
+  document.getElementById('fb'+q).className='q-feedback';
+}
+
+let matchSel={term:null,def:null};
+function selectTerm(i){
+  if(state.submitted) return;
+  matchSel.term=i;
+  document.querySelectorAll('#terms .match-term').forEach((el,j)=>el.className='match-term'+(j===i?' selected':''));
+  tryMatch();
+}
+function selectDef(i){
+  if(state.submitted) return;
+  matchSel.def=i;
+  document.querySelectorAll('#defs .match-def').forEach((el,j)=>el.className='match-def'+(j===i?' selected':''));
+  tryMatch();
+}
+function tryMatch(){
+  if(matchSel.term===null||matchSel.def===null) return;
+  state.matchPairs[matchSel.term]=matchSel.def; save();
+  const color=MATCH_COLORS[matchSel.term];
+  document.querySelectorAll('#terms .match-term')[matchSel.term].style.borderColor=color;
+  document.querySelectorAll('#terms .match-term')[matchSel.term].style.background=color+'22';
+  document.querySelectorAll('#defs .match-def')[matchSel.def].style.borderColor=color;
+  document.querySelectorAll('#defs .match-def')[matchSel.def].style.background=color+'22';
+  matchSel={term:null,def:null};
+  document.querySelectorAll('#terms .match-term, #defs .match-def').forEach(el=>el.classList.remove('selected'));
+}
+
+function submitQuiz(){
+  state.submitted=true; save();
+  let score=0, total=MCQ_ANSWERS.length+Object.keys(MATCH_CORRECT).length;
+  MCQ_ANSWERS.forEach((ans,q)=>{
+    const opts=document.querySelectorAll('#mcq'+q+' .q-opt');
+    const sel=state.mcqSel[q];
+    if(sel===null) return;
+    opts[ans].className='q-opt correct';
+    if(sel!==ans) opts[sel].className='q-opt wrong'; else score++;
+    document.getElementById('fb'+q).className='q-feedback show';
+  });
+  let matchScore=0;
+  Object.keys(MATCH_CORRECT).forEach(t=>{
+    const correct=MATCH_CORRECT[t];
+    const chosen=state.matchPairs[t];
+    if(chosen===correct) matchScore++;
+  });
+  score+=matchScore;
+  const pct=Math.round((score/total)*100);
+  const res=document.getElementById('quizResult');
+  const big=document.getElementById('quizBig');
+  const msg=document.getElementById('quizMsg');
+  document.getElementById('quizScore').style.display='block';
+  document.getElementById('quizScore').textContent=score+'/'+total+' benar';
+  res.style.display='block';
+  if(pct>=75){
+    res.className='quiz-result pass';
+    big.textContent=pct+'% — Luar Biasa! 🎉';
+    msg.textContent='Pemahaman teori data wrangling kamu sangat baik. Lanjutkan ke Lembar Praktikum P03 untuk membersihkan dataset e-commerce secara langsung!';
+    if(!state.done.includes(TOTAL_SEC-1)) unlock(TOTAL_SEC-1);
+  } else {
+    res.className='quiz-result fail';
+    big.textContent=pct+'% — Perlu Ditingkatkan';
+    msg.textContent='Skor minimal 75%. Pelajari kembali rumus IQR, perbedaan mean vs median, dan parameter pd.to_datetime().';
+  }
+}
+
+const CODE_TEXTS = [
+  `import pandas as pd\nimport numpy as np\n\ndf = pd.read_csv('dataset-ecommerce-dirty-p03.csv')\nprint(f"Dimensi Awal : {df.shape}")\nprint(f"Jumlah Duplikat: {df.duplicated().sum()}")\n\naudit = pd.DataFrame({\n    'Tipe Data': df.dtypes,\n    'Jumlah Null': df.isna().sum(),\n    'Persen Null (%)': (df.isna().mean() * 100).round(2),\n    'Contoh Nilai': [df[c].dropna().iloc[0] if len(df[c].dropna()) > 0 else '' for c in df.columns]\n})\nprint(audit)`,
+  `df['customer_rating'] = pd.to_numeric(df['customer_rating'], errors='coerce')\ndf.loc[(df['customer_rating'] < 1) | (df['customer_rating'] > 5), 'customer_rating'] = np.nan\ndf['customer_rating'] = df.groupby('product_category')['customer_rating'].transform(\n    lambda grp: grp.fillna(grp.median())\n)\nprint(f"Sisa null rating: {df['customer_rating'].isna().sum()}")`,
+  `df['quantity'] = pd.to_numeric(df['quantity'], errors='coerce')\nQ1 = df['quantity'].quantile(0.25)\nQ3 = df['quantity'].quantile(0.75)\nIQR = Q3 - Q1\nlower_bound = Q1 - 1.5 * IQR\nupper_bound = Q3 + 1.5 * IQR\noutliers = df[(df['quantity'] < lower_bound) | (df['quantity'] > upper_bound)]\nprint(f"Batas Bawah: {lower_bound:.2f}, Batas Atas: {upper_bound:.2f}")\nprint(f"Ditemukan {len(outliers)} baris outlier kuantitas:")\nprint(outliers[['order_id', 'product_name', 'quantity']])\ndf.loc[df['quantity'] <= 0, 'quantity'] = 1\ndf.loc[df['quantity'] > upper_bound, 'quantity'] = upper_bound`,
+  `df['customer_name'] = df['customer_name'].str.strip().str.title()\ncity_map = {\n    'JKT Selatan': 'Jakarta Selatan', 'jak-sel': 'Jakarta Selatan',\n    'JKT TIMUR': 'Jakarta Timur',     'bdg': 'Bandung',\n    'BANDUNG': 'Bandung',             'BOGOR': 'Bogor',\n    'bogor': 'Bogor',                 'DEPOK': 'Depok',\n    'Tangsel': 'Tangerang Selatan',   'SBY': 'Surabaya',\n    'surabaya': 'Surabaya',           'Jogja': 'Yogyakarta',\n    'YOGYA': 'Yogyakarta'\n}\ndf['customer_city'] = df['customer_city'].str.strip().replace(city_map)\n\ndef clean_currency(val):\n    if pd.isna(val) or val == '': return np.nan\n    s = str(val).replace('Rp', '').replace(' ', '').strip()\n    s = s.replace('.', '').replace(',', '')\n    try: return float(s)\n    except: return np.nan\n\ndf['price'] = df['price_raw'].apply(clean_currency)\ndf['order_date'] = pd.to_datetime(df['order_date'], format='mixed', errors='coerce')`
+];
+
+function copyCode(i){
+  navigator.clipboard.writeText(CODE_TEXTS[i]).then(()=>{
+    const btns=document.querySelectorAll('.copy-btn');
+    const btn=btns[i];
+    const old=btn.textContent;btn.textContent='✓ Copied!';
+    setTimeout(()=>btn.textContent=old,1500);
+  });
+}
+
+function applyState(){
+  state.done.forEach(i=>{
+    const btn=document.getElementById('bp'+i);
+    if(btn){btn.className='btn-paham done';btn.disabled=true;btn.textContent='✓ Selesai';}
+    const sn=document.getElementById('sn'+i);if(sn) sn.className='sec-num done';
+    const next=document.getElementById('sec'+(i+1));
+    if(next) next.className='sec-card unlocked';
+  });
+  state.mcqSel.forEach((sel,q)=>{
+    if(sel===null) return;
+    document.querySelectorAll('#mcq'+q+' .q-opt')[sel]?.classList.add('selected');
+  });
+  Object.entries(state.matchPairs).forEach(([t,d])=>{
+    const color=MATCH_COLORS[t];
+    const termEl=document.querySelectorAll('#terms .match-term')[t];
+    const defEl=document.querySelectorAll('#defs .match-def')[d];
+    if(termEl){termEl.style.borderColor=color;termEl.style.background=color+'22';}
+    if(defEl){defEl.style.borderColor=color;defEl.style.background=color+'22';}
+  });
+  if(state.submitted) submitQuiz();
+  updateProg();
+  if(state.done.length>=TOTAL_SEC-1) document.getElementById('completion').classList.add('show');
+}
+
+load(); applyState();
+</script>

@@ -1,0 +1,21 @@
+Indikator_ID,Kategori_Evaluasi,Dimensi_CPMK,Fokus_Pemeriksaan_SIA,Kriteria_Skor_Maksimal_A,Bobot_Persen,Doktrin_Syariah_Terkait
+IND-UTS-001,Profil & Ruang Lingkup,CPMK-1 (Fondasi AIS),Deskripsi entitas dan struktur organisasi bisnis,Profil lengkap mencakup sejarah badan hukum dan bagan tata kelola,5%,Amanah Kelembagaan
+IND-UTS-002,Komponen AIS,CPMK-1 (Fondasi AIS),Identifikasi 6 komponen sistem (People Procedure Data Software Hardware Control),Seluruh 6 komponen terpetakan detail pada operasional riil entitas,5%,Itqan Arsitektur
+IND-UTS-003,Data Flow Diagram (DFD),CPMK-1 & CPMK-4,Diagram Konteks Level 0 & DFD Level 1 aliran data transaksi,Simbol standar Edward Yourdon konsisten balancing input-output akurat,10%,Kejelasan Alur Informasi
+IND-UTS-004,Document Flowchart,CPMK-1 & CPMK-4,Bagan alir dokumen fisik dan elektronik transaksi siklus utama,Swimlane terbagi jelas per departemen dengan titik kontrol otorisasi,10%,Transparansi Bukti Fisik
+IND-UTS-005,Enterprise Systems & Value Chain,CPMK-2 (Enterprise),Analisis integrasi proses bisnis dan rantai nilai Porter,Identifikasi aktivitas primer dan pendukung serta keterhubungan ERP,5%,Al-Adl dalam Rantai Nilai
+IND-UTS-006,Fraud Risk Assessment,CPMK-3 (Etika & Fraud),Pemetaan segitiga kecurangan (Pressure Opportunity Rationalization),Identifikasi minimal 3 titik rawan fraud operasional beserta mitigasinya,8%,Sidq & Anti-Hiyanah
+IND-UTS-007,Control Environment,CPMK-3 (COSO),Evaluasi lingkungan pengendalian dan komitmen integritas pimpinan,Struktur GCG dan kode etik terdokumentasi dan diimplementasikan,5%,Keteladanan Taqwa (Qiyadah)
+IND-UTS-008,Risk Assessment,CPMK-3 (COSO),Penilaian risiko bisnis finansial operasional dan teknologi informasi,Matriks risiko likelihood vs impact tersusun komprehensif,5%,Ihtiyath (Kehati-hatian)
+IND-UTS-009,Control Activities,CPMK-3 (COSO),Aktivitas pengendalian preventif detektif dan korektif operasional,Pemisahan fungsi otorisasi rekonsiliasi dan pembatasan akses fisik,8%,Hisbah & Pengawasan Melekat
+IND-UTS-010,Information & Communication,CPMK-3 (COSO),Kualitas dan kecepatan distribusi informasi laporan akuntansi,Sistem pelaporan tepat waktu akurat dan dapat diakses pihak berwenang,4%,Balagh & Kejujuran Informasi
+IND-UTS-011,Monitoring Activities,CPMK-3 (COSO),Aktivitas pemantauan berkala dan audit internal,Terdapat SOP review berkala dan tindak lanjut temuan audit,4%,Raqabah & Muhasabah
+IND-UTS-012,IT General Controls (ITGC),CPMK-3 (IT Controls),Pengendalian akses otentikasi backup dan change management,MFA password policy backup terjadwal dan pemisahan programmer,6%,Hifz al-Mal & Keamanan Data
+IND-UTS-013,IT Application Controls,CPMK-3 (IT Controls),Validasi 9 input controls dan batch processing controls,Implementasi field limit check check digit dan rekonsiliasi total,6%,Zero Error & Ketelitian
+IND-UTS-014,Audit Trail & Syahadah,CPMK-3 (Audit Trail),Keberadaan log jejak audit elektronik yang kekal,Log transaksi mencatat User Timestamp Action tanpa bisa diubah,5%,Syahadah Digital (QS. Yasin: 65)
+IND-UTS-015,Kesesuaian Akad Syariah,CPMK-3 & S4,Evaluasi akad transaksi (Murabahah Wadiah Mudharabah Musyarakah),Akad bebas riba gharar maysir tadlis dan memenuhi rukun syarat,8%,Wafa bil Uqud (QS. Al-Maidah: 1)
+IND-UTS-016,Laporan Keuangan Syariah,CPMK-1 & CPMK-4,Struktur laporan posisi keuangan dan laba rugi entitas,Sesuai format PSAK Syariah / PAPSI mencakup dana zakat dan kebajikan,4%,Transparansi Hisab Publik
+IND-UTS-017,Rekomendasi Perbaikan AIS,CPMK-4 (Evaluasi),Solusi perbaikan sistem berbasis teknologi dan syariah,Rekomendasi aplikatif feasible dan dilengkapi rancangan kontrol baru,8%,Ishlah & Perbaikan Berkelanjutan
+IND-UTS-018,Kualitas Dokumen Laporan,CPMK-4 (Karya Tulis),Kerapian format struktur bahasa dan kelengkapan lampiran,15-20 halaman format standar referensi ilmiah teruji bebas plagiasi,5%,Adab Penulisan Ilmiah
+IND-UTS-019,Kejelasan Presentasi,CPMK-4 (Komunikasi),Penyampaian materi slide efektif dan pembagian peran tim,Presentasi lugas visual menarik seluruh anggota tim berkontribusi aktif,5%,Hikmah & Komunikasi Efektif
+IND-UTS-020,Penguasaan Tanya Jawab (Q&A),CPMK-4 (Diskusi),Kemampuan argumentasi ilmiah dan justifikasi solusi,Jawaban tepat berlandaskan teori Romney dan standar fikih muamalah,5%,Bashirah & Penguasaan Materi

@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIS Lab 6 — Pengujian IT General Controls (ITGC), Application Controls &amp; Audit Trail Forensik Core Banking BPRS</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap">
+<style>
+/* ═══ MEETING COLOR VARIABLES (P07 Lab = Amber Flame & Crimson Burgundy) ═══ */
+:root{
+  --meet-from:#1A0800; --meet-mid:#2E1005; --meet-to:#481808;
+  --meet-acc:#D46020;  --meet-acc2:#E88030;
+  --bg:#EDF1F6;--sf:#FFFFFF;--sf2:#FBF2EC;--sf3:#F6ECE4;
+  --bd:#D8C4B8;--bs:#EADFD8;
+  --tx:#1C0C04;--txm:#4A3830;--txl:#8C756B;
+  --pri:#2E1005;--pmid:#D46020;--pril:#FCEBD8;--prx:#FAF0E8;
+  --acc:#D46020;--accl:#FCEBD8;
+  --sya:#1F9060;--syal:#D0EEE2;--syab:#40B080;
+  --done-bg:#D0EEE2;--done-bd:#40B080;--done-tx:#0A4020;
+  --r:8px;--rs:5px;
+  --shadow:0 4px 20px rgba(46,16,5,.12);
+  --shadow-sm:0 2px 8px rgba(46,16,5,.08);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#0E0604;--sf:#1A0D08;--sf2:#140804;--sf3:#1E100A;
+  --bd:#361C12;--bs:#28140C;
+  --tx:#F4E8E2;--txm:#B0988E;--txl:#6E554B;
+  --pri:#E88030;--pmid:#D46020;--pril:#2A1006;--prx:#1F0B04;
+  --acc:#E88030;--accl:#2A1006;
+  --sya:#30B878;--syal:#041410;--syab:#186040;
+  --done-bg:#041410;--done-bd:#40C890;--done-tx:#40C890;
+}}
+:root[data-theme=dark]{
+  --bg:#0E0604;--sf:#1A0D08;--sf2:#140804;--sf3:#1E100A;
+  --bd:#361C12;--bs:#28140C;
+  --tx:#F4E8E2;--txm:#B0988E;--txl:#6E554B;
+  --pri:#E88030;--pmid:#D46020;--pril:#2A1006;--prx:#1F0B04;
+  --acc:#E88030;--accl:#2A1006;
+  --sya:#30B878;--syal:#041410;--syab:#186040;
+  --done-bg:#041410;--done-bd:#40C890;--done-tx:#40C890;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.65}
+
+/* ── HEADER ── */
+.hd{background:linear-gradient(160deg,var(--meet-from) 0%,var(--meet-mid) 55%,var(--meet-to) 100%);color:#fff;position:relative;overflow:hidden}
+.hd-ornament{position:absolute;inset:0;pointer-events:none;opacity:.14}
+.hd-inner{max-width:840px;margin:0 auto;padding:32px 24px 12px;position:relative;z-index:1}
+.hd-eyebrow{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.hd-line{width:24px;height:1px;background:var(--meet-acc2)}
+.hd-eye{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--meet-acc2)}
+.hd-badge{font-size:11px;background:rgba(212,96,32,.25);border:1px solid rgba(212,96,32,.45);border-radius:12px;padding:2px 11px;color:#FFB885;margin-left:auto}
+.hd-title{font-family:'Amiri',serif;font-size:28px;font-weight:700;line-height:1.2;margin-bottom:5px}
+.hd-sub{font-size:13.5px;color:rgba(255,255,255,.75);margin-bottom:16px}
+.hd-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px}
+.hpill{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:2px 11px;font-size:11.5px;color:rgba(255,255,255,.8)}
+.hpill strong{color:#fff}
+.hd-arch{line-height:0}
+.hd-arch svg{display:block;width:100%;height:24px}
+
+/* ── TRACKER BAR ── */
+.tracker-wrap{background:var(--sf);border-bottom:1px solid var(--bs);position:sticky;top:0;z-index:40;box-shadow:var(--shadow-sm)}
+.tracker{max-width:840px;margin:0 auto;padding:8px 20px;display:flex;align-items:center;gap:6px;overflow-x:auto}
+.tr-step{display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0;cursor:pointer}
+.tr-circle{width:30px;height:30px;border-radius:50%;border:2px solid var(--bs);background:var(--sf3);display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;color:var(--txl);transition:all .3s}
+.tr-circle.active{border-color:var(--pmid);background:var(--prx);color:var(--pri)}
+.tr-circle.done{border-color:var(--sya);background:var(--syal);color:var(--sya)}
+.tr-label{font-size:9.5px;color:var(--txl);white-space:nowrap;text-align:center;max-width:75px;overflow:hidden;text-overflow:ellipsis}
+.tr-label.active{color:var(--pmid);font-weight:600}
+.tr-label.done{color:var(--sya);font-weight:600}
+.tr-line{width:20px;height:2px;background:var(--bs);border-radius:1px;flex-shrink:0;margin-bottom:10px}
+.tr-line.done{background:var(--sya)}
+
+/* ── MAIN ── */
+.main{max-width:840px;margin:0 auto;padding:24px 20px 80px}
+
+/* ── STEP CARDS ── */
+.step-card{background:var(--sf);border:1px solid var(--bs);border-radius:var(--r);margin-bottom:14px;box-shadow:var(--shadow-sm);overflow:hidden;transition:opacity .3s,filter .3s}
+.step-card.locked{opacity:.35;filter:grayscale(.5);pointer-events:none}
+.step-card.unlocked{opacity:1;filter:none}
+.step-card.completed{border-color:var(--done-bd)}
+.step-hd{display:flex;align-items:center;gap:11px;padding:13px 20px;background:var(--sf3);border-bottom:1px solid var(--bs)}
+.step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc2))}
+.step-num.done{background:var(--sya)}
+.step-title{font-family:'Amiri',serif;font-size:17px;font-weight:700;color:var(--pri)}
+.step-est{font-size:11.5px;color:var(--txl);margin-left:auto;white-space:nowrap}
+.step-body{padding:18px 22px}
+
+/* ── CALLOUT ── */
+.callout{border-radius:var(--rs);padding:11px 15px;margin:10px 0;font-size:13.5px;line-height:1.6}
+.callout.tip{background:var(--prx);border-left:4px solid var(--pmid);color:var(--txm)}
+.callout.warn{background:#FEF3E0;border-left:4px solid #D46020;color:#5A2C04}
+.callout.sya{background:var(--syal);border-left:4px solid var(--sya);color:var(--txm)}
+.callout.info{background:var(--sf3);border-left:4px solid var(--pri);color:var(--txm)}
+
+/* ── TABLE ── */
+.table-wrap{overflow-x:auto;margin:12px 0}
+.custom-table{width:100%;border-collapse:collapse;font-size:13px}
+.custom-table th{background:var(--pri);color:#fff;padding:8px 12px;text-align:left;font-size:11.5px}
+.custom-table td{padding:8px 12px;border-bottom:1px solid var(--bs);color:var(--txm);vertical-align:top}
+.custom-table tr:nth-child(even) td{background:var(--sf3)}
+.custom-table tr:last-child td{border-bottom:none}
+
+/* ── CODE BOX ── */
+.code-box{background:#1A0800;border-radius:var(--rs);padding:14px 16px;color:#FCEBD8;font-family:'Source Code Pro',monospace;font-size:13px;line-height:1.65;margin:10px 0;overflow-x:auto;white-space:pre}
+.code-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.12);font-size:11px;color:var(--meet-acc2);font-weight:700;white-space:normal}
+.copy-btn{background:rgba(212,96,32,.3);border:1px solid rgba(212,96,32,.5);border-radius:4px;color:#fff;padding:2px 8px;font-size:10.5px;cursor:pointer}
+
+/* ── INTERACTIVE FORM INPUTS ── */
+.form-group{margin:14px 0}
+.form-label{display:block;font-size:13px;font-weight:700;color:var(--pri);margin-bottom:5px}
+.form-textarea{width:100%;min-height:85px;padding:10px 12px;border-radius:var(--rs);border:1.5px solid var(--bs);background:var(--sf);color:var(--tx);font-family:'Source Sans 3',sans-serif;font-size:13.5px;line-height:1.5;resize:vertical}
+.form-textarea:focus{outline:none;border-color:var(--pmid);box-shadow:0 0 0 3px var(--pril)}
+.form-hint{font-size:11.5px;color:var(--txl);margin-top:4px}
+
+/* ── UNLOCK ROW ── */
+.unlock-row{display:flex;align-items:center;gap:12px;margin-top:20px;padding-top:18px;border-top:1px solid var(--bs)}
+.btn-unlock{background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc2));color:#fff;border:none;border-radius:24px;padding:11px 26px;font-family:'Source Sans 3',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;transition:opacity .2s}
+.btn-unlock:hover{opacity:.88}
+.btn-unlock.done-state{background:var(--sya);cursor:default}
+.unlock-hint{font-size:12.5px;color:var(--txl)}
+
+/* ── CHALLENGE BOX ── */
+.challenge-box{background:linear-gradient(135deg,#1A0800,#2E1005);border-radius:var(--r);padding:18px 20px;color:#fff;margin:14px 0}
+.challenge-box h4{font-family:'Amiri',serif;font-size:17px;font-weight:700;margin-bottom:12px;color:#FFB885}
+.challenge-q{background:rgba(255,255,255,.08);border-radius:var(--rs);padding:10px 14px;margin-bottom:8px;font-size:13.5px;color:rgba(255,255,255,.88)}
+.challenge-q strong{color:#fff}
+
+/* ── COMPLETION ── */
+.completion{display:none;background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;border-radius:var(--r);padding:28px;text-align:center;margin-top:18px}
+.completion.show{display:block}
+.completion h2{font-family:'Amiri',serif;font-size:24px;font-weight:700;margin-bottom:8px}
+.completion p{color:rgba(255,255,255,.75);font-size:13.5px;margin-bottom:14px}
+.completion .next-btn{display:inline-block;background:var(--meet-acc2);color:#fff;border-radius:20px;padding:10px 24px;font-weight:700;font-size:14px;text-decoration:none;margin:4px;border:none;cursor:pointer}
+
+h3.sh{font-family:'Amiri',serif;font-size:18px;font-weight:700;color:var(--pri);margin:16px 0 9px;display:flex;align-items:center;gap:8px}
+h3.sh::before{content:'';width:4px;height:16px;background:var(--meet-acc2);border-radius:2px;flex-shrink:0}
+ul.lst{list-style:none;padding:0;margin-bottom:12px}
+ul.lst li{padding:5px 0 5px 20px;position:relative;color:var(--txm);font-size:14px;border-bottom:1px solid var(--bs)}
+ul.lst li:last-child{border-bottom:none}
+ul.lst li::before{content:'▸';position:absolute;left:0;color:var(--pmid);font-size:11px;top:7px}
+ul.lst li strong{color:var(--tx)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hd">
+  <svg class="hd-ornament" viewBox="0 0 400 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs><pattern id="dots-lab7" width="30" height="30" patternUnits="userSpaceOnUse">
+      <circle cx="15" cy="15" r="1.5" fill="#D46020" opacity=".5"/>
+      <path d="M0,15 L30,15 M15,0 L15,30" stroke="#D46020" stroke-width=".2" opacity=".25"/>
+    </pattern></defs>
+    <rect width="100%" height="100%" fill="url(#dots-lab7)"/>
+  </svg>
+  <div class="hd-inner">
+    <div class="hd-eyebrow">
+      <div class="hd-line"></div>
+      <span class="hd-eye">Sistem Informasi Akuntansi · Lembar Praktikum</span>
+      <span class="hd-badge">LAB 6 · P07</span>
+    </div>
+    <h1 class="hd-title">Pengujian ITGC, Application Controls &amp; Audit Trail Forensik Core Banking BPRS</h1>
+    <p class="hd-sub">Audit 25 Log Validasi Transaksi · Pengujian 9 Input Controls · Verifikasi Hash Total &amp; Cross-Footing · Rekonstruksi Immutable Audit Trail &amp; Syahadah Digital</p>
+    <div class="hd-pills">
+      <span class="hpill">⏱ <strong>~80 menit</strong></span>
+      <span class="hpill">📁 <strong>dataset-it-controls-audit-p07.csv (25 log)</strong></span>
+      <span class="hpill">🎯 <strong>CPMK-3 (Bloom C4 Menganalisis)</strong></span>
+      <span class="hpill">🛡️ <strong>IT Audit &amp; Application Controls</strong></span>
+    </div>
+  </div>
+  <div class="hd-arch"><svg viewBox="0 0 1200 24" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,24 L0,12 Q30,0 60,12 Q90,24 120,12 Q150,0 180,12 Q210,24 240,12 Q270,0 300,12 Q330,24 360,12 Q390,0 420,12 Q450,24 480,12 Q510,0 540,12 Q570,24 600,12 Q630,0 660,12 Q690,24 720,12 Q750,0 780,12 Q810,24 840,12 Q870,0 900,12 Q930,24 960,12 Q990,0 1020,12 Q1050,24 1080,12 Q1110,0 1140,12 Q1170,24 1200,12 L1200,24 Z" fill="var(--bg)"/>
+  </svg></div>
+</div>
+
+<!-- TRACKER BAR -->
+<div class="tracker-wrap">
+  <div class="tracker" id="tracker">
+    <div class="tr-step" onclick="jumpStep(0)">
+      <div class="tr-circle active" id="tc0">1</div>
+      <div class="tr-label active" id="tl0">Profil &amp; Framework</div>
+    </div>
+    <div class="tr-line" id="tline0"></div>
+    <div class="tr-step" onclick="jumpStep(1)">
+      <div class="tr-circle" id="tc1">2</div>
+      <div class="tr-label" id="tl1">9 Input Controls</div>
+    </div>
+    <div class="tr-line" id="tline1"></div>
+    <div class="tr-step" onclick="jumpStep(2)">
+      <div class="tr-circle" id="tc2">3</div>
+      <div class="tr-label" id="tl2">Processing Controls</div>
+    </div>
+    <div class="tr-line" id="tline2"></div>
+    <div class="tr-step" onclick="jumpStep(3)">
+      <div class="tr-circle" id="tc3">4</div>
+      <div class="tr-label" id="tl3">Audit Trail Forensik</div>
+    </div>
+    <div class="tr-line" id="tline3"></div>
+    <div class="tr-step" onclick="jumpStep(4)">
+      <div class="tr-circle" id="tc4">5</div>
+      <div class="tr-label" id="tl4">Tata Kelola &amp; SoD</div>
+    </div>
+    <div class="tr-line" id="tline4"></div>
+    <div class="tr-step" onclick="jumpStep(5)">
+      <div class="tr-circle" id="tc5">6</div>
+      <div class="tr-label" id="tl5">Laporan &amp; Tugas 2</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+  <!-- LANGKAH 1: PROFIL LOG & TRUST SERVICES FRAMEWORK -->
+  <div class="step-card unlocked" id="card0">
+    <div class="step-hd">
+      <div class="step-num" id="sn0">1</div>
+      <div class="step-title">Profil Log Pengendalian IT Core Banking &amp; Pemetaan Trust Services Framework</div>
+      <div class="step-est">⏱ 15 menit</div>
+    </div>
+    <div class="step-body">
+      <p>Anda bertindak sebagai <strong>Senior IT &amp; Information Systems Auditor</strong> pada BPRS Al-Amanah Syariah. Anda menerima file log audit rekaman pengendalian sistem informasi berbasis IT (<code>dataset-it-controls-audit-p07.csv</code>) yang memuat 25 rekaman transaksi dan peristiwa operasional sistem sepanjang 1–2 Juli 2026.</p>
+
+      <div class="callout tip">
+        <strong>Tujuan Audit:</strong> Memverifikasi efektivitas pengendalian umum (<em>IT General Controls / ITGC</em>) dan pengendalian aplikasi (<em>IT Application Controls</em>: Input, Processing, Output) untuk menjamin integritas pemrosesan transaksi keuangan syariah dan kepatuhan syariah (<em>Shariah Compliance</em>).
+      </div>
+
+      <h3 class="sh">Struktur Kolom Dataset Audit IT Controls (25 Log)</h3>
+      <div class="table-wrap">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Nama Kolom</th>
+              <th>Deskripsi Teknis Log</th>
+              <th>Contoh Nilai pada Dataset</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>Log_ID</code></td>
+              <td>Nomor identifikasi unik baris log sistem</td>
+              <td><code>LOG-2026-001 s.d LOG-2026-026</code></td>
+            </tr>
+            <tr>
+              <td><code>Timestamp</code></td>
+              <td>Waktu presisi pencatatan peristiwa oleh server</td>
+              <td><code>2026-07-01 08:30:15</code></td>
+            </tr>
+            <tr>
+              <td><code>Transaction_ID</code></td>
+              <td>Nomor referensi modul/transaksi terkait</td>
+              <td><code>TRX-MUR-1001, BATCH-POST-01, SYS-AUD-01</code></td>
+            </tr>
+            <tr>
+              <td><code>User_ID &amp; User_Role</code></td>
+              <td>Identitas pengguna dan peran otorisasi</td>
+              <td><code>usr_teller01 (Teller), usr_dba01 (Database Admin)</code></td>
+            </tr>
+            <tr>
+              <td><code>Program_Module</code></td>
+              <td>Modul aplikasi akuntansi yang dieksekusi</td>
+              <td><code>Cash Deposit, Journal Entry, DB Schema Modify</code></td>
+            </tr>
+            <tr>
+              <td><code>Control_Layer</code></td>
+              <td>Lapisan pengendalian sistem informasi</td>
+              <td><code>ITGC, Input Control, Processing Control, Output Control</code></td>
+            </tr>
+            <tr>
+              <td><code>Control_Technique</code></td>
+              <td>Teknik validasi / mekanisme proteksi spesifik</td>
+              <td><code>Field Check, Hash Total, Change Management, Luhn Check Digit</code></td>
+            </tr>
+            <tr>
+              <td><code>Input_Raw_Data</code></td>
+              <td>Data masukan mentah yang diuji sistem</td>
+              <td><code>1500000A, -500000, Plafon 65jt, Nisbah 110:0</code></td>
+            </tr>
+            <tr>
+              <td><code>Validation_Result</code></td>
+              <td>Status keputusan evaluasi sistem kontrol</td>
+              <td><code>Passed / Failed</code></td>
+            </tr>
+            <tr>
+              <td><code>Error_Description</code></td>
+              <td>Keterangan penyebab penolakan atau hasil lolos</td>
+              <td><code>Invalid character in numeric amount field</code></td>
+            </tr>
+            <tr>
+              <td><code>Batch_ID &amp; Hash_Check</code></td>
+              <td>Kelompok batch dan status rekonsiliasi hash</td>
+              <td><code>BATCH-0701-A | Matched / Mismatch</code></td>
+            </tr>
+            <tr>
+              <td><code>Audit_Trail_Status</code></td>
+              <td>Status pencatatan pada log jejak audit</td>
+              <td><code>Logged &amp; Blocked, Logged &amp; Committed, Unauthorized Event Logged</code></td>
+            </tr>
+            <tr>
+              <td><code>Syariah_Compliance_Flag</code></td>
+              <td>Evaluasi kepatuhan terhadap prinsip syariah</td>
+              <td><code>Compliant, Anti-Riba/Zulm, Material Weakness (ITGC)</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Tugas 1.1 — Pemetaan 5 Prinsip Trust Services Framework</label>
+        <textarea class="form-textarea" id="ans_1_1" placeholder="Berdasarkan 25 baris dataset: 1) Kelompokkan log ke dalam 5 pilar AICPA Trust Services Framework (Security, Confidentiality, Privacy, Processing Integrity, Availability)! 2) Berapa banyak insiden yang berstatus 'Failed' dan apa dampaknya jika sistem tidak memiliki kontrol otomatis tersebut?"></textarea>
+      </div>
+
+      <div class="unlock-row">
+        <button class="btn-unlock" id="btn0" onclick="unlockNext(0)">Verifikasi &amp; Lanjut ke Langkah 2</button>
+        <span class="unlock-hint">Langkah 2 akan terbuka setelah Anda menekan tombol di atas.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LANGKAH 2: PENGUJIAN 9 TEKNIK INPUT APPLICATION CONTROLS -->
+  <div class="step-card locked" id="card1">
+    <div class="step-hd">
+      <div class="step-num" id="sn1">2</div>
+      <div class="step-title">Pengujian 9 Teknik Validasi Masukan (Input Application Controls)</div>
+      <div class="step-est">⏱ 15 menit</div>
+    </div>
+    <div class="step-body">
+      <p>Validasi input merupakan garis pertahanan pertama integritas data akuntansi (<em>Garbage In, Garbage Out</em>). Evaluasi 8 kasus kegagalan validasi masukan pada dataset core banking syariah berikut:</p>
+
+      <div class="table-wrap">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Log ID</th>
+              <th>Teknik Kontrol Input</th>
+              <th>Data Mentah Diinput</th>
+              <th>Hasil &amp; Respon Otomatis Sistem</th>
+              <th>Tujuan Perlindungan Keuangan Syariah</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>LOG-2026-001</code></td>
+              <td><strong>Field Check (Numeric)</strong></td>
+              <td><code>1500000A</code></td>
+              <td><span style="color:#C03818;font-weight:700">Failed</span> — Sistem memblokir karakter huruf 'A' pada kolom nominal setoran tabungan wadiah.</td>
+              <td>Mencegah rusaknya format data numerik dan kegagalan fungsi kalkulasi saldo ledger.</td>
+            </tr>
+            <tr>
+              <td><code>LOG-2026-003</code></td>
+              <td><strong>Sign Check (Positive)</strong></td>
+              <td><code>-500000</code></td>
+              <td><span style="color:#C03818;font-weight:700">Failed</span> — Sistem menolak nilai penarikan tunai bernilai negatif.</td>
+              <td>Mencegah penarikan negatif yang dapat membalik logika debet/kredit menjadi penambahan saldo liar.</td>
+            </tr>
+            <tr>
+              <td><code>LOG-2026-004</code></td>
+              <td><strong>Limit Check (Plafon Max)</strong></td>
+              <td><code>65.000.000</code></td>
+              <td><span style="color:#C03818;font-weight:700">Failed</span> — Pengajuan Account Officer melebihi limit wewenang cabang (Rp 50 Juta).</td>
+              <td>Menegakkan batas otorisasi berjenjang (kredit limit approval hierarchy) sesuai SOP BPRS.</td>
+            </tr>
+            <tr>
+              <td><code>LOG-2026-005</code></td>
+              <td><strong>Range Check (Usia Nasabah)</strong></td>
+              <td><code>12</code> (Tahun)</td>
+              <td><span style="color:#C03818;font-weight:700">Failed</span> — Usia nasabah pembuka rekening reguler di bawah batas minimum (17–75 thn).</td>
+              <td>Memastikan kecakapan hukum akad perdata syariah (<em>Ahliyatul Ada'</em>).</td>
+            </tr>
+            <tr>
+              <td><code>LOG-2026-006</code></td>
+              <td><strong>Check Digit Verification (Luhn)</strong></td>
+              <td><code>3201015502900005</code></td>
+              <td><span style="color:#C03818;font-weight:700">Failed</span> — Algoritma modulo 10 mendeteksi kesalahan ketik pada digit terakhir NIK KTP.</td>
+              <td>Mencegah salah input identitas nasabah pembiayaan ke nasabah lain yang tidak bersalah.</td>
+            </tr>
+            <tr>
+              <td><code>LOG-2026-007</code></td>
+              <td><strong>Completeness Check</strong></td>
+              <td><code>NULL NIK KTP</code></td>
+              <td><span style="color:#C03818;font-weight:700">Failed</span> — Formulir pembiayaan disubmit tanpa menyertakan kolom wajib NIK.</td>
+              <td>Memenuhi regulasi KYC OJK/BI dan mencegah data piutang bodong tanpa penanggung jawab.</td>
+            </tr>
+            <tr>
+              <td><code>LOG-2026-008</code></td>
+              <td><strong>Validity Check (Chart of Accounts)</strong></td>
+              <td><code>GL-99999</code></td>
+              <td><span style="color:#C03818;font-weight:700">Failed</span> — Kode akun tidak terdaftar pada Master Bagan Akun Standar BPRS.</td>
+              <td>Mencegah jurnal nyasar ke akun hantu yang merusak penyusunan Neraca dan Laba Rugi.</td>
+            </tr>
+            <tr>
+              <td><code>LOG-2026-010</code></td>
+              <td><strong>Reasonableness Check</strong></td>
+              <td><code>Margin 85% p.a.</code></td>
+              <td><span style="color:#C03818;font-weight:700">Failed</span> — Margin pembiayaan murabahah 85% melampaui batas kewajaran komersial.</td>
+              <td>Mencegah eksploitasi nasabah (<em>Zulm / Riba Fadhil</em>) dan kesalahan fatal input koma desimal.</td>
+            </tr>
+            <tr>
+              <td><code>LOG-2026-019</code></td>
+              <td><strong>Range Check (Nisbah Bagi Hasil)</strong></td>
+              <td><code>Nisbah 110:0</code></td>
+              <td><span style="color:#C03818;font-weight:700">Failed</span> — Porsi bagi hasil mudharabah melampaui total 100%.</td>
+              <td>Menjaga keabsahan rukun akad mudharabah agar rasio nisbah selalu berjumlah tepat 100%.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-box">
+        <div class="code-hd">
+          <span>ALGORITMA PYTHON / BACKEND VALIDASI INPUT GANDA &amp; CHECK DIGIT</span>
+          <button class="copy-btn" onclick="copyCode(this)">Salin Kode Validasi</button>
+        </div>def validate_murabahah_input(raw_data):
+    # 1. Field & Sign Check
+    if not isinstance(raw_data.get('amount'), (int, float)) or raw_data['amount'] <= 0:
+        return False, "ERR_FIELD_SIGN: Nominal pembiayaan harus numerik positif"
+    
+    # 2. Limit Check (Batas Plafon Cabang)
+    if raw_data['amount'] > 50_000_000 and raw_data.get('approver_role') != 'Branch_Manager':
+        return False, "ERR_LIMIT: Melebihi limit AO Rp 50M tanpa otorisasi BM"
+    
+    # 3. Check Digit (Luhn Modulo 10 Algorithm untuk NIK)
+    nik = str(raw_data.get('nik', ''))
+    if len(nik) != 16 or not nik.isdigit():
+        return False, "ERR_COMPLETENESS: NIK wajib 16 digit numerik lengkap"
+    
+    total = sum(int(d) if i%2==0 else (int(d)*2 if int(d)*2 < 10 else int(d)*2 - 9) 
+                for i, d in enumerate(nik[::-1]))
+    if total % 10 != 0:
+        return False, "ERR_CHECK_DIGIT: Checksum NIK KTP tidak valid (Luhn mismatch)"
+    
+    # 4. Reasonableness Check (Margin Maksimal)
+    if raw_data.get('margin_rate', 0) > 0.35: # 35% ceiling
+        return False, "ERR_REASONABLENESS: Margin murabahah melebihi batas wajar syariah"
+        
+    return True, "PASSED: Data input valid dan siap diproses"</div>
+
+      <div class="form-group">
+        <label class="form-label">Tugas 2.1 — Evaluasi Arsitektur Validasi Input Berlapis</label>
+        <textarea class="form-textarea" id="ans_2_1" placeholder="1) Mengapa validasi data di sisi browser (client-side JavaScript) saja sangat berbahaya jika tidak diulang di sisi server (server-side backend & database constraints)? 2) Jelaskan bagaimana teknik Reasonableness Check pada LOG-2026-010 melindungi lembaga dari risiko hukum dan kezaliman finansial!"></textarea>
+      </div>
+
+      <div class="unlock-row">
+        <button class="btn-unlock" id="btn1" onclick="unlockNext(1)">Verifikasi &amp; Lanjut ke Langkah 3</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LANGKAH 3: REKONSILIASI BATCH PROCESSING CONTROLS -->
+  <div class="step-card locked" id="card2">
+    <div class="step-hd">
+      <div class="step-num" id="sn2">3</div>
+      <div class="step-title">Rekonsiliasi Pemrosesan Batch (Processing Controls &amp; Hash Totals)</div>
+      <div class="step-est">⏱ 15 menit</div>
+    </div>
+    <div class="step-body">
+      <p>Pengendalian pemrosesan (<em>Processing Controls</em>) menjamin bahwa semua transaksi yang telah divalidasi diproses secara lengkap, akurat, tanpa ada rekaman yang hilang, terselip, atau diduplikasi.</p>
+
+      <div class="table-wrap">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Teknik Processing Control</th>
+              <th>Mekanisme Kerja Matematis</th>
+              <th>Analisis Temuan pada Log Dataset</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Financial Batch Total</strong></td>
+              <td>Menjumlahkan nilai moneter (Rupiah) dari seluruh transaksi dalam satu berkas batch.</td>
+              <td><code>LOG-2026-009</code>: Total nominal batch <code>BATCH-0701-A</code> sebesar <strong>Rp 145.000.000</strong> cocok persis dengan total penjumlahan di header batch $\rightarrow$ <span style="color:#1F9060;font-weight:700">Passed &amp; Committed</span>.</td>
+            </tr>
+            <tr>
+              <td><strong>Hash Total Verification</strong></td>
+              <td>Menjumlahkan field numerik non-finansial (misal: penjumlahan 4 digit terakhir nomor rekening seluruh nasabah) untuk kontrol integritas.</td>
+              <td><code>LOG-2026-013</code>: Hash tercatat <strong>592.810</strong> sedangkan hasil kalkulasi ulang sistem bernilai <strong>582.810</strong> (Selisih 10.000). Sistem mendeteksi adanya 1 transaksi yang hilang/tereliminasi $\rightarrow$ <span style="color:#C03818;font-weight:700">Failed &amp; Batch Suspended</span>.</td>
+            </tr>
+            <tr>
+              <td><strong>Record Count Verification</strong></td>
+              <td>Menghitung jumlah fisik dokumen atau baris transaksi dalam satu kali proses batch.</td>
+              <td><code>LOG-2026-024</code>: Total baris pada header batch (150 transaksi) cocok persis dengan 150 transaksi yang tereksekusi di buku besar $\rightarrow$ <span style="color:#1F9060;font-weight:700">Passed &amp; Committed</span>.</td>
+            </tr>
+            <tr>
+              <td><strong>Cross-Footing Balance Test</strong></td>
+              <td>Memverifikasi bahwa total kolom Debet sama persis dengan total kolom Kredit sebelum jurnal dibukukan ke General Ledger.</td>
+              <td><code>LOG-2026-011</code>: Debet Rp 25.000.000 vs Kredit Rp 24.500.000 (Selisih Rp 500.000) $\rightarrow$ <span style="color:#C03818;font-weight:700">Failed &amp; Rejected</span>. Baru diterima pada <code>LOG-2026-012</code> setelah diperbaiki menjadi Dr = Cr Rp 25.000.000.</td>
+            </tr>
+            <tr>
+              <td><strong>Zero-Balance Account Test</strong></td>
+              <td>Memverifikasi bahwa akun perantara/kliring (<em>Clearing / Suspense Account</em>) bersaldo tepat nol setelah seluruh posting selesai.</td>
+              <td><code>LOG-2026-022</code>: Akun perantara kliring depresiasi aset ijarah bersaldo tepat Rp 0 di akhir hari $\rightarrow$ <span style="color:#1F9060;font-weight:700">Passed &amp; Settled</span>.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-box">
+        <div class="code-hd">
+          <span>QUERY SQL AUDIT FORENSIK PENDETEKSIAN HASH TOTAL MISMATCH &amp; UNBALANCED BATCH</span>
+          <button class="copy-btn" onclick="copyCode(this)">Salin Query SQL Audit</button>
+        </div>-- Kueri Auditor untuk mengisolasi batch bermasalah dan rekonsiliasi debet-kredit:
+SELECT 
+    Batch_ID,
+    Program_Module,
+    Control_Technique,
+    Validation_Result,
+    Error_Description,
+    Batch_Hash_Total_Check,
+    Audit_Trail_Status
+FROM IT_Controls_Audit_Log
+WHERE Batch_Hash_Total_Check = 'Mismatch'
+   OR Validation_Result = 'Failed' AND Control_Layer = 'Processing Control'
+ORDER BY Timestamp ASC;</div>
+
+      <div class="form-group">
+        <label class="form-label">Tugas 3.1 — Analisis Hash Total vs Record Count</label>
+        <textarea class="form-textarea" id="ans_3_1" placeholder="1) Mengapa verifikasi Record Count saja tidak cukup untuk menjamin keutuhan data batch jika terjadi kasus pertukaran transaksi (transaction swap) atau penggantian record palsu? 2) Jelaskan langkah korektif yang wajib dilakukan staf operasional saat terjadi Hash Total Mismatch pada LOG-2026-013!"></textarea>
+      </div>
+
+      <div class="unlock-row">
+        <button class="btn-unlock" id="btn2" onclick="unlockNext(2)">Verifikasi &amp; Lanjut ke Langkah 4</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LANGKAH 4: AUDIT TRAIL FORENSIK & ITGC -->
+  <div class="step-card locked" id="card3">
+    <div class="step-hd">
+      <div class="step-num" id="sn3">4</div>
+      <div class="step-title">Analisis Forensik Log Jejak Audit (<em>Immutable Audit Trail / Syahadah Digital</em>) &amp; ITGC</div>
+      <div class="step-est">⏱ 15 menit</div>
+    </div>
+    <div class="step-body">
+      <p>Pemeriksaan terhadap kepatuhan <em>IT General Controls (ITGC)</em> dan integritas jejak audit elektronik (<em>Audit Trail</em>) yang berfungsi sebagai <strong>Syahadah Digital</strong> (Saksi Digital yang adil dan tidak dapat disangkal):</p>
+
+      <div class="table-wrap">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Log ID</th>
+              <th>Area Kontrol ITGC</th>
+              <th>Peristiwa / Tindakan yang Terekam</th>
+              <th>Evaluasi Auditor &amp; Kepatuhan Tata Kelola</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:#FFF0EB">
+              <td><strong>LOG-2026-015</strong></td>
+              <td><strong>Change Management Protocol</strong></td>
+              <td>User <code>usr_dba01</code> (Database Admin) mengeksekusi perintah <code>ALTER TABLE customer</code> langsung pada server live production tanpa nomor Change Ticket.</td>
+              <td><span style="color:#C03818;font-weight:700">Material Weakness (ITGC):</span> Pelanggaran berat prosedur manajemen perubahan. Modifikasi skema basis data wajib melalui tiket persetujuan (Change Advisory Board), pengujian di staging server, dan peer review.</td>
+            </tr>
+            <tr>
+              <td><strong>LOG-2026-016</strong></td>
+              <td><strong>Business Continuity &amp; DRP</strong></td>
+              <td>Service <code>usr_backup_srv</code> berhasil mengekspor cold backup snapshot 45.2 GB dengan enkripsi AES-256 ke offsite cloud repository.</td>
+              <td><span style="color:#1F9060;font-weight:700">Compliant (Hifz al-Mal):</span> Menjamin ketersediaan data (<em>Availability</em>) dan pemulihan bencana (<em>Disaster Recovery</em>) jika terjadi crash server utama.</td>
+            </tr>
+            <tr>
+              <td><strong>LOG-2026-026</strong></td>
+              <td><strong>Password Complexity &amp; Lockout</strong></td>
+              <td>User <code>usr_teller03</code> mengalami 5 kali kegagalan login berturut-turut pada portal kasir. Akun dibekukan otomatis 30 menit.</td>
+              <td><span style="color:#1F9060;font-weight:700">Compliant (Logical Access):</span> Menghentikan serangan brute-force otomatis dan mencegah penyalahgunaan akun teller yang ditinggalkan.</td>
+            </tr>
+            <tr>
+              <td><strong>LOG-2026-014</strong></td>
+              <td><strong>Output Control: Masking</strong></td>
+              <td>Modul E-Statement mencetak mutasi nasabah dengan penyamaran data sensitif (<code>Card: 4512-****-****-8821</code>).</td>
+              <td><span style="color:#1F9060;font-weight:700">Compliant (Hifz al-Ird / Privacy):</span> Melindungi kerahasiaan data pribadi nasabah dari pihak ketiga sesuai UU PDP No. 27/2022.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout sya">
+        <strong>Landasan Syariah — Doktrin Syahadah Digital:</strong>
+        <p style="margin:5px 0 0;font-family:'Amiri',serif;font-size:16px;line-height:1.8">
+          فَمَن يَعْمَلْ مِثْقَالَ ذَرَّةٍ خَيْرًا يَرَهُۥ · وَمَن يَعْمَلْ مِثْقَالَ ذَرَّةٍ شَرًّا يَرَهُۥ<br>
+          ٱلْيَوْمَ نَخْتِمُ عَلَىٰٓ أَفْوَٰهِهِمْ وَتُكَلِّمُنَآ أَيْدِيهِمْ وَتَشْهَدُ أَرْجُلُهُم بِمَا كَانُوا۟ يَكْسِبُونَ
+        </p>
+        <p style="font-size:12.5px;color:var(--txm);margin-top:6px">
+          <em>"Maka barangsiapa mengerjakan kebaikan seberat zarrah, niscaya dia akan melihat (balasan)nya. Dan barangsiapa mengerjakan kejahatan seberat zarrah, niscaya dia akan melihat (balasan)nya."</em> (QS. Al-Zalzalah: 7–8) dan <em>"Pada hari ini Kami tutup mulut mereka; dan berkatalah kepada Kami tangan mereka dan memberi kesaksianlah kaki mereka terhadap apa yang dahulu mereka usahakan."</em> (QS. Yasin: 65).
+        </p>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Tugas 4.1 — Analisis Risiko Pelanggaran Change Management oleh DBA</label>
+        <textarea class="form-textarea" id="ans_4_1" placeholder="1) Mengapa tindakan DBA pada LOG-2026-015 dikategorikan sebagai temuan kelemahan material (material weakness) oleh auditor independen? 2) Bagaimana teknologi WORM (Write Once, Read Many) dan Database Activity Monitoring (DAM) menjamin rekaman log jejak audit tidak dapat dihapus atau dimanipulasi oleh oknum internal yang memiliki hak akses administrator?"></textarea>
+      </div>
+
+      <div class="unlock-row">
+        <button class="btn-unlock" id="btn3" onclick="unlockNext(3)">Verifikasi &amp; Lanjut ke Langkah 5</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LANGKAH 5: TATA KELOLA COBIT 2019 & SEGREGATION OF DUTIES -->
+  <div class="step-card locked" id="card4">
+    <div class="step-hd">
+      <div class="step-num" id="sn4">5</div>
+      <div class="step-title">Evaluasi Tata Kelola IT Berbasis COBIT 2019 &amp; Segregation of Duties (SoD)</div>
+      <div class="step-est">⏱ 15 menit</div>
+    </div>
+    <div class="step-body">
+      <p>Menganalisis arsitektur tata kelola teknologi informasi berbasis framework <strong>COBIT 2019</strong> dan penerapan prinsip pemisahan fungsi tugas di departemen IT (<em>IT Segregation of Duties</em>):</p>
+
+      <div class="table-wrap">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Peran IT (Role)</th>
+              <th>Tanggung Jawab Utama</th>
+              <th>Akses yang DIHARAMKAN (Incompatible Duties)</th>
+              <th>Potensi Risiko Fraud / Kerusakan</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Systems Analyst</strong></td>
+              <td>Mendesain arsitektur proses bisnis, spesifikasi kebutuhan sistem SIA, dan diagram arus data.</td>
+              <td>Dilarang menulis kode program (coding) atau memiliki akses operasional harian.</td>
+              <td>Dapat merancang celah logika sistem (backdoor) yang kemudian ia buat sendiri kodenya.</td>
+            </tr>
+            <tr>
+              <td><strong>Programmer (Developer)</strong></td>
+              <td>Menulis kode aplikasi di lingkungan pengembangan (<em>Development Environment</em>).</td>
+              <td><strong>Dilarang keras mengakses server live production</strong> dan live master database.</td>
+              <td>Dapat menyisipkan instruksi tersembunyi (seperti pengalihan saldo/salami technique) langsung ke server aktif.</td>
+            </tr>
+            <tr>
+              <td><strong>Computer Operator</strong></td>
+              <td>Menjalankan eksekusi batch posting harian, monitoring server, dan backup rutin.</td>
+              <td>Dilarang memodifikasi kode program atau melakukan entri jurnal akuntansi.</td>
+              <td>Dapat mengulang eksekusi batch atau mengubah parameter pemrosesan tanpa jejak audit.</td>
+            </tr>
+            <tr>
+              <td><strong>Database Administrator (DBA)</strong></td>
+              <td>Mengelola struktur tabel, performa query, indexing, dan integritas skema database.</td>
+              <td>Dilarang merangkap sebagai programmer aplikasi atau staf akuntansi operasional.</td>
+              <td>Dapat memanipulasi saldo rekening tabel database secara langsung (direct query bypass).</td>
+            </tr>
+            <tr>
+              <td><strong>IT Security Officer / CISO</strong></td>
+              <td>Menetapkan kebijakan firewall, privilege user, enkripsi, dan monitoring log keamanan.</td>
+              <td>Independen dari operasional IT harian dan pengembangan sistem.</td>
+              <td>Jika merangkap operator, ia dapat menonaktifkan alarm keamanan untuk menutupi kesalahannya sendiri.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Tugas 5.1 — Desain Matriks Otorisasi &amp; Pemisahan Tugas IT BPRS</label>
+        <textarea class="form-textarea" id="ans_5_1" placeholder="1) Pada BPRS skala menengah dengan jumlah staf IT terbatas (misal hanya 3 orang), bagaimana solusi mitigasi risiko segregation of duties conflict agar tidak terjadi dominasi wewenang tunggal? 2) Sebutkan 2 domain proses COBIT 2019 yang paling krusial dalam menjamin keandalan sistem informasi akuntansi!"></textarea>
+      </div>
+
+      <div class="unlock-row">
+        <button class="btn-unlock" id="btn4" onclick="unlockNext(4)">Verifikasi &amp; Lanjut ke Langkah 6</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LANGKAH 6: 3 TANTANGAN ANALISIS MANDIRI & LAPORAN TUGAS 2 -->
+  <div class="step-card locked" id="card5">
+    <div class="step-hd">
+      <div class="step-num" id="sn5">6</div>
+      <div class="step-title">3 Tantangan Analisis Mandiri (Tugas 2 RPS) &amp; Format Laporan PDF</div>
+      <div class="step-est">⏱ 10 menit</div>
+    </div>
+    <div class="step-body">
+      <div class="challenge-box">
+        <h4>🎯 3 Tantangan Analisis Mandiri (Wajib Dimuat dalam Laporan Akhir Tugas 2)</h4>
+        <div class="challenge-q">
+          <strong>Tantangan 1 — Kuantifikasi &amp; Rekonsiliasi Pengendalian Sistem:</strong> Dari 25 baris dataset <code>dataset-it-controls-audit-p07.csv</code>: 1) Hitung persentase efektivitas sistem kontrol (Passed vs Failed), 2) Klasifikasikan 10 insiden kegagalan berdasarkan kategorinya (Input, Processing, ITGC), dan 3) Hitung total nilai nominal transaksi yang berhasil diselamatkan dari potensi salah catat/fraud.
+        </div>
+        <div class="challenge-q">
+          <strong>Tantangan 2 — Blueprint Algoritma Validasi Akad Murabahah &amp; Mudharabah:</strong> Buat diagram alir (Flowchart) atau Pseudocode lengkap yang mengintegrasikan 9 teknik input controls (Field, Sign, Limit, Range, Size, Completeness, Validity, Reasonableness, Check Digit) pada modul pembiayaan core banking syariah.
+        </div>
+        <div class="challenge-q">
+          <strong>Tantangan 3 — Resolusi Pelanggaran ITGC &amp; Internalisasi Nilai Amanah:</strong> Rancang SOP tanggap darurat (Change Management Emergency Protocol) untuk insiden modifikasi skema darurat oleh DBA, serta rumuskan narasi etika profesional auditor syariah dalam menegakkan doktrin Syahadah Digital di era AI &amp; Cloud.
+        </div>
+      </div>
+
+      <h3 class="sh">Ketentuan Format Laporan Praktikum PDF (Tugas 2 RPS)</h3>
+      <ul class="lst">
+        <li><strong>Format Dokumen:</strong> PDF terstruktur rapi (Maksimal 4-5 halaman, font serif/sans 11pt, spasi 1.15).</li>
+        <li><strong>Struktur Laporan:</strong> Halaman Judul &amp; Identitas Mahasiswa $\rightarrow$ Ringkasan Eksekutif Hasil Audit IT Controls $\rightarrow$ Evaluasi 9 Input Controls &amp; Kasus Rekonsiliasi Batch Processing $\rightarrow$ Investigasi Pelanggaran ITGC &amp; Doktrin Syahadah Digital $\rightarrow$ Jawaban 3 Tantangan Mandiri $\rightarrow$ Lampiran Rekapitulasi 25 Log.</li>
+        <li><strong>Format Penamaan File:</strong> <code>AIS_Lab06_Tugas2_NIM_NamaLengkap.pdf</code></li>
+        <li><strong>Tenggat Pengumpulan:</strong> 7 hari setelah sesi praktikum melalui portal e-learning Tazkia (Komponen Penilaian Tugas 2 RPS).</li>
+      </ul>
+
+      <div class="unlock-row">
+        <button class="btn-unlock" id="btn5" onclick="finishLab()">Selesaikan Praktikum &amp; Cetak Ringkasan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPLETION BOX -->
+  <div class="completion" id="compBox">
+    <h2>🎉 Luar Biasa! Anda Telah Menyelesaikan Lembar Praktikum 07</h2>
+    <p>Seluruh analisis evaluasi ITGC, 9 teknik validasi input, rekonsiliasi hash total batch processing, dan audit trail forensik syariah Anda telah tersimpan rapi di browser ini. Segera susun laporan akhir PDF Anda.</p>
+    <button class="next-btn" onclick="window.print()">🖨 Cetak / Simpan Halaman Jawaban ke PDF</button>
+    <a class="next-btn" href="Pertemuan-07.html">← Kembali ke Materi Teori Pertemuan 07</a>
+  </div>
+
+</div>
+
+<script>
+/* ═══ APPLICATION STATE & LOCAL STORAGE ═══ */
+const STORAGE_KEY = 'tazkia-ais-p07-lab-v1';
+const TOTAL_STEPS = 6;
+
+let labState = {
+  unlocked: [0],
+  inputs: {
+    ans_1_1: '',
+    ans_2_1: '',
+    ans_3_1: '',
+    ans_4_1: '',
+    ans_5_1: ''
+  },
+  completed: false
+};
+
+function saveLab(){
+  try{
+    Object.keys(labState.inputs).forEach(id => {
+      const el = document.getElementById(id);
+      if(el) labState.inputs[id] = el.value;
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(labState));
+  }catch(e){}
+}
+
+function loadLab(){
+  try{
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if(saved) {
+      labState = Object.assign(labState, JSON.parse(saved));
+      Object.keys(labState.inputs).forEach(id => {
+        const el = document.getElementById(id);
+        if(el && labState.inputs[id]) el.value = labState.inputs[id];
+      });
+    }
+  }catch(e){}
+}
+
+function updateTracker(){
+  for(let i=0; i<TOTAL_STEPS; i++){
+    const circle = document.getElementById('tc' + i);
+    const label = document.getElementById('tl' + i);
+    const line = document.getElementById('tline' + i);
+    const card = document.getElementById('card' + i);
+    const btn = document.getElementById('btn' + i);
+    const num = document.getElementById('sn' + i);
+
+    const isUnlocked = labState.unlocked.includes(i);
+    const isDone = (i < labState.unlocked.length - 1) || labState.completed;
+
+    if(card){
+      if(isUnlocked){
+        card.className = 'step-card unlocked';
+        if(isDone) card.classList.add('completed');
+      } else {
+        card.className = 'step-card locked';
+      }
+    }
+
+    if(circle && label){
+      if(isDone){
+        circle.className = 'tr-circle done';
+        circle.textContent = '✓';
+        label.className = 'tr-label done';
+      } else if(isUnlocked){
+        circle.className = 'tr-circle active';
+        circle.textContent = i + 1;
+        label.className = 'tr-label active';
+      } else {
+        circle.className = 'tr-circle';
+        circle.textContent = i + 1;
+        label.className = 'tr-label';
+      }
+    }
+
+    if(line){
+      line.className = isDone ? 'tr-line done' : 'tr-line';
+    }
+
+    if(btn && isDone){
+      btn.className = 'btn-unlock done-state';
+      btn.textContent = '✓ Selesai Diverifikasi';
+    }
+    if(num && isDone){
+      num.className = 'step-num done';
+      num.textContent = '✓';
+    }
+  }
+
+  if(labState.completed){
+    document.getElementById('compBox').classList.add('show');
+  }
+}
+
+function unlockNext(stepIdx){
+  saveLab();
+  const nextIdx = stepIdx + 1;
+  if(nextIdx < TOTAL_STEPS && !labState.unlocked.includes(nextIdx)){
+    labState.unlocked.push(nextIdx);
+  }
+  saveLab();
+  updateTracker();
+
+  const nextCard = document.getElementById('card' + nextIdx);
+  if(nextCard){
+    nextCard.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+}
+
+function jumpStep(stepIdx){
+  if(labState.unlocked.includes(stepIdx)){
+    const card = document.getElementById('card' + stepIdx);
+    if(card) card.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+}
+
+function finishLab(){
+  saveLab();
+  labState.completed = true;
+  saveLab();
+  updateTracker();
+  const comp = document.getElementById('compBox');
+  comp.classList.add('show');
+  comp.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function copyCode(btn){
+  const codeBox = btn.closest('.code-box');
+  const text = codeBox.innerText.replace(codeBox.querySelector('.code-hd').innerText, '').trim();
+  navigator.clipboard.writeText(text).then(()=>{
+    const old = btn.textContent;
+    btn.textContent = '✓ Tersalin!';
+    setTimeout(()=>btn.textContent = old, 1800);
+  });
+}
+
+// Auto-save on input change
+document.addEventListener('input', (e)=>{
+  if(e.target.classList.contains('form-textarea')){
+    saveLab();
+  }
+});
+
+loadLab();
+updateTracker();
+</script>
+</body>
+</html>

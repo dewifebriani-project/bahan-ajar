@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIS Lab 5 — Analisis Forensik Insiden Siber &amp; Defense-in-Depth Bank Digital Syariah</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap">
+<style>
+/* ═══ MEETING COLOR VARIABLES (P06 Lab = Amber Flame & Crimson Burgundy) ═══ */
+:root{
+  --meet-from:#1A0800; --meet-mid:#2E1005; --meet-to:#481808;
+  --meet-acc:#D46020;  --meet-acc2:#E88030;
+  --bg:#EDF1F6;--sf:#FFFFFF;--sf2:#FBF2EC;--sf3:#F6ECE4;
+  --bd:#D8C4B8;--bs:#EADFD8;
+  --tx:#1C0C04;--txm:#4A3830;--txl:#8C756B;
+  --pri:#2E1005;--pmid:#D46020;--pril:#FCEBD8;--prx:#FAF0E8;
+  --acc:#D46020;--accl:#FCEBD8;
+  --sya:#1F9060;--syal:#D0EEE2;--syab:#40B080;
+  --done-bg:#D0EEE2;--done-bd:#40B080;--done-tx:#0A4020;
+  --r:8px;--rs:5px;
+  --shadow:0 4px 20px rgba(46,16,5,.12);
+  --shadow-sm:0 2px 8px rgba(46,16,5,.08);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#0E0604;--sf:#1A0D08;--sf2:#140804;--sf3:#1E100A;
+  --bd:#361C12;--bs:#28140C;
+  --tx:#F4E8E2;--txm:#B0988E;--txl:#6E554B;
+  --pri:#E88030;--pmid:#D46020;--pril:#2A1006;--prx:#1F0B04;
+  --acc:#E88030;--accl:#2A1006;
+  --sya:#30B878;--syal:#041410;--syab:#186040;
+  --done-bg:#041410;--done-bd:#40C890;--done-tx:#40C890;
+}}
+:root[data-theme=dark]{
+  --bg:#0E0604;--sf:#1A0D08;--sf2:#140804;--sf3:#1E100A;
+  --bd:#361C12;--bs:#28140C;
+  --tx:#F4E8E2;--txm:#B0988E;--txl:#6E554B;
+  --pri:#E88030;--pmid:#D46020;--pril:#2A1006;--prx:#1F0B04;
+  --acc:#E88030;--accl:#2A1006;
+  --sya:#30B878;--syal:#041410;--syab:#186040;
+  --done-bg:#041410;--done-bd:#40C890;--done-tx:#40C890;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.65}
+
+/* ── HEADER ── */
+.hd{background:linear-gradient(160deg,var(--meet-from) 0%,var(--meet-mid) 55%,var(--meet-to) 100%);color:#fff;position:relative;overflow:hidden}
+.hd-ornament{position:absolute;inset:0;pointer-events:none;opacity:.14}
+.hd-inner{max-width:840px;margin:0 auto;padding:32px 24px 12px;position:relative;z-index:1}
+.hd-eyebrow{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.hd-line{width:24px;height:1px;background:var(--meet-acc2)}
+.hd-eye{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--meet-acc2)}
+.hd-badge{font-size:11px;background:rgba(212,96,32,.25);border:1px solid rgba(212,96,32,.45);border-radius:12px;padding:2px 11px;color:#FFB885;margin-left:auto}
+.hd-title{font-family:'Amiri',serif;font-size:28px;font-weight:700;line-height:1.2;margin-bottom:5px}
+.hd-sub{font-size:13.5px;color:rgba(255,255,255,.75);margin-bottom:16px}
+.hd-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px}
+.hpill{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:2px 11px;font-size:11.5px;color:rgba(255,255,255,.8)}
+.hpill strong{color:#fff}
+.hd-arch{line-height:0}
+.hd-arch svg{display:block;width:100%;height:24px}
+
+/* ── TRACKER BAR ── */
+.tracker-wrap{background:var(--sf);border-bottom:1px solid var(--bs);position:sticky;top:0;z-index:40;box-shadow:var(--shadow-sm)}
+.tracker{max-width:840px;margin:0 auto;padding:8px 20px;display:flex;align-items:center;gap:6px;overflow-x:auto}
+.tr-step{display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0;cursor:pointer}
+.tr-circle{width:30px;height:30px;border-radius:50%;border:2px solid var(--bs);background:var(--sf3);display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;color:var(--txl);transition:all .3s}
+.tr-circle.active{border-color:var(--pmid);background:var(--prx);color:var(--pri)}
+.tr-circle.done{border-color:var(--sya);background:var(--syal);color:var(--sya)}
+.tr-label{font-size:9.5px;color:var(--txl);white-space:nowrap;text-align:center;max-width:70px;overflow:hidden;text-overflow:ellipsis}
+.tr-label.active{color:var(--pmid);font-weight:600}
+.tr-label.done{color:var(--sya);font-weight:600}
+.tr-line{width:20px;height:2px;background:var(--bs);border-radius:1px;flex-shrink:0;margin-bottom:10px}
+.tr-line.done{background:var(--sya)}
+
+/* ── MAIN ── */
+.main{max-width:840px;margin:0 auto;padding:24px 20px 80px}
+
+/* ── STEP CARDS ── */
+.step-card{background:var(--sf);border:1px solid var(--bs);border-radius:var(--r);margin-bottom:14px;box-shadow:var(--shadow-sm);overflow:hidden;transition:opacity .3s,filter .3s}
+.step-card.locked{opacity:.35;filter:grayscale(.5);pointer-events:none}
+.step-card.unlocked{opacity:1;filter:none}
+.step-card.completed{border-color:var(--done-bd)}
+.step-hd{display:flex;align-items:center;gap:11px;padding:13px 20px;background:var(--sf3);border-bottom:1px solid var(--bs)}
+.step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc2))}
+.step-num.done{background:var(--sya)}
+.step-title{font-family:'Amiri',serif;font-size:17px;font-weight:700;color:var(--pri)}
+.step-est{font-size:11.5px;color:var(--txl);margin-left:auto;white-space:nowrap}
+.step-body{padding:18px 22px}
+
+/* ── CALLOUT ── */
+.callout{border-radius:var(--rs);padding:11px 15px;margin:10px 0;font-size:13.5px;line-height:1.6}
+.callout.tip{background:var(--prx);border-left:4px solid var(--pmid);color:var(--txm)}
+.callout.warn{background:#FEF3E0;border-left:4px solid #D46020;color:#5A2C04}
+.callout.sya{background:var(--syal);border-left:4px solid var(--sya);color:var(--txm)}
+.callout.info{background:var(--sf3);border-left:4px solid var(--pri);color:var(--txm)}
+
+/* ── TABLE ── */
+.table-wrap{overflow-x:auto;margin:12px 0}
+.custom-table{width:100%;border-collapse:collapse;font-size:13px}
+.custom-table th{background:var(--pri);color:#fff;padding:8px 12px;text-align:left;font-size:11.5px}
+.custom-table td{padding:8px 12px;border-bottom:1px solid var(--bs);color:var(--txm);vertical-align:top}
+.custom-table tr:nth-child(even) td{background:var(--sf3)}
+.custom-table tr:last-child td{border-bottom:none}
+
+/* ── CODE BOX ── */
+.code-box{background:#1A0800;border-radius:var(--rs);padding:14px 16px;color:#FCEBD8;font-family:'Source Code Pro',monospace;font-size:13px;line-height:1.65;margin:10px 0;overflow-x:auto;white-space:pre}
+.code-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.12);font-size:11px;color:var(--meet-acc2);font-weight:700;white-space:normal}
+.copy-btn{background:rgba(212,96,32,.3);border:1px solid rgba(212,96,32,.5);border-radius:4px;color:#fff;padding:2px 8px;font-size:10.5px;cursor:pointer}
+
+/* ── INTERACTIVE FORM INPUTS ── */
+.form-group{margin:14px 0}
+.form-label{display:block;font-size:13px;font-weight:700;color:var(--pri);margin-bottom:5px}
+.form-textarea{width:100%;min-height:85px;padding:10px 12px;border-radius:var(--rs);border:1.5px solid var(--bs);background:var(--sf);color:var(--tx);font-family:'Source Sans 3',sans-serif;font-size:13.5px;line-height:1.5;resize:vertical}
+.form-textarea:focus{outline:none;border-color:var(--pmid);box-shadow:0 0 0 3px var(--pril)}
+.form-hint{font-size:11.5px;color:var(--txl);margin-top:4px}
+
+/* ── UNLOCK ROW ── */
+.unlock-row{display:flex;align-items:center;gap:12px;margin-top:20px;padding-top:18px;border-top:1px solid var(--bs)}
+.btn-unlock{background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc2));color:#fff;border:none;border-radius:24px;padding:11px 26px;font-family:'Source Sans 3',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;transition:opacity .2s}
+.btn-unlock:hover{opacity:.88}
+.btn-unlock.done-state{background:var(--sya);cursor:default}
+.unlock-hint{font-size:12.5px;color:var(--txl)}
+
+/* ── CHALLENGE BOX ── */
+.challenge-box{background:linear-gradient(135deg,#1A0800,#2E1005);border-radius:var(--r);padding:18px 20px;color:#fff;margin:14px 0}
+.challenge-box h4{font-family:'Amiri',serif;font-size:17px;font-weight:700;margin-bottom:12px;color:#FFB885}
+.challenge-q{background:rgba(255,255,255,.08);border-radius:var(--rs);padding:10px 14px;margin-bottom:8px;font-size:13.5px;color:rgba(255,255,255,.88)}
+.challenge-q strong{color:#fff}
+
+/* ── COMPLETION ── */
+.completion{display:none;background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;border-radius:var(--r);padding:28px;text-align:center;margin-top:18px}
+.completion.show{display:block}
+.completion h2{font-family:'Amiri',serif;font-size:24px;font-weight:700;margin-bottom:8px}
+.completion p{color:rgba(255,255,255,.75);font-size:13.5px;margin-bottom:14px}
+.completion .next-btn{display:inline-block;background:var(--meet-acc2);color:#fff;border-radius:20px;padding:10px 24px;font-weight:700;font-size:14px;text-decoration:none;margin:4px}
+
+h3.sh{font-family:'Amiri',serif;font-size:18px;font-weight:700;color:var(--pri);margin:16px 0 9px;display:flex;align-items:center;gap:8px}
+h3.sh::before{content:'';width:4px;height:16px;background:var(--meet-acc2);border-radius:2px;flex-shrink:0}
+ul.lst{list-style:none;padding:0;margin-bottom:12px}
+ul.lst li{padding:5px 0 5px 20px;position:relative;color:var(--txm);font-size:14px;border-bottom:1px solid var(--bs)}
+ul.lst li:last-child{border-bottom:none}
+ul.lst li::before{content:'▸';position:absolute;left:0;color:var(--pmid);font-size:11px;top:7px}
+ul.lst li strong{color:var(--tx)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hd">
+  <svg class="hd-ornament" viewBox="0 0 400 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs><pattern id="dots-lab6" width="30" height="30" patternUnits="userSpaceOnUse">
+      <circle cx="15" cy="15" r="1.5" fill="#D46020" opacity=".5"/>
+      <path d="M0,15 L30,15 M15,0 L15,30" stroke="#D46020" stroke-width=".2" opacity=".25"/>
+    </pattern></defs>
+    <rect width="100%" height="100%" fill="url(#dots-lab6)"/>
+  </svg>
+  <div class="hd-inner">
+    <div class="hd-eyebrow">
+      <div class="hd-line"></div>
+      <span class="hd-eye">Sistem Informasi Akuntansi · Lembar Praktikum</span>
+      <span class="hd-badge">LAB 5 · P06</span>
+    </div>
+    <h1 class="hd-title">Analisis Forensik Insiden Siber &amp; Defense-in-Depth Bank Digital Syariah</h1>
+    <p class="hd-sub">Audit 25 Log Insiden Siber · Analisis Cyber Kill Chain Ransomware &amp; Phishing · Mitigasi SQL Injection · SOP CSIRT Syariah</p>
+    <div class="hd-pills">
+      <span class="hpill">⏱ <strong>~80 menit</strong></span>
+      <span class="hpill">📁 <strong>dataset-cybersecurity-incidents-p06.csv (25 log)</strong></span>
+      <span class="hpill">🎯 <strong>CPMK-3 (Bloom C4 Menganalisis)</strong></span>
+      <span class="hpill">🛡️ <strong>SIEM / Forensic Threat Analytics</strong></span>
+    </div>
+  </div>
+  <div class="hd-arch"><svg viewBox="0 0 1200 24" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,24 L0,12 Q30,0 60,12 Q90,24 120,12 Q150,0 180,12 Q210,24 240,12 Q270,0 300,12 Q330,24 360,12 Q390,0 420,12 Q450,24 480,12 Q510,0 540,12 Q570,24 600,12 Q630,0 660,12 Q690,24 720,12 Q750,0 780,12 Q810,24 840,12 Q870,0 900,12 Q930,24 960,12 Q990,0 1020,12 Q1050,24 1080,12 Q1110,0 1140,12 Q1170,24 1200,12 L1200,24 Z" fill="var(--bg)"/>
+  </svg></div>
+</div>
+
+<!-- TRACKER BAR -->
+<div class="tracker-wrap">
+  <div class="tracker" id="tracker">
+    <div class="tr-step" onclick="jumpStep(0)">
+      <div class="tr-circle active" id="tc0">1</div>
+      <div class="tr-label active" id="tl0">Profil Log Insiden</div>
+    </div>
+    <div class="tr-line" id="tline0"></div>
+    <div class="tr-step" onclick="jumpStep(1)">
+      <div class="tr-circle" id="tc1">2</div>
+      <div class="tr-label" id="tl1">Ransomware &amp; Phishing</div>
+    </div>
+    <div class="tr-line" id="tline1"></div>
+    <div class="tr-step" onclick="jumpStep(2)">
+      <div class="tr-circle" id="tc2">3</div>
+      <div class="tr-label" id="tl2">SQL Injection</div>
+    </div>
+    <div class="tr-line" id="tline2"></div>
+    <div class="tr-step" onclick="jumpStep(3)">
+      <div class="tr-circle" id="tc3">4</div>
+      <div class="tr-label" id="tl3">Defense-in-Depth</div>
+    </div>
+    <div class="tr-line" id="tline3"></div>
+    <div class="tr-step" onclick="jumpStep(4)">
+      <div class="tr-circle" id="tc4">5</div>
+      <div class="tr-label" id="tl4">SOP CSIRT Syariah</div>
+    </div>
+    <div class="tr-line" id="tline4"></div>
+    <div class="tr-step" onclick="jumpStep(5)">
+      <div class="tr-circle" id="tc5">6</div>
+      <div class="tr-label" id="tl5">Laporan &amp; Tugas</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+  <!-- LANGKAH 1: PROFIL LOG INSIDEN SIBER -->
+  <div class="step-card unlocked" id="card0">
+    <div class="step-hd">
+      <div class="step-num" id="sn0">1</div>
+      <div class="step-title">Profil Insiden Siber Bank Digital Syariah &amp; Taksonomi Serangan</div>
+      <div class="step-est">⏱ 15 menit</div>
+    </div>
+    <div class="step-body">
+      <p>Anda bertindak sebagai <strong>Lead Cybersecurity &amp; IT Forensic Auditor</strong> pada Bank Digital Syariah Nusantara. Anda diminta menganalisis 25 log rekaman insiden keamanan siber yang terekam pada server SIEM (<em>Security Information and Event Management</em>) selama periode Juni–Agustus 2026.</p>
+
+      <div class="callout warn">
+        <strong>Ringkasan Insiden:</strong> Terdapat 25 insiden keamanan siber mulai dari serangan phishing spear, ransomware cabang, eksploitasi SQL injection portal nasabah, percobaan pembobolan credential stuffing, hingga manipulasi pembulatan saldo (salami technique).
+      </div>
+
+      <h3 class="sh">Struktur Kolom Dataset Log Insiden Siber</h3>
+      <div class="table-wrap">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Nama Kolom</th>
+              <th>Deskripsi Teknis</th>
+              <th>Contoh Nilai</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>Incident_ID</code></td>
+              <td>Nomor referensi unik insiden siber</td>
+              <td><code>INC-2026-004</code></td>
+            </tr>
+            <tr>
+              <td><code>Threat_Category</code></td>
+              <td>Kategori ancaman siber</td>
+              <td><code>Malware, Social Engineering, Hacking, Insider Threat</code></td>
+            </tr>
+            <tr>
+              <td><code>Attack_Vector</code></td>
+              <td>Jalur / metode masuk serangan</td>
+              <td><code>Ransomware LockBit, SQL Injection, Spear Phishing</code></td>
+            </tr>
+            <tr>
+              <td><code>Target_Asset</code></td>
+              <td>Aset sistem akuntansi yang diserang</td>
+              <td><code>Branch Server, Core DB GL, Web Portal API</code></td>
+            </tr>
+            <tr>
+              <td><code>Severity_Level</code></td>
+              <td>Tingkat keparahan risiko insiden</td>
+              <td><code>Low, Medium, High, Critical</code></td>
+            </tr>
+            <tr>
+              <td><code>Detection_Mechanism</code></td>
+              <td>Sistem pendeteksi insiden</td>
+              <td><code>WAF Rule, EDR Alert, SIEM Rule, User Report</code></td>
+            </tr>
+            <tr>
+              <td><code>Incident_Status</code></td>
+              <td>Status penanganan akhir</td>
+              <td><code>Blocked, Contained, Compromised, Remediated</code></td>
+            </tr>
+            <tr>
+              <td><code>Financial_Impact_Estimate_Rp</code></td>
+              <td>Estimasi kerugian finansial langsung</td>
+              <td><code>Rp 45.000.000 (Kerugian Downtime/Restore)</code></td>
+            </tr>
+            <tr>
+              <td><code>Islamic_Maqashid_Impact</code></td>
+              <td>Dimensi Maqashid Syariah yang terancam</td>
+              <td><code>Hifz al-Mal, Hifz al-Ird, Hifz al-Amanah</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Tugas 1.1 — Distribusi Kategori Ancaman Siber</label>
+        <textarea class="form-textarea" id="ans_1_1" placeholder="Berdasarkan 25 baris dataset: 1) Hitung berapa persen insiden yang berakar dari faktor Social Engineering & Human Error? 2) Mengapa serangan siber pada bank digital syariah tidak hanya merugikan finansial tetapi merusak reputasi amanah?"></textarea>
+      </div>
+
+      <div class="unlock-row">
+        <button class="btn-unlock" id="btn0" onclick="unlockNext(0)">Verifikasi &amp; Lanjut ke Langkah 2</button>
+        <span class="unlock-hint">Langkah 2 akan terbuka setelah Anda menekan tombol di atas.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LANGKAH 2: RANSOMWARE & CYBER KILL CHAIN -->
+  <div class="step-card locked" id="card1">
+    <div class="step-hd">
+      <div class="step-num" id="sn1">2</div>
+      <div class="step-title">Investigasi Forensik Kasus 1: Serangan Ransomware LockBit (INC-2026-004)</div>
+      <div class="step-est">⏱ 15 menit</div>
+    </div>
+    <div class="step-body">
+      <p>Analisis <strong>Cyber Kill Chain</strong> (tahapan serangan dari pengintaian hingga enkripsi data) pada insiden infeksi ransomware di server KCP Bogor:</p>
+
+      <div class="table-wrap">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Tahapan Cyber Kill Chain</th>
+              <th>Temuan Forensik pada Insiden INC-2026-004</th>
+              <th>Kelemahan Kontrol yang Dieksploitasi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1. Reconnaissance (Pengintaian)</td>
+              <td>Hacker melakukan port scanning massal dan menemukan Port RDP 3389 terbuka ke publik.</td>
+              <td>Ketiadaan firewall rule restriksi IP publik pada router cabang.</td>
+            </tr>
+            <tr>
+              <td>2. Weaponization &amp; Delivery</td>
+              <td>Brute-force credential admin RDP berhasil dibobol dalam 40 menit karena password lemah.</td>
+              <td>Ketiadaan Multi-Factor Authentication (MFA) dan account lockout threshold.</td>
+            </tr>
+            <tr>
+              <td>3. Exploitation &amp; Execution</td>
+              <td>Hacker menonaktifkan service antivirus lokal dan mengeksekusi payload LockBit.exe.</td>
+              <td>Akun admin RDP memiliki hak superuser lokal tanpa pemisahan privilege.</td>
+            </tr>
+            <tr>
+              <td>4. Actions on Objectives (Enkripsi)</td>
+              <td>12.000 file dokumen nasabah dienkripsi dengan ekstensi .lockbit dan meninggalkan pesan tebusan.</td>
+              <td>Folder sharing jaringan tidak terisolasi dari subnet workstation staf.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-box">
+        <div class="code-hd">
+          <span>QUERY SQL FORENSIK INSIDEN DENGAN STATUS COMPROMISED</span>
+          <button class="copy-btn" onclick="copyCode(this)">Salin Query SQL</button>
+        </div>-- Kueri SQL mencari seluruh insiden dengan status Compromised dan estimasi kerugian finansial > 0:
+SELECT 
+    Incident_ID,
+    Timestamp,
+    Threat_Category,
+    Attack_Vector,
+    Target_Asset,
+    Severity_Level,
+    Financial_Impact_Estimate_Rp,
+    Forensic_Finding_Summary
+FROM Cybersecurity_Incidents_Log
+WHERE Incident_Status = 'Compromised' 
+   OR Financial_Impact_Estimate_Rp > 0
+ORDER BY Financial_Impact_Estimate_Rp DESC;</div>
+
+      <div class="form-group">
+        <label class="form-label">Tugas 2.1 — Evaluasi Keputusan Penolakan Pembayaran Tebusan</label>
+        <textarea class="form-textarea" id="ans_2_1" placeholder="1) Mengapa manajemen bank digital syariah dilarang membayar uang tebusan (ransom) baik secara hukum positif maupun tinjauan fikih muamalah? 2) Kontrol korektif apa yang berhasil menyelamatkan seluruh data nasabah dalam 6 jam?"></textarea>
+      </div>
+
+      <div class="unlock-row">
+        <button class="btn-unlock" id="btn1" onclick="unlockNext(1)">Verifikasi &amp; Lanjut ke Langkah 3</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LANGKAH 3: SQL INJECTION & DATABASE -->
+  <div class="step-card locked" id="card2">
+    <div class="step-hd">
+      <div class="step-num" id="sn2">3</div>
+      <div class="step-title">Investigasi Kasus 2: Analisis SQL Injection &amp; Salami Technique</div>
+      <div class="step-est">⏱ 15 menit</div>
+    </div>
+    <div class="step-body">
+      <p>Pemeriksaan mendalam atas insiden pembobolan database keuangan pada insiden <code>INC-2026-002</code> dan <code>INC-2026-017</code>:</p>
+
+      <div class="table-wrap">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>ID Insiden</th>
+              <th>Vektor Serangan</th>
+              <th>Aset Target</th>
+              <th>Temuan Forensik</th>
+              <th>Mekanisme Deteksi Penyelamat</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:#FFF0EB">
+              <td><strong>INC-2026-002</strong></td>
+              <td>SQL Injection</td>
+              <td>Web Portal Core API</td>
+              <td>Penyerang menyisipkan payload <code>admin' OR '1'='1</code> pada parameter username untuk mengekstrak master tabel saldo nasabah.</td>
+              <td><span style="color:var(--ok);font-weight:700">WAF Rule 942100 (Web Application Firewall)</span> memblokir request seketika.</td>
+            </tr>
+            <tr style="background:#FFF0EB">
+              <td><strong>INC-2026-017</strong></td>
+              <td>Salami Technique (Insider)</td>
+              <td>Accounting Batch Journal</td>
+              <td>Oknum internal memanipulasi kode pembulatan margin bagi hasil Rp 50 s.d Rp 150 per transaksi ke rekening penampung (Total Rp 15.750.000).</td>
+              <td><span style="color:var(--ok);font-weight:700">Continuous Automated Audit Trail</span> mendeteksi selisih total batch debet-kredit.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Tugas 3.1 — Analisis Kerentanan SQL Injection &amp; Salami Technique</label>
+        <textarea class="form-textarea" id="ans_3_1" placeholder="1) Mengapa teknik Salami Technique sangat sulit dideteksi oleh audit manual konvensional? 2) Bagaimana cara developer memperbaiki kode SQL injection dengan Prepared Statements / Parameterized Queries?"></textarea>
+      </div>
+
+      <div class="unlock-row">
+        <button class="btn-unlock" id="btn2" onclick="unlockNext(2)">Verifikasi &amp; Lanjut ke Langkah 4</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LANGKAH 4: DESAIN DEFENSE IN DEPTH -->
+  <div class="step-card locked" id="card3">
+    <div class="step-hd">
+      <div class="step-num" id="sn3">4</div>
+      <div class="step-title">Desain Arsitektur Pertahanan Berlapis (Defense-in-Depth Framework)</div>
+      <div class="step-est">⏱ 15 menit</div>
+    </div>
+    <div class="step-body">
+      <p>Rancang arsitektur keamanan berlapis ganda (<em>Defense-in-Depth</em>) untuk melindungi Sistem Informasi Akuntansi Bank Digital Syariah dari perimeter luar hingga inti data:</p>
+
+      <div class="table-wrap">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Lapisan Pertahanan</th>
+              <th>Fokus Proteksi Aset</th>
+              <th>Spesifikasi Teknologi Kontrol SIA yang Wajib Diterapkan</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1. Perimeter Layer</td>
+              <td>Gerbang Lalu Lintas Internet</td>
+              <td>Next-Generation Firewall (NGFW), Anti-DDoS Scrubbing Center, Web Application Firewall (WAF).</td>
+            </tr>
+            <tr>
+              <td>2. Network Layer</td>
+              <td>Segmentasi Jaringan Internal</td>
+              <td>VLAN Segmentation (Isolasi server core banking dari LAN kantor cabang), VPN dengan otentikasi sertifikat SSL.</td>
+            </tr>
+            <tr>
+              <td>3. Endpoint Layer</td>
+              <td>Perangkat Kerja Karyawan</td>
+              <td>EDR (Endpoint Detection &amp; Response), proteksi port USB storage, automated OS patch management.</td>
+            </tr>
+            <tr>
+              <td>4. Application Layer</td>
+              <td>Aplikasi Software SIA</td>
+              <td>Input Validation &amp; Sanitization, Secure Coding Lifecycle (DevSecOps), Multi-Factor Authentication (MFA).</td>
+            </tr>
+            <tr>
+              <td>5. Data Layer</td>
+              <td>Database &amp; Backup</td>
+              <td>Enkripsi Database (AES-256), Immutable WORM Backup Snapshot, Data Loss Prevention (DLP).</td>
+            </tr>
+            <tr>
+              <td>6. Human Layer</td>
+              <td>Kesadaran Pegawai (<em>Human Firewall</em>)</td>
+              <td>Simulasi phishing bulanan, pelatihan verifikasi Tabayyun email, larangan peminjaman password.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Tugas 4.1 — Analisis Keterkaitan Antar Lapisan Defense-in-Depth</label>
+        <textarea class="form-textarea" id="ans_4_1" placeholder="Uraikan skenario: Jika seorang pegawai tanpa sengaja mengklik link phishing (Lapisan 6 gagal), jelaskan bagaimana Lapisan 3 (EDR) dan Lapisan 2 (Network Segmentation) mencegah ransomware menyebar ke server database utama?"></textarea>
+      </div>
+
+      <div class="unlock-row">
+        <button class="btn-unlock" id="btn3" onclick="unlockNext(3)">Verifikasi &amp; Lanjut ke Langkah 5</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LANGKAH 5: PROTOKOL CSIRT SYARIAH -->
+  <div class="step-card locked" id="card4">
+    <div class="step-hd">
+      <div class="step-num" id="sn4">5</div>
+      <div class="step-title">Protokol Tanggap Insiden Syariah: SOP CSIRT &amp; Prinsip Tabayyun</div>
+      <div class="step-est">⏱ 10 menit</div>
+    </div>
+    <div class="step-body">
+      <p>Ketika terjadi insiden keamanan siber, Tim Tanggap Insiden Keamanan Komputer (<em>Computer Security Incident Response Team / CSIRT</em>) harus bertindak berdasarkan standar <strong>NIST SP 800-61</strong> yang diselaraskan dengan etika syariah:</p>
+
+      <div class="table-wrap">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Fase Respons Insiden</th>
+              <th>Aktivitas Operasional CSIRT</th>
+              <th>Integrasi Dimensi Nilai Syariah</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1. Preparation (Kesiapsiagaan)</td>
+              <td>Penyusunan playbook insiden, simulasi kebocoran data, dan pengujian disaster recovery berkala.</td>
+              <td><strong>Prinsip Ihtiyath:</strong> Kewaspadaan proaktif sebelum bencana terjadi.</td>
+            </tr>
+            <tr>
+              <td>2. Detection &amp; Analysis</td>
+              <td>Verifikasi log SIEM, isolasi IP mencurigakan, dan analisis forensik digital.</td>
+              <td><strong>Prinsip Tabayyun (QS. Al-Hujurat: 6):</strong> Meneliti kebenaran bukti tanpa berasumsi gegabah.</td>
+            </tr>
+            <tr>
+              <td>3. Containment &amp; Eradication</td>
+              <td>Pemutusan host terinfeksi dari jaringan LAN, penghapusan malware, dan pencabutan kredensial bocor.</td>
+              <td><strong>Saddu adz-Dzari'ah:</strong> Menutup pintu penyebaran mafsadat secara cepat.</td>
+            </tr>
+            <tr>
+              <td>4. Post-Incident Recovery &amp; Lessons</td>
+              <td>Pemulihan data dari snapshot backup, pelaporan wajib ke OJK/BSSN dalam 1x24 jam, dan evaluasi.</td>
+              <td><strong>Prinsip Muhasabah &amp; As-Sidq:</strong> Transparansi pelaporan insiden kepada regulator dan nasabah.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Tugas 5.1 — Rancang SOP Verifikasi Tabayyun untuk Pembayaran Nilai Material</label>
+        <textarea class="form-textarea" id="ans_5_1" placeholder="Rumuskan 3 langkah SOP wajib bagi staf bagian pembayaran (Treasury) sebelum mengeksekusi transfer dana di atas Rp 100 Juta yang diterima melalui email/surat digital guna mencegah Business Email Compromise (BEC)."></textarea>
+      </div>
+
+      <div class="unlock-row">
+        <button class="btn-unlock" id="btn4" onclick="unlockNext(4)">Verifikasi &amp; Lanjut ke Langkah 6</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LANGKAH 6: LAPORAN & TANTANGAN MANDIRI -->
+  <div class="step-card locked" id="card5">
+    <div class="step-hd">
+      <div class="step-num" id="sn5">6</div>
+      <div class="step-title">3 Tantangan Analisis Mandiri &amp; Format Laporan PDF</div>
+      <div class="step-est">⏱ 10 menit</div>
+    </div>
+    <div class="step-body">
+      <div class="challenge-box">
+        <h4>🎯 3 Tantangan Analisis Mandiri (Wajib Dimuat dalam Laporan Akhir)</h4>
+        <div class="challenge-q">
+          <strong>Tantangan 1 — Kuantifikasi Kerugian &amp; Efektivitas Kontrol:</strong> Dari 25 insiden pada dataset, hitung: 1) Total kerugian finansial yang berhasil dicegah (<em>Financial Loss Avoided</em>), 2) Total kerugian yang terealisasi (<em>Actual Realized Loss</em>), dan 3) Evaluasi tingkat keberhasilan sistem deteksi (WAF, EDR, SIEM).
+        </div>
+        <div class="challenge-q">
+          <strong>Tantangan 2 — Blueprint Arsitektur Zero Trust:</strong> Rancang diagram alur prinsip <em>Zero Trust Architecture</em> (<em>Never Trust, Always Verify</em>) pada akses database akuntansi perbankan syariah dari luar kantor.
+        </div>
+        <div class="challenge-q">
+          <strong>Tantangan 3 — Tanggung Jawab Hukum &amp; Syariah Kebocoran Data (UU PDP):</strong> Berdasarkan UU Perlindungan Data Pribadi (UU No. 27/2022) dan Fatwa MUI, jelaskan sanksi hukum bagi pengelola data yang lalai dan kewajiban ganti rugi terhadap nasabah yang dirugikan (<em>Dhaman</em>).
+        </div>
+      </div>
+
+      <h3 class="sh">Ketentuan Format Laporan Praktikum PDF</h3>
+      <ul class="lst">
+        <li><strong>Format Dokumen:</strong> PDF terstruktur rapi (Maksimal 4-5 halaman, font serif/sans 11pt, spasi 1.15).</li>
+        <li><strong>Struktur Laporan:</strong> Halaman Judul $\rightarrow$ Ringkasan Eksekutif Ancaman Siber $\rightarrow$ Hasil Investigasi Kasus Ransomware &amp; SQLi $\rightarrow$ Matriks Defense-in-Depth $\rightarrow$ Jawaban 3 Tantangan Mandiri $\rightarrow$ Lampiran Log Forensik.</li>
+        <li><strong>Format Penamaan File:</strong> <code>AIS_Lab05_NIM_NamaLengkap.pdf</code></li>
+        <li><strong>Tenggat Pengumpulan:</strong> 7 hari setelah sesi praktikum berakhir melalui portal e-learning Tazkia.</li>
+      </ul>
+
+      <div class="unlock-row">
+        <button class="btn-unlock" id="btn5" onclick="finishLab()">Selesaikan Praktikum &amp; Cetak Ringkasan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPLETION BOX -->
+  <div class="completion" id="compBox">
+    <h2>🎉 Luar Biasa! Anda Telah Menyelesaikan Lembar Praktikum 06</h2>
+    <p>Seluruh analisis investigasi siber, evaluasi Cyber Kill Chain, dan rancangan arsitektur Defense-in-Depth Anda telah tersimpan rapi di browser ini. Segera susun laporan akhir PDF Anda.</p>
+    <button class="next-btn" onclick="window.print()">🖨 Cetak / Simpan Halaman Jawaban ke PDF</button>
+    <a class="next-btn" href="Pertemuan-06.html">← Kembali ke Materi Teori Pertemuan 06</a>
+  </div>
+
+</div>
+
+<script>
+/* ═══ APPLICATION STATE & LOCAL STORAGE ═══ */
+const STORAGE_KEY = 'tazkia-ais-p06-lab-v1';
+const TOTAL_STEPS = 6;
+
+let labState = {
+  unlocked: [0],
+  inputs: {
+    ans_1_1: '',
+    ans_2_1: '',
+    ans_3_1: '',
+    ans_4_1: '',
+    ans_5_1: ''
+  },
+  completed: false
+};
+
+function saveLab(){
+  try{
+    Object.keys(labState.inputs).forEach(id => {
+      const el = document.getElementById(id);
+      if(el) labState.inputs[id] = el.value;
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(labState));
+  }catch(e){}
+}
+
+function loadLab(){
+  try{
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if(saved) {
+      labState = Object.assign(labState, JSON.parse(saved));
+      Object.keys(labState.inputs).forEach(id => {
+        const el = document.getElementById(id);
+        if(el && labState.inputs[id]) el.value = labState.inputs[id];
+      });
+    }
+  }catch(e){}
+}
+
+function updateTracker(){
+  for(let i=0; i<TOTAL_STEPS; i++){
+    const circle = document.getElementById('tc' + i);
+    const label = document.getElementById('tl' + i);
+    const line = document.getElementById('tline' + i);
+    const card = document.getElementById('card' + i);
+    const btn = document.getElementById('btn' + i);
+    const num = document.getElementById('sn' + i);
+
+    const isUnlocked = labState.unlocked.includes(i);
+    const isDone = (i < labState.unlocked.length - 1) || labState.completed;
+
+    if(card){
+      if(isUnlocked){
+        card.className = 'step-card unlocked';
+        if(isDone) card.classList.add('completed');
+      } else {
+        card.className = 'step-card locked';
+      }
+    }
+
+    if(circle && label){
+      if(isDone){
+        circle.className = 'tr-circle done';
+        circle.textContent = '✓';
+        label.className = 'tr-label done';
+      } else if(isUnlocked){
+        circle.className = 'tr-circle active';
+        circle.textContent = i + 1;
+        label.className = 'tr-label active';
+      } else {
+        circle.className = 'tr-circle';
+        circle.textContent = i + 1;
+        label.className = 'tr-label';
+      }
+    }
+
+    if(line){
+      line.className = isDone ? 'tr-line done' : 'tr-line';
+    }
+
+    if(btn && isDone){
+      btn.className = 'btn-unlock done-state';
+      btn.textContent = '✓ Selesai Diverifikasi';
+    }
+    if(num && isDone){
+      num.className = 'step-num done';
+      num.textContent = '✓';
+    }
+  }
+
+  if(labState.completed){
+    document.getElementById('compBox').classList.add('show');
+  }
+}
+
+function unlockNext(stepIdx){
+  saveLab();
+  const nextIdx = stepIdx + 1;
+  if(nextIdx < TOTAL_STEPS && !labState.unlocked.includes(nextIdx)){
+    labState.unlocked.push(nextIdx);
+  }
+  saveLab();
+  updateTracker();
+
+  const nextCard = document.getElementById('card' + nextIdx);
+  if(nextCard){
+    nextCard.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+}
+
+function jumpStep(stepIdx){
+  if(labState.unlocked.includes(stepIdx)){
+    const card = document.getElementById('card' + stepIdx);
+    if(card) card.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+}
+
+function finishLab(){
+  saveLab();
+  labState.completed = true;
+  saveLab();
+  updateTracker();
+  const comp = document.getElementById('compBox');
+  comp.classList.add('show');
+  comp.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function copyCode(btn){
+  const codeBox = btn.closest('.code-box');
+  const text = codeBox.innerText.replace(codeBox.querySelector('.code-hd').innerText, '').trim();
+  navigator.clipboard.writeText(text).then(()=>{
+    const old = btn.textContent;
+    btn.textContent = '✓ Tersalin!';
+    setTimeout(()=>btn.textContent = old, 1800);
+  });
+}
+
+// Auto-save on input change
+document.addEventListener('input', (e)=>{
+  if(e.target.classList.contains('form-textarea')){
+    saveLab();
+  }
+});
+
+loadLab();
+updateTracker();
+</script>
+</body>
+</html>

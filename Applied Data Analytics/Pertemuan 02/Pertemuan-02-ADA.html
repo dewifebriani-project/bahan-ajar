@@ -1,0 +1,974 @@
+<title>ADA P02 — pandas Essentials: Filtering, Groupby, Merge</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── ADA P02 · TEAL DATA SCIENCE ── */
+:root{
+  --meet-from:#041820;--meet-mid:#082840;--meet-to:#104060;
+  --meet-acc:#20C8D0;--meet-acc2:#30D8E0;
+  --bg:#EDF1F6;--sf:#fff;--sf2:#E8F6F8;--sf3:#F4FAFB;
+  --bd:#C4CDD8;--bs:#DDE3EC;
+  --tx:#0C1824;--txm:#475569;--txl:#8A9AB0;
+  --pri:#082840;--pril:#D8EEF6;--prx:#EAF6F8;
+  --acc:#20C8D0;--accl:#D0F4F6;
+  --sya:#1F9060;--syal:#D0EEE2;--syab:#40B080;
+  --p0:#1B7898;--p0l:#D8EEF6;
+  --p1:#D46020;--p1l:#FCEBD8;
+  --p2:#1F9060;--p2l:#D0EEE2;
+  --p3:#7040B0;--p3l:#EEE0FA;
+  --p4:#2A50B0;--p4l:#D8E4F8;
+  --r:8px;--rs:5px;
+  --shadow:0 4px 20px rgba(8,40,64,.1);--shadow-sm:0 2px 8px rgba(8,40,64,.06);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#030E18;--sf:#071828;--sf2:#071C28;--sf3:#041220;
+  --bd:#0C2840;--bs:#081830;
+  --tx:#C8E8F8;--txm:#6090B0;--txl:#2A5070;
+  --pri:#20C8D0;--pril:#051830;--prx:#040E18;
+  --acc:#20C8D0;--accl:#041820;
+  --sya:#40C890;--syal:#031410;
+  --p0l:#0A2030;--p1l:#180A00;--p2l:#041410;--p3l:#0E0820;--p4l:#060C20;
+}}
+:root[data-theme=dark]{
+  --bg:#030E18;--sf:#071828;--sf2:#071C28;--sf3:#041220;
+  --bd:#0C2840;--bs:#081830;
+  --tx:#C8E8F8;--txm:#6090B0;--txl:#2A5070;
+  --pri:#20C8D0;--pril:#051830;--prx:#040E18;
+  --acc:#20C8D0;--accl:#041820;
+  --sya:#40C890;--syal:#031410;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.65}
+
+.hd{background:linear-gradient(160deg,var(--meet-from) 0%,var(--meet-mid) 55%,var(--meet-to) 100%);color:#fff;position:relative;overflow:hidden}
+.hd-ornament{position:absolute;inset:0;pointer-events:none;opacity:.12}
+.hd-inner{max-width:860px;margin:0 auto;padding:38px 28px 12px;position:relative;z-index:1}
+.hd-eyebrow{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.hd-line{width:28px;height:1px;background:var(--meet-acc)}
+.hd-eye{font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--meet-acc)}
+.hd-kode{font-size:12px;background:rgba(32,200,208,.15);border:1px solid rgba(32,200,208,.3);border-radius:12px;padding:2px 12px;color:var(--meet-acc2);margin-left:auto}
+.hd-title{font-family:'Amiri',serif;font-size:34px;font-weight:700;line-height:1.15;margin-bottom:6px}
+.hd-sub{font-size:14.5px;color:rgba(255,255,255,.55);margin-bottom:18px}
+.hd-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.hpill{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:3px 12px;font-size:12px;color:rgba(255,255,255,.7)}
+.hpill strong{color:#fff}
+.hd-arch{line-height:0}
+.hd-arch svg{display:block;width:100%;height:28px}
+
+.prog-wrap{background:var(--sf);border-bottom:1px solid var(--bs);position:sticky;top:0;z-index:40;box-shadow:var(--shadow-sm)}
+.prog-inner{max-width:860px;margin:0 auto;padding:10px 24px;display:flex;align-items:center;gap:12px}
+.prog-label{font-size:12px;font-weight:700;color:var(--txl);white-space:nowrap;flex-shrink:0}
+.prog-steps{display:flex;gap:5px;flex:1}
+.prog-dot{width:28px;height:6px;border-radius:3px;background:var(--bs);transition:background .3s}
+.prog-dot.done{background:var(--meet-acc)}
+.prog-dot.active{background:rgba(32,200,208,.4)}
+.prog-pct{font-size:12px;font-weight:700;color:var(--acc);white-space:nowrap}
+
+.main{max-width:860px;margin:0 auto;padding:28px 24px 80px}
+
+.sec-card{background:var(--sf);border:1px solid var(--bs);border-radius:var(--r);margin-bottom:16px;box-shadow:var(--shadow-sm);overflow:hidden;transition:opacity .3s,filter .3s}
+.sec-card.locked{opacity:.45;filter:grayscale(.4);pointer-events:none}
+.sec-card.unlocked{opacity:1;filter:none;pointer-events:auto}
+.sec-hd{display:flex;align-items:center;gap:12px;padding:15px 22px;background:var(--sf3);border-bottom:1px solid var(--bs)}
+.sec-num{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc));color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.sec-num.done{background:var(--sya)}
+.sec-title{font-family:'Amiri',serif;font-size:19px;font-weight:700;color:var(--pri)}
+.sec-cpmk{font-size:11px;color:var(--acc);font-weight:700;margin-left:auto;background:var(--accl);padding:2px 9px;border-radius:10px;white-space:nowrap}
+.sec-body{padding:22px 26px}
+
+h3.sh{font-family:'Amiri',serif;font-size:20px;font-weight:700;color:var(--pri);margin:22px 0 10px;display:flex;align-items:center;gap:9px}
+h3.sh::before{content:'';width:4px;height:18px;background:var(--meet-acc);border-radius:2px;flex-shrink:0}
+h4.shs{font-size:14.5px;font-weight:700;color:var(--tx);margin:16px 0 8px}
+p{color:var(--txm);margin-bottom:10px;font-size:14.5px}
+ul.lst{list-style:none;padding:0;margin-bottom:12px}
+ul.lst li{padding:6px 0 6px 22px;position:relative;color:var(--txm);font-size:14px;border-bottom:1px solid var(--bs)}
+ul.lst li:last-child{border-bottom:none}
+ul.lst li::before{content:'▸';position:absolute;left:0;color:var(--acc);font-size:11px;top:8px}
+ul.lst li strong{color:var(--tx)}
+.callout{border-radius:var(--rs);padding:12px 16px;margin:12px 0;font-size:13.5px}
+.callout.info{background:var(--prx);border-left:4px solid var(--acc);color:var(--txm)}
+.callout.sya{background:var(--syal);border-left:4px solid var(--sya);color:var(--txm)}
+.callout.warn{background:#FEF3E0;border-left:4px solid #D46020;color:#5A2C04}
+.callout.tip{background:var(--sf3);border-left:4px solid var(--p3);color:var(--txm)}
+
+.cpmk-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:14px}
+.cpmk-table th{background:var(--meet-mid);color:#fff;padding:7px 12px;text-align:left;font-size:11.5px}
+.cpmk-table td{padding:7px 12px;border-bottom:1px solid var(--bs);color:var(--txm)}
+.cpmk-table tr:last-child td{border-bottom:none}
+.cpmk-table tr:nth-child(even) td{background:var(--sf3)}
+.badge{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:9px}
+.badge-c3{background:#E8E0FA;color:#5020A0}
+
+.sec-map{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
+@media(max-width:480px){.sec-map{grid-template-columns:1fr 1fr}}
+.sec-map-item{background:var(--sf3);border:1px solid var(--bs);border-radius:var(--rs);padding:10px 13px;display:flex;align-items:center;gap:9px}
+.sec-map-item .ico{font-size:20px;flex-shrink:0}
+.sec-map-item .lbl{font-size:12.5px;font-weight:600;color:var(--tx);line-height:1.3}
+.sec-map-item .sub{font-size:11px;color:var(--txl);margin-top:2px}
+
+/* CODE BLOCK */
+.code-wrap{margin:14px 0}
+.code-hd{display:flex;align-items:center;justify-content:space-between;background:#082840;padding:8px 14px;border-radius:var(--rs) var(--rs) 0 0}
+.code-hd span{font-size:11px;font-weight:700;color:#4090C0;letter-spacing:.06em;text-transform:uppercase}
+.code-hd .copy-btn{font-size:11px;background:rgba(32,200,208,.12);border:1px solid rgba(32,200,208,.25);border-radius:8px;padding:2px 9px;color:var(--acc);cursor:pointer;font-family:inherit}
+.code-hd .copy-btn:hover{background:rgba(32,200,208,.22)}
+pre.code{background:#1E2C38;border-radius:0 0 var(--rs) var(--rs);padding:16px 18px;overflow-x:auto;margin:0;font-family:'Source Code Pro','Courier New',monospace;font-size:13.5px;line-height:1.75;color:#C9D8E0}
+.kw{color:#20C8D0}.fn{color:#79D0FF}.st{color:#A5E6FF}.cm{color:#4A7090;font-style:italic}.nm{color:#F8C555}.op{color:#E0A060}.va{color:#D4C0A0}
+
+.out-wrap{background:#F4FAFC;border:1px solid #A0D8E0;border-radius:var(--rs);padding:12px 16px;margin:8px 0;font-size:13px;line-height:1.6;color:#0A2830;font-family:'Source Code Pro',monospace}
+.out-wrap::before{content:'▶ Output:';display:block;font-family:'Source Sans 3',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--acc);margin-bottom:7px}
+
+/* COMPARISON GRID */
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+@media(max-width:500px){.cmp-grid{grid-template-columns:1fr}}
+.cmp-card{border-radius:var(--r);padding:16px;border:1px solid var(--bs)}
+.cmp-card.old{background:#F8F6F0;border-color:#D4B870}
+.cmp-card.new{background:var(--prx);border-color:var(--acc)}
+.cmp-card h4{font-size:14.5px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.cmp-card.old h4{color:#7A5810}
+.cmp-card.new h4{color:var(--pri)}
+.cmp-row{display:flex;align-items:flex-start;gap:7px;margin-bottom:7px;font-size:13px;color:var(--txm)}
+
+/* CONCEPT TABLE */
+.concept-table{width:100%;border-collapse:collapse;font-size:13px;margin:14px 0}
+.concept-table th{background:var(--meet-mid);color:#fff;padding:8px 14px;text-align:left;font-size:12px}
+.concept-table td{padding:8px 14px;border-bottom:1px solid var(--bs);color:var(--txm);vertical-align:top}
+.concept-table td:first-child{font-family:'Source Code Pro',monospace;font-size:12.5px;color:var(--p0);font-weight:700;white-space:nowrap}
+.concept-table tr:nth-child(even) td{background:var(--sf3)}
+.concept-table tr:last-child td{border-bottom:none}
+
+/* FLOW DIAGRAM */
+.flow-wrap{display:flex;gap:6px;align-items:center;margin:14px 0;flex-wrap:wrap}
+.flow-box{background:var(--sf3);border:1.5px solid var(--bs);border-radius:var(--rs);padding:10px 14px;font-size:13px;text-align:center;min-width:100px}
+.flow-box strong{display:block;font-size:12px;color:var(--tx);margin-bottom:3px}
+.flow-box span{font-size:11px;color:var(--txl)}
+.flow-box.hl{border-color:var(--acc);background:var(--accl)}
+.flow-box.hl strong{color:var(--pri)}
+.flow-arr{font-size:18px;color:var(--txl);flex-shrink:0}
+
+/* NILAI SYARIAH */
+.nilai-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+@media(max-width:500px){.nilai-grid{grid-template-columns:1fr}}
+.nilai-card{background:var(--sf3);border:1px solid var(--bs);border-radius:var(--r);padding:16px;border-top:3px solid var(--sya)}
+.nilai-name{font-family:'Amiri',serif;font-size:18px;font-weight:700;color:var(--sya);margin-bottom:4px}
+.nilai-ar{font-family:'Amiri',serif;font-size:22px;color:var(--tx);text-align:right;direction:rtl;margin:10px 0;line-height:1.8}
+.nilai-tr{font-size:13px;color:var(--txm);font-style:italic;margin-bottom:8px}
+.nilai-ref{font-size:11.5px;color:var(--syab);font-weight:600}
+.nilai-app{font-size:13px;color:var(--txm);margin-top:8px;border-top:1px solid var(--bs);padding-top:8px}
+
+/* QUIZ */
+.quiz-head{background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;padding:16px 22px;border-radius:var(--r) var(--r) 0 0;display:flex;align-items:center;gap:10px}
+.quiz-head h3{font-family:'Amiri',serif;font-size:18px;font-weight:700}
+.quiz-head .q-info{font-size:12.5px;color:rgba(255,255,255,.6);margin-left:auto}
+.quiz-body{background:var(--sf);border:1px solid var(--bs);border-radius:0 0 var(--r) var(--r);padding:22px}
+.q-block{margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--bs)}
+.q-block:last-of-type{border-bottom:none}
+.q-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--acc);margin-bottom:6px}
+.q-text{font-size:14.5px;font-weight:600;color:var(--tx);margin-bottom:12px;line-height:1.5}
+.q-code{font-family:'Source Code Pro',monospace;font-size:12.5px;background:#1E2C38;color:#A5E6FF;border-radius:var(--rs);padding:8px 14px;margin:8px 0;display:block;overflow-x:auto}
+.q-opts{display:flex;flex-direction:column;gap:7px}
+.q-opt{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border:1.5px solid var(--bs);border-radius:var(--rs);cursor:pointer;transition:all .18s;font-size:13.5px;color:var(--txm);background:var(--sf3)}
+.q-opt:hover{border-color:var(--acc);background:var(--accl)}
+.q-opt.selected{border-color:var(--acc);background:var(--accl);color:var(--tx)}
+.q-opt.correct{border-color:var(--sya)!important;background:var(--syal)!important;color:var(--sya)!important}
+.q-opt.wrong{border-color:#D44040!important;background:#FEE0E0!important;color:#A01010!important}
+.q-opt-letter{width:22px;height:22px;border-radius:50%;background:var(--bs);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--txl);flex-shrink:0;margin-top:1px}
+.q-opt.selected .q-opt-letter{background:var(--acc);color:#fff}
+.q-feedback{font-size:13px;color:var(--txm);background:var(--prx);border-radius:var(--rs);padding:10px 14px;margin-top:10px;display:none;border-left:3px solid var(--acc)}
+.q-feedback.show{display:block}
+.match-wrap{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:500px){.match-wrap{grid-template-columns:1fr}}
+.match-col-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--txl);margin-bottom:7px}
+.match-items{display:flex;flex-direction:column;gap:7px}
+.match-term,.match-def{padding:10px 14px;border:1.5px solid var(--bs);border-radius:var(--rs);cursor:pointer;font-size:13px;color:var(--txm);background:var(--sf3);transition:all .18s;line-height:1.45;user-select:none}
+.match-term:hover,.match-def:hover{border-color:var(--acc);background:var(--accl)}
+.match-term.selected,.match-def.selected{border-color:var(--acc)!important;box-shadow:0 0 0 2px var(--accl)}
+.match-term strong{display:block;font-size:12px;color:var(--tx);margin-bottom:2px}
+.match-hint{font-size:12.5px;color:var(--txl);margin-bottom:10px}
+.quiz-submit-row{display:flex;align-items:center;gap:12px;margin-top:20px}
+.btn-submit{background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc));color:#fff;border:none;border-radius:var(--r);padding:12px 28px;font-family:'Source Sans 3',sans-serif;font-size:14.5px;font-weight:700;cursor:pointer;transition:opacity .2s}
+.btn-submit:hover{opacity:.88}
+.quiz-score{font-size:14px;color:var(--txm);display:none}
+.quiz-result{display:none;margin-top:16px;border-radius:var(--r);padding:16px 20px;text-align:center}
+.quiz-result.pass{background:var(--syal);border:1.5px solid var(--sya)}
+.quiz-result.fail{background:#FEE8D8;border:1.5px solid #D46020}
+.quiz-result .big{font-family:'Amiri',serif;font-size:28px;font-weight:700}
+.quiz-result.pass .big{color:var(--sya)}
+.quiz-result.fail .big{color:#A04010}
+.quiz-result p{font-size:13.5px;color:var(--txm);margin-top:6px}
+
+.paham-row{display:flex;justify-content:flex-end;margin-top:22px}
+.btn-paham{background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc));color:#fff;border:none;border-radius:24px;padding:11px 28px;font-family:'Source Sans 3',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;transition:opacity .2s}
+.btn-paham:hover{opacity:.88}
+.btn-paham.done{background:var(--sya);cursor:default}
+
+.completion{display:none;background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;border-radius:var(--r);padding:30px;text-align:center;margin-top:20px}
+.completion.show{display:block}
+.completion h2{font-family:'Amiri',serif;font-size:26px;font-weight:700;margin-bottom:8px}
+.completion p{color:rgba(255,255,255,.7);font-size:14px}
+.completion .lab-link{display:inline-block;margin-top:16px;background:var(--meet-acc);color:var(--meet-from);border-radius:20px;padding:10px 24px;font-weight:700;font-size:14px;text-decoration:none}
+
+@media(max-width:600px){
+  .hd-inner{padding:28px 18px 10px}
+  .main{padding:18px 14px 60px}
+  .sec-body{padding:16px 16px}
+  .hd-title{font-size:26px}
+  .cmp-grid,.nilai-grid,.match-wrap{grid-template-columns:1fr}
+}
+</style>
+
+<!-- HEADER -->
+<div class="hd">
+  <svg class="hd-ornament" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs><pattern id="hex" width="56" height="48" patternUnits="userSpaceOnUse">
+      <path d="M28,4 L52,18 L52,46 L28,60 L4,46 L4,18 Z" fill="none" stroke="#20C8D0" stroke-width="1"/>
+      <circle cx="28" cy="4" r="2.5" fill="#20C8D0" opacity=".7"/>
+      <circle cx="52" cy="18" r="2" fill="#20C8D0" opacity=".4"/>
+      <circle cx="28" cy="32" r="1.5" fill="#20C8D0" opacity=".5"/>
+    </pattern></defs>
+    <rect width="100%" height="100%" fill="url(#hex)"/>
+  </svg>
+  <div class="hd-inner">
+    <div class="hd-eyebrow">
+      <div class="hd-line"></div>
+      <span class="hd-eye">Applied Data Analytics · Universitas Tazkia</span>
+      <span class="hd-kode">DTA-402 · P02</span>
+    </div>
+    <h1 class="hd-title">pandas Essentials —<br>Filtering, Groupby, Merge</h1>
+    <p class="hd-sub">Indexing loc/iloc · Boolean Filtering · .query() · groupby + .agg() · merge/join · Iqra' (Membaca Data)</p>
+    <div class="hd-pills">
+      <span class="hpill"><strong>CPMK-2</strong></span>
+      <span class="hpill">Bloom C3 — Menerapkan</span>
+      <span class="hpill">LAB</span>
+      <span class="hpill">Ganjil 2026/2027</span>
+    </div>
+  </div>
+  <div class="hd-arch"><svg viewBox="0 0 1200 28" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,28 L0,16 Q20,4 40,16 Q60,28 80,16 Q100,4 120,16 Q140,28 160,16 Q180,4 200,16 Q220,28 240,16 Q260,4 280,16 Q300,28 320,16 Q340,4 360,16 Q380,28 400,16 Q420,4 440,16 Q460,28 480,16 Q500,4 520,16 Q540,28 560,16 Q580,4 600,16 Q620,28 640,16 Q660,4 680,16 Q700,28 720,16 Q740,4 760,16 Q780,28 800,16 Q820,4 840,16 Q860,28 880,16 Q900,4 920,16 Q940,28 960,16 Q980,4 1000,16 Q1020,28 1040,16 Q1060,4 1080,16 Q1100,28 1120,16 Q1140,4 1160,16 Q1180,28 1200,16 L1200,28 Z" fill="var(--bg)"/>
+  </svg></div>
+</div>
+
+<!-- PROGRESS -->
+<div class="prog-wrap">
+  <div class="prog-inner">
+    <span class="prog-label">Progress P02</span>
+    <div class="prog-steps" id="progSteps">
+      <div class="prog-dot active" id="pd0"></div>
+      <div class="prog-dot" id="pd1"></div>
+      <div class="prog-dot" id="pd2"></div>
+      <div class="prog-dot" id="pd3"></div>
+      <div class="prog-dot" id="pd4"></div>
+      <div class="prog-dot" id="pd5"></div>
+      <div class="prog-dot" id="pd6"></div>
+    </div>
+    <span class="prog-pct" id="progPct">0%</span>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ╔══ SEKSI 1: TUJUAN PEMBELAJARAN ══╗ -->
+<div class="sec-card unlocked" id="sec0">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn0">1</div>
+    <div class="sec-title">Tujuan Pembelajaran</div>
+    <span class="sec-cpmk">CPMK-2</span>
+  </div>
+  <div class="sec-body">
+    <h3 class="sh">Setelah pertemuan ini kamu mampu...</h3>
+    <table class="cpmk-table">
+      <thead><tr><th>Sub-CPMK</th><th>Bloom</th><th>Kemampuan</th></tr></thead>
+      <tbody>
+        <tr><td><strong>C3.1</strong></td><td><span class="badge badge-c3">C3</span></td><td>Menerapkan indexing berbasis label (<code>loc</code>) dan posisi (<code>iloc</code>) untuk memilih baris dan kolom pada DataFrame</td></tr>
+        <tr><td><strong>C3.2</strong></td><td><span class="badge badge-c3">C3</span></td><td>Menggunakan boolean filtering dan <code>.query()</code> untuk menyaring data berdasarkan kondisi tunggal maupun majemuk</td></tr>
+        <tr><td><strong>C3.3</strong></td><td><span class="badge badge-c3">C3</span></td><td>Menerapkan <code>groupby</code> dengan fungsi agregasi (<code>.agg()</code>, <code>.transform()</code>) untuk menghasilkan statistik per kelompok</td></tr>
+        <tr><td><strong>C3.4</strong></td><td><span class="badge badge-c3">C3</span></td><td>Menggabungkan dua DataFrame menggunakan <code>merge()</code> dan memilih jenis join yang tepat (inner, left, right, outer)</td></tr>
+        <tr><td><strong>C3.5</strong></td><td><span class="badge badge-c3">C3</span></td><td>Menggunakan <code>apply()</code> dengan lambda untuk transformasi kolom kustom pada dataset bisnis nyata</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="sh">Peta Materi Pertemuan Ini</h3>
+    <div class="sec-map">
+      <div class="sec-map-item"><div class="ico">🔍</div><div><div class="lbl">Recap P01 + Indexing</div><div class="sub">Seksi 2 · loc / iloc</div></div></div>
+      <div class="sec-map-item"><div class="ico">🔎</div><div><div class="lbl">Boolean Filtering</div><div class="sub">Seksi 3 · &amp; | ~ .query()</div></div></div>
+      <div class="sec-map-item"><div class="ico">📊</div><div><div class="lbl">groupby &amp; Aggregasi</div><div class="sub">Seksi 4 · .agg() .transform()</div></div></div>
+      <div class="sec-map-item"><div class="ico">🔗</div><div><div class="lbl">merge / join</div><div class="sub">Seksi 5 · inner left outer</div></div></div>
+      <div class="sec-map-item"><div class="ico">λ</div><div><div class="lbl">apply &amp; lambda</div><div class="sub">Seksi 5 · kolom kustom</div></div></div>
+      <div class="sec-map-item"><div class="ico">☽</div><div><div class="lbl">Nilai Syariah + Kuis</div><div class="sub">Seksi 6–7</div></div></div>
+    </div>
+
+    <div class="callout info">
+      <strong>📦 Dataset yang digunakan:</strong> <code>dataset-bprs-p01.csv</code> dari P01 (20 BPRS di Indonesia). Pastikan file sudah tersedia di Google Colab dari sesi sebelumnya.
+    </div>
+    <div class="paham-row"><button class="btn-paham" id="bp0" onclick="unlock(0)">Saya Paham — Lanjut ▸</button></div>
+  </div>
+</div>
+
+<!-- ╔══ SEKSI 2: RECAP + INDEXING ══╗ -->
+<div class="sec-card locked" id="sec1">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn1">2</div>
+    <div class="sec-title">Recap P01 &amp; Indexing: loc vs iloc</div>
+    <span class="sec-cpmk">C3.1</span>
+  </div>
+  <div class="sec-body">
+    <p>Di P01 kita sudah bisa membaca DataFrame dan melihat strukturnya. Sekarang kita perlu <strong>mengaksesnya dengan presisi</strong> — memilih baris tertentu, kolom tertentu, atau kombinasi keduanya. Inilah tugas <code>loc</code> dan <code>iloc</code>.</p>
+
+    <h3 class="sh">Recap Singkat P01 — Apa yang Sudah Kita Tahu</h3>
+    <div class="code-wrap">
+      <div class="code-hd"><span>Python · pandas recap P01</span><button class="copy-btn" onclick="copyCode(0)">Copy</button></div>
+      <pre class="code"><span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+df = pd.read_csv(<span class="st">'dataset-bprs-p01.csv'</span>)
+df.head()           <span class="cm"># 5 baris pertama</span>
+df.info()           <span class="cm"># tipe data tiap kolom</span>
+df.describe()       <span class="cm"># statistik dasar kolom numerik</span>
+df.shape            <span class="cm"># (20, 12) → 20 baris, 12 kolom</span>
+df.columns.tolist() <span class="cm"># daftar nama kolom</span></pre>
+    </div>
+
+    <h3 class="sh">loc — Label-Based Indexing</h3>
+    <p><code>df.loc[baris, kolom]</code> mengakses data berdasarkan <strong>nama label</strong> (nama index atau nama kolom). Ini adalah cara yang paling mudah dibaca manusia.</p>
+
+    <div class="code-wrap">
+      <div class="code-hd"><span>Python · df.loc[]</span><button class="copy-btn" onclick="copyCode(1)">Copy</button></div>
+      <pre class="code"><span class="cm"># --- Satu baris, satu kolom ---</span>
+df.loc[<span class="nm">0</span>, <span class="st">'nama_bprs'</span>]           <span class="cm"># → 'BPRS Al-Amin'</span>
+
+<span class="cm"># --- Satu baris, beberapa kolom ---</span>
+df.loc[<span class="nm">0</span>, [<span class="st">'nama_bprs'</span>, <span class="st">'kota'</span>, <span class="st">'total_aset_juta'</span>]]
+
+<span class="cm"># --- Range baris (inklusif kedua ujung!) ---</span>
+df.loc[<span class="nm">0</span>:<span class="nm">3</span>, <span class="st">'nama_bprs'</span>]           <span class="cm"># baris 0,1,2,3 → 4 baris</span>
+
+<span class="cm"># --- Semua baris, kolom tertentu ---</span>
+df.loc[:, [<span class="st">'nama_bprs'</span>, <span class="st">'npf_persen'</span>, <span class="st">'roe_persen'</span>]]</pre>
+    </div>
+    <div class="out-wrap">BPRS Al-Amin    → nama_bprs baris 0
+0    BPRS Al-Amin
+1    BPRS Berkah Syariah
+2    BPRS Mandiri Sejahtera
+3    BPRS Amanah Insani</div>
+
+    <div class="callout warn">⚠️ <strong>Gotcha!</strong> Pada <code>.loc[]</code>, range baris bersifat <strong>inklusif</strong> di kedua ujung. Jadi <code>df.loc[0:3]</code> menghasilkan 4 baris (0, 1, 2, 3) — berbeda dari Python slice biasa yang eksklusif di ujung kanan.</div>
+
+    <h3 class="sh">iloc — Position-Based Indexing</h3>
+    <p><code>df.iloc[baris, kolom]</code> mengakses data berdasarkan <strong>nomor posisi integer</strong> (seperti list Python). Range-nya mengikuti aturan Python standar — eksklusif di ujung kanan.</p>
+
+    <div class="code-wrap">
+      <div class="code-hd"><span>Python · df.iloc[]</span><button class="copy-btn" onclick="copyCode(2)">Copy</button></div>
+      <pre class="code"><span class="cm"># --- Baris ke-0, kolom ke-0 ---</span>
+df.iloc[<span class="nm">0</span>, <span class="nm">0</span>]                  <span class="cm"># → 'BPRS Al-Amin'</span>
+
+<span class="cm"># --- Baris 0–2 (eksklusif 3), kolom 0–3 ---</span>
+df.iloc[<span class="nm">0</span>:<span class="nm">3</span>, <span class="nm">0</span>:<span class="nm">4</span>]             <span class="cm"># → 3 baris, 4 kolom</span>
+
+<span class="cm"># --- 5 baris terakhir ---</span>
+df.iloc[<span class="nm">-5</span>:]                    <span class="cm"># Negatif = dari belakang</span>
+
+<span class="cm"># --- Kolom pilihan berdasarkan posisi ---</span>
+df.iloc[:, [<span class="nm">0</span>, <span class="nm">1</span>, <span class="nm">7</span>]]          <span class="cm"># kolom ke-0, 1, 7</span></pre>
+    </div>
+
+    <table class="concept-table">
+      <thead><tr><th>Aspek</th><th>loc</th><th>iloc</th></tr></thead>
+      <tbody>
+        <tr><td>Dasar pengaksesan</td><td>Label / nama</td><td>Posisi integer</td></tr>
+        <tr><td>Range baris</td><td>Inklusif kedua ujung</td><td>Eksklusif ujung kanan</td></tr>
+        <tr><td>Cocok digunakan</td><td>Saat nama index/kolom diketahui</td><td>Saat butuh posisi relatif</td></tr>
+        <tr><td>Contoh kolom</td><td><code>'nama_bprs'</code></td><td><code>0</code></td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">💡 <strong>Rule of thumb:</strong> Gunakan <code>loc</code> untuk kode yang mudah dibaca orang lain (label eksplisit lebih jelas). Gunakan <code>iloc</code> ketika kamu butuh slice posisional atau saat nama kolom berubah-ubah.</div>
+
+    <div class="paham-row"><button class="btn-paham" id="bp1" onclick="unlock(1)">Saya Paham — Lanjut ▸</button></div>
+  </div>
+</div>
+
+<!-- ╔══ SEKSI 3: BOOLEAN FILTERING & QUERY ══╗ -->
+<div class="sec-card locked" id="sec2">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn2">3</div>
+    <div class="sec-title">Boolean Filtering &amp; .query()</div>
+    <span class="sec-cpmk">C3.2</span>
+  </div>
+  <div class="sec-body">
+    <p>Memfilter data adalah operasi paling sering dilakukan dalam analisis. pandas memiliki dua cara: <strong>boolean masking</strong> (sintaks Python murni) dan <strong><code>.query()</code></strong> (mirip SQL WHERE — lebih ringkas untuk kondisi kompleks).</p>
+
+    <h3 class="sh">Boolean Masking — Kondisi Tunggal</h3>
+    <div class="code-wrap">
+      <div class="code-hd"><span>Python · boolean filtering dasar</span><button class="copy-btn" onclick="copyCode(3)">Copy</button></div>
+      <pre class="code"><span class="cm"># Filter: hanya BPRS dengan NPF &lt; 3% (sehat)</span>
+mask_sehat = df[<span class="st">'npf_persen'</span>] &lt; <span class="nm">3.0</span>
+df_sehat = df[mask_sehat]
+<span class="fn">print</span>(df_sehat[[<span class="st">'nama_bprs'</span>, <span class="st">'npf_persen'</span>]])
+
+<span class="cm"># Singkat dalam satu baris:</span>
+df_sehat = df[df[<span class="st">'npf_persen'</span>] &lt; <span class="nm">3.0</span>]</pre>
+    </div>
+    <div class="out-wrap">              nama_bprs  npf_persen
+2   BPRS Mandiri Sejahtera         1.8
+4     BPRS Mitra Mentari           1.5
+10     BPRS Tazkia Utama           1.9
+13  BPRS Nusantara Mandiri         2.0
+...
+(12 BPRS dengan NPF &lt; 3%)</div>
+
+    <h3 class="sh">Boolean Masking — Kondisi Majemuk</h3>
+    <div class="code-wrap">
+      <div class="code-hd"><span>Python · kombinasi kondisi (&amp; | ~)</span><button class="copy-btn" onclick="copyCode(4)">Copy</button></div>
+      <pre class="code"><span class="cm"># AND: NPF rendah DAN ROE tinggi (BPRS ideal)</span>
+df_ideal = df[(df[<span class="st">'npf_persen'</span>] &lt; <span class="nm">2.5</span>) &amp; (df[<span class="st">'roe_persen'</span>] &gt; <span class="nm">12</span>)]
+
+<span class="cm"># OR: BPRS di Jawa Barat ATAU DKI Jakarta</span>
+df_jabodetabek = df[(df[<span class="st">'provinsi'</span>] == <span class="st">'Jawa Barat'</span>) |
+                    (df[<span class="st">'provinsi'</span>] == <span class="st">'DKI Jakarta'</span>)]
+
+<span class="cm"># NOT: bukan dari Jawa Timur</span>
+df_bukan_jatim = df[~(df[<span class="st">'provinsi'</span>] == <span class="st">'Jawa Timur'</span>)]
+
+<span class="cm"># .isin() — lebih ringkas untuk list nilai</span>
+provinsi_target = [<span class="st">'Jawa Barat'</span>, <span class="st">'DKI Jakarta'</span>, <span class="st">'Banten'</span>]
+df_jabar_jkt = df[df[<span class="st">'provinsi'</span>].isin(provinsi_target)]</pre>
+    </div>
+
+    <div class="callout warn">⚠️ <strong>Wajib pakai tanda kurung!</strong> Setiap kondisi dalam <code>&amp;</code> atau <code>|</code> harus dibungkus tanda kurung. <code>df[df['a'] &gt; 1 &amp; df['b'] &lt; 5]</code> akan error — yang benar: <code>df[(df['a'] &gt; 1) &amp; (df['b'] &lt; 5)]</code></div>
+
+    <h3 class="sh">.query() — Sintaks SQL-like yang Lebih Bersih</h3>
+    <p><code>.query()</code> menerima string ekspresi yang dievaluasi sebagai kondisi. Lebih ringkas dan mudah dibaca untuk kondisi kompleks.</p>
+
+    <div class="code-wrap">
+      <div class="code-hd"><span>Python · .query() method</span><button class="copy-btn" onclick="copyCode(5)">Copy</button></div>
+      <pre class="code"><span class="cm"># Setara dengan df[df['npf_persen'] &lt; 3.0]</span>
+df.query(<span class="st">'npf_persen &lt; 3.0'</span>)
+
+<span class="cm"># Kondisi majemuk — jauh lebih bersih</span>
+df.query(<span class="st">'npf_persen &lt; 2.5 and roe_persen &gt; 12'</span>)
+df.query(<span class="st">'provinsi in ["Jawa Barat", "DKI Jakarta"]'</span>)
+
+<span class="cm"># Gunakan @ untuk variabel eksternal</span>
+threshold_npf = <span class="nm">3.0</span>
+df.query(<span class="st">'npf_persen &lt; @threshold_npf'</span>)
+
+<span class="cm"># Chain dengan metode lain</span>
+(df.query(<span class="st">'npf_persen &lt; 3 and total_aset_juta &gt; 50000'</span>)
+   [[<span class="st">'nama_bprs'</span>, <span class="st">'kota'</span>, <span class="st">'npf_persen'</span>, <span class="st">'total_aset_juta'</span>]]
+   .sort_values(<span class="st">'total_aset_juta'</span>, ascending=<span class="kw">False</span>)
+   .reset_index(drop=<span class="kw">True</span>)
+)</pre>
+    </div>
+
+    <div class="cmp-grid">
+      <div class="cmp-card old">
+        <h4>RapidMiner · Filter Examples</h4>
+        <div class="cmp-row">🖱️ Drag operator "Filter Examples" ke workflow</div>
+        <div class="cmp-row">📝 Isi kondisi lewat form GUI: attribute = npf_persen, condition = &lt; 3.0</div>
+        <div class="cmp-row">✅ Klik Run — tersaring otomatis</div>
+        <div class="cmp-row">⚠️ Kondisi kompleks (AND/OR bertingkat) jadi rumit di GUI</div>
+      </div>
+      <div class="cmp-card new">
+        <h4>pandas · Boolean Filter / .query()</h4>
+        <div class="cmp-row">⌨️ 1 baris kode: <code>df[df['npf_persen'] &lt; 3]</code></div>
+        <div class="cmp-row">🔗 Dapat di-chain langsung: <code>.query(...).groupby(...)</code></div>
+        <div class="cmp-row">📄 Eksplisit dan reproducible — siapapun bisa baca kode</div>
+        <div class="cmp-row">✅ Kondisi kompleks tetap singkat dengan <code>.query()</code></div>
+      </div>
+    </div>
+
+    <div class="paham-row"><button class="btn-paham" id="bp2" onclick="unlock(2)">Saya Paham — Lanjut ▸</button></div>
+  </div>
+</div>
+
+<!-- ╔══ SEKSI 4: GROUPBY & AGGREGASI ══╗ -->
+<div class="sec-card locked" id="sec3">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn3">4</div>
+    <div class="sec-title">groupby &amp; Aggregasi — Statistik per Kelompok</div>
+    <span class="sec-cpmk">C3.3</span>
+  </div>
+  <div class="sec-body">
+    <p>Pertanyaan bisnis seperti "Rata-rata NPF per provinsi?" atau "Total aset BPRS yang sudah berdiri &gt;15 tahun?" memerlukan operasi <strong>Split → Apply → Combine</strong>. Di pandas, ini dilakukan dengan <code>groupby()</code>.</p>
+
+    <h3 class="sh">Mekanisme Split–Apply–Combine</h3>
+    <div class="flow-wrap">
+      <div class="flow-box"><strong>DataFrame Asli</strong><span>20 baris BPRS</span></div>
+      <div class="flow-arr">→</div>
+      <div class="flow-box hl"><strong>Split</strong><span>groupby('provinsi')</span></div>
+      <div class="flow-arr">→</div>
+      <div class="flow-box hl"><strong>Apply</strong><span>.mean() / .agg()</span></div>
+      <div class="flow-arr">→</div>
+      <div class="flow-box hl"><strong>Combine</strong><span>Hasil per provinsi</span></div>
+      <div class="flow-arr">→</div>
+      <div class="flow-box"><strong>DataFrame Baru</strong><span>N baris (satu per grup)</span></div>
+    </div>
+
+    <h3 class="sh">groupby Dasar + Aggregasi Tunggal</h3>
+    <div class="code-wrap">
+      <div class="code-hd"><span>Python · groupby + mean, sum, count</span><button class="copy-btn" onclick="copyCode(6)">Copy</button></div>
+      <pre class="code"><span class="cm"># Rata-rata NPF dan ROE per provinsi</span>
+df.groupby(<span class="st">'provinsi'</span>)[[<span class="st">'npf_persen'</span>, <span class="st">'roe_persen'</span>]].mean()
+
+<span class="cm"># Jumlah BPRS per provinsi</span>
+df.groupby(<span class="st">'provinsi'</span>)[<span class="st">'nama_bprs'</span>].count()
+
+<span class="cm"># Total aset per provinsi</span>
+df.groupby(<span class="st">'provinsi'</span>)[<span class="st">'total_aset_juta'</span>].sum().sort_values(ascending=<span class="kw">False</span>)</pre>
+    </div>
+    <div class="out-wrap">provinsi
+Banten                 83000
+DKI Jakarta            62000
+DI Yogyakarta          52000
+Jawa Barat            276000   ← total aset tertinggi (5 BPRS)
+Jawa Timur            119000
+...
+Name: total_aset_juta, dtype: int64</div>
+
+    <h3 class="sh">.agg() — Multiple Aggregasi Sekaligus</h3>
+    <div class="code-wrap">
+      <div class="code-hd"><span>Python · .agg() dictionary</span><button class="copy-btn" onclick="copyCode(7)">Copy</button></div>
+      <pre class="code"><span class="cm"># Berbeda fungsi untuk berbeda kolom</span>
+hasil = df.groupby(<span class="st">'provinsi'</span>).agg(
+    jumlah_bprs   = (<span class="st">'nama_bprs'</span>,      <span class="st">'count'</span>),
+    rata_npf      = (<span class="st">'npf_persen'</span>,     <span class="st">'mean'</span>),
+    rata_roe      = (<span class="st">'roe_persen'</span>,     <span class="st">'mean'</span>),
+    total_aset    = (<span class="st">'total_aset_juta'</span>,<span class="st">'sum'</span>),
+    maks_car      = (<span class="st">'car_persen'</span>,     <span class="st">'max'</span>),
+    min_npf       = (<span class="st">'npf_persen'</span>,     <span class="st">'min'</span>),
+).round(<span class="nm">2</span>)
+
+<span class="fn">print</span>(hasil.reset_index())</pre>
+    </div>
+    <div class="out-wrap">       provinsi  jumlah_bprs  rata_npf  rata_roe  total_aset  maks_car  min_npf
+0        Banten            1      2.20     13.40       83000     19.60     2.20
+1  DKI Jakarta            1      2.10     12.50       62000     18.20     2.10
+2  DI Yogyakarta          1      1.50     14.70       52000     21.30     1.50
+3    Jawa Barat            5      2.78      9.82      276000     21.30     1.90
+4    Jawa Timur            2      2.35      9.80      119000     17.40     1.80
+...</div>
+
+    <h3 class="sh">.transform() — Agregasi tanpa Mengecilkan DataFrame</h3>
+    <p>Perbedaan kunci: <code>.agg()</code> menghasilkan DataFrame <em>lebih kecil</em> (satu baris per grup). <code>.transform()</code> menghasilkan Series dengan <em>panjang sama</em> seperti DataFrame asli — sangat berguna untuk membuat kolom baru.</p>
+
+    <div class="code-wrap">
+      <div class="code-hd"><span>Python · .transform() — membuat kolom baru</span><button class="copy-btn" onclick="copyCode(8)">Copy</button></div>
+      <pre class="code"><span class="cm"># Rata-rata NPF provinsi untuk setiap baris</span>
+df[<span class="st">'rata_npf_provinsi'</span>] = df.groupby(<span class="st">'provinsi'</span>)[<span class="st">'npf_persen'</span>].transform(<span class="st">'mean'</span>)
+
+<span class="cm"># Deviasi NPF dari rata-rata provinsinya</span>
+df[<span class="st">'npf_deviasi'</span>] = df[<span class="st">'npf_persen'</span>] - df[<span class="st">'rata_npf_provinsi'</span>]
+
+<span class="cm"># BPRS yang NPF-nya di bawah rata-rata provinsinya → lebih baik dari peer</span>
+df_outperform = df[df[<span class="st">'npf_deviasi'</span>] &lt; <span class="nm">0</span>][[<span class="st">'nama_bprs'</span>, <span class="st">'provinsi'</span>, <span class="st">'npf_persen'</span>, <span class="st">'npf_deviasi'</span>]]
+<span class="fn">print</span>(df_outperform)</pre>
+    </div>
+    <div class="out-wrap">              nama_bprs       provinsi  npf_persen  npf_deviasi
+2   BPRS Mandiri Sejahtera  Jawa Barat         1.8        -0.98
+10      BPRS Tazkia Utama  Jawa Barat         1.9        -0.88
+3    BPRS Amanah Insani    Jawa Timur         2.9        -0.35
+...
+(BPRS yang NPF-nya lebih baik dari rata-rata provinsinya)</div>
+
+    <div class="callout info">💡 <strong>Insight bisnis:</strong> <code>.transform()</code> memungkinkan analisis komparatif — apakah kinerja suatu BPRS lebih baik atau lebih buruk dari <em>peer</em>-nya di provinsi yang sama? Pertanyaan ini tidak bisa dijawab hanya dengan agregasi biasa.</div>
+
+    <div class="paham-row"><button class="btn-paham" id="bp3" onclick="unlock(3)">Saya Paham — Lanjut ▸</button></div>
+  </div>
+</div>
+
+<!-- ╔══ SEKSI 5: MERGE/JOIN + APPLY ══╗ -->
+<div class="sec-card locked" id="sec4">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn4">5</div>
+    <div class="sec-title">merge / join &amp; apply dengan lambda</div>
+    <span class="sec-cpmk">C3.4 · C3.5</span>
+  </div>
+  <div class="sec-body">
+    <p>Data bisnis nyata jarang berada dalam satu tabel. Kita sering perlu menggabungkan dua DataFrame — misalnya, tabel BPRS dengan tabel benchmark OJK per provinsi. Inilah fungsi <code>merge()</code>.</p>
+
+    <h3 class="sh">pd.merge() — Menggabungkan Dua DataFrame</h3>
+
+    <div class="code-wrap">
+      <div class="code-hd"><span>Python · membuat DataFrame kedua (benchmark OJK)</span><button class="copy-btn" onclick="copyCode(9)">Copy</button></div>
+      <pre class="code"><span class="cm"># DataFrame benchmark OJK per provinsi (buat manual untuk latihan)</span>
+benchmark = pd.DataFrame({
+    <span class="st">'provinsi'</span>: [<span class="st">'DKI Jakarta'</span>, <span class="st">'Jawa Barat'</span>, <span class="st">'Jawa Timur'</span>,
+                 <span class="st">'DI Yogyakarta'</span>, <span class="st">'Jawa Tengah'</span>, <span class="st">'Banten'</span>],
+    <span class="st">'benchmark_npf'</span>: [<span class="nm">3.0</span>, <span class="nm">3.5</span>, <span class="nm">3.2</span>, <span class="nm">2.8</span>, <span class="nm">3.1</span>, <span class="nm">2.9</span>],
+    <span class="st">'benchmark_car'</span>: [<span class="nm">16</span>, <span class="nm">15</span>, <span class="nm">15</span>, <span class="nm">16</span>, <span class="nm">15</span>, <span class="nm">16</span>],
+    <span class="st">'wilayah_ojk'</span>  : [<span class="st">'Kanwil I'</span>, <span class="st">'Kanwil II'</span>, <span class="st">'Kanwil III'</span>,
+                      <span class="st">'Kanwil IV'</span>, <span class="st">'Kanwil IV'</span>, <span class="st">'Kanwil I'</span>]
+})</pre>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-hd"><span>Python · pd.merge() — 4 jenis join</span><button class="copy-btn" onclick="copyCode(10)">Copy</button></div>
+      <pre class="code"><span class="cm"># INNER JOIN — hanya baris yang ada di KEDUA DataFrame</span>
+df_inner = pd.merge(df, benchmark, on=<span class="st">'provinsi'</span>, how=<span class="st">'inner'</span>)
+<span class="fn">print</span>(<span class="st">f"Inner: {len(df_inner)} baris"</span>)  <span class="cm"># hanya provinsi yang ada di benchmark</span>
+
+<span class="cm"># LEFT JOIN — semua baris df, benchmark NaN jika tidak ada pasangan</span>
+df_left = pd.merge(df, benchmark, on=<span class="st">'provinsi'</span>, how=<span class="st">'left'</span>)
+<span class="fn">print</span>(<span class="st">f"Left:  {len(df_left)} baris"</span>)   <span class="cm"># tetap 20 baris</span>
+
+<span class="cm"># Analisis: BPRS yang NPF-nya melebihi benchmark OJK</span>
+df_left[<span class="st">'status_npf'</span>] = df_left.apply(
+    <span class="kw">lambda</span> r: <span class="st">'⚠️ Melebihi Benchmark'</span> <span class="kw">if</span> r[<span class="st">'npf_persen'</span>] &gt; r[<span class="st">'benchmark_npf'</span>]
+              <span class="kw">else</span> <span class="st">'✅ Di Bawah Benchmark'</span>,
+    axis=<span class="nm">1</span>
+)
+<span class="fn">print</span>(df_left[[<span class="st">'nama_bprs'</span>, <span class="st">'npf_persen'</span>, <span class="st">'benchmark_npf'</span>, <span class="st">'status_npf'</span>]])</pre>
+    </div>
+    <div class="out-wrap">Inner: 12 baris  ← hanya provinsi yang ada di tabel benchmark
+Left:  20 baris  ← semua BPRS dipertahankan
+
+              nama_bprs  npf_persen  benchmark_npf             status_npf
+0          BPRS Al-Amin         2.1            3.0   ✅ Di Bawah Benchmark
+5    BPRS Artha Surya          4.1            3.5  ⚠️ Melebihi Benchmark
+14  BPRS Muamalah Sejahtera    4.3            NaN                      NaN
+...</div>
+
+    <table class="concept-table">
+      <thead><tr><th>how=</th><th>Baris yang dipertahankan</th><th>Analogi SQL</th></tr></thead>
+      <tbody>
+        <tr><td>'inner'</td><td>Hanya yang ada di kedua tabel</td><td>INNER JOIN</td></tr>
+        <tr><td>'left'</td><td>Semua baris kiri, match dari kanan (NaN jika tidak ada)</td><td>LEFT JOIN</td></tr>
+        <tr><td>'right'</td><td>Semua baris kanan, match dari kiri</td><td>RIGHT JOIN</td></tr>
+        <tr><td>'outer'</td><td>Semua baris dari kedua tabel</td><td>FULL OUTER JOIN</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="sh">apply() dengan lambda — Kolom Kustom</h3>
+    <p><code>.apply()</code> menjalankan fungsi pada setiap baris (axis=1) atau kolom (axis=0). Dengan <code>lambda</code>, kita bisa membuat logika transformasi singkat dalam satu baris.</p>
+
+    <div class="code-wrap">
+      <div class="code-hd"><span>Python · apply + lambda untuk klasifikasi</span><button class="copy-btn" onclick="copyCode(11)">Copy</button></div>
+      <pre class="code"><span class="cm"># Klasifikasi kesehatan BPRS berdasarkan NPF</span>
+df[<span class="st">'kategori_npf'</span>] = df[<span class="st">'npf_persen'</span>].apply(
+    <span class="kw">lambda</span> x: <span class="st">'Sangat Sehat'</span>  <span class="kw">if</span> x &lt; <span class="nm">2</span>   <span class="kw">else</span>
+              <span class="st">'Sehat'</span>         <span class="kw">if</span> x &lt; <span class="nm">3</span>   <span class="kw">else</span>
+              <span class="st">'Cukup Sehat'</span>   <span class="kw">if</span> x &lt; <span class="nm">4</span>   <span class="kw">else</span>
+              <span class="st">'Perlu Perhatian'</span>
+)
+
+<span class="cm"># Hitung usia BPRS</span>
+df[<span class="st">'usia_tahun'</span>] = <span class="nm">2026</span> - df[<span class="st">'tahun_berdiri'</span>]
+
+<span class="cm"># Kategorikan ukuran BPRS berdasarkan total aset</span>
+df[<span class="st">'skala'</span>] = df[<span class="st">'total_aset_juta'</span>].apply(
+    <span class="kw">lambda</span> x: <span class="st">'Besar'</span>   <span class="kw">if</span> x &gt;= <span class="nm">80000</span>  <span class="kw">else</span>
+              <span class="st">'Menengah'</span> <span class="kw">if</span> x &gt;= <span class="nm">45000</span>  <span class="kw">else</span>
+              <span class="st">'Kecil'</span>
+)
+
+df[[<span class="st">'nama_bprs'</span>, <span class="st">'usia_tahun'</span>, <span class="st">'kategori_npf'</span>, <span class="st">'skala'</span>]].head(<span class="nm">5</span>)</pre>
+    </div>
+    <div class="out-wrap">              nama_bprs  usia_tahun   kategori_npf    skala
+0          BPRS Al-Amin          25         Sehat     Menengah
+1  BPRS Berkah Syariah          21  Cukup Sehat        Kecil
+2  BPRS Mandiri Sejahtera        28  Sangat Sehat        Besar
+3   BPRS Amanah Insani          23  Cukup Sehat     Menengah
+4    BPRS Mitra Mentari          19  Sangat Sehat     Menengah</div>
+
+    <div class="callout info">💡 <strong>np.where() vs apply():</strong> Untuk kondisi sederhana 2 cabang, <code>np.where(kondisi, nilai_true, nilai_false)</code> lebih cepat dari <code>apply()</code>. Gunakan <code>apply(lambda)</code> untuk logika multi-cabang yang lebih kompleks.</div>
+
+    <div class="paham-row"><button class="btn-paham" id="bp4" onclick="unlock(4)">Saya Paham — Lanjut ▸</button></div>
+  </div>
+</div>
+
+<!-- ╔══ SEKSI 6: NILAI SYARIAH ══╗ -->
+<div class="sec-card locked" id="sec5">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn5">6</div>
+    <div class="sec-title">Nilai Syariah — Iqra' dalam Data Analytics</div>
+    <span class="sec-cpmk">Syariah</span>
+  </div>
+  <div class="sec-body">
+    <p>Seluruh operasi pandas di pertemuan ini — filtering, groupby, merge — adalah bentuk konkret dari perintah Allah yang pertama kali turun kepada Nabi Muhammad ﷺ.</p>
+
+    <div class="nilai-grid">
+      <div class="nilai-card">
+        <div class="nilai-name">Iqra' — Membaca &amp; Memahami</div>
+        <div class="nilai-ar">اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ</div>
+        <div class="nilai-tr">"Bacalah dengan (menyebut) nama Tuhanmu yang menciptakan"</div>
+        <div class="nilai-ref">QS. Al-'Alaq: 1</div>
+        <div class="nilai-app">Iqra' bukan hanya membaca teks — ia adalah perintah untuk <strong>memahami realitas</strong>. Ketika kita memfilter data NPF, mengelompokkan per provinsi, dan membandingkan dengan benchmark, kita sedang "membaca" realitas kesehatan perbankan syariah Indonesia secara mendalam.</div>
+      </div>
+      <div class="nilai-card">
+        <div class="nilai-name">Tafakkur — Analisis yang Bermakna</div>
+        <div class="nilai-ar">أَفَلَا يَتَدَبَّرُونَ الْقُرْآنَ</div>
+        <div class="nilai-tr">"Maka apakah mereka tidak mentadabburi Al-Qur'an?"</div>
+        <div class="nilai-ref">QS. Muhammad: 24</div>
+        <div class="nilai-app">Tadabbur (merenung mendalam) adalah apa yang membedakan analisis data <em>mekanis</em> dari analisis data yang <em>bermakna</em>. Menulis <code>groupby('provinsi').mean()</code> mudah — memahami <strong>mengapa</strong> BPRS di Sumatera Utara memiliki NPF tertinggi memerlukan tafakkur.</div>
+      </div>
+    </div>
+
+    <div class="callout sya">
+      <strong>☾ Refleksi Iqra':</strong> Dari dataset BPRS yang kita analisis hari ini — ada BPRS yang berdiri sejak 1998 (BPRS Mandiri Sejahtera) dengan NPF 1.8% dan ROE 15.3%. Ada pula yang baru berdiri 2014 (BPRS Faisal Syariah) dengan NPF 4.8% — tertinggi dalam dataset. Apa yang menyebabkan perbedaan ini? Apakah usia operasional berhubungan dengan kesehatan NPF? Pertanyaan inilah yang mendorong kita untuk terus "membaca" data lebih dalam.
+    </div>
+
+    <div class="paham-row"><button class="btn-paham" id="bp5" onclick="unlock(5)">Saya Paham — Lanjut ke Kuis ▸</button></div>
+  </div>
+</div>
+
+<!-- ╔══ SEKSI 7: KUIS ══╗ -->
+<div class="sec-card locked" id="sec6">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn6">7</div>
+    <div class="sec-title">Uji Pemahaman — Kuis P02</div>
+    <span class="sec-cpmk">C3.1–C3.5</span>
+  </div>
+  <div class="sec-body">
+    <div class="quiz-head">
+      <h3>Kuis Pertemuan 02</h3>
+      <span class="q-info">3 MCQ + 1 Matching · Skor minimal 75%</span>
+    </div>
+    <div class="quiz-body">
+
+      <!-- MCQ 1 -->
+      <div class="q-block">
+        <div class="q-label">Pertanyaan 1 dari 3</div>
+        <div class="q-text">Perhatikan kode berikut:<code class="q-code">df.loc[2:5, 'nama_bprs']</code>Berapa baris yang dikembalikan, dan mengapa?</div>
+        <div class="q-opts" id="mcq0">
+          <div class="q-opt" onclick="selectMCQ(0,0)"><div class="q-opt-letter">A</div>3 baris — karena loc bersifat eksklusif di ujung kanan seperti Python slice biasa</div>
+          <div class="q-opt" onclick="selectMCQ(0,1)"><div class="q-opt-letter">B</div>4 baris — karena loc bersifat inklusif di kedua ujung (baris 2, 3, 4, 5)</div>
+          <div class="q-opt" onclick="selectMCQ(0,2)"><div class="q-opt-letter">C</div>5 baris — karena iloc dan loc menggunakan aturan yang sama</div>
+          <div class="q-opt" onclick="selectMCQ(0,3)"><div class="q-opt-letter">D</div>Error — loc tidak dapat menerima range integer</div>
+        </div>
+        <div class="q-feedback" id="fb0">✅ <strong>Benar! Jawaban B.</strong> <code>df.loc[2:5]</code> mengembalikan 4 baris (index 2, 3, 4, dan 5) karena <code>loc</code> inklusif di kedua ujung. Berbeda dengan <code>df.iloc[2:5]</code> yang hanya mengembalikan 3 baris (posisi 2, 3, 4).</div>
+      </div>
+
+      <!-- MCQ 2 -->
+      <div class="q-block">
+        <div class="q-label">Pertanyaan 2 dari 3</div>
+        <div class="q-text">Bu Nisa ingin menambahkan kolom baru ke DataFrame BPRS yang berisi rata-rata NPF provinsi untuk setiap baris (bukan mengecilkan jumlah baris). Operasi yang tepat adalah:</div>
+        <div class="q-opts" id="mcq1">
+          <div class="q-opt" onclick="selectMCQ(1,0)"><div class="q-opt-letter">A</div><code>df.groupby('provinsi')['npf_persen'].mean()</code></div>
+          <div class="q-opt" onclick="selectMCQ(1,1)"><div class="q-opt-letter">B</div><code>df.groupby('provinsi')['npf_persen'].transform('mean')</code></div>
+          <div class="q-opt" onclick="selectMCQ(1,2)"><div class="q-opt-letter">C</div><code>df.groupby('provinsi').agg({'npf_persen': 'mean'})</code></div>
+          <div class="q-opt" onclick="selectMCQ(1,3)"><div class="q-opt-letter">D</div><code>df.merge(df.groupby('provinsi')['npf_persen'].mean(), on='provinsi')</code></div>
+        </div>
+        <div class="q-feedback" id="fb1">✅ <strong>Benar! Jawaban B.</strong> <code>.transform('mean')</code> mengembalikan Series sepanjang DataFrame asli (20 baris), sehingga bisa langsung dijadikan kolom baru. Opsi A dan C mengecilkan DataFrame menjadi satu baris per provinsi. Opsi D bisa bekerja tapi jauh lebih verbose.</div>
+      </div>
+
+      <!-- MCQ 3 -->
+      <div class="q-block">
+        <div class="q-label">Pertanyaan 3 dari 3</div>
+        <div class="q-text">Pak Rizal ingin menggabungkan tabel BPRS (20 baris) dengan tabel benchmark OJK (6 baris, berisi data untuk 6 provinsi dari 9 provinsi di dataset). Ia ingin <strong>mempertahankan semua 20 BPRS</strong> meski ada BPRS yang provinsinya tidak ada di tabel benchmark. Jenis merge yang tepat adalah:</div>
+        <div class="q-opts" id="mcq2">
+          <div class="q-opt" onclick="selectMCQ(2,0)"><div class="q-opt-letter">A</div><code>pd.merge(df, benchmark, on='provinsi', how='inner')</code></div>
+          <div class="q-opt" onclick="selectMCQ(2,1)"><div class="q-opt-letter">B</div><code>pd.merge(df, benchmark, on='provinsi', how='right')</code></div>
+          <div class="q-opt" onclick="selectMCQ(2,2)"><div class="q-opt-letter">C</div><code>pd.merge(df, benchmark, on='provinsi', how='left')</code></div>
+          <div class="q-opt" onclick="selectMCQ(2,3)"><div class="q-opt-letter">D</div><code>pd.merge(df, benchmark, on='provinsi', how='outer')</code></div>
+        </div>
+        <div class="q-feedback" id="fb2">✅ <strong>Benar! Jawaban C.</strong> <code>how='left'</code> mempertahankan semua baris DataFrame kiri (df = 20 BPRS). Kolom benchmark akan NaN untuk BPRS yang provinsinya tidak ada di tabel benchmark. Inner join (A) akan membuang BPRS dari provinsi yang tidak ada di benchmark.</div>
+      </div>
+
+      <!-- MATCHING -->
+      <div class="q-block">
+        <div class="q-label">Matching — Pasangkan Metode dengan Deskripsinya</div>
+        <div class="match-hint">Klik satu item di kolom kiri, lalu klik pasangannya di kolom kanan. Pasangan yang cocok akan diberi warna yang sama.</div>
+        <div class="match-wrap">
+          <div>
+            <div class="match-col-label">Metode pandas</div>
+            <div class="match-items" id="terms">
+              <div class="match-term" data-idx="0" onclick="selectTerm(0)"><strong>df.loc[:]</strong>Label-based indexing</div>
+              <div class="match-term" data-idx="1" onclick="selectTerm(1)"><strong>df.iloc[:]</strong>Position-based indexing</div>
+              <div class="match-term" data-idx="2" onclick="selectTerm(2)"><strong>.agg()</strong>Aggregasi dengan groupby</div>
+              <div class="match-term" data-idx="3" onclick="selectTerm(3)"><strong>.transform()</strong>Agregasi tanpa mengecilkan</div>
+              <div class="match-term" data-idx="4" onclick="selectTerm(4)"><strong>pd.merge(how='inner')</strong></div>
+            </div>
+          </div>
+          <div>
+            <div class="match-col-label">Deskripsi</div>
+            <div class="match-items" id="defs">
+              <div class="match-def" data-idx="0" onclick="selectDef(0)">Menghasilkan DataFrame baru yang lebih kecil dengan satu baris per grup</div>
+              <div class="match-def" data-idx="1" onclick="selectDef(1)">Mengakses baris dan kolom menggunakan nama label; inklusif di kedua ujung</div>
+              <div class="match-def" data-idx="2" onclick="selectDef(2)">Hanya mempertahankan baris yang memiliki pasangan di kedua DataFrame</div>
+              <div class="match-def" data-idx="3" onclick="selectDef(3)">Menghasilkan Series sepanjang DataFrame asli, cocok untuk membuat kolom baru</div>
+              <div class="match-def" data-idx="4" onclick="selectDef(4)">Mengakses data berdasarkan nomor urut integer; eksklusif di ujung kanan</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quiz-submit-row">
+        <button class="btn-submit" onclick="submitQuiz()">Submit Jawaban</button>
+        <span class="quiz-score" id="quizScore"></span>
+      </div>
+      <div class="quiz-result" id="quizResult">
+        <div class="big" id="quizBig"></div>
+        <p id="quizMsg"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPLETION -->
+<div class="completion" id="completion">
+  <h2>✅ Slide P02 Selesai!</h2>
+  <p>Kamu sudah memahami: loc/iloc, boolean filtering, .query(), groupby + .agg()/.transform(), merge/join, dan apply dengan lambda.</p>
+  <p style="margin-top:8px;font-size:12.5px;color:rgba(255,255,255,.5)">Lanjutkan ke Praktikum P02 untuk menerapkan semua konsep ini langsung ke dataset BPRS di Google Colab.</p>
+  <a class="lab-link" href="Praktikum-02-ADA.html">Buka Praktikum P02 — Lab 1 ▸</a>
+</div>
+
+</div><!-- end .main -->
+
+<script>
+const STORAGE_KEY = 'tazkia-ada-p02-v1';
+const TOTAL_SEC = 7;
+const MCQ_ANSWERS = [1, 1, 2]; // B, B, C
+
+// MATCH: term idx → correct def idx
+// loc→1, iloc→4, agg→0, transform→3, inner→2
+const MATCH_CORRECT = {0:1, 1:4, 2:0, 3:3, 4:2};
+const MATCH_COLORS = ['#20C8D0','#D46020','#1F9060','#7040B0','#C09030'];
+
+let state = {done:[], mcqSel:[null,null,null], matchPairs:{}, matchTerm:null, submitted:false};
+function load(){try{const s=JSON.parse(localStorage.getItem(STORAGE_KEY));if(s)state=s;}catch(e){}}
+function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}}
+
+function unlock(i){
+  if(state.done.includes(i)) return;
+  state.done.push(i);
+  save();
+  const btn=document.getElementById('bp'+i);
+  if(btn){btn.className='btn-paham done';btn.disabled=true;btn.textContent='✓ Selesai';}
+  const sn=document.getElementById('sn'+i);if(sn) sn.className='sec-num done';
+  const next=document.getElementById('sec'+(i+1));
+  if(next) next.className='sec-card unlocked';
+  updateProg();
+  if(next) next.scrollIntoView({behavior:'smooth',block:'start'});
+  if(state.done.length===TOTAL_SEC-1) document.getElementById('completion').classList.add('show');
+}
+
+function updateProg(){
+  const pct=Math.round((state.done.length/(TOTAL_SEC-1))*100);
+  document.getElementById('progPct').textContent=pct+'%';
+  for(let i=0;i<TOTAL_SEC;i++){
+    const d=document.getElementById('pd'+i);if(!d)continue;
+    if(i<state.done.length) d.className='prog-dot done';
+    else if(i===state.done.length) d.className='prog-dot active';
+    else d.className='prog-dot';
+  }
+}
+
+function selectMCQ(q,opt){
+  if(state.submitted) return;
+  state.mcqSel[q]=opt; save();
+  document.querySelectorAll('#mcq'+q+' .q-opt').forEach((el,i)=>{
+    el.className='q-opt'+(i===opt?' selected':'');
+  });
+  document.getElementById('fb'+q).className='q-feedback';
+}
+
+let matchSel={term:null,def:null};
+function selectTerm(i){
+  if(state.submitted) return;
+  matchSel.term=i;
+  document.querySelectorAll('#terms .match-term').forEach((el,j)=>el.className='match-term'+(j===i?' selected':''));
+  tryMatch();
+}
+function selectDef(i){
+  if(state.submitted) return;
+  matchSel.def=i;
+  document.querySelectorAll('#defs .match-def').forEach((el,j)=>el.className='match-def'+(j===i?' selected':''));
+  tryMatch();
+}
+function tryMatch(){
+  if(matchSel.term===null||matchSel.def===null) return;
+  state.matchPairs[matchSel.term]=matchSel.def; save();
+  const color=MATCH_COLORS[matchSel.term];
+  document.querySelectorAll('#terms .match-term')[matchSel.term].style.borderColor=color;
+  document.querySelectorAll('#terms .match-term')[matchSel.term].style.background=color+'22';
+  document.querySelectorAll('#defs .match-def')[matchSel.def].style.borderColor=color;
+  document.querySelectorAll('#defs .match-def')[matchSel.def].style.background=color+'22';
+  matchSel={term:null,def:null};
+  document.querySelectorAll('#terms .match-term, #defs .match-def').forEach(el=>el.classList.remove('selected'));
+}
+
+function submitQuiz(){
+  state.submitted=true; save();
+  let score=0, total=MCQ_ANSWERS.length+Object.keys(MATCH_CORRECT).length;
+  MCQ_ANSWERS.forEach((ans,q)=>{
+    const opts=document.querySelectorAll('#mcq'+q+' .q-opt');
+    const sel=state.mcqSel[q];
+    if(sel===null) return;
+    opts[ans].className='q-opt correct';
+    if(sel!==ans) opts[sel].className='q-opt wrong'; else score++;
+    document.getElementById('fb'+q).className='q-feedback show';
+  });
+  let matchScore=0;
+  Object.keys(MATCH_CORRECT).forEach(t=>{
+    const correct=MATCH_CORRECT[t];
+    const chosen=state.matchPairs[t];
+    if(chosen===correct) matchScore++;
+  });
+  score+=matchScore;
+  const pct=Math.round((score/total)*100);
+  const res=document.getElementById('quizResult');
+  const big=document.getElementById('quizBig');
+  const msg=document.getElementById('quizMsg');
+  document.getElementById('quizScore').style.display='block';
+  document.getElementById('quizScore').textContent=score+'/'+total+' benar';
+  res.style.display='block';
+  if(pct>=75){
+    res.className='quiz-result pass';
+    big.textContent=pct+'% — Luar Biasa! 🎉';
+    msg.textContent='Kamu sudah siap untuk Praktikum P02. Buka Praktikum-02-ADA.html dan terapkan semua konsep ini ke dataset BPRS!';
+    if(!state.done.includes(TOTAL_SEC-1)) unlock(TOTAL_SEC-1);
+  } else {
+    res.className='quiz-result fail';
+    big.textContent=pct+'% — Perlu Ditingkatkan';
+    msg.textContent='Nilai minimal 75%. Review kembali seksi loc/iloc, .transform(), dan jenis-jenis merge. Kamu bisa coba lagi setelah membaca ulang!';
+  }
+}
+
+// Copy code functionality
+const CODE_TEXTS = [
+  `import pandas as pd\ndf = pd.read_csv('dataset-bprs-p01.csv')\ndf.head()\ndf.info()\ndf.describe()\ndf.shape\ndf.columns.tolist()`,
+  `df.loc[0, 'nama_bprs']\ndf.loc[0, ['nama_bprs', 'kota', 'total_aset_juta']]\ndf.loc[0:3, 'nama_bprs']\ndf.loc[:, ['nama_bprs', 'npf_persen', 'roe_persen']]`,
+  `df.iloc[0, 0]\ndf.iloc[0:3, 0:4]\ndf.iloc[-5:]\ndf.iloc[:, [0, 1, 7]]`,
+  `mask_sehat = df['npf_persen'] < 3.0\ndf_sehat = df[mask_sehat]\nprint(df_sehat[['nama_bprs', 'npf_persen']])\ndf_sehat = df[df['npf_persen'] < 3.0]`,
+  `df_ideal = df[(df['npf_persen'] < 2.5) & (df['roe_persen'] > 12)]\ndf_jabodetabek = df[(df['provinsi'] == 'Jawa Barat') | (df['provinsi'] == 'DKI Jakarta')]\ndf_bukan_jatim = df[~(df['provinsi'] == 'Jawa Timur')]\nprovinsi_target = ['Jawa Barat', 'DKI Jakarta', 'Banten']\ndf_jabar_jkt = df[df['provinsi'].isin(provinsi_target)]`,
+  `df.query('npf_persen < 3.0')\ndf.query('npf_persen < 2.5 and roe_persen > 12')\ndf.query('provinsi in ["Jawa Barat", "DKI Jakarta"]')\nthreshold_npf = 3.0\ndf.query('npf_persen < @threshold_npf')`,
+  `df.groupby('provinsi')[['npf_persen', 'roe_persen']].mean()\ndf.groupby('provinsi')['nama_bprs'].count()\ndf.groupby('provinsi')['total_aset_juta'].sum().sort_values(ascending=False)`,
+  `hasil = df.groupby('provinsi').agg(\n    jumlah_bprs   = ('nama_bprs',      'count'),\n    rata_npf      = ('npf_persen',     'mean'),\n    rata_roe      = ('roe_persen',     'mean'),\n    total_aset    = ('total_aset_juta','sum'),\n    maks_car      = ('car_persen',     'max'),\n    min_npf       = ('npf_persen',     'min'),\n).round(2)`,
+  `df['rata_npf_provinsi'] = df.groupby('provinsi')['npf_persen'].transform('mean')\ndf['npf_deviasi'] = df['npf_persen'] - df['rata_npf_provinsi']\ndf_outperform = df[df['npf_deviasi'] < 0][['nama_bprs', 'provinsi', 'npf_persen', 'npf_deviasi']]`,
+  `benchmark = pd.DataFrame({\n    'provinsi': ['DKI Jakarta', 'Jawa Barat', 'Jawa Timur', 'DI Yogyakarta', 'Jawa Tengah', 'Banten'],\n    'benchmark_npf': [3.0, 3.5, 3.2, 2.8, 3.1, 2.9],\n    'benchmark_car': [16, 15, 15, 16, 15, 16],\n    'wilayah_ojk':   ['Kanwil I', 'Kanwil II', 'Kanwil III', 'Kanwil IV', 'Kanwil IV', 'Kanwil I']\n})`,
+  `df_inner = pd.merge(df, benchmark, on='provinsi', how='inner')\ndf_left  = pd.merge(df, benchmark, on='provinsi', how='left')\ndf_left['status_npf'] = df_left.apply(\n    lambda r: '⚠️ Melebihi Benchmark' if r['npf_persen'] > r['benchmark_npf'] else '✅ Di Bawah Benchmark',\n    axis=1\n)`,
+  `df['kategori_npf'] = df['npf_persen'].apply(\n    lambda x: 'Sangat Sehat' if x < 2 else\n              'Sehat'        if x < 3 else\n              'Cukup Sehat'  if x < 4 else\n              'Perlu Perhatian'\n)\ndf['usia_tahun'] = 2026 - df['tahun_berdiri']\ndf['skala'] = df['total_aset_juta'].apply(\n    lambda x: 'Besar' if x >= 80000 else 'Menengah' if x >= 45000 else 'Kecil'\n)`,
+];
+function copyCode(i){
+  navigator.clipboard.writeText(CODE_TEXTS[i]).then(()=>{
+    const btns=document.querySelectorAll('.copy-btn');
+    const btn=btns[i];
+    const old=btn.textContent;btn.textContent='✓ Copied!';
+    setTimeout(()=>btn.textContent=old,1500);
+  });
+}
+
+function applyState(){
+  state.done.forEach(i=>{
+    const btn=document.getElementById('bp'+i);
+    if(btn){btn.className='btn-paham done';btn.disabled=true;btn.textContent='✓ Selesai';}
+    const sn=document.getElementById('sn'+i);if(sn) sn.className='sec-num done';
+    const next=document.getElementById('sec'+(i+1));
+    if(next) next.className='sec-card unlocked';
+  });
+  state.mcqSel.forEach((sel,q)=>{
+    if(sel===null) return;
+    document.querySelectorAll('#mcq'+q+' .q-opt')[sel]?.classList.add('selected');
+  });
+  Object.entries(state.matchPairs).forEach(([t,d])=>{
+    const color=MATCH_COLORS[t];
+    const termEl=document.querySelectorAll('#terms .match-term')[t];
+    const defEl=document.querySelectorAll('#defs .match-def')[d];
+    if(termEl){termEl.style.borderColor=color;termEl.style.background=color+'22';}
+    if(defEl){defEl.style.borderColor=color;defEl.style.background=color+'22';}
+  });
+  if(state.submitted) submitQuiz();
+  updateProg();
+  if(state.done.length>=TOTAL_SEC-1) document.getElementById('completion').classList.add('show');
+}
+
+load(); applyState();
+</script>

@@ -1,0 +1,960 @@
+<title>Praktikum P01 ADA — Setup Colab &amp; Hello Data</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --meet-from:#041820;--meet-mid:#082840;--meet-to:#104060;
+  --meet-acc:#20C8D0;--meet-acc2:#30D8E0;
+  --bg:#EDF1F6;--sf:#fff;--sf2:#E8F6F8;--sf3:#F4FAFB;
+  --bd:#C4CDD8;--bs:#DDE3EC;
+  --tx:#0C1824;--txm:#475569;--txl:#8A9AB0;
+  --pri:#082840;--pril:#D8EEF6;--prx:#EAF6F8;
+  --acc:#20C8D0;--accl:#D0F4F6;
+  --sya:#1F9060;--syal:#D0EEE2;--syab:#40B080;
+  --done-bg:#D0EEE2;--done-bd:#40B080;--done-tx:#0A4020;
+  --lock-bg:#F0F2F6;--lock-bd:#C4CDD8;
+  --code-bg:#1E1E2E;--code-tx:#C9D1D9;
+  --out-bg:#F8FFF8;--out-bd:#40C080;
+  --r:8px;--rs:5px;
+  --shadow:0 4px 20px rgba(8,40,64,.1);--shadow-sm:0 2px 8px rgba(8,40,64,.06);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#030E18;--sf:#071828;--sf2:#071C28;--sf3:#041220;
+  --bd:#0C2840;--bs:#081830;
+  --tx:#C8E8F8;--txm:#6090B0;--txl:#2A5070;
+  --pri:#20C8D0;--pril:#051830;--prx:#040E18;
+  --acc:#20C8D0;--accl:#041820;
+  --sya:#40C890;--syal:#031410;
+  --done-bg:#031810;--done-bd:#40C890;--done-tx:#40C890;
+  --lock-bg:#040A14;--lock-bd:#0C2840;
+  --out-bg:#021008;--out-bd:#30A060;
+}}
+:root[data-theme=dark]{
+  --bg:#030E18;--sf:#071828;--sf2:#071C28;--sf3:#041220;
+  --bd:#0C2840;--bs:#081830;
+  --tx:#C8E8F8;--txm:#6090B0;--txl:#2A5070;
+  --pri:#20C8D0;--pril:#051830;--prx:#040E18;
+  --acc:#20C8D0;--accl:#041820;
+  --sya:#40C890;--syal:#031410;
+  --done-bg:#031810;--done-bd:#40C890;--done-tx:#40C890;
+  --lock-bg:#040A14;--lock-bd:#0C2840;
+  --out-bg:#021008;--out-bd:#30A060;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.65}
+
+/* HEADER */
+.hd{background:linear-gradient(160deg,var(--meet-from) 0%,var(--meet-mid) 55%,var(--meet-to) 100%);color:#fff;position:relative;overflow:hidden}
+.hd-ornament{position:absolute;inset:0;pointer-events:none;opacity:.1}
+.hd-inner{max-width:820px;margin:0 auto;padding:32px 24px 12px;position:relative;z-index:1}
+.hd-eyebrow{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.hd-line{width:24px;height:1px;background:var(--meet-acc)}
+.hd-eye{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--meet-acc)}
+.hd-badge{font-size:11px;background:rgba(32,200,208,.15);border:1px solid rgba(32,200,208,.3);border-radius:12px;padding:2px 11px;color:var(--meet-acc2);margin-left:auto}
+.hd-title{font-family:'Amiri',serif;font-size:28px;font-weight:700;line-height:1.2;margin-bottom:5px}
+.hd-sub{font-size:13.5px;color:rgba(255,255,255,.5);margin-bottom:16px}
+.hd-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px}
+.hpill{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:2px 11px;font-size:11.5px;color:rgba(255,255,255,.7)}
+.hpill strong{color:#fff}
+.hd-arch{line-height:0}
+.hd-arch svg{display:block;width:100%;height:24px}
+
+/* STEP TRACKER */
+.tracker-wrap{background:var(--sf);border-bottom:1px solid var(--bs);position:sticky;top:0;z-index:40;box-shadow:var(--shadow-sm)}
+.tracker{max-width:820px;margin:0 auto;padding:8px 20px;display:flex;align-items:center;gap:6px;overflow-x:auto}
+.tr-step{display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0}
+.tr-circle{width:30px;height:30px;border-radius:50%;border:2px solid var(--bs);background:var(--sf3);display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;color:var(--txl);transition:all .3s}
+.tr-circle.active{border-color:var(--acc);background:var(--accl);color:var(--pri)}
+.tr-circle.done{border-color:var(--sya);background:var(--syal);color:var(--sya)}
+.tr-label{font-size:9.5px;color:var(--txl);white-space:nowrap;text-align:center;max-width:52px;overflow:hidden;text-overflow:ellipsis}
+.tr-label.active{color:var(--acc);font-weight:600}
+.tr-label.done{color:var(--sya);font-weight:600}
+.tr-line{width:20px;height:2px;background:var(--bs);border-radius:1px;flex-shrink:0;margin-bottom:10px}
+.tr-line.done{background:var(--sya)}
+
+/* MAIN */
+.main{max-width:820px;margin:0 auto;padding:24px 20px 80px}
+
+/* STEP CARD */
+.step-card{background:var(--sf);border:1px solid var(--bs);border-radius:var(--r);margin-bottom:14px;box-shadow:var(--shadow-sm);overflow:hidden;transition:opacity .3s,filter .3s}
+.step-card.locked{opacity:.35;filter:grayscale(.5);pointer-events:none}
+.step-card.unlocked{opacity:1;filter:none}
+.step-card.completed{border-color:var(--done-bd)}
+.step-hd{display:flex;align-items:center;gap:11px;padding:13px 20px;background:var(--sf3);border-bottom:1px solid var(--bs)}
+.step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc))}
+.step-num.done{background:var(--sya)}
+.step-title{font-family:'Amiri',serif;font-size:17px;font-weight:700;color:var(--pri)}
+.step-est{font-size:11.5px;color:var(--txl);margin-left:auto;white-space:nowrap}
+.step-body{padding:18px 22px}
+
+/* ILLUSTRATION AREA */
+.illus-wrap{border:1px solid var(--bs);border-radius:var(--r);overflow:hidden;margin:14px 0;background:var(--sf3)}
+.illus-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--txl);padding:7px 14px;background:var(--sf);border-bottom:1px solid var(--bs);display:flex;align-items:center;gap:6px}
+.illus-label::before{content:'🖼';font-size:12px}
+
+/* INSTRUCTION BOX */
+.inst-box{background:var(--prx);border:1px solid rgba(32,200,208,.2);border-radius:var(--rs);padding:13px 16px;margin:12px 0}
+.inst-box h4{font-size:13.5px;font-weight:700;color:var(--pri);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.inst-steps{list-style:none;padding:0;margin:0}
+.inst-steps li{display:flex;gap:10px;margin-bottom:8px;font-size:13.5px;color:var(--txm);align-items:flex-start}
+.inst-steps li .n{width:22px;height:22px;background:var(--meet-mid);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+.inst-steps li:last-child{margin-bottom:0}
+
+/* CODE BLOCK */
+.code-wrap{margin:14px 0}
+.code-label{display:flex;align-items:center;justify-content:space-between;background:#2D2D40;padding:7px 14px;border-radius:var(--rs) var(--rs) 0 0}
+.code-label span{font-size:11px;font-weight:700;color:#8090B0;letter-spacing:.06em;text-transform:uppercase}
+.code-label .copy-btn{font-size:11px;background:rgba(32,200,208,.15);border:1px solid rgba(32,200,208,.3);border-radius:8px;padding:2px 9px;color:var(--acc);cursor:pointer;font-family:inherit}
+.code-label .copy-btn:hover{background:rgba(32,200,208,.25)}
+pre.code{background:var(--code-bg);border-radius:0 0 var(--rs) var(--rs);padding:14px 16px;overflow-x:auto;margin:0;font-family:'Source Code Pro','Courier New',monospace;font-size:13px;line-height:1.7;color:var(--code-tx)}
+.kw{color:#CF8EF4}
+.fn{color:#79C0FF}
+.st{color:#A5D6FF}
+.cm{color:#5A6580;font-style:italic}
+.nm{color:#F8C555}
+.op{color:#C9D1D9}
+
+/* OUTPUT BLOCK */
+.output-wrap{background:var(--out-bg);border:1px solid var(--out-bd);border-radius:var(--rs);padding:12px 14px;margin:8px 0;font-family:'Source Code Pro','Courier New',monospace;font-size:12.5px;line-height:1.6;color:#1A4030}
+.output-wrap::before{content:'Output:';display:block;font-family:'Source Sans 3',sans-serif;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--sya);margin-bottom:6px}
+.df-table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0;overflow-x:auto;display:block}
+.df-table th{background:#082840;color:#fff;padding:5px 10px;text-align:left;font-size:11px;white-space:nowrap}
+.df-table td{padding:4px 10px;border-bottom:1px solid #D0E8F0;color:#0A2030;white-space:nowrap}
+.df-table tr:nth-child(even) td{background:#EAF4F8}
+.df-idx{font-weight:700;color:#4A7090!important;background:#EAF4F8!important}
+
+/* REFLECTION */
+.reflect{background:var(--syal);border:1px solid var(--done-bd);border-radius:var(--rs);padding:13px 16px;margin:12px 0;font-size:13.5px;color:var(--txm)}
+.reflect strong{color:var(--sya)}
+
+/* CALLOUT */
+.callout{border-radius:var(--rs);padding:11px 15px;margin:10px 0;font-size:13.5px}
+.callout.tip{background:var(--prx);border-left:4px solid var(--acc);color:var(--txm)}
+.callout.warn{background:#FEF3E0;border-left:4px solid #D46020;color:#5A2C04}
+.callout.success{background:var(--syal);border-left:4px solid var(--sya);color:#0A3A20}
+
+/* UNLOCK BUTTON */
+.unlock-row{display:flex;align-items:center;gap:12px;margin-top:20px;padding-top:18px;border-top:1px solid var(--bs)}
+.btn-unlock{background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc));color:#fff;border:none;border-radius:24px;padding:11px 26px;font-family:'Source Sans 3',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;transition:opacity .2s}
+.btn-unlock:hover{opacity:.88}
+.btn-unlock.done-state{background:var(--sya);cursor:default}
+.unlock-hint{font-size:12.5px;color:var(--txl)}
+
+/* CHALLENGE */
+.challenge-box{background:linear-gradient(135deg,#082840,#104060);border-radius:var(--r);padding:18px 20px;color:#fff;margin:14px 0}
+.challenge-box h4{font-family:'Amiri',serif;font-size:17px;font-weight:700;margin-bottom:12px;color:var(--meet-acc)}
+.challenge-q{background:rgba(255,255,255,.08);border-radius:var(--rs);padding:10px 14px;margin-bottom:8px;font-size:13.5px;color:rgba(255,255,255,.8)}
+.challenge-q strong{color:#fff}
+
+/* COMPLETION */
+.completion{display:none;background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;border-radius:var(--r);padding:28px;text-align:center;margin-top:18px}
+.completion.show{display:block}
+.completion h2{font-family:'Amiri',serif;font-size:24px;font-weight:700;margin-bottom:8px}
+.completion p{color:rgba(255,255,255,.65);font-size:13.5px;margin-bottom:14px}
+.completion .next-btn{display:inline-block;background:var(--meet-acc);color:var(--meet-from);border-radius:20px;padding:10px 24px;font-weight:700;font-size:14px;text-decoration:none}
+
+p{color:var(--txm);margin-bottom:9px;font-size:14px}
+h3.sh{font-family:'Amiri',serif;font-size:18px;font-weight:700;color:var(--pri);margin:16px 0 9px;display:flex;align-items:center;gap:8px}
+h3.sh::before{content:'';width:4px;height:16px;background:var(--meet-acc);border-radius:2px;flex-shrink:0}
+@media(max-width:580px){
+  .main{padding:14px 12px 60px}
+  .step-body{padding:14px 14px}
+  pre.code{font-size:11.5px}
+}
+</style>
+
+<!-- HEADER -->
+<div class="hd">
+  <svg class="hd-ornament" viewBox="0 0 400 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs><pattern id="grd" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M0,20 L40,20 M20,0 L20,40" stroke="#20C8D0" stroke-width=".6" opacity=".5"/>
+      <circle cx="20" cy="20" r="2" fill="#20C8D0"/>
+      <circle cx="0" cy="0" r="1.5" fill="#20C8D0" opacity=".4"/>
+      <circle cx="40" cy="0" r="1.5" fill="#20C8D0" opacity=".4"/>
+      <circle cx="0" cy="40" r="1.5" fill="#20C8D0" opacity=".4"/>
+      <circle cx="40" cy="40" r="1.5" fill="#20C8D0" opacity=".4"/>
+    </pattern></defs>
+    <rect width="100%" height="100%" fill="url(#grd)"/>
+  </svg>
+  <div class="hd-inner">
+    <div class="hd-eyebrow">
+      <div class="hd-line"></div>
+      <span class="hd-eye">Applied Data Analytics · Lembar Praktikum</span>
+      <span class="hd-badge">LAB P01</span>
+    </div>
+    <h1 class="hd-title">Setup Google Colab &amp;<br>Hello, Data! 🐼</h1>
+    <p class="hd-sub">Instalasi lingkungan kerja, import library, dan eksplorasi dataset BPRS pertamamu</p>
+    <div class="hd-pills">
+      <span class="hpill">⏱ <strong>~60 menit</strong></span>
+      <span class="hpill">🔧 <strong>Google Colab</strong></span>
+      <span class="hpill">🐼 <strong>pandas</strong></span>
+      <span class="hpill">🔢 <strong>numpy</strong></span>
+      <span class="hpill">📝 <strong>6 Langkah</strong></span>
+    </div>
+  </div>
+  <div class="hd-arch"><svg viewBox="0 0 1200 24" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,24 L0,14 Q20,4 40,14 Q60,24 80,14 Q100,4 120,14 Q140,24 160,14 Q180,4 200,14 Q220,24 240,14 Q260,4 280,14 Q300,24 320,14 Q340,4 360,14 Q380,24 400,14 Q420,4 440,14 Q460,24 480,14 Q500,4 520,14 Q540,24 560,14 Q580,4 600,14 Q620,24 640,14 Q660,4 680,14 Q700,24 720,14 Q740,4 760,14 Q780,24 800,14 Q820,4 840,14 Q860,24 880,14 Q900,4 920,14 Q940,24 960,14 Q980,4 1000,14 Q1020,24 1040,14 Q1060,4 1080,14 Q1100,24 1120,14 Q1140,4 1160,14 Q1180,24 1200,14 L1200,24 Z" fill="var(--bg)"/>
+  </svg></div>
+</div>
+
+<!-- STEP TRACKER -->
+<div class="tracker-wrap">
+  <div class="tracker">
+    <div class="tr-step"><div class="tr-circle active" id="tc0">1</div><div class="tr-label active" id="tl0">Buka Colab</div></div>
+    <div class="tr-line" id="tln0"></div>
+    <div class="tr-step"><div class="tr-circle" id="tc1">2</div><div class="tr-label" id="tl1">Notebook Baru</div></div>
+    <div class="tr-line" id="tln1"></div>
+    <div class="tr-step"><div class="tr-circle" id="tc2">3</div><div class="tr-label" id="tl2">Import Library</div></div>
+    <div class="tr-line" id="tln2"></div>
+    <div class="tr-step"><div class="tr-circle" id="tc3">4</div><div class="tr-label" id="tl3">Load Dataset</div></div>
+    <div class="tr-line" id="tln3"></div>
+    <div class="tr-step"><div class="tr-circle" id="tc4">5</div><div class="tr-label" id="tl4">Eksplorasi EDA</div></div>
+    <div class="tr-line" id="tln4"></div>
+    <div class="tr-step"><div class="tr-circle" id="tc5">6</div><div class="tr-label" id="tl5">Tantangan</div></div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- ╔══ LANGKAH 1: BUKA COLAB ══╗ -->
+<div class="step-card unlocked" id="step0">
+  <div class="step-hd">
+    <div class="step-num" id="sn0">1</div>
+    <div class="step-title">Buka Google Colab di Browser</div>
+    <span class="step-est">⏱ ~3 menit</span>
+  </div>
+  <div class="step-body">
+    <p>Google Colab adalah lingkungan notebook Python berbasis cloud — kamu menulis kode di browser, hasilnya langsung tampil di bawah. Tidak perlu install apapun.</p>
+
+    <!-- SVG: BROWSER WITH COLAB -->
+    <div class="illus-wrap">
+      <div class="illus-label">Tampilan browser setelah membuka colab.new</div>
+      <svg viewBox="0 0 700 400" aria-label="Browser dengan Google Colab terbuka">
+        <!-- Browser chrome -->
+        <rect x="0" y="0" width="700" height="400" fill="#F0F0F0"/>
+        <!-- Title bar -->
+        <rect x="0" y="0" width="700" height="38" fill="#DEDEDE" rx="4"/>
+        <!-- Traffic lights -->
+        <circle cx="18" cy="19" r="7" fill="#FF5F57"/>
+        <circle cx="36" cy="19" r="7" fill="#FEBC2E"/>
+        <circle cx="54" cy="19" r="7" fill="#28C840"/>
+        <!-- Tab bar -->
+        <rect x="70" y="6" width="180" height="26" rx="6" fill="#FFFFFF" stroke="#CCCCCC" stroke-width="1"/>
+        <circle cx="84" cy="19" r="8" fill="#F9AB00" opacity=".8"/>
+        <text x="98" y="23" font-family="Source Sans 3,sans-serif" font-size="11" fill="#555">Colaboratory - Google Colab</text>
+        <!-- Address bar -->
+        <rect x="70" y="42" width="560" height="26" rx="13" fill="white" stroke="#CCCCCC" stroke-width="1.5"/>
+        <!-- Lock icon -->
+        <text x="84" y="59" font-family="sans-serif" font-size="12" fill="#5A9040">🔒</text>
+        <text x="104" y="59" font-family="monospace" font-size="12" fill="#333">colab.new</text>
+        <!-- Arrow annotation pointing to URL -->
+        <rect x="200" y="36" width="150" height="22" rx="5" fill="#082840" stroke="#20C8D0" stroke-width="1.5"/>
+        <text x="275" y="51" font-family="Source Sans 3,sans-serif" font-size="10.5" fill="#20C8D0" text-anchor="middle">← ketik ini lalu Enter</text>
+        <line x1="196" y1="47" x2="150" y2="54" stroke="#20C8D0" stroke-width="1.5"/>
+        <!-- Colab page content -->
+        <rect x="0" y="70" width="700" height="330" fill="#FFFFFF"/>
+        <!-- Colab top bar -->
+        <rect x="0" y="70" width="700" height="50" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="0" style="border-bottom:1px solid #E0E0E0"/>
+        <!-- Colab logo -->
+        <circle cx="26" cy="95" r="12" fill="#F9AB00"/>
+        <text x="22" y="100" font-family="sans-serif" font-size="14" fill="white" font-weight="bold">C</text>
+        <text x="50" y="99" font-family="Source Sans 3,sans-serif" font-size="15" fill="#555" font-weight="600">Colaboratory</text>
+        <line x1="0" y1="120" x2="700" y2="120" stroke="#E8E8E8" stroke-width="1"/>
+        <!-- Colab body - recent notebooks -->
+        <text x="24" y="148" font-family="Source Sans 3,sans-serif" font-size="13" fill="#555" font-weight="600">Terbaru</text>
+        <!-- File icons -->
+        <rect x="24" y="158" width="180" height="80" rx="6" fill="#F8F8F8" stroke="#E0E0E0" stroke-width="1"/>
+        <text x="36" y="185" font-family="sans-serif" font-size="22">📄</text>
+        <text x="66" y="186" font-family="Source Sans 3,sans-serif" font-size="11" fill="#444">Untitled.ipynb</text>
+        <text x="66" y="200" font-family="Source Sans 3,sans-serif" font-size="10" fill="#888">Dibuka kemarin</text>
+        <rect x="220" y="158" width="180" height="80" rx="6" fill="#F8F8F8" stroke="#E0E0E0" stroke-width="1"/>
+        <text x="232" y="185" font-family="sans-serif" font-size="22">📄</text>
+        <text x="262" y="186" font-family="Source Sans 3,sans-serif" font-size="11" fill="#444">data_analysis.ipynb</text>
+        <!-- Blue "New" button -->
+        <rect x="560" y="78" width="120" height="32" rx="6" fill="#1A73E8"/>
+        <text x="620" y="99" font-family="Source Sans 3,sans-serif" font-size="13" fill="white" text-anchor="middle" font-weight="600">+ Notebook baru</text>
+        <!-- Annotation for New button -->
+        <rect x="490" y="128" width="200" height="22" rx="5" fill="#082840" stroke="#F9AB00" stroke-width="1.5"/>
+        <text x="590" y="143" font-family="Source Sans 3,sans-serif" font-size="10.5" fill="#F9AB00" text-anchor="middle">← atau klik tombol ini</text>
+        <line x1="590" y1="128" x2="620" y2="111" stroke="#F9AB00" stroke-width="1.5"/>
+        <!-- Atau section -->
+        <text x="24" y="280" font-family="Source Sans 3,sans-serif" font-size="12" fill="#888">Atau langsung buat notebook baru dengan mengetik <tspan font-family="monospace" fill="#1A73E8">colab.new</tspan> di address bar browser kamu.</text>
+        <!-- Keterangan -->
+        <rect x="24" y="300" width="652" height="60" rx="6" fill="#E8F4FF" stroke="#90C0E8" stroke-width="1"/>
+        <text x="38" y="322" font-family="Source Sans 3,sans-serif" font-size="12" fill="#1A4080" font-weight="600">💡 Login Google wajib!</text>
+        <text x="38" y="342" font-family="Source Sans 3,sans-serif" font-size="11.5" fill="#3060A0">Pastikan kamu sudah login dengan akun Google. Colab akan menyimpan notebook di</text>
+        <text x="38" y="356" font-family="Source Sans 3,sans-serif" font-size="11.5" fill="#3060A0">Google Drive kamu secara otomatis.</text>
+      </svg>
+    </div>
+
+    <div class="inst-box">
+      <h4>📋 Langkah-langkah</h4>
+      <ol class="inst-steps">
+        <li><span class="n">1</span><span>Buka browser (Chrome direkomendasikan) dan pastikan sudah login dengan akun Google</span></li>
+        <li><span class="n">2</span><span>Ketik <strong>colab.new</strong> di address bar, lalu tekan <strong>Enter</strong> — notebook baru langsung terbuka</span></li>
+        <li><span class="n">3</span><span>Alternatif: buka <strong>colab.research.google.com</strong> lalu klik tombol <strong>"+ Notebook baru"</strong></span></li>
+      </ol>
+    </div>
+    <div class="callout tip">🔑 <strong>Tip:</strong> Bookmark halaman Colab agar mudah diakses setiap sesi. Semua notebook tersimpan di Google Drive &gt; folder <em>"Colab Notebooks"</em>.</div>
+    <div class="unlock-row">
+      <button class="btn-unlock" id="btn0" onclick="completeStep(0)">✓ Colab Sudah Terbuka di Browser Saya</button>
+      <span class="unlock-hint">Klik setelah Colab terbuka di tab browser kamu</span>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══ LANGKAH 2: BUAT NOTEBOOK BARU ══╗ -->
+<div class="step-card locked" id="step1">
+  <div class="step-hd">
+    <div class="step-num" id="sn1">2</div>
+    <div class="step-title">Buat &amp; Beri Nama Notebook</div>
+    <span class="step-est">⏱ ~3 menit</span>
+  </div>
+  <div class="step-body">
+    <p>Notebook baru sudah terbuka dengan nama default "Untitled0.ipynb". Kita ganti namanya agar terorganisir.</p>
+
+    <!-- SVG: COLAB NOTEBOOK INTERFACE -->
+    <div class="illus-wrap">
+      <div class="illus-label">Antarmuka notebook Colab — bagian-bagian utama</div>
+      <svg viewBox="0 0 700 360" aria-label="Antarmuka Google Colab notebook">
+        <!-- Background -->
+        <rect x="0" y="0" width="700" height="360" fill="#1E1E2E"/>
+        <!-- Top nav -->
+        <rect x="0" y="0" width="700" height="42" fill="#2D2D3F"/>
+        <!-- Colab logo -->
+        <circle cx="22" cy="21" r="10" fill="#F9AB00"/>
+        <text x="18" y="26" font-family="monospace" font-size="13" fill="white" font-weight="bold">C</text>
+        <text x="38" y="25" font-family="Source Sans 3,sans-serif" font-size="13" fill="#D0D0E8" font-weight="600">Colaboratory</text>
+        <!-- Menu items -->
+        <text x="150" y="25" font-family="Source Sans 3,sans-serif" font-size="11.5" fill="#9090B0">File</text>
+        <text x="180" y="25" font-family="Source Sans 3,sans-serif" font-size="11.5" fill="#9090B0">Edit</text>
+        <text x="210" y="25" font-family="Source Sans 3,sans-serif" font-size="11.5" fill="#9090B0">View</text>
+        <text x="244" y="25" font-family="Source Sans 3,sans-serif" font-size="11.5" fill="#9090B0">Insert</text>
+        <text x="284" y="25" font-family="Source Sans 3,sans-serif" font-size="11.5" fill="#9090B0">Runtime</text>
+        <!-- Notebook name (editable area) -->
+        <rect x="0" y="42" width="700" height="34" fill="#252538"/>
+        <!-- Editable name - highlighted to show rename -->
+        <rect x="18" y="50" width="220" height="20" rx="4" fill="#1A73E8" opacity=".15" stroke="#1A73E8" stroke-width="1.5"/>
+        <text x="26" y="64" font-family="Source Sans 3,sans-serif" font-size="13" fill="#79C0FF">P01_Pengantar_ADA.ipynb</text>
+        <!-- Annotation: rename -->
+        <rect x="260" y="48" width="180" height="22" rx="5" fill="#082840" stroke="#F9AB00" stroke-width="1.5"/>
+        <text x="350" y="63" font-family="Source Sans 3,sans-serif" font-size="10.5" fill="#F9AB00" text-anchor="middle">← klik nama untuk mengganti</text>
+        <line x1="258" y1="59" x2="238" y2="59" stroke="#F9AB00" stroke-width="1.5" marker-end="url(#arrt)"/>
+        <defs><marker id="arrt" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 Z" fill="#F9AB00"/></marker></defs>
+        <!-- Left sidebar icons -->
+        <rect x="0" y="76" width="40" height="284" fill="#1A1A2A"/>
+        <text x="20" y="104" font-family="sans-serif" font-size="16" fill="#5A5A7A" text-anchor="middle">📁</text>
+        <text x="20" y="136" font-family="sans-serif" font-size="16" fill="#5A5A7A" text-anchor="middle">🔍</text>
+        <text x="20" y="168" font-family="sans-serif" font-size="16" fill="#20C8D0" text-anchor="middle">⚙️</text>
+        <!-- Code area -->
+        <rect x="44" y="76" width="656" height="284" fill="#1E1E2E"/>
+        <!-- "+ Code" and "+ Text" buttons -->
+        <rect x="56" y="86" width="80" height="24" rx="12" fill="#2D2D40" stroke="#4A4A60" stroke-width="1"/>
+        <text x="96" y="102" font-family="Source Sans 3,sans-serif" font-size="11" fill="#A0A0C0" text-anchor="middle">+ Code</text>
+        <rect x="144" y="86" width="80" height="24" rx="12" fill="#2D2D40" stroke="#4A4A60" stroke-width="1"/>
+        <text x="184" y="102" font-family="Source Sans 3,sans-serif" font-size="11" fill="#A0A0C0" text-anchor="middle">+ Text</text>
+        <!-- Empty code cell -->
+        <rect x="54" y="118" width="638" height="60" rx="6" fill="#252538" stroke="#3A3A52" stroke-width="1"/>
+        <circle cx="76" cy="148" r="13" fill="#1A73E8" opacity=".8"/>
+        <text x="76" y="153" font-family="sans-serif" font-size="13" fill="white" text-anchor="middle">▶</text>
+        <text x="100" y="145" font-family="monospace" font-size="12" fill="#5A6580"># Klik ▶ atau tekan Ctrl+Enter untuk menjalankan cell ini</text>
+        <text x="100" y="163" font-family="monospace" font-size="12" fill="#5A6580">|</text>
+        <!-- Annotation: code cell -->
+        <rect x="54" y="190" width="230" height="22" rx="5" fill="#082840" stroke="#20C8D0" stroke-width="1.5"/>
+        <text x="169" y="205" font-family="Source Sans 3,sans-serif" font-size="10.5" fill="#20C8D0" text-anchor="middle">← code cell kosong menunggu kode kamu</text>
+        <line x1="169" y1="190" x2="169" y2="178" stroke="#20C8D0" stroke-width="1.5"/>
+        <!-- Runtime info -->
+        <rect x="560" y="82" width="130" height="26" rx="5" fill="#1A3A1A"/>
+        <text x="576" y="99" font-family="Source Sans 3,sans-serif" font-size="11" fill="#40B060">● RAM: 12.7 GB</text>
+        <!-- Annotation: runtime -->
+        <rect x="450" y="115" width="170" height="22" rx="5" fill="#082840" stroke="#40B060" stroke-width="1.5"/>
+        <text x="535" y="130" font-family="Source Sans 3,sans-serif" font-size="10.5" fill="#40C880" text-anchor="middle">↑ RAM tersedia (gratis!)</text>
+        <line x1="570" y1="115" x2="600" y2="108" stroke="#40C880" stroke-width="1.5"/>
+      </svg>
+    </div>
+
+    <div class="inst-box">
+      <h4>📋 Cara mengganti nama notebook</h4>
+      <ol class="inst-steps">
+        <li><span class="n">1</span><span>Di bagian atas notebook, klik nama file <em>"Untitled0.ipynb"</em></span></li>
+        <li><span class="n">2</span><span>Ketik nama baru: <strong>P01_Pengantar_ADA</strong> (Colab otomatis tambahkan .ipynb)</span></li>
+        <li><span class="n">3</span><span>Tekan <strong>Enter</strong> untuk menyimpan nama</span></li>
+        <li><span class="n">4</span><span>Notebook ini otomatis tersimpan di Google Drive kamu</span></li>
+      </ol>
+    </div>
+    <div class="unlock-row">
+      <button class="btn-unlock" id="btn1" onclick="completeStep(1)">✓ Notebook P01_Pengantar_ADA Sudah Terbuat</button>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══ LANGKAH 3: IMPORT LIBRARY ══╗ -->
+<div class="step-card locked" id="step2">
+  <div class="step-hd">
+    <div class="step-num" id="sn2">3</div>
+    <div class="step-title">Import Library &amp; Verifikasi Setup</div>
+    <span class="step-est">⏱ ~5 menit</span>
+  </div>
+  <div class="step-body">
+    <p>Library sudah terpasang di Colab — kita tinggal <em>mengimpor</em> mereka. Salin kode di bawah ke code cell pertama, lalu jalankan.</p>
+
+    <!-- SVG: Code Cell -->
+    <div class="illus-wrap">
+      <div class="illus-label">Cara menyalin dan menjalankan kode di Colab</div>
+      <svg viewBox="0 0 700 220" aria-label="Code cell Colab dengan kode import">
+        <rect x="0" y="0" width="700" height="220" fill="#1E1E2E"/>
+        <!-- Cell container -->
+        <rect x="10" y="10" width="680" height="170" rx="8" fill="#252538" stroke="#3A3A52" stroke-width="1.5"/>
+        <!-- Run button -->
+        <circle cx="35" cy="95" r="15" fill="#1A73E8"/>
+        <text x="35" y="100" font-family="sans-serif" font-size="14" fill="white" text-anchor="middle">▶</text>
+        <text x="28" y="28" font-family="monospace" font-size="10" fill="#5A6580">[1]</text>
+        <!-- Code lines -->
+        <text x="65" y="40" font-family="monospace" font-size="12" fill="#5A6580"># ── Import library utama ADA ──</text>
+        <text x="65" y="62"><tspan font-family="monospace" font-size="12" fill="#CF8EF4">import</tspan><tspan font-family="monospace" font-size="12" fill="#C9D1D9"> pandas </tspan><tspan font-family="monospace" font-size="12" fill="#CF8EF4">as</tspan><tspan font-family="monospace" font-size="12" fill="#79C0FF"> pd</tspan></text>
+        <text x="65" y="82"><tspan font-family="monospace" font-size="12" fill="#CF8EF4">import</tspan><tspan font-family="monospace" font-size="12" fill="#C9D1D9"> numpy </tspan><tspan font-family="monospace" font-size="12" fill="#CF8EF4">as</tspan><tspan font-family="monospace" font-size="12" fill="#79C0FF"> np</tspan></text>
+        <text x="65" y="102"><tspan font-family="monospace" font-size="12" fill="#CF8EF4">import</tspan><tspan font-family="monospace" font-size="12" fill="#C9D1D9"> matplotlib.pyplot </tspan><tspan font-family="monospace" font-size="12" fill="#CF8EF4">as</tspan><tspan font-family="monospace" font-size="12" fill="#79C0FF"> plt</tspan></text>
+        <text x="65" y="122"><tspan font-family="monospace" font-size="12" fill="#79C0FF">print</tspan><tspan font-family="monospace" font-size="12" fill="#C9D1D9">(</tspan><tspan font-family="monospace" font-size="12" fill="#A5D6FF">f"pandas: {pd.__version__}"</tspan><tspan font-family="monospace" font-size="12" fill="#C9D1D9">)</tspan></text>
+        <text x="65" y="142"><tspan font-family="monospace" font-size="12" fill="#79C0FF">print</tspan><tspan font-family="monospace" font-size="12" fill="#C9D1D9">(</tspan><tspan font-family="monospace" font-size="12" fill="#A5D6FF">f"numpy:  {np.__version__}"</tspan><tspan font-family="monospace" font-size="12" fill="#C9D1D9">)</tspan></text>
+        <text x="65" y="162"><tspan font-family="monospace" font-size="12" fill="#79C0FF">print</tspan><tspan font-family="monospace" font-size="12" fill="#C9D1D9">(</tspan><tspan font-family="monospace" font-size="12" fill="#A5D6FF">"✅ Setup selesai!"</tspan><tspan font-family="monospace" font-size="12" fill="#C9D1D9">)</tspan></text>
+        <!-- Run button annotation -->
+        <rect x="60" y="183" width="230" height="22" rx="5" fill="#082840" stroke="#1A73E8" stroke-width="1.5"/>
+        <text x="175" y="198" font-family="Source Sans 3,sans-serif" font-size="10.5" fill="#79C0FF" text-anchor="middle">Klik ▶ ini atau tekan Ctrl+Enter untuk run</text>
+        <line x1="55" y1="195" x2="42" y2="105" stroke="#1A73E8" stroke-width="1.5"/>
+      </svg>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-label">
+        <span>🐍 Python · Cell 1 — Import Libraries</span>
+        <button class="copy-btn" onclick="copyCode(0)">Copy</button>
+      </div>
+      <pre class="code" id="code0"><span class="cm"># ── Import library utama ADA ──</span>
+<span class="kw">import</span> pandas <span class="kw">as</span> <span class="fn">pd</span>
+<span class="kw">import</span> numpy <span class="kw">as</span> <span class="fn">np</span>
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> <span class="fn">plt</span>
+
+<span class="cm"># Cek versi library</span>
+<span class="fn">print</span>(<span class="st">f"pandas:     {pd.__version__}"</span>)
+<span class="fn">print</span>(<span class="st">f"numpy:      {np.__version__}"</span>)
+<span class="fn">print</span>(<span class="st">f"matplotlib: {plt.matplotlib.__version__}"</span>)
+<span class="fn">print</span>(<span class="st">"✅ Semua library siap digunakan!"</span>)</pre>
+    </div>
+
+    <div class="output-wrap">pandas:     2.2.2
+numpy:      1.26.4
+matplotlib: 3.8.4
+✅ Semua library siap digunakan!</div>
+
+    <div class="callout tip">💡 <strong>Angka versi boleh berbeda</strong> — Colab secara rutin memperbarui library. Yang penting adalah output "<strong>✅ Semua library siap</strong>" muncul tanpa error.</div>
+    <div class="callout warn">⚠️ <strong>Jika muncul error</strong> seperti <code style="font-size:12px;background:rgba(0,0,0,.05);padding:1px 4px">ModuleNotFoundError</code> — sangat jarang terjadi di Colab. Coba klik <strong>Runtime → Restart runtime</strong> lalu jalankan ulang.</div>
+    <div class="unlock-row">
+      <button class="btn-unlock" id="btn2" onclick="completeStep(2)">✓ Library Berhasil Diimpor (tidak ada error)</button>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══ LANGKAH 4: LOAD DATASET ══╗ -->
+<div class="step-card locked" id="step3">
+  <div class="step-hd">
+    <div class="step-num" id="sn3">4</div>
+    <div class="step-title">Load Dataset BPRS — Data Pertamamu!</div>
+    <span class="step-est">⏱ ~10 menit</span>
+  </div>
+  <div class="step-body">
+    <p>Dataset <strong>dataset-bprs-p01.csv</strong> sudah tersedia di folder yang sama dengan file praktikum ini. Dataset berisi <strong>20 BPRS</strong> dengan <strong>12 kolom</strong> metrik keuangan syariah. Ada dua cara memuat data ini ke Colab.</p>
+
+    <!-- CARA 1: UPLOAD FILE -->
+    <h3 class="sh">Cara 1 — Upload file ke Colab (direkomendasikan)</h3>
+
+    <div class="illus-wrap">
+      <div class="illus-label">Langkah upload file CSV ke Google Colab</div>
+      <svg viewBox="0 0 700 340" aria-label="Cara upload file ke Colab">
+        <rect x="0" y="0" width="700" height="340" fill="#1E1E2E"/>
+        <!-- Step 1: files.upload() -->
+        <rect x="10" y="10" width="680" height="80" rx="6" fill="#252538" stroke="#3A3A52" stroke-width="1.5"/>
+        <circle cx="34" cy="50" r="13" fill="#1A73E8"/>
+        <text x="34" y="55" font-family="sans-serif" font-size="13" fill="white" text-anchor="middle">▶</text>
+        <text x="28" y="25" font-family="monospace" font-size="10" fill="#5A6580">[2]</text>
+        <text x="60" y="40" font-family="monospace" font-size="12" fill="#5A6580"># Cara 1: Upload file CSV dari komputer</text>
+        <text x="60" y="58"><tspan font-family="monospace" font-size="12" fill="#CF8EF4">from</tspan><tspan font-family="monospace" font-size="12" fill="#C9D1D9"> google.colab </tspan><tspan font-family="monospace" font-size="12" fill="#CF8EF4">import</tspan><tspan font-family="monospace" font-size="12" fill="#C9D1D9"> files</tspan></text>
+        <text x="60" y="76"><tspan font-family="monospace" font-size="12" fill="#C9D1D9">uploaded = files.</tspan><tspan font-family="monospace" font-size="12" fill="#79C0FF">upload</tspan><tspan font-family="monospace" font-size="12" fill="#C9D1D9">()</tspan><tspan font-family="monospace" font-size="12" fill="#5A6580">  # → akan muncul tombol "Choose Files"</tspan></text>
+        <!-- Step 2: File dialog -->
+        <rect x="10" y="100" width="680" height="120" rx="6" fill="#F0F0F0"/>
+        <!-- File dialog box -->
+        <rect x="180" y="108" width="340" height="104" rx="8" fill="white" stroke="#CCCCCC" stroke-width="1.5"/>
+        <rect x="180" y="108" width="340" height="28" rx="8 8 0 0" fill="#E8E8E8"/>
+        <text x="350" y="126" font-family="Source Sans 3,sans-serif" font-size="12" fill="#444" text-anchor="middle" font-weight="600">Pilih file untuk diunggah</text>
+        <!-- File list -->
+        <rect x="192" y="142" width="316" height="30" rx="4" fill="#EAF4FF" stroke="#90C0E8" stroke-width="1.5"/>
+        <text x="204" y="161" font-family="monospace" font-size="11.5" fill="#1A4080">📄 dataset-bprs-p01.csv</text>
+        <text x="470" y="161" font-family="monospace" font-size="10" fill="#6090A0" text-anchor="end">3.2 KB</text>
+        <!-- Open button -->
+        <rect x="400" y="180" width="80" height="22" rx="5" fill="#1A73E8"/>
+        <text x="440" y="195" font-family="Source Sans 3,sans-serif" font-size="11" fill="white" text-anchor="middle" font-weight="600">Buka</text>
+        <!-- Cancel button -->
+        <rect x="310" y="180" width="80" height="22" rx="5" fill="white" stroke="#CCCCCC" stroke-width="1"/>
+        <text x="350" y="195" font-family="Source Sans 3,sans-serif" font-size="11" fill="#555" text-anchor="middle">Batal</text>
+        <!-- Annotation -->
+        <rect x="16" y="108" width="155" height="38" rx="5" fill="#082840" stroke="#F9AB00" stroke-width="1.5"/>
+        <text x="93" y="123" font-family="Source Sans 3,sans-serif" font-size="10" fill="#F9AB00" text-anchor="middle">Dialog ini akan muncul</text>
+        <text x="93" y="138" font-family="Source Sans 3,sans-serif" font-size="10" fill="#F9AB00" text-anchor="middle">otomatis saat dijalankan</text>
+        <line x1="171" y1="126" x2="182" y2="126" stroke="#F9AB00" stroke-width="1.5"/>
+        <!-- Step 3: read_csv -->
+        <rect x="10" y="230" width="680" height="50" rx="6" fill="#252538" stroke="#3A3A52" stroke-width="1.5"/>
+        <circle cx="34" cy="255" r="13" fill="#1A73E8"/>
+        <text x="34" y="260" font-family="sans-serif" font-size="13" fill="white" text-anchor="middle">▶</text>
+        <text x="28" y="245" font-family="monospace" font-size="10" fill="#5A6580">[3]</text>
+        <text x="60" y="251"><tspan font-family="monospace" font-size="12" fill="#C9D1D9">df = pd.</tspan><tspan font-family="monospace" font-size="12" fill="#79C0FF">read_csv</tspan><tspan font-family="monospace" font-size="12" fill="#C9D1D9">(</tspan><tspan font-family="monospace" font-size="12" fill="#A5D6FF">'dataset-bprs-p01.csv'</tspan><tspan font-family="monospace" font-size="12" fill="#C9D1D9">)</tspan></text>
+        <text x="60" y="269"><tspan font-family="monospace" font-size="12" fill="#79C0FF">print</tspan><tspan font-family="monospace" font-size="12" fill="#C9D1D9">(</tspan><tspan font-family="monospace" font-size="12" fill="#A5D6FF">f"Dataset: {df.shape[0]} baris, {df.shape[1]} kolom"</tspan><tspan font-family="monospace" font-size="12" fill="#C9D1D9">)</tspan></text>
+        <!-- Output -->
+        <rect x="10" y="286" width="680" height="26" rx="4" fill="#1A1A2A"/>
+        <text x="60" y="303" font-family="monospace" font-size="11.5" fill="#56D364">Dataset: 20 baris, 12 kolom</text>
+        <!-- Upload success -->
+        <rect x="400" y="286" width="290" height="26" rx="4" fill="#0A2818"/>
+        <text x="545" y="303" font-family="monospace" font-size="10.5" fill="#40C870" text-anchor="middle">✅ dataset-bprs-p01.csv uploaded (3.2 KB)</text>
+      </svg>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-label">
+        <span>🐍 Python · Cell 2a — Upload &amp; Load dari File</span>
+        <button class="copy-btn" onclick="copyCode(1)">Copy</button>
+      </div>
+      <pre class="code" id="code1"><span class="cm"># Cara 1: Upload file CSV dari komputer ke Colab</span>
+<span class="cm"># Unduh dulu: dataset-bprs-p01.csv dari folder materi</span>
+<span class="kw">from</span> google.colab <span class="kw">import</span> files
+uploaded = files.<span class="fn">upload</span>()  <span class="cm"># → klik "Choose Files" → pilih dataset-bprs-p01.csv</span>
+
+<span class="cm"># Setelah upload selesai, baca dengan pandas</span>
+df = pd.<span class="fn">read_csv</span>(<span class="st">'dataset-bprs-p01.csv'</span>)
+
+<span class="fn">print</span>(<span class="st">f"✅ Dataset dimuat: {df.shape[0]} baris, {df.shape[1]} kolom"</span>)
+<span class="fn">print</span>(<span class="st">f"Kolom: {list(df.columns)}"</span>)
+df.<span class="fn">head</span>()</pre>
+    </div>
+
+    <!-- CARA 2: EMBED LANGSUNG -->
+    <h3 class="sh">Cara 2 — Embed langsung (tidak perlu upload)</h3>
+    <p style="font-size:13.5px">Jika tidak bisa upload file, gunakan cara ini — data disalin langsung ke dalam kode.</p>
+
+    <div class="code-wrap">
+      <div class="code-label">
+        <span>🐍 Python · Cell 2b — Embed Dataset (alternatif)</span>
+        <button class="copy-btn" onclick="copyCode(5)">Copy</button>
+      </div>
+      <pre class="code" id="code5"><span class="kw">import</span> io
+
+<span class="cm"># Data 20 BPRS — lengkap 12 kolom</span>
+data_csv = <span class="st">"""nama_bprs,kota,provinsi,tahun_berdiri,total_nasabah,total_pembiayaan_juta,total_aset_juta,npf_persen,roe_persen,car_persen,fdr_persen,bopo_persen
+BPRS Al-Amin,Jakarta,DKI Jakarta,2001,1250,45000,62000,2.1,12.5,18.2,86.4,72.3
+BPRS Berkah Syariah,Bogor,Jawa Barat,2005,890,32000,44000,3.4,8.2,16.8,88.1,78.5
+BPRS Mandiri Sejahtera,Bandung,Jawa Barat,1998,2100,78000,105000,1.8,15.3,20.1,82.7,68.9
+BPRS Amanah Insani,Surabaya,Jawa Timur,2003,1560,56000,76000,2.9,10.8,17.4,85.6,74.2
+BPRS Mitra Mentari,Yogyakarta,DI Yogyakarta,2007,1100,38000,52000,1.5,14.7,21.3,84.2,70.1
+BPRS Artha Surya,Medan,Sumatera Utara,2009,780,28000,39000,4.1,6.3,15.9,89.7,82.6
+BPRS Dana Mulia,Semarang,Jawa Tengah,2002,1430,52000,71000,2.3,11.9,18.7,83.8,71.8
+BPRS Bina Amanah,Makassar,Sulawesi Selatan,2006,920,34000,47000,3.1,7.8,16.2,87.3,79.4
+BPRS Syariah Barokah,Tangerang,Banten,2004,1680,61000,83000,2.2,13.4,19.6,84.9,72.7
+BPRS Al-Falah,Depok,Jawa Barat,2010,740,26000,36000,3.8,7.1,15.4,90.2,81.3
+BPRS Tazkia Utama,Bogor,Jawa Barat,2000,980,35000,48000,1.9,13.8,20.4,85.7,71.2
+BPRS Cahaya Syariah,Bandung,Jawa Barat,2008,1320,48000,65000,2.6,10.2,17.8,86.1,74.8
+BPRS Hidayah Utama,Malang,Jawa Timur,2011,860,31000,43000,3.2,8.9,16.6,88.4,78.1
+BPRS Nusantara Mandiri,Denpasar,Bali,2006,1150,42000,57000,2.0,14.1,19.9,83.5,70.6
+BPRS Muamalah Sejahtera,Palembang,Sumatera Selatan,2012,670,24000,33000,4.3,5.8,14.7,91.1,84.2
+BPRS Aman Sentosa,Bekasi,Jawa Barat,2003,1890,69000,93000,2.4,12.7,18.9,84.3,72.1
+BPRS Baitul Maal,Pekanbaru,Riau,2013,560,20000,28000,3.6,6.9,15.1,89.4,80.7
+BPRS Dinar Syariah,Padang,Sumatera Barat,2009,720,26000,35000,2.8,9.4,17.1,87.8,76.3
+BPRS Faisal Syariah,Makassar,Sulawesi Selatan,2014,490,18000,25000,4.8,4.2,13.8,92.3,86.1
+BPRS Gemilang,Samarinda,Kalimantan Timur,2010,810,29000,40000,3.3,7.6,16.0,88.7,79.8"""</span>
+
+df = pd.<span class="fn">read_csv</span>(io.<span class="fn">StringIO</span>(data_csv))
+<span class="fn">print</span>(<span class="st">f"✅ Dataset dimuat: {df.shape[0]} baris, {df.shape[1]} kolom"</span>)
+df.<span class="fn">head</span>()</pre>
+    </div>
+
+    <!-- SVG: Full DataFrame output -->
+    <div class="illus-wrap">
+      <div class="illus-label">Output df.head() — 5 baris pertama, kolom digeser (scroll kanan untuk lihat semua)</div>
+      <svg viewBox="0 0 900 220" aria-label="Output DataFrame lengkap 12 kolom">
+        <rect x="0" y="0" width="900" height="220" fill="#1E1E2E"/>
+        <rect x="6" y="6" width="888" height="206" rx="6" fill="#F8FFFE" stroke="#D0E8F0" stroke-width="1"/>
+        <!-- Header row -->
+        <rect x="6" y="6" width="888" height="26" rx="6 6 0 0" fill="#0A3050"/>
+        <text x="26" y="23" font-family="monospace" font-size="10" fill="#6090A0">#</text>
+        <text x="44" y="23" font-family="monospace" font-size="10" fill="#A0C8E0">nama_bprs</text>
+        <text x="164" y="23" font-family="monospace" font-size="10" fill="#A0C8E0">kota</text>
+        <text x="224" y="23" font-family="monospace" font-size="10" fill="#A0C8E0">provinsi</text>
+        <text x="318" y="23" font-family="monospace" font-size="10" fill="#A0C8E0">thn_berdiri</text>
+        <text x="400" y="23" font-family="monospace" font-size="10" fill="#A0C8E0">tot_nasabah</text>
+        <text x="480" y="23" font-family="monospace" font-size="10" fill="#A0C8E0">pembiayaan_jt</text>
+        <text x="572" y="23" font-family="monospace" font-size="10" fill="#A0C8E0">aset_jt</text>
+        <text x="630" y="23" font-family="monospace" font-size="10" fill="#A0C8E0">npf%</text>
+        <text x="670" y="23" font-family="monospace" font-size="10" fill="#A0C8E0">roe%</text>
+        <text x="710" y="23" font-family="monospace" font-size="10" fill="#A0C8E0">car%</text>
+        <text x="752" y="23" font-family="monospace" font-size="10" fill="#A0C8E0">fdr%</text>
+        <text x="796" y="23" font-family="monospace" font-size="10" fill="#A0C8E0">bopo%</text>
+        <!-- Row 0 -->
+        <text x="26" y="48" font-family="monospace" font-size="10" fill="#6090A0">0</text>
+        <text x="44" y="48" font-family="monospace" font-size="10" fill="#0A3050">BPRS Al-Amin</text>
+        <text x="164" y="48" font-family="monospace" font-size="10" fill="#0A3050">Jakarta</text>
+        <text x="224" y="48" font-family="monospace" font-size="10" fill="#0A3050">DKI Jakarta</text>
+        <text x="318" y="48" font-family="monospace" font-size="10" fill="#0A3050">2001</text>
+        <text x="400" y="48" font-family="monospace" font-size="10" fill="#0A3050">1250</text>
+        <text x="480" y="48" font-family="monospace" font-size="10" fill="#0A3050">45000</text>
+        <text x="572" y="48" font-family="monospace" font-size="10" fill="#0A3050">62000</text>
+        <text x="630" y="48" font-family="monospace" font-size="10" fill="#D44040">2.1</text>
+        <text x="670" y="48" font-family="monospace" font-size="10" fill="#0A3050">12.5</text>
+        <text x="710" y="48" font-family="monospace" font-size="10" fill="#0A3050">18.2</text>
+        <text x="752" y="48" font-family="monospace" font-size="10" fill="#0A3050">86.4</text>
+        <text x="796" y="48" font-family="monospace" font-size="10" fill="#0A3050">72.3</text>
+        <!-- Row 1 -->
+        <rect x="7" y="53" width="886" height="22" fill="#EAF4F8"/>
+        <text x="26" y="68" font-family="monospace" font-size="10" fill="#6090A0">1</text>
+        <text x="44" y="68" font-family="monospace" font-size="10" fill="#0A3050">BPRS Berkah Syariah</text>
+        <text x="164" y="68" font-family="monospace" font-size="10" fill="#0A3050">Bogor</text>
+        <text x="224" y="68" font-family="monospace" font-size="10" fill="#0A3050">Jawa Barat</text>
+        <text x="318" y="68" font-family="monospace" font-size="10" fill="#0A3050">2005</text>
+        <text x="400" y="68" font-family="monospace" font-size="10" fill="#0A3050">890</text>
+        <text x="480" y="68" font-family="monospace" font-size="10" fill="#0A3050">32000</text>
+        <text x="572" y="68" font-family="monospace" font-size="10" fill="#0A3050">44000</text>
+        <text x="630" y="68" font-family="monospace" font-size="10" fill="#D44040">3.4</text>
+        <text x="670" y="68" font-family="monospace" font-size="10" fill="#0A3050">8.2</text>
+        <text x="710" y="68" font-family="monospace" font-size="10" fill="#0A3050">16.8</text>
+        <text x="752" y="68" font-family="monospace" font-size="10" fill="#0A3050">88.1</text>
+        <text x="796" y="68" font-family="monospace" font-size="10" fill="#0A3050">78.5</text>
+        <!-- Row 2 -->
+        <text x="26" y="90" font-family="monospace" font-size="10" fill="#6090A0">2</text>
+        <text x="44" y="90" font-family="monospace" font-size="10" fill="#0A3050">BPRS Mandiri Sejahtera</text>
+        <text x="164" y="90" font-family="monospace" font-size="10" fill="#0A3050">Bandung</text>
+        <text x="224" y="90" font-family="monospace" font-size="10" fill="#0A3050">Jawa Barat</text>
+        <text x="318" y="90" font-family="monospace" font-size="10" fill="#0A3050">1998</text>
+        <text x="400" y="90" font-family="monospace" font-size="10" fill="#0A3050">2100</text>
+        <text x="480" y="90" font-family="monospace" font-size="10" fill="#0A3050">78000</text>
+        <text x="572" y="90" font-family="monospace" font-size="10" fill="#0A3050">105000</text>
+        <text x="630" y="90" font-family="monospace" font-size="10" fill="#1F9060">1.8</text>
+        <text x="670" y="90" font-family="monospace" font-size="10" fill="#0A3050">15.3</text>
+        <text x="710" y="90" font-family="monospace" font-size="10" fill="#0A3050">20.1</text>
+        <text x="752" y="90" font-family="monospace" font-size="10" fill="#0A3050">82.7</text>
+        <text x="796" y="90" font-family="monospace" font-size="10" fill="#0A3050">68.9</text>
+        <!-- Row 3 -->
+        <rect x="7" y="95" width="886" height="22" fill="#EAF4F8"/>
+        <text x="26" y="111" font-family="monospace" font-size="10" fill="#6090A0">3</text>
+        <text x="44" y="111" font-family="monospace" font-size="10" fill="#0A3050">BPRS Amanah Insani</text>
+        <text x="164" y="111" font-family="monospace" font-size="10" fill="#0A3050">Surabaya</text>
+        <text x="224" y="111" font-family="monospace" font-size="10" fill="#0A3050">Jawa Timur</text>
+        <text x="318" y="111" font-family="monospace" font-size="10" fill="#0A3050">2003</text>
+        <text x="400" y="111" font-family="monospace" font-size="10" fill="#0A3050">1560</text>
+        <text x="480" y="111" font-family="monospace" font-size="10" fill="#0A3050">56000</text>
+        <text x="572" y="111" font-family="monospace" font-size="10" fill="#0A3050">76000</text>
+        <text x="630" y="111" font-family="monospace" font-size="10" fill="#D44040">2.9</text>
+        <text x="670" y="111" font-family="monospace" font-size="10" fill="#0A3050">10.8</text>
+        <text x="710" y="111" font-family="monospace" font-size="10" fill="#0A3050">17.4</text>
+        <text x="752" y="111" font-family="monospace" font-size="10" fill="#0A3050">85.6</text>
+        <text x="796" y="111" font-family="monospace" font-size="10" fill="#0A3050">74.2</text>
+        <!-- Row 4 -->
+        <text x="26" y="132" font-family="monospace" font-size="10" fill="#6090A0">4</text>
+        <text x="44" y="132" font-family="monospace" font-size="10" fill="#0A3050">BPRS Mitra Mentari</text>
+        <text x="164" y="132" font-family="monospace" font-size="10" fill="#0A3050">Yogyakarta</text>
+        <text x="224" y="132" font-family="monospace" font-size="10" fill="#0A3050">DI Yogyakarta</text>
+        <text x="318" y="132" font-family="monospace" font-size="10" fill="#0A3050">2007</text>
+        <text x="400" y="132" font-family="monospace" font-size="10" fill="#0A3050">1100</text>
+        <text x="480" y="132" font-family="monospace" font-size="10" fill="#0A3050">38000</text>
+        <text x="572" y="132" font-family="monospace" font-size="10" fill="#0A3050">52000</text>
+        <text x="630" y="132" font-family="monospace" font-size="10" fill="#1F9060">1.5</text>
+        <text x="670" y="132" font-family="monospace" font-size="10" fill="#0A3050">14.7</text>
+        <text x="710" y="132" font-family="monospace" font-size="10" fill="#0A3050">21.3</text>
+        <text x="752" y="132" font-family="monospace" font-size="10" fill="#0A3050">84.2</text>
+        <text x="796" y="132" font-family="monospace" font-size="10" fill="#0A3050">70.1</text>
+        <!-- dividers -->
+        <line x1="7" y1="32" x2="893" y2="32" stroke="#C0D8E8" stroke-width="1"/>
+        <line x1="7" y1="53" x2="893" y2="53" stroke="#C0D8E8" stroke-width=".5"/>
+        <line x1="7" y1="75" x2="893" y2="75" stroke="#C0D8E8" stroke-width=".5"/>
+        <line x1="7" y1="95" x2="893" y2="95" stroke="#C0D8E8" stroke-width=".5"/>
+        <line x1="7" y1="117" x2="893" y2="117" stroke="#C0D8E8" stroke-width=".5"/>
+        <line x1="7" y1="138" x2="893" y2="138" stroke="#C0D8E8" stroke-width=".5"/>
+        <!-- Legend annotations -->
+        <rect x="620" y="154" width="96" height="18" rx="4" fill="#FEE0E0" stroke="#D44040" stroke-width="1"/>
+        <text x="668" y="166" font-family="Source Sans 3,sans-serif" font-size="9.5" fill="#A01010" text-anchor="middle">NPF merah &gt; 2.5%</text>
+        <rect x="724" y="154" width="96" height="18" rx="4" fill="#D0EEE2" stroke="#1F9060" stroke-width="1"/>
+        <text x="772" y="166" font-family="Source Sans 3,sans-serif" font-size="9.5" fill="#0A4020" text-anchor="middle">NPF hijau ≤ 2.0%</text>
+        <text x="26" y="175" font-family="monospace" font-size="10" fill="#6090A0">5 rows × 12 columns  [20 total rows]</text>
+        <!-- Scroll hint -->
+        <rect x="700" y="190" width="190" height="16" rx="4" fill="#082840" stroke="#20C8D0" stroke-width="1"/>
+        <text x="795" y="201" font-family="Source Sans 3,sans-serif" font-size="9.5" fill="#20C8D0" text-anchor="middle">⟵ di Colab scroll kanan untuk lihat semua kolom</text>
+      </svg>
+    </div>
+
+    <!-- KETERANGAN KOLOM -->
+    <div style="background:var(--sf3);border:1px solid var(--bs);border-radius:var(--rs);padding:13px 16px;margin:12px 0;font-size:13px">
+      <div style="font-weight:700;color:var(--pri);margin-bottom:8px">📋 Keterangan 12 Kolom Dataset</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px 16px">
+        <div style="color:var(--txm)"><code style="font-size:11px;color:var(--acc)">nama_bprs</code> — nama bank</div>
+        <div style="color:var(--txm)"><code style="font-size:11px;color:var(--acc)">total_aset_juta</code> — total aset (juta Rp)</div>
+        <div style="color:var(--txm)"><code style="font-size:11px;color:var(--acc)">kota / provinsi</code> — lokasi</div>
+        <div style="color:var(--txm)"><code style="font-size:11px;color:var(--acc)">npf_persen</code> — rasio pembiayaan macet (maks 5%)</div>
+        <div style="color:var(--txm)"><code style="font-size:11px;color:var(--acc)">tahun_berdiri</code> — usia BPRS</div>
+        <div style="color:var(--txm)"><code style="font-size:11px;color:var(--acc)">roe_persen</code> — return on equity (profitabilitas)</div>
+        <div style="color:var(--txm)"><code style="font-size:11px;color:var(--acc)">total_nasabah</code> — jumlah nasabah</div>
+        <div style="color:var(--txm)"><code style="font-size:11px;color:var(--acc)">car_persen</code> — capital adequacy ratio (min 12%)</div>
+        <div style="color:var(--txm)"><code style="font-size:11px;color:var(--acc)">total_pembiayaan_juta</code> — total penyaluran</div>
+        <div style="color:var(--txm)"><code style="font-size:11px;color:var(--acc)">fdr_persen</code> — financing to deposit ratio</div>
+        <div style="color:var(--txm)"><code style="font-size:11px;color:var(--acc)"></code></div>
+        <div style="color:var(--txm)"><code style="font-size:11px;color:var(--acc)">bopo_persen</code> — efisiensi biaya (lebih rendah lebih baik)</div>
+      </div>
+    </div>
+
+    <div class="output-wrap">✅ Dataset dimuat: 20 baris, 12 kolom
+Kolom: ['nama_bprs', 'kota', 'provinsi', 'tahun_berdiri', 'total_nasabah',
+        'total_pembiayaan_juta', 'total_aset_juta', 'npf_persen',
+        'roe_persen', 'car_persen', 'fdr_persen', 'bopo_persen']</div>
+
+    <div class="callout tip">💡 <strong>Arti metrik keuangan syariah:</strong> <strong>NPF</strong> = Non-Performing Financing (pembiayaan macet, maks 5%) · <strong>ROE</strong> = Return on Equity (profitabilitas) · <strong>CAR</strong> = Capital Adequacy Ratio (kecukupan modal, min 12%) · <strong>FDR</strong> = Financing to Deposit Ratio · <strong>BOPO</strong> = rasio efisiensi biaya operasional.</div>
+    <div class="unlock-row">
+      <button class="btn-unlock" id="btn3" onclick="completeStep(3)">✓ Dataset BPRS Berhasil Dimuat ke DataFrame</button>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══ LANGKAH 5: EKSPLORASI EDA ══╗ -->
+<div class="step-card locked" id="step4">
+  <div class="step-hd">
+    <div class="step-num" id="sn4">5</div>
+    <div class="step-title">Eksplorasi Data Dasar (EDA)</div>
+    <span class="step-est">⏱ ~15 menit</span>
+  </div>
+  <div class="step-body">
+    <p>EDA (Exploratory Data Analysis) adalah langkah pertama setiap analisis — kita perlu <em>mengenal</em> data sebelum bisa menganalisis atau membuat model.</p>
+
+    <div class="code-wrap">
+      <div class="code-label"><span>🐍 Python · Cell 3 — Tipe Data &amp; Informasi</span><button class="copy-btn" onclick="copyCode(2)">Copy</button></div>
+      <pre class="code" id="code2"><span class="cm"># 1. Informasi tipe data setiap kolom</span>
+<span class="fn">print</span>(<span class="st">"=== TIPE DATA ==="</span>)
+<span class="fn">print</span>(df.<span class="fn">dtypes</span>)
+<span class="fn">print</span>()
+
+<span class="cm"># 2. Cek nilai kosong</span>
+<span class="fn">print</span>(<span class="st">"=== NILAI KOSONG (NaN) ==="</span>)
+<span class="fn">print</span>(df.<span class="fn">isnull</span>().<span class="fn">sum</span>())
+<span class="fn">print</span>()</pre>
+    </div>
+    <div class="output-wrap">=== TIPE DATA ===
+nama_bprs               object
+kota                    object
+total_nasabah            int64
+total_pembiayaan_juta    int64
+npf_persen             float64
+dtype: object
+
+=== NILAI KOSONG (NaN) ===
+nama_bprs                0
+kota                     0
+total_nasabah            0
+total_pembiayaan_juta    0
+npf_persen               0
+dtype: int64</div>
+
+    <div class="callout success">✅ <strong>Data bersih!</strong> Tidak ada nilai kosong (NaN = 0 di semua kolom). Di dunia nyata, data sering punya nilai kosong yang harus ditangani sebelum dianalisis.</div>
+
+    <div class="code-wrap">
+      <div class="code-label"><span>🐍 Python · Cell 4 — Statistik Deskriptif</span><button class="copy-btn" onclick="copyCode(3)">Copy</button></div>
+      <pre class="code" id="code3"><span class="cm"># 3. Statistik deskriptif (hanya kolom numerik)</span>
+<span class="fn">print</span>(<span class="st">"=== STATISTIK DESKRIPTIF ==="</span>)
+df.<span class="fn">describe</span>().<span class="fn">round</span>(<span class="nm">2</span>)</pre>
+    </div>
+    <div class="output-wrap">       total_nasabah  total_pembiayaan_juta  npf_persen
+count          8.00                   8.00        8.00
+mean        1253.75               45375.00        2.65
+std          418.19               16398.80        0.83
+min          780.00               28000.00        1.50
+25%          922.50               33500.00        2.05
+50%         1175.00               43500.00        2.60
+75%         1507.50               55000.00        3.18
+max         2100.00               78000.00        4.10</div>
+
+    <div class="code-wrap">
+      <div class="code-label"><span>🐍 Python · Cell 5 — Temuan Menarik</span><button class="copy-btn" onclick="copyCode(4)">Copy</button></div>
+      <pre class="code" id="code4"><span class="cm"># 4. BPRS dengan nasabah terbanyak</span>
+idx_max = df[<span class="st">'total_nasabah'</span>].<span class="fn">idxmax</span>()
+bprs_terbesar = df.<span class="fn">loc</span>[idx_max, <span class="st">'nama_bprs'</span>]
+nasabah_terbanyak = df.<span class="fn">loc</span>[idx_max, <span class="st">'total_nasabah'</span>]
+<span class="fn">print</span>(<span class="st">f"🏆 BPRS terbesar: {bprs_terbesar} ({nasabah_terbanyak:,} nasabah)"</span>)
+
+<span class="cm"># 5. NPF tertinggi (BPRS paling berisiko)</span>
+idx_npf = df[<span class="st">'npf_persen'</span>].<span class="fn">idxmax</span>()
+bprs_npf = df.<span class="fn">loc</span>[idx_npf, <span class="st">'nama_bprs'</span>]
+npf_val = df.<span class="fn">loc</span>[idx_npf, <span class="st">'npf_persen'</span>]
+<span class="fn">print</span>(<span class="st">f"⚠️  NPF tertinggi: {bprs_npf} ({npf_val}%)"</span>)
+
+<span class="cm"># 6. Rata-rata NPF industri (dari sampel ini)</span>
+avg_npf = df[<span class="st">'npf_persen'</span>].<span class="fn">mean</span>()
+<span class="fn">print</span>(<span class="st">f"📊 Rata-rata NPF: {avg_npf:.2f}% (batas aman BI: 5%)"</span>)
+
+<span class="cm"># 7. Total pembiayaan seluruh BPRS</span>
+total = df[<span class="st">'total_pembiayaan_juta'</span>].<span class="fn">sum</span>()
+<span class="fn">print</span>(<span class="st">f"💰 Total pembiayaan: Rp {total/1000:.1f} Miliar"</span>)</pre>
+    </div>
+    <div class="output-wrap">🏆 BPRS terbesar: BPRS Mandiri Sejahtera (2,100 nasabah)
+⚠️  NPF tertinggi: BPRS Artha Surya (4.1%)
+📊 Rata-rata NPF: 2.65% (batas aman BI: 5%)
+💰 Total pembiayaan: Rp 363.0 Miliar</div>
+
+    <div class="reflect">
+      <strong>☾ Refleksi Amanah:</strong> Dari data ini kita bisa melihat bahwa BPRS Artha Surya di Medan memiliki NPF tertinggi (4.1%). Jika kamu adalah analis di sana, bagaimana kamu menyampaikan temuan ini kepada manajemen dengan cara yang jujur (sidq) tapi tidak mempermalukan tim secara tidak perlu? Ini adalah dilema etika nyata seorang data analyst.
+    </div>
+    <div class="unlock-row">
+      <button class="btn-unlock" id="btn4" onclick="completeStep(4)">✓ Eksplorasi Data Selesai — Saya Sudah Memahami Output</button>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══ LANGKAH 6: TANTANGAN MANDIRI ══╗ -->
+<div class="step-card locked" id="step5">
+  <div class="step-hd">
+    <div class="step-num" id="sn5">6</div>
+    <div class="step-title">Tantangan Mandiri — Coba Sendiri!</div>
+    <span class="step-est">⏱ ~20 menit</span>
+  </div>
+  <div class="step-body">
+    <p>Saatnya kamu menulis kode sendiri. Gunakan DataFrame <code style="background:var(--sf3);padding:1px 5px;border-radius:3px;font-size:12px">df</code> yang sudah dibuat di langkah 4.</p>
+
+    <div class="challenge-box">
+      <h4>🎯 3 Tantangan Analitik</h4>
+      <div class="challenge-q"><strong>Tantangan 1 — Filter:</strong> Buat DataFrame baru bernama <code>df_aman</code> yang hanya berisi BPRS dengan NPF di bawah 3%. Berapa BPRS yang masuk kategori "aman"? <em>Hint: gunakan boolean indexing — <code>df[df['npf_persen'] &lt; 3]</code></em></div>
+      <div class="challenge-q"><strong>Tantangan 2 — Sorting:</strong> Urutkan DataFrame dari total nasabah terbesar ke terkecil, tampilkan hanya kolom <code>nama_bprs</code> dan <code>total_nasabah</code>. <em>Hint: <code>df.sort_values('total_nasabah', ascending=False)[['nama_bprs','total_nasabah']]</code></em></div>
+      <div class="challenge-q"><strong>Tantangan 3 — Kalkulasi Baru:</strong> Hitung rasio pembiayaan per nasabah (total_pembiayaan_juta ÷ total_nasabah) dan tambahkan sebagai kolom baru <code>pembiayaan_per_nasabah</code>. BPRS mana yang memiliki nilai tertinggi? <em>Hint: <code>df['kolom_baru'] = df['A'] / df['B']</code></em></div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-label"><span>🐍 Python · Cell 6 — Ruang Jawaban Tantangan</span></div>
+      <pre class="code"><span class="cm"># ── Tantangan 1 ──</span>
+<span class="cm"># df_aman = ...</span>
+<span class="cm"># print(f"BPRS dengan NPF aman: {len(df_aman)} lembaga")</span>
+
+<span class="cm"># ── Tantangan 2 ──</span>
+<span class="cm"># ...</span>
+
+<span class="cm"># ── Tantangan 3 ──</span>
+<span class="cm"># ...</span>
+</pre>
+    </div>
+
+    <div class="reflect">
+      <strong>☾ Pertanyaan Refleksi (tulis di cell teks baru di Colab):</strong><br><br>
+      Bayangkan kamu mempresentasikan temuan dari dataset ini kepada Direktur BPRS Artha Surya. Ia terkejut melihat NPF-nya paling tinggi. Bagaimana kamu menjelaskan temuan ini dengan prinsip <em>Amanah</em> (jujur tapi bertanggung jawab) dan <em>Itqan</em> (analisis yang tuntas — kamu sudah memverifikasi data, bukan hanya melihat angka mentah)?
+    </div>
+
+    <div class="callout tip">💡 <strong>Cara membuat text cell di Colab:</strong> Klik <strong>+ Text</strong> di toolbar atas, lalu tulis teks biasa atau markdown. Gunakan ini untuk mendokumentasikan pemikiran dan temuan kamu.</div>
+
+    <div class="unlock-row">
+      <button class="btn-unlock" id="btn5" onclick="completeStep(5)">✓ Tantangan Selesai — Saya Sudah Mencoba Semua 3</button>
+      <span class="unlock-hint">Tandai setelah mencoba — tidak harus sempurna!</span>
+    </div>
+  </div>
+</div>
+
+<!-- COMPLETION -->
+<div class="completion" id="completion">
+  <h2>🎉 Praktikum P01 Selesai!</h2>
+  <p>Kamu sudah berhasil setup Google Colab, import library, dan menganalisis dataset BPRS pertamamu dengan pandas. Itqan — dikerjakan dengan tuntas!</p>
+  <p style="margin-top:8px;font-size:12.5px;color:rgba(255,255,255,.5)">💾 Simpan notebook: File → Save (atau Ctrl+S). Rename jadi <strong>P01_Pengantar_ADA.ipynb</strong></p>
+  <a class="next-btn" href="Pertemuan-01-ADA.html">← Kembali ke Slide Teori P01</a>
+</div>
+
+</div><!-- end .main -->
+
+<script>
+const LAB_KEY = 'tazkia-ada-p01-lab-v1';
+const TOTAL_STEPS = 6;
+const CODE_TEXTS = [
+  `# ── Import library utama ADA ──\nimport pandas as pd\nimport numpy as np\nimport matplotlib.pyplot as plt\n\n# Cek versi library\nprint(f"pandas:     {pd.__version__}")\nprint(f"numpy:      {np.__version__}")\nprint(f"matplotlib: {plt.matplotlib.__version__}")\nprint("✅ Semua library siap digunakan!")`,
+
+  `import io\n\n# Dataset simulasi 8 BPRS Indonesia\ndata_csv = """nama_bprs,kota,total_nasabah,total_pembiayaan_juta,npf_persen\nBPRS Al-Amin,Jakarta,1250,45000,2.1\nBPRS Berkah Syariah,Bogor,890,32000,3.4\nBPRS Mandiri Sejahtera,Bandung,2100,78000,1.8\nBPRS Amanah Insani,Surabaya,1560,56000,2.9\nBPRS Mitra Mentari,Yogyakarta,1100,38000,1.5\nBPRS Artha Surya,Medan,780,28000,4.1\nBPRS Dana Mulia,Semarang,1430,52000,2.3\nBPRS Bina Amanah,Makassar,920,34000,3.1"""\n\n# Baca CSV dari string ke DataFrame\ndf = pd.read_csv(io.StringIO(data_csv))\nprint(f"✅ Dataset dimuat: {df.shape[0]} baris, {df.shape[1]} kolom")\nprint(f"   Kolom: {list(df.columns)}")\nprint()\ndf.head()`,
+
+  `# 1. Informasi tipe data setiap kolom\nprint("=== TIPE DATA ===")\nprint(df.dtypes)\nprint()\n\n# 2. Cek nilai kosong\nprint("=== NILAI KOSONG (NaN) ===")\nprint(df.isnull().sum())\nprint()`,
+
+  `# 3. Statistik deskriptif (hanya kolom numerik)\nprint("=== STATISTIK DESKRIPTIF ===")\ndf.describe().round(2)`,
+
+  `# 4. BPRS dengan nasabah terbanyak\nidx_max = df['total_nasabah'].idxmax()\nbprs_terbesar = df.loc[idx_max, 'nama_bprs']\nnasabah_terbanyak = df.loc[idx_max, 'total_nasabah']\nprint(f"🏆 BPRS terbesar: {bprs_terbesar} ({nasabah_terbanyak:,} nasabah)")\n\n# 5. NPF tertinggi\nidx_npf = df['npf_persen'].idxmax()\nbprs_npf = df.loc[idx_npf, 'nama_bprs']\nnpf_val = df.loc[idx_npf, 'npf_persen']\nprint(f"⚠️  NPF tertinggi: {bprs_npf} ({npf_val}%)")\n\n# 6. Rata-rata NPF\navg_npf = df['npf_persen'].mean()\nprint(f"📊 Rata-rata NPF: {avg_npf:.2f}% (batas aman BI: 5%)")\n\n# 7. Total pembiayaan\ntotal = df['total_pembiayaan_juta'].sum()\nprint(f"💰 Total pembiayaan: Rp {total/1000:.1f} Miliar")`,
+
+  `import io\n\n# Data 20 BPRS — lengkap 12 kolom\ndata_csv = """nama_bprs,kota,provinsi,tahun_berdiri,total_nasabah,total_pembiayaan_juta,total_aset_juta,npf_persen,roe_persen,car_persen,fdr_persen,bopo_persen\nBPRS Al-Amin,Jakarta,DKI Jakarta,2001,1250,45000,62000,2.1,12.5,18.2,86.4,72.3\nBPRS Berkah Syariah,Bogor,Jawa Barat,2005,890,32000,44000,3.4,8.2,16.8,88.1,78.5\nBPRS Mandiri Sejahtera,Bandung,Jawa Barat,1998,2100,78000,105000,1.8,15.3,20.1,82.7,68.9\nBPRS Amanah Insani,Surabaya,Jawa Timur,2003,1560,56000,76000,2.9,10.8,17.4,85.6,74.2\nBPRS Mitra Mentari,Yogyakarta,DI Yogyakarta,2007,1100,38000,52000,1.5,14.7,21.3,84.2,70.1\nBPRS Artha Surya,Medan,Sumatera Utara,2009,780,28000,39000,4.1,6.3,15.9,89.7,82.6\nBPRS Dana Mulia,Semarang,Jawa Tengah,2002,1430,52000,71000,2.3,11.9,18.7,83.8,71.8\nBPRS Bina Amanah,Makassar,Sulawesi Selatan,2006,920,34000,47000,3.1,7.8,16.2,87.3,79.4\nBPRS Syariah Barokah,Tangerang,Banten,2004,1680,61000,83000,2.2,13.4,19.6,84.9,72.7\nBPRS Al-Falah,Depok,Jawa Barat,2010,740,26000,36000,3.8,7.1,15.4,90.2,81.3\nBPRS Tazkia Utama,Bogor,Jawa Barat,2000,980,35000,48000,1.9,13.8,20.4,85.7,71.2\nBPRS Cahaya Syariah,Bandung,Jawa Barat,2008,1320,48000,65000,2.6,10.2,17.8,86.1,74.8\nBPRS Hidayah Utama,Malang,Jawa Timur,2011,860,31000,43000,3.2,8.9,16.6,88.4,78.1\nBPRS Nusantara Mandiri,Denpasar,Bali,2006,1150,42000,57000,2.0,14.1,19.9,83.5,70.6\nBPRS Muamalah Sejahtera,Palembang,Sumatera Selatan,2012,670,24000,33000,4.3,5.8,14.7,91.1,84.2\nBPRS Aman Sentosa,Bekasi,Jawa Barat,2003,1890,69000,93000,2.4,12.7,18.9,84.3,72.1\nBPRS Baitul Maal,Pekanbaru,Riau,2013,560,20000,28000,3.6,6.9,15.1,89.4,80.7\nBPRS Dinar Syariah,Padang,Sumatera Barat,2009,720,26000,35000,2.8,9.4,17.1,87.8,76.3\nBPRS Faisal Syariah,Makassar,Sulawesi Selatan,2014,490,18000,25000,4.8,4.2,13.8,92.3,86.1\nBPRS Gemilang,Samarinda,Kalimantan Timur,2010,810,29000,40000,3.3,7.6,16.0,88.7,79.8"""\n\ndf = pd.read_csv(io.StringIO(data_csv))\nprint(f"✅ Dataset dimuat: {df.shape[0]} baris, {df.shape[1]} kolom")\ndf.head()`
+];
+
+let labState = {done:[]};
+
+function loadLabState(){
+  try{const s=JSON.parse(localStorage.getItem(LAB_KEY));if(s)labState=s;}catch(e){}
+}
+function saveLabState(){
+  try{localStorage.setItem(LAB_KEY,JSON.stringify(labState));}catch(e){}
+}
+
+function applyLabState(){
+  labState.done.forEach(i=>applyDone(i));
+  updateTracker();
+}
+
+function applyDone(i){
+  const card=document.getElementById('step'+i);
+  if(!card) return;
+  card.className='step-card unlocked completed';
+  const num=document.getElementById('sn'+i);
+  if(num){num.style.background='var(--sya)';num.textContent='✓';}
+  const btn=document.getElementById('btn'+i);
+  if(btn){btn.className='btn-unlock done-state';btn.disabled=true;btn.textContent='✓ Selesai';}
+  // unlock next
+  const next=document.getElementById('step'+(i+1));
+  if(next) next.className='step-card unlocked';
+}
+
+function completeStep(i){
+  if(labState.done.includes(i)) return;
+  labState.done.push(i);
+  saveLabState();
+  applyDone(i);
+  updateTracker();
+  const next=document.getElementById('step'+(i+1));
+  if(next) next.scrollIntoView({behavior:'smooth',block:'start'});
+  if(labState.done.length===TOTAL_STEPS){
+    document.getElementById('completion').classList.add('show');
+    document.getElementById('completion').scrollIntoView({behavior:'smooth'});
+  }
+}
+
+function updateTracker(){
+  for(let i=0;i<TOTAL_STEPS;i++){
+    const c=document.getElementById('tc'+i);
+    const l=document.getElementById('tl'+i);
+    const ln=document.getElementById('tln'+i);
+    if(!c) continue;
+    if(labState.done.includes(i)){
+      c.className='tr-circle done';c.textContent='✓';
+      l.className='tr-label done';
+      if(ln) ln.className='tr-line done';
+    } else if(i===labState.done.length){
+      c.className='tr-circle active';
+      l.className='tr-label active';
+    } else {
+      c.className='tr-circle';
+      l.className='tr-label';
+    }
+  }
+}
+
+function copyCode(idx){
+  const text=CODE_TEXTS[idx];
+  if(!text) return;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btns=document.querySelectorAll('.copy-btn');
+    const b=btns[idx];
+    if(b){const orig=b.textContent;b.textContent='✓ Copied!';setTimeout(()=>b.textContent=orig,1500);}
+  }).catch(()=>{
+    // Fallback: select the pre element
+    const pre=document.getElementById('code'+idx);
+    if(pre){const r=document.createRange();r.selectNode(pre);window.getSelection().removeAllRanges();window.getSelection().addRange(r);}
+  });
+}
+
+loadLabState();
+applyLabState();
+</script>

@@ -1,0 +1,565 @@
+<title>RPS — Applied Data Analytics</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#EDF1F6;--sf:#FFFFFF;--sf2:#E4F0FA;--sf3:#F3F7FC;
+  --bd:#C4CDD8;--bs:#DDE3EC;
+  --tx:#0C1824;--txm:#475569;--txl:#8A9AB0;
+  --pri:#0A2848;--prid:#060F1C;--pmid:#2070B0;
+  --pril:#C8DEF0;--prx:#E0EEF8;
+  --acc:#20A8D0;--accl:#D0EEF8;--acc2:#30B8E0;
+  --sya:#1F9060;--syal:#D0EEE2;--syab:#40B080;
+  --uts-bg:#F0EAFA;--uts-bd:#7040B0;--uts-tx:#4A2090;
+  --uas-bg:#E4EEFA;--uas-bd:#2A50B0;--uas-tx:#18368A;
+  --lab-bg:#E8F6FC;--lab-bd:#2080B0;--lab-tx:#0A3858;
+  --c1:#0A2848;--c2:#2070B0;--c3:#20A8D0;
+  --c4:#7040B0;--c5:#1F9060;--c6:#D46020;
+  --r:8px;--rs:5px;
+  --shadow:0 4px 20px rgba(10,40,72,.10);
+  --shadow-sm:0 2px 8px rgba(10,40,72,.07);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#06101A;--sf:#0C1E30;--sf2:#081828;--sf3:#0A1420;
+  --bd:#182840;--bs:#102030;
+  --tx:#DCE8F4;--txm:#6A90B0;--txl:#2A4060;
+  --pri:#3080C0;--pmid:#50A0D8;--pril:#041828;--prx:#020C14;
+  --acc:#40C8F0;--accl:#041018;
+  --sya:#30B878;--syal:#041410;
+  --uts-bg:#180828;--uts-bd:#9060D0;--uts-tx:#B080F0;
+  --uas-bg:#080A28;--uas-bd:#4060D0;--uas-tx:#80A0F0;
+  --lab-bg:#041828;--lab-bd:#3090C0;--lab-tx:#70C0F0;
+}}
+:root[data-theme=dark]{
+  --bg:#06101A;--sf:#0C1E30;--sf2:#081828;--sf3:#0A1420;
+  --bd:#182840;--bs:#102030;
+  --tx:#DCE8F4;--txm:#6A90B0;--txl:#2A4060;
+  --pri:#3080C0;--pmid:#50A0D8;--pril:#041828;--prx:#020C14;
+  --acc:#40C8F0;--accl:#041018;
+  --sya:#30B878;--syal:#041410;
+  --uts-bg:#180828;--uts-bd:#9060D0;--uts-tx:#B080F0;
+  --uas-bg:#080A28;--uas-bd:#4060D0;--uas-tx:#80A0F0;
+  --lab-bg:#041828;--lab-bd:#3090C0;--lab-tx:#70C0F0;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color:var(--tx);margin:0;font-size:15px;line-height:1.6}
+
+/* ── HEADER ── */
+.hd{background:linear-gradient(160deg,#060F1C 0%,#0A2848 55%,#1A4870 100%);color:#fff;padding:0 0 0;position:relative;overflow:hidden}
+.hd-stars{position:absolute;inset:0;pointer-events:none;opacity:.13}
+.hd-inner{max-width:900px;margin:0 auto;padding:36px 28px 14px;position:relative;z-index:1}
+.hd-eyebrow{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.hd-line{width:28px;height:1px;background:var(--acc)}
+.hd-eyetxt{font-size:11.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--acc)}
+.hd-title{font-family:'Amiri',serif;font-size:32px;font-weight:700;margin:0 0 5px;line-height:1.15}
+.hd-sub{font-size:15px;color:rgba(255,255,255,.55);margin:0 0 20px}
+.hd-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.hpill{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:16px;padding:3px 13px;font-size:12px;color:rgba(255,255,255,.75)}
+.hpill strong{color:#fff}
+.hd-arch{line-height:0}
+.hd-arch svg{display:block;width:100%;height:28px}
+.synergy-banner{background:rgba(32,168,208,.12);border:1px solid rgba(32,168,208,.25);border-radius:var(--rs);padding:9px 14px;margin-bottom:16px;font-size:13px;color:rgba(255,255,255,.75);display:flex;align-items:center;gap:8px}
+.synergy-banner strong{color:#40C8F0}
+
+/* ── TABS ── */
+.tabs-wrap{background:var(--sf);border-bottom:1px solid var(--bs);position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(10,40,72,.07)}
+.tabs{display:flex;max-width:900px;margin:0 auto;overflow-x:auto;padding:0 20px}
+.tab{padding:14px 18px;font-size:13.5px;font-weight:600;color:var(--txl);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:all .2s;flex-shrink:0}
+.tab:hover{color:var(--pmid)}
+.tab.active{color:var(--pri);border-bottom-color:var(--acc);background:var(--bg)}
+
+/* ── CONTENT ── */
+.tab-content{display:none;max-width:900px;margin:0 auto;padding:28px 24px 60px}
+.tab-content.active{display:block}
+
+/* ── CARDS ── */
+.card{background:var(--sf);border:1px solid var(--bs);border-radius:var(--r);margin-bottom:14px;box-shadow:var(--shadow-sm);overflow:hidden}
+.card-hd{display:flex;align-items:center;gap:11px;padding:14px 20px;border-bottom:1px solid var(--bs);background:var(--sf3)}
+.card-icon{font-size:20px}
+.card-title{font-family:'Amiri',serif;font-size:17px;font-weight:700;color:var(--pri)}
+.card-body{padding:18px 22px}
+
+/* ── STAT ROW ── */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+@media(max-width:600px){.stat-row{grid-template-columns:1fr 1fr}}
+.stat{background:var(--sf);border:1px solid var(--bs);border-radius:var(--rs);padding:12px 15px;text-align:center}
+.stat-val{font-family:'Amiri',serif;font-size:22px;font-weight:700;color:var(--pri);line-height:1.1}
+.stat-lbl{font-size:11.5px;color:var(--txl);margin-top:3px}
+
+/* ── TYPOGRAPHY ── */
+h3.sec{font-family:'Amiri',serif;font-size:19px;font-weight:700;color:var(--pri);margin:22px 0 10px;display:flex;align-items:center;gap:8px}
+h3.sec::before{content:'';width:4px;height:18px;background:var(--acc);border-radius:2px;flex-shrink:0}
+p{color:var(--txm);margin:0 0 11px}
+ul.lst{padding-left:0;list-style:none;margin:0 0 13px}
+ul.lst li{padding:5px 0 5px 18px;position:relative;color:var(--txm);border-bottom:1px solid var(--bs);font-size:13.5px;line-height:1.5}
+ul.lst li:last-child{border-bottom:none}
+ul.lst li::before{content:'▸';position:absolute;left:0;color:var(--pmid);font-size:11px;top:7px}
+ul.lst li strong{color:var(--tx)}
+.callout{border-radius:var(--rs);padding:12px 16px;margin:12px 0;font-size:13.5px;line-height:1.6}
+.callout.info{background:var(--prx);border-left:4px solid var(--pmid);color:var(--txm)}
+.callout.sya{background:var(--syal);border-left:4px solid var(--sya);color:var(--txm)}
+.callout.syn{background:rgba(32,168,208,.08);border-left:4px solid var(--acc);color:var(--txm)}
+
+/* ── CPMK CARDS ── */
+.cpmk-grid{display:flex;flex-direction:column;gap:9px}
+.cpmk-card{background:var(--sf3);border:1px solid var(--bs);border-radius:var(--rs);padding:13px 16px;border-left:4px solid var(--pmid)}
+.cpmk-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.cpmk-id{font-weight:700;font-size:12.5px;color:var(--pmid)}
+.cpmk-bloom{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--prx);color:var(--pmid)}
+.cpmk-cpl{font-size:11px;color:var(--txl);margin-left:auto}
+.cpmk-rumusan{font-size:13.5px;font-weight:600;color:var(--tx);margin-bottom:4px}
+.cpmk-detail{font-size:12.5px;color:var(--txm);line-height:1.5}
+.cpmk-prt{font-size:11px;color:var(--txl);margin-top:4px}
+
+/* ── ASSESSMENT ── */
+.assess-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+@media(max-width:560px){.assess-grid{grid-template-columns:1fr}}
+.assess-card{border-radius:var(--rs);padding:13px 15px;border:1px solid var(--bs)}
+.assess-card.lab{background:var(--lab-bg);border-color:var(--lab-bd)}
+.assess-card.uts{background:var(--uts-bg);border-color:var(--uts-bd)}
+.assess-card.uas{background:var(--uas-bg);border-color:var(--uas-bd)}
+.assess-card.part{background:var(--sf3)}
+.assess-pct{font-family:'Amiri',serif;font-size:28px;font-weight:700;line-height:1}
+.assess-card.lab .assess-pct{color:var(--lab-tx)}
+.assess-card.uts .assess-pct{color:var(--uts-tx)}
+.assess-card.uas .assess-pct{color:var(--uas-tx)}
+.assess-card.part .assess-pct{color:var(--txm)}
+.assess-name{font-weight:700;font-size:13.5px;margin:3px 0;color:var(--tx)}
+.assess-desc{font-size:12px;color:var(--txm);line-height:1.5}
+
+/* ── TIMELINE ── */
+.phase-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--txl);padding:10px 0 5px;display:flex;align-items:center;gap:8px}
+.phase-label::after{content:'';flex:1;height:1px;background:var(--bs)}
+.meeting-card{background:var(--sf);border:1px solid var(--bs);border-radius:var(--rs);margin-bottom:8px;overflow:hidden;cursor:pointer;transition:box-shadow .2s}
+.meeting-card:hover{box-shadow:var(--shadow)}
+.meeting-summary{display:flex;align-items:center;gap:11px;padding:11px 16px}
+.meet-num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;color:#fff;flex-shrink:0}
+.meet-main{flex:1;min-width:0}
+.meet-title{font-weight:700;font-size:13.5px;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meet-meta{font-size:11.5px;color:var(--txl);margin-top:1px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chip{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:10px;white-space:nowrap}
+.chip-lab{background:var(--lab-bg);color:var(--lab-tx);border:1px solid var(--lab-bd)}
+.chip-cermah{background:var(--prx);color:var(--pmid)}
+.chip-diskusi{background:var(--sf2);color:var(--pmid)}
+.chip-part{background:#F5EBD8;color:#6A2808}
+.chip-uts{background:var(--uts-bg);color:var(--uts-tx);border:1px solid var(--uts-bd)}
+.chip-uas{background:var(--uas-bg);color:var(--uas-tx);border:1px solid var(--uas-bd)}
+.chip-proj{background:#E0F4E8;color:#0A4020;border:1px solid #60C080}
+.chip-cpmk{background:var(--sf3);color:var(--txm);border:1px solid var(--bs)}
+.meet-expand{font-size:16px;color:var(--txl);flex-shrink:0;transition:transform .25s}
+.meeting-card.open .meet-expand{transform:rotate(180deg)}
+.meeting-detail{display:none;padding:0 16px 14px;border-top:1px solid var(--bs);background:var(--sf3)}
+.meeting-card.open .meeting-detail{display:block}
+.detail-section{margin:12px 0}
+.detail-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--txl);margin-bottom:5px}
+.detail-text{font-size:13.5px;color:var(--txm);line-height:1.6}
+.sya-tag{display:inline-flex;align-items:center;gap:6px;background:var(--syal);border:1px solid var(--syab);border-radius:var(--rs);padding:6px 12px;font-size:12.5px;color:var(--sya);font-weight:600;margin-bottom:6px}
+.sya-isi{font-size:13px;color:var(--txm);line-height:1.6}
+.sya-ref{font-size:11.5px;color:var(--syab);margin-top:4px;font-style:italic}
+
+/* ── PROJECT TAB ── */
+.proj-phase{background:var(--sf);border:1px solid var(--bs);border-radius:var(--r);margin-bottom:12px;overflow:hidden}
+.proj-phase-hd{background:linear-gradient(135deg,#0A2848,#1A4870);color:#fff;padding:13px 20px;display:flex;align-items:center;gap:10px}
+.proj-phase-num{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.proj-phase-title{font-family:'Amiri',serif;font-size:16px;font-weight:700}
+.proj-phase-sub{font-size:12px;color:rgba(255,255,255,.6)}
+.proj-phase-body{padding:16px 20px}
+.proj-deliverable{background:var(--sf3);border:1px solid var(--bs);border-radius:var(--rs);padding:11px 14px;margin-bottom:8px;font-size:13.5px;color:var(--txm)}
+.proj-deliverable strong{color:var(--tx)}
+.rubric-table{width:100%;border-collapse:collapse;font-size:13px}
+.rubric-table th{background:var(--pri);color:#fff;padding:7px 12px;text-align:left;font-size:11.5px}
+.rubric-table td{padding:7px 12px;border-bottom:1px solid var(--bs);color:var(--txm)}
+.rubric-table tr:last-child td{border-bottom:none}
+.rubric-table tr:nth-child(even) td{background:var(--sf3)}
+</style>
+
+<!-- HEADER -->
+<div class="hd">
+  <svg class="hd-stars" viewBox="0 0 600 220" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs><pattern id="sp2" width="80" height="80" patternUnits="userSpaceOnUse">
+      <path d="M56,40 L46.5,42.7 L51.3,51.3 L42.7,46.5 L40,56 L37.3,46.5 L28.7,51.3 L33.5,42.7 L24,40 L33.5,37.3 L28.7,28.7 L37.3,33.5 L40,24 L42.7,33.5 L51.3,28.7 L46.5,37.3 Z" fill="none" stroke="#20A8D0" stroke-width="1"/>
+      <line x1="0" y1="40" x2="24" y2="40" stroke="#20A8D0" stroke-width=".4" opacity=".5"/>
+      <line x1="56" y1="40" x2="80" y2="40" stroke="#20A8D0" stroke-width=".4" opacity=".5"/>
+      <line x1="40" y1="0" x2="40" y2="24" stroke="#20A8D0" stroke-width=".4" opacity=".5"/>
+      <line x1="40" y1="56" x2="40" y2="80" stroke="#20A8D0" stroke-width=".4" opacity=".5"/>
+    </pattern></defs>
+    <rect width="100%" height="100%" fill="url(#sp2)"/>
+  </svg>
+  <div class="hd-inner">
+    <div class="hd-eyebrow"><div class="hd-line"></div><span class="hd-eyetxt">Universitas Tazkia — Fakultas Ekonomi &amp; Bisnis Islam</span></div>
+    <h1 class="hd-title">Applied Data Analytics</h1>
+    <p class="hd-sub">Dari Python ke Aplikasi Analitik: Wrangling, Modeling, dan Deployment untuk Keputusan Bisnis</p>
+    <div class="synergy-banner">⚡ <span><strong>Sinergi Paralel:</strong> Matkul ini berjalan bersamaan dengan BIV — output Python ADA (dataset bersih, model) menjadi input dashboard di BIV pada P13</span></div>
+    <div class="hd-pills">
+      <span class="hpill"><strong>DTA-401</strong></span>
+      <span class="hpill">3 SKS</span>
+      <span class="hpill">Ganjil 2026/2027</span>
+      <span class="hpill">Prasyarat: Introduction to Data Analytics</span>
+      <span class="hpill">70% Praktikum</span>
+    </div>
+  </div>
+  <div class="hd-arch"><svg viewBox="0 0 1200 28" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,28 L0,16 Q20,4 40,16 Q60,28 80,16 Q100,4 120,16 Q140,28 160,16 Q180,4 200,16 Q220,28 240,16 Q260,4 280,16 Q300,28 320,16 Q340,4 360,16 Q380,28 400,16 Q420,4 440,16 Q460,28 480,16 Q500,4 520,16 Q540,28 560,16 Q580,4 600,16 Q620,28 640,16 Q660,4 680,16 Q700,28 720,16 Q740,4 760,16 Q780,28 800,16 Q820,4 840,16 Q860,28 880,16 Q900,4 920,16 Q940,28 960,16 Q980,4 1000,16 Q1020,28 1040,16 Q1060,4 1080,16 Q1100,28 1120,16 Q1140,4 1160,16 Q1180,28 1200,16 L1200,28 Z" fill="var(--bg)"/>
+  </svg></div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('ringkasan',this)">Ringkasan</div>
+    <div class="tab" onclick="showTab('cpmk',this)">CPL &amp; CPMK</div>
+    <div class="tab" onclick="showTab('penilaian',this)">Penilaian</div>
+    <div class="tab" onclick="showTab('jadwal',this)">Jadwal</div>
+    <div class="tab" onclick="showTab('project',this)">Project</div>
+  </div>
+</div>
+
+<!-- TAB: RINGKASAN -->
+<div class="tab-content active" id="tab-ringkasan">
+  <div class="stat-row">
+    <div class="stat"><div class="stat-val">16</div><div class="stat-lbl">Pertemuan</div></div>
+    <div class="stat"><div class="stat-val">70%</div><div class="stat-lbl">Bobot Praktikum</div></div>
+    <div class="stat"><div class="stat-val">6</div><div class="stat-lbl">CPMK</div></div>
+    <div class="stat"><div class="stat-val">12</div><div class="stat-lbl">Lab Reports</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-icon">🎯</div><div class="card-title">Deskripsi &amp; Visi Matakuliah</div></div>
+    <div class="card-body">
+      <p>Applied Data Analytics (ADA) adalah matakuliah lanjutan yang membekali mahasiswa dengan kemampuan praktis menggunakan <strong>Python</strong> sebagai alat utama analisis data bisnis. Berbeda dari Pengantar Data Analytics yang menggunakan RapidMiner (visual/no-code), ADA membuka "kotak hitam" tersebut — mahasiswa memahami dan mengendalikan setiap langkah proses analitik.</p>
+      <p>Visi akhir: mahasiswa mampu membangun <strong>aplikasi analitik yang dapat digunakan orang lain</strong> — bukan hanya notebook yang bisa dijalankan sendiri.</p>
+      <div class="callout info">
+        <strong>Mahasiswa sudah tahu apa:</strong> Konsep EDA, preprocessing, klasifikasi/regresi dasar, cross-validation — lewat RapidMiner. ADA membangun di atas pondasi itu, bukan mengulang dari awal.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-icon">🛠️</div><div class="card-title">Tech Stack</div></div>
+    <div class="card-body">
+      <ul class="lst">
+        <li><strong>Environment:</strong> Google Colab (gratis, zero setup) → Jupyter Notebook lokal untuk project akhir</li>
+        <li><strong>Wrangling:</strong> pandas, numpy — standar industri, ekosistem terlengkap</li>
+        <li><strong>Visualisasi Analisis:</strong> matplotlib, seaborn (eksplorasi) + Plotly Express (interaktif)</li>
+        <li><strong>ML Pipeline:</strong> scikit-learn (preprocessing, model, evaluasi) — library ML paling banyak dipakai dunia kerja</li>
+        <li><strong>App Deployment:</strong> Streamlit — Python murni, jadi web app dalam 10 menit, gratis deploy ke Streamlit Community Cloud</li>
+        <li><strong>Large Data:</strong> DuckDB (SQL pada file CSV/Parquet tanpa database server) + polars (pandas 10–50× lebih cepat untuk file besar)</li>
+        <li><strong>Dataset:</strong> Kaggle Datasets — tersedia ratusan dataset bisnis 1–10 juta baris secara gratis</li>
+      </ul>
+      <div class="callout syn"><strong>Sinergi dengan BIV:</strong> Pada P13, mahasiswa mengekspor hasil analisis Python (dataset bersih + insight) ke format yang langsung bisa dibuka di Power BI. Satu dataset, dua matkul, satu cerita.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-icon">🗂️</div><div class="card-title">Empat Fase Pembelajaran</div></div>
+    <div class="card-body">
+      <ul class="lst">
+        <li><strong>Fase 1 — Bridge (P1–4):</strong> Transisi dari RapidMiner ke Python. Mahasiswa mengulang workflow EDA yang sudah dikenal tapi kali ini dengan kode, bukan klik.</li>
+        <li><strong>Fase 2 — Analytics Core (P5–9):</strong> EDA mendalam, feature engineering, ML pipeline yang benar, interpretasi bisnis. UTS = mini project EDA + simple model.</li>
+        <li><strong>Fase 3 — Build &amp; Scale (P10–14):</strong> Clustering, time series, Streamlit app, kerja efisien dengan data besar menggunakan DuckDB dan polars.</li>
+        <li><strong>Fase 4 — Capstone (P15–16):</strong> Workshop + Demo Day. Setiap kelompok mendemokan analytics app mereka kepada kelas.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: CPMK -->
+<div class="tab-content" id="tab-cpmk">
+  <div class="card">
+    <div class="card-hd"><div class="card-icon">📐</div><div class="card-title">Capaian Pembelajaran Lulusan (CPL) yang Didukung</div></div>
+    <div class="card-body">
+      <ul class="lst">
+        <li><strong>CPL-KK3:</strong> Mampu mengaplikasikan teknik analisis data dan pemrograman untuk menghasilkan insight yang mendukung keputusan bisnis</li>
+        <li><strong>CPL-KK4:</strong> Mampu merancang dan membangun solusi berbasis data yang dapat dioperasikan oleh pengguna non-teknis</li>
+        <li><strong>CPL-S2:</strong> Menunjukkan integritas ilmiah dengan menyajikan hasil analisis secara jujur dan bertanggung jawab</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 class="sec">CPMK — Capaian Pembelajaran Matakuliah</h3>
+  <div class="cpmk-grid" id="cpmkGrid"></div>
+</div>
+
+<!-- TAB: PENILAIAN -->
+<div class="tab-content" id="tab-penilaian">
+  <h3 class="sec">Komponen Penilaian</h3>
+  <div class="assess-grid">
+    <div class="assess-card lab">
+      <div class="assess-pct">30%</div>
+      <div class="assess-name">Lab Reports (12×)</div>
+      <div class="assess-desc">Setiap pertemuan lab menghasilkan satu laporan praktikum (Colab notebook + ringkasan temuan 1 halaman). Dinilai dari kebenaran kode, kualitas analisis, dan interpretasi bisnis.</div>
+    </div>
+    <div class="assess-card uts">
+      <div class="assess-pct">25%</div>
+      <div class="assess-name">Mini Project UTS (P9)</div>
+      <div class="assess-desc">Kelompok 3–4 orang. EDA lengkap + minimal 1 model prediksi + visualisasi Plotly. Presentasi 10 menit. Dataset dipilih kelompok dari Kaggle (wajib relevan dengan bisnis/ekonomi Islam).</div>
+    </div>
+    <div class="assess-card uas">
+      <div class="assess-pct">35%</div>
+      <div class="assess-name">Analytics App (UAS Demo Day P16)</div>
+      <div class="assess-desc">Streamlit app fungsional: upload data → EDA otomatis → minimal 1 prediksi → insight bisnis. Deploy ke Streamlit Community Cloud. Dinilai dengan rubrik 5 kriteria.</div>
+    </div>
+    <div class="assess-card part">
+      <div class="assess-pct">10%</div>
+      <div class="assess-name">Partisipasi &amp; Kehadiran</div>
+      <div class="assess-desc">Pertanyaan aktif, kontribusi diskusi, peer review antar kelompok. Kehadiran minimal 75% untuk bisa mengikuti UAS.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-icon">📊</div><div class="card-title">Rubrik Penilaian Analytics App (UAS)</div></div>
+    <div class="card-body">
+      <div style="overflow-x:auto">
+      <table class="rubric-table">
+        <thead><tr><th>Kriteria</th><th>Bobot</th><th>Sangat Baik (A)</th><th>Baik (B)</th><th>Cukup (C)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Fungsionalitas App</strong></td><td>25%</td><td>App berjalan tanpa error, semua fitur bekerja, deployed online</td><td>App berjalan dengan sedikit error minor</td><td>App ada tapi beberapa fitur tidak berfungsi</td></tr>
+          <tr><td><strong>Kualitas Analisis</strong></td><td>30%</td><td>EDA mendalam, model yang tepat, evaluasi komprehensif</td><td>EDA memadai, model standar dengan evaluasi dasar</td><td>EDA minimal, model ada tapi tidak dievaluasi dengan baik</td></tr>
+          <tr><td><strong>Interpretasi Bisnis</strong></td><td>25%</td><td>Insight actionable, rekomendasi konkrit untuk bisnis</td><td>Insight ada tapi kurang konkrit</td><td>Hanya menyajikan angka tanpa interpretasi</td></tr>
+          <tr><td><strong>UX &amp; Desain App</strong></td><td>10%</td><td>Interface intuitif, navigasi jelas, cocok untuk non-teknis</td><td>Interface cukup baik tapi ada kebingungan</td><td>Interface ada tapi membingungkan</td></tr>
+          <tr><td><strong>Insersi Nilai Islami</strong></td><td>10%</td><td>Topik/analisis berkontribusi nyata pada maslahat, dijelaskan dengan baik</td><td>Ada relevansi syariah tapi kurang elaborasi</td><td>Relevansi syariah disebutkan tapi sangat superfisial</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: JADWAL -->
+<div class="tab-content" id="tab-jadwal">
+  <div class="callout info" style="margin-bottom:16px">Klik setiap pertemuan untuk melihat detail topik, syariah insert, dan metode pembelajaran.</div>
+  <div id="jadwalContainer"></div>
+</div>
+
+<!-- TAB: PROJECT -->
+<div class="tab-content" id="tab-project">
+  <div class="callout syn" style="margin-bottom:16px"><strong>Koordinasi dengan BIV:</strong> Kelompok proyek ADA dan BIV sebaiknya sama — data yang dianalisis di ADA divisualisasikan di BIV, sehingga demo day bisa saling melengkapi.</div>
+
+  <div class="proj-phase">
+    <div class="proj-phase-hd"><div class="proj-phase-num">1</div><div><div class="proj-phase-title">Mini Project UTS — EDA + Simple Model</div><div class="proj-phase-sub">P9 · Kelompok 3–4 orang · Presentasi 10 menit</div></div></div>
+    <div class="proj-phase-body">
+      <div class="proj-deliverable"><strong>Deliverable:</strong> Colab Notebook (.ipynb) + Slide presentasi (maks 10 slide) + demo live notebook</div>
+      <div class="proj-deliverable"><strong>Konten minimal:</strong> (1) Latar belakang dataset &amp; pertanyaan bisnis; (2) EDA lengkap dengan insight bermakna; (3) Minimal 1 model klasifikasi atau regresi; (4) Evaluasi model dengan metrik yang tepat; (5) Rekomendasi bisnis berbasis hasil analisis; (6) Relevansi dengan nilai Islami</div>
+      <div class="proj-deliverable"><strong>Dataset pilihan:</strong> Wajib dari Kaggle, minimal 5.000 baris, relevan dengan bisnis/keuangan/ekonomi Islam (e-commerce, UMKM, keuangan syariah, pertanian, kesehatan)</div>
+    </div>
+  </div>
+
+  <div class="proj-phase">
+    <div class="proj-phase-hd"><div class="proj-phase-num">2</div><div><div class="proj-phase-title">Analytics App (UAS) — Streamlit Application</div><div class="proj-phase-sub">P16 Demo Day · Kelompok 3–4 orang · Demo 15 menit</div></div></div>
+    <div class="proj-phase-body">
+      <div class="proj-deliverable"><strong>Deliverable:</strong> (1) Link Streamlit app yang sudah deployed; (2) GitHub repository dengan kode lengkap; (3) README.md yang menjelaskan cara penggunaan; (4) Laporan singkat 3–5 halaman</div>
+      <div class="proj-deliverable"><strong>Fitur minimum app:</strong> Upload/load dataset → tampil ringkasan statistik → minimal 3 visualisasi interaktif → minimal 1 model prediksi dengan input form → halaman "About / Interpretasi" yang menjelaskan insight bisnis</div>
+      <div class="proj-deliverable"><strong>Contoh topik yang disarankan:</strong> Prediksi risiko pembiayaan syariah · Segmentasi nasabah koperasi · Forecasting demand UMKM halal · Analisis sentimen ulasan produk halal · Deteksi anomali transaksi keuangan</div>
+      <div class="callout sya" style="margin-top:10px"><strong>Nilai Syariah dalam Proyek:</strong> Setiap kelompok wajib merefleksikan bagaimana analisis mereka berkontribusi pada <em>maslahah</em> (kemaslahatan umum) dan bagaimana mereka menjaga <em>amanah</em> dalam menyajikan hasil analisis secara jujur.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const CPMK_DATA = [
+  {id:'CPMK-1',bc:'b2',bloom:'C2 — Memahami',cpl:'CPL-KK3',prt:'1–2',
+   rumusan:'Menjelaskan posisi ADA dalam ekosistem data science dan transisi dari tools visual ke pemrograman Python',
+   detail:'Mencakup perbedaan RapidMiner vs Python, setup environment (Colab/Jupyter), struktur dasar pandas DataFrame, dan filosofi "kode sebagai kontrol penuh."'},
+  {id:'CPMK-2',bc:'b3',bloom:'C3 — Menerapkan',cpl:'CPL-KK3',prt:'2–6',
+   rumusan:'Menggunakan Python (pandas, numpy) untuk data wrangling, EDA, dan visualisasi analitik pada dataset bisnis nyata',
+   detail:'Mencakup filtering, groupby, merge, handling missing values, outlier, statistical summary, matplotlib/seaborn untuk eksplorasi, dan Plotly untuk visualisasi interaktif.'},
+  {id:'CPMK-3',bc:'b3',bloom:'C3 — Menerapkan',cpl:'CPL-KK3',prt:'6–9',
+   rumusan:'Membangun ML pipeline dengan scikit-learn untuk kasus klasifikasi, regresi, dan clustering pada data bisnis',
+   detail:'Mencakup preprocessing pipeline (encoding, scaling), train-test split, cross-validation, GridSearchCV, dan implementasi classification, regression, serta clustering (K-Means).'},
+  {id:'CPMK-4',bc:'b4',bloom:'C4 — Menganalisis',cpl:'CPL-KK3',prt:'7–11',
+   rumusan:'Mengevaluasi dan menginterpretasikan hasil model secara bisnis, termasuk analisis bias dan algorithmic fairness',
+   detail:'Mencakup confusion matrix, precision/recall/F1, ROC-AUC, feature importance, SHAP basics, interpretasi bisnis dari model, serta awareness terhadap bias dalam data dan model.'},
+  {id:'CPMK-5',bc:'b6',bloom:'C6 — Mencipta',cpl:'CPL-KK4',prt:'12–13',
+   rumusan:'Membangun dan men-deploy aplikasi analitik interaktif menggunakan Streamlit yang dapat digunakan oleh pengguna non-teknis',
+   detail:'Mencakup anatomi Streamlit app, widgets, caching, multi-page, layout, session_state, integrasi model ML, dan deployment ke Streamlit Community Cloud.'},
+  {id:'CPMK-6',bc:'b4',bloom:'C4 — Menganalisis',cpl:'CPL-KK4',prt:'14',
+   rumusan:'Menganalisis dan memproses dataset berskala besar secara efisien menggunakan DuckDB dan polars',
+   detail:'Mencakup perbedaan pandas vs polars untuk data besar, DuckDB SQL on CSV/Parquet, format Parquet vs CSV, dan strategi partisi data untuk analisis skala produksi.'},
+];
+
+const MEETINGS = [
+  {num:1,cpmk:'CPMK-1',bc:'b2',col:'#0A2848',phase:1,
+   title:'Pengantar ADA + Setup Python Environment',
+   ref:'Dokumentasi pandas, numpy; RapidMiner vs Python comparison',
+   topik:'Posisi ADA dalam data science pipeline; perbedaan mendasar RapidMiner (visual/no-code) vs Python (kode/kontrol penuh); setup Google Colab; struktur pertama pandas DataFrame — membaca CSV, .head(), .info(), .describe(); filosofi "reproducible analysis."',
+   syariah:{nilai:'Amanah & Itqan',isi:'Analisis data yang amanah berarti tidak memanipulasi, memilih data sembarangan, atau menyajikan hasil yang menyesatkan. Itqan mendorong kode yang rapi, terdokumentasi, dan dapat direproduksi oleh orang lain.',ref:'QS. Al-Baqarah: 282 — dasar kewajiban pencatatan yang akurat'},
+   metode:['Ceramah','LAB'],penilaian:{label:'Partisipasi',cls:'chip-part'}},
+
+  {num:2,cpmk:'CPMK-2',bc:'b3',col:'#1A4870',phase:1,
+   title:'pandas Essentials — Filtering, Groupby, Merge',
+   ref:'Python for Data Analysis — Wes McKinney (Ch. 5–8)',
+   topik:'pandas DataFrame: indexing (loc/iloc), boolean filtering, .query(); groupby dan aggregasi (.agg(), .transform()); merge/join antar DataFrame; apply dengan lambda; membandingkan setiap operasi dengan padanan operator di RapidMiner.',
+   syariah:{nilai:"Iqra' — Membaca dan Memahami",isi:"Perintah Allah yang pertama turun adalah iqra' (membaca). Dalam konteks data analytics, 'membaca data' dengan pandas adalah langkah pertama memahami realitas bisnis yang tersembunyi di balik angka.",ref:"QS. Al-'Alaq: 1 — 'Bacalah dengan (menyebut) nama Tuhanmu'"},
+   metode:['LAB'],penilaian:{label:'Lab 1',cls:'chip-lab'}},
+
+  {num:3,cpmk:'CPMK-2',bc:'b3',col:'#1A4870',phase:1,
+   title:'Data Wrangling & Cleaning',
+   ref:'Towards Data Science — Data Cleaning Best Practices; pandas documentation',
+   topik:'Strategi handling missing values (dropna, fillna, imputation); deteksi dan penanganan outlier (IQR method, Z-score); konversi tipe data; string operations (str.split, str.contains, str.replace); real case: cleaning dataset transaksi e-commerce Indonesia.',
+   syariah:{nilai:"Taharah — Kesucian sebagai Fondasi",isi:"Dalam fikih, taharah (kesucian) adalah syarat sahnya ibadah. Analogi dalam data: data yang bersih adalah syarat sahnya analisis. Data kotor yang tidak dibersihkan menghasilkan insight yang menyesatkan pengambil keputusan.",ref:'Hadis: "Kebersihan adalah sebagian dari iman" — analogi pentingnya data hygiene'},
+   metode:['LAB'],penilaian:{label:'Lab 2',cls:'chip-lab'}},
+
+  {num:4,cpmk:'CPMK-2',bc:'b3',col:'#1A4870',phase:1,
+   title:'Exploratory Data Analysis (EDA) Terstruktur',
+   ref:'Exploratory Data Analysis — John Tukey (konsep); Practical Statistics for Data Scientists',
+   topik:'Framework EDA sistematis: univariate (distribusi, skewness), bivariate (korelasi, scatter), multivariate (pairplot, heatmap korelasi); statistical summary yang bermakna; pandas profiling untuk EDA otomatis; formulasi pertanyaan bisnis dari EDA.',
+   syariah:{nilai:'Tafakkur — Merenung dan Memahami Pola',isi:'Tafakkur adalah merenung secara mendalam atas tanda-tanda (ayat) Allah. EDA adalah bentuk tafakkur dalam data — mengamati pola, anomali, dan hubungan yang tidak terlihat kasat mata untuk memahami realitas bisnis lebih dalam.',ref:'QS. Ali Imran: 191 — "...dan mereka memikirkan tentang penciptaan langit dan bumi"'},
+   metode:['LAB','Diskusi'],penilaian:{label:'Lab 3',cls:'chip-lab'}},
+
+  {num:5,cpmk:'CPMK-2',bc:'b3',col:'#2070B0',phase:2,
+   title:'Visualisasi Analitik — Matplotlib, Seaborn, Plotly',
+   ref:'Storytelling with Data — Cole Nussbaumer (untuk prinsip); Plotly Python documentation',
+   topik:'Perbedaan visualisasi untuk analisis (eksplorasi) vs presentasi (komunikasi); matplotlib untuk kontrol penuh; seaborn untuk statistik (boxplot, violin, stripplot); Plotly Express untuk interaktif (line, bar, scatter, choropleth); pemilihan chart yang tepat berdasarkan jenis data.',
+   syariah:{nilai:'Bayan — Kejelasan dalam Komunikasi',isi:'Bayan berarti kejelasan dan kefasihan. Dalam visualisasi data, bayan adalah menyajikan informasi dengan grafik yang tepat, jelas, dan tidak mengelabui — sehingga pengambil keputusan mendapat gambaran yang benar tentang realitas.',ref:'QS. Ar-Rahman: 4 — "Dia mengajarkan bayan (kejelasan ekspresi)"'},
+   metode:['LAB'],penilaian:{label:'Lab 4',cls:'chip-lab'}},
+
+  {num:6,cpmk:'CPMK-3',bc:'b3',col:'#2070B0',phase:2,
+   title:'Feature Engineering & sklearn Pipeline',
+   ref:'Hands-On Machine Learning — Aurélien Géron (Ch. 2–4); scikit-learn documentation',
+   topik:'Feature engineering: encoding kategorikal (OHE, label encoding, target encoding), normalisasi/standarisasi, log transform, binning; sklearn Pipeline untuk mencegah data leakage; ColumnTransformer; train-test split yang benar; cross-validation (k-fold, stratified).',
+   syariah:{nilai:'Mizan — Keseimbangan dan Proporsi',isi:'Mizan (timbangan/keseimbangan) adalah prinsip Allah dalam menciptakan alam semesta. Dalam ML, normalisasi/scaling adalah penerapan mizan — menyeimbangkan skala fitur agar tidak ada satu fitur yang mendominasi model secara tidak adil.',ref:'QS. Ar-Rahman: 7–9 — "...dan Dia telah meninggikan langit dan Dia meletakkan neraca (mizan)"'},
+   metode:['LAB'],penilaian:{label:'Lab 5',cls:'chip-lab'}},
+
+  {num:7,cpmk:'CPMK-3',bc:'b3',col:'#2070B0',phase:2,
+   title:'ML Klasifikasi & Regresi dengan scikit-learn',
+   ref:'Hands-On ML — Géron (Ch. 3, 6); scikit-learn user guide',
+   topik:'Workflow sklearn: fit → predict → evaluate; algoritma klasifikasi: Logistic Regression, Random Forest, Decision Tree; regresi: Linear Regression, Ridge/Lasso; hyperparameter tuning dengan GridSearchCV; memilih algoritma yang tepat berdasarkan karakteristik data dan bisnis.',
+   syariah:{nilai:'Qiyas — Analogi dan Inferensi',isi:'Qiyas dalam ushul fiqh adalah menarik kesimpulan baru dari analogi dengan kasus yang sudah diketahui. ML pada dasarnya adalah qiyas matematis — belajar dari pola masa lalu untuk menyimpulkan/memprediksi yang belum diketahui.',ref:'Prinsip qiyas dalam ushul fiqh — analogi dengan supervised learning'},
+   metode:['LAB'],penilaian:{label:'Lab 6',cls:'chip-lab'}},
+
+  {num:8,cpmk:'CPMK-4',bc:'b4',col:'#2070B0',phase:2,
+   title:'Evaluasi Model & Interpretasi Bisnis',
+   ref:'Interpretable Machine Learning — Christoph Molnar (Ch. 1–3); SHAP documentation',
+   topik:'Evaluasi yang benar: confusion matrix, precision vs recall trade-off, F1, ROC-AUC; kapan menggunakan metrik mana (fraud detection = recall tinggi; medical = precision tinggi); feature importance dari Random Forest; SHAP values untuk interpretasi; dari angka model ke rekomendasi bisnis yang konkrit.',
+   syariah:{nilai:"Adl — Keadilan dalam Evaluasi",isi:"Adl (keadilan) menuntut kita mengevaluasi model secara jujur, termasuk mengakui kelemahan dan potensi bias. Algorithmic bias adalah pelanggaran adl — model yang diskriminatif terhadap kelompok tertentu (misalnya menolak pembiayaan berdasarkan fitur yang berkorelasi dengan ras/gender) bertentangan dengan prinsip keadilan Islam.",ref:'QS. Al-Maidah: 8 — "...berlaku adillah, karena adil itu lebih dekat kepada takwa"'},
+   metode:['LAB','Diskusi'],penilaian:{label:'Lab 7',cls:'chip-lab'}},
+
+  {num:9,cpmk:'CPMK-3,4',bc:'b4',col:'#7040B0',phase:2,
+   title:'UTS — Mini Project: EDA + Simple Analytics App',
+   ref:'Dataset pilihan kelompok dari Kaggle',
+   topik:'Presentasi mini project kelompok (3–4 orang): EDA lengkap dari dataset pilihan, minimal 1 model prediksi dengan evaluasi yang benar, visualisasi Plotly yang bermakna, interpretasi bisnis dan rekomendasi. Peer review antar kelompok menggunakan rubrik yang disediakan.',
+   syariah:{nilai:"Shura — Kolaborasi dan Musyawarah",isi:"Shura (musyawarah) adalah prinsip pengambilan keputusan kolektif dalam Islam. Proyek kelompok dan peer review adalah implementasi shura — keputusan yang dihasilkan dari diskusi dan pertimbangan bersama menghasilkan analisis yang lebih komprehensif.",ref:'QS. Ali Imran: 159 — "...dan bermusyawarahlah dengan mereka dalam urusan itu"'},
+   metode:['Presentasi'],penilaian:{label:'UTS',cls:'chip-uts'}},
+
+  {num:10,cpmk:'CPMK-3',bc:'b3',col:'#1A5A90',phase:3,
+   title:'Clustering & Segmentasi Bisnis',
+   ref:'Hands-On ML — Géron (Ch. 9); Customer Segmentation Best Practices (Towards Data Science)',
+   topik:'Clustering unsupervised: K-Means, DBSCAN; Elbow method dan Silhouette score untuk memilih jumlah klaster; PCA untuk visualisasi klaster; interpretasi bisnis klaster (labeling segmen pelanggan); RFM analysis untuk segmentasi nasabah BPRS/koperasi syariah.',
+   syariah:{nilai:"Tasnif — Klasifikasi dan Pengelompokan",isi:"Allah mengajarkan Adam nama-nama (asma') segala sesuatu — ini adalah dasar kategorisasi dan klasifikasi. Clustering sebagai metode tasnif (pengelompokan) membantu kita memahami diversitas dalam populasi untuk melayani setiap segmen dengan lebih tepat dan adil.",ref:"QS. Al-Baqarah: 31 — 'Dan Dia mengajarkan kepada Adam nama-nama (benda) seluruhnya'"},
+   metode:['LAB'],penilaian:{label:'Lab 8',cls:'chip-lab'}},
+
+  {num:11,cpmk:'CPMK-4',bc:'b4',col:'#1A5A90',phase:3,
+   title:'Time Series Analysis & Forecasting',
+   ref:'Forecasting: Principles and Practice — Hyndman (online gratis); pandas time series documentation',
+   topik:'pandas DateTime manipulation: resample, rolling, shift; dekomposisi time series (trend, seasonality, residual) dengan statsmodels; moving average, exponential smoothing; Prophet untuk forecasting sederhana; kasus: prediksi penjualan UMKM, forecasting arus kas koperasi.',
+   syariah:{nilai:"Tawakkul & Perencanaan",isi:"Islam mendorong umatnya untuk merencanakan masa depan secara bijaksana (ikhtiar) sambil bertawakkul kepada Allah. Time series forecasting adalah bentuk ikhtiar — memanfaatkan pola historis untuk merencanakan dengan lebih baik, bukan untuk menduga-duga takdir.",ref:"QS. Al-Hasyr: 18 — 'Hendaklah setiap diri memperhatikan apa yang telah diperbuatnya untuk hari esok'"},
+   metode:['LAB'],penilaian:{label:'Lab 9',cls:'chip-lab'}},
+
+  {num:12,cpmk:'CPMK-5',bc:'b6',col:'#1A5A90',phase:3,
+   title:'Intro Streamlit — Bangun Data App Pertama Anda',
+   ref:'Streamlit documentation (docs.streamlit.io); Streamlit Gallery for inspiration',
+   topik:'Filosofi Streamlit: Python script = web app; st.write, st.dataframe, st.metric, st.chart; file uploader dan pemrosesan dinamis; sidebar dan widget (slider, selectbox, checkbox); layout (columns, tabs, expander); deploy ke Streamlit Community Cloud (gratis).',
+   syariah:{nilai:"Tabligh — Menyampaikan kepada Khalayak",isi:"Tabligh adalah menyampaikan ilmu dan kebenaran kepada orang lain. Membangun analytics app dengan Streamlit adalah wujud tabligh dalam data science — membuat insight analitik dapat diakses oleh pengambil keputusan yang tidak memiliki keahlian Python.",ref:'Hadis: "Sampaikan dariku walau satu ayat" — prinsip berbagi ilmu kepada khalayak luas'},
+   metode:['LAB'],penilaian:{label:'Lab 10',cls:'chip-lab'}},
+
+  {num:13,cpmk:'CPMK-5',bc:'b6',col:'#1A5A90',phase:3,
+   title:'Streamlit Lanjutan + Sinergi dengan BIV',
+   ref:'Streamlit advanced docs; pandas to_excel/to_csv for Power BI integration',
+   topik:'Streamlit lanjutan: session_state untuk persistensi, multi-page app, caching (@st.cache_data), custom CSS; integrasi model ML dalam app (predict on user input); ekspor hasil analisis ke CSV/Excel untuk digunakan di Power BI (BIV) — demonstrasi workflow end-to-end ADA→BIV.',
+   syariah:{nilai:"Ta'awun — Tolong-Menolong dan Sinergi",isi:"Ta'awun (tolong-menolong) dalam kebaikan adalah kewajiban Muslim. Integrasi ADA dan BIV mencerminkan ta'awun antar disiplin ilmu — kemampuan analitik dari ADA dan kemampuan komunikasi visual dari BIV saling melengkapi untuk menghasilkan insight yang lebih powerful.",ref:"QS. Al-Maidah: 2 — 'Dan tolong-menolonglah kamu dalam kebajikan dan takwa'"},
+   metode:['LAB'],penilaian:{label:'Lab 11',cls:'chip-lab'}},
+
+  {num:14,cpmk:'CPMK-6',bc:'b4',col:'#1A5A90',phase:3,
+   title:'Working with Large Data — DuckDB, Polars, Parquet',
+   ref:'DuckDB documentation (duckdb.org); polars user guide (pola-rs.github.io)',
+   topik:'Mengapa pandas lambat untuk data besar (single-threaded, in-memory); polars: lazy evaluation, columnar storage, 10–50× lebih cepat; DuckDB: SQL pada file CSV/Parquet tanpa server, query dataset 10 juta baris di laptop biasa; format Parquet vs CSV (kompresi, columnar); praktikum: analisis dataset 5 juta transaksi e-commerce.',
+   syariah:{nilai:"Israf & Qist — Efisiensi dan Keseimbangan Sumber Daya",isi:"Israf (pemborosan) adalah hal yang dilarang Islam. Kode Python yang inefficient — misalnya membaca 10 juta baris padahal hanya butuh 1.000 — adalah bentuk israf komputasi. Menggunakan DuckDB dan polars adalah penerapan qist (keseimbangan/efisiensi) dalam pengelolaan sumber daya komputasi.",ref:'QS. Al-Isra: 27 — "Sesungguhnya pemboros-pemboros itu adalah saudara-saudara syaitan"'},
+   metode:['LAB','Ceramah'],penilaian:{label:'Lab 12',cls:'chip-lab'}},
+
+  {num:15,cpmk:'CPMK-5,6',bc:'b6',col:'#2A50B0',phase:4,
+   title:'Project Workshop — Bimbingan Analytics App',
+   ref:'Proyek kelompok masing-masing',
+   topik:'Workshop terbimbing: setiap kelompok mendapat feedback langsung dari dosen tentang app mereka; troubleshooting bugs umum (state management, caching, model serialization dengan joblib/pickle); tips UX untuk non-teknis; review final sebelum demo day.',
+   syariah:{nilai:"Ta'awun — Saling Membantu dalam Kesulitan",isi:'Sesi workshop adalah embodiment ta\'awun — dosen membantu mahasiswa, mahasiswa saling membantu antar kelompok. Dalam spirit Islam, berbagi solusi teknis dalam workshop bukan kecurangan — itu adalah tawashau bil haqq (saling mengingatkan kepada kebaikan).',ref:"QS. Al-'Ashr: 3 — '...dan saling menasihati dalam kebenaran'"},
+   metode:['Workshop'],penilaian:{label:'Progress',cls:'chip-proj'}},
+
+  {num:16,cpmk:'CPMK-5,6',bc:'b6',col:'#2A50B0',phase:4,
+   title:'Demo Day — Analytics App Presentation',
+   ref:'Project Final',
+   topik:'Setiap kelompok mempresentasikan dan mendemo Streamlit app mereka (15 menit demo + 5 menit Q&A). Penilai: dosen ADA + dosen BIV (koordinasi demo day bersama). Kriteria: fungsionalitas app, kualitas analisis, interpretasi bisnis, UX, dan relevansi nilai islami.',
+   syariah:{nilai:"Amanah & Mas'uliyyah",isi:"Demo Day adalah momen pertanggungjawaban (mas'uliyyah) atas amanah belajar selama satu semester. Mahasiswa bertanggung jawab atas kualitas app yang mereka buat — kepada dosen, rekan, dan pada akhirnya kepada Allah atas ilmu yang telah dipercayakan.",ref:'QS. Al-Mudassir: 38 — "Setiap diri bertanggung jawab atas apa yang telah diperbuatnya"'},
+   metode:['Presentasi'],penilaian:{label:'UAS',cls:'chip-uas'}},
+];
+
+const PHASES = {1:'Fase 1 — Bridge: dari RapidMiner ke Python (P1–4)',2:'Fase 2 — Analytics Core (P5–9)',3:'Fase 3 — Build & Scale (P10–14)',4:'Fase 4 — Capstone (P15–16)'};
+const BLOOM_COLORS = {b1:'#6A8E40',b2:'#2A7898',b3:'#C06010',b4:'#6040A8',b5:'#A03020',b6:'#1F9060'};
+
+function showTab(id, el) {
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  el.classList.add('active');
+  if(id==='jadwal'&&!document.getElementById('jadwalContainer').children.length) buildJadwal();
+  if(id==='cpmk'&&!document.getElementById('cpmkGrid').children.length) buildCPMK();
+}
+
+function buildCPMK() {
+  const g = document.getElementById('cpmkGrid');
+  CPMK_DATA.forEach(c=>{
+    const bc = BLOOM_COLORS[c.bc]||'#2070B0';
+    g.innerHTML += `<div class="cpmk-card" style="border-left-color:${bc}">
+      <div class="cpmk-head">
+        <span class="cpmk-id">${c.id}</span>
+        <span class="cpmk-bloom" style="background:${bc}22;color:${bc}">${c.bloom}</span>
+        <span class="cpmk-cpl">${c.cpl}</span>
+      </div>
+      <div class="cpmk-rumusan">${c.rumusan}</div>
+      <div class="cpmk-detail">${c.detail}</div>
+      <div class="cpmk-prt">Pertemuan: ${c.prt}</div>
+    </div>`;
+  });
+}
+
+function buildJadwal() {
+  const c = document.getElementById('jadwalContainer');
+  let lastPhase = 0;
+  MEETINGS.forEach(m=>{
+    if(m.phase!==lastPhase){
+      const ph=document.createElement('div');
+      ph.className='phase-label';ph.textContent=PHASES[m.phase]||'';
+      c.appendChild(ph);lastPhase=m.phase;
+    }
+    const card=document.createElement('div');
+    card.className='meeting-card';
+    const chips=(m.metode||[]).map(mt=>{
+      const cls=mt==='LAB'?'chip-lab':mt==='Ceramah'?'chip-cermah':mt==='Diskusi'?'chip-diskusi':mt==='Presentasi'?'chip-uts':'chip-proj';
+      return `<span class="chip ${cls}">${mt}</span>`;
+    }).join('');
+    card.innerHTML=`<div class="meeting-summary">
+      <div class="meet-num" style="background:${m.col||'#0A2848'}">${String(m.num).padStart(2,'0')}</div>
+      <div class="meet-main">
+        <div class="meet-title">${m.title}</div>
+        <div class="meet-meta">${chips}<span class="chip chip-cpmk">${m.cpmk}</span>${m.ref?`<span style="font-size:11px;color:var(--txl)">${m.ref}</span>`:''}</div>
+      </div>
+      <div class="meet-expand">▾</div>
+    </div>
+    <div class="meeting-detail">
+      <div class="detail-section">
+        <div class="detail-label">Topik &amp; Konten</div>
+        <div class="detail-text">${m.topik}</div>
+      </div>
+      ${m.syariah?`<div class="detail-section">
+        <div class="detail-label">Insersi Nilai Syariah</div>
+        <div class="sya-tag">☽ ${m.syariah.nilai}</div>
+        <div class="sya-isi">${m.syariah.isi}</div>
+        <div class="sya-ref">${m.syariah.ref}</div>
+      </div>`:''}
+      <div class="detail-section">
+        <div class="detail-label">Penilaian</div>
+        <span class="chip ${m.penilaian.cls}">${m.penilaian.label}</span>
+      </div>
+    </div>`;
+    card.querySelector('.meeting-summary').addEventListener('click',()=>card.classList.toggle('open'));
+    c.appendChild(card);
+  });
+}
+</script>

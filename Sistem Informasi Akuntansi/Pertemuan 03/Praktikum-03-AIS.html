@@ -1,0 +1,653 @@
+<title>AIS Lab 2 — Konfigurasi Modul ERP &amp; Audit Rantai Pasok Halal</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap">
+<style>
+:root{
+  --meet-from:#051424; --meet-mid:#0A243E; --meet-to:#103858;
+  --meet-acc:#1B7898;  --meet-acc2:#2898C0;
+  --bg:#EDF1F6;--sf:#FFFFFF;--sf2:#E4EFF8;--sf3:#F5F7FA;
+  --bd:#C4CDD8;--bs:#DDE3EC;
+  --tx:#0C1824;--txm:#475569;--txl:#8A9AB0;
+  --pri:#0A243E;--pmid:#1B7898;--pril:#C8E2F0;--prx:#E0EFF8;
+  --acc:#D46020;--accl:#FCEBD8;
+  --sya:#1F9060;--syal:#D0EEE2;--syab:#40B080;
+  --done-bg:#D0EEE2;--done-bd:#40B080;--done-tx:#0A4020;
+  --r:8px;--rs:5px;
+  --shadow:0 4px 20px rgba(10,36,62,.10);
+  --shadow-sm:0 2px 8px rgba(10,36,62,.07);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#06101A;--sf:#0C1C2C;--sf2:#081826;--sf3:#0A1420;
+  --bd:#182A3C;--bs:#122030;
+  --tx:#E0EAF4;--txm:#7A98B0;--txl:#3A5568;
+  --pri:#2898C0;--pmid:#48B8E0;--pril:#062030;--prx:#040E1C;
+  --acc:#E07838;--accl:#200C00;
+  --sya:#30B878;--syal:#041410;--syab:#186040;
+  --done-bg:#031810;--done-bd:#40C890;--done-tx:#40C890;
+}}
+:root[data-theme=dark]{
+  --bg:#06101A;--sf:#0C1C2C;--sf2:#081826;--sf3:#0A1420;
+  --bd:#182A3C;--bs:#122030;
+  --tx:#E0EAF4;--txm:#7A98B0;--txl:#3A5568;
+  --pri:#2898C0;--pmid:#48B8E0;--pril:#062030;--prx:#040E1C;
+  --acc:#E07838;--accl:#200C00;
+  --sya:#30B878;--syal:#041410;--syab:#186040;
+  --done-bg:#031810;--done-bd:#40C890;--done-tx:#40C890;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.65}
+
+.hd{background:linear-gradient(160deg,var(--meet-from) 0%,var(--meet-mid) 55%,var(--meet-to) 100%);color:#fff;position:relative;overflow:hidden}
+.hd-ornament{position:absolute;inset:0;pointer-events:none;opacity:.12}
+.hd-inner{max-width:840px;margin:0 auto;padding:32px 24px 12px;position:relative;z-index:1}
+.hd-eyebrow{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.hd-line{width:24px;height:1px;background:var(--meet-acc2)}
+.hd-eye{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--meet-acc2)}
+.hd-badge{font-size:11px;background:rgba(27,120,152,.2);border:1px solid rgba(27,120,152,.4);border-radius:12px;padding:2px 11px;color:#79D0FF;margin-left:auto}
+.hd-title{font-family:'Amiri',serif;font-size:28px;font-weight:700;line-height:1.2;margin-bottom:5px}
+.hd-sub{font-size:13.5px;color:rgba(255,255,255,.55);margin-bottom:16px}
+.hd-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px}
+.hpill{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:2px 11px;font-size:11.5px;color:rgba(255,255,255,.7)}
+.hpill strong{color:#fff}
+.hd-arch{line-height:0}
+.hd-arch svg{display:block;width:100%;height:24px}
+
+.tracker-wrap{background:var(--sf);border-bottom:1px solid var(--bs);position:sticky;top:0;z-index:40;box-shadow:var(--shadow-sm)}
+.tracker{max-width:840px;margin:0 auto;padding:8px 20px;display:flex;align-items:center;gap:6px;overflow-x:auto}
+.tr-step{display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0}
+.tr-circle{width:30px;height:30px;border-radius:50%;border:2px solid var(--bs);background:var(--sf3);display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;color:var(--txl);transition:all .3s}
+.tr-circle.active{border-color:var(--pmid);background:var(--prx);color:var(--pri)}
+.tr-circle.done{border-color:var(--sya);background:var(--syal);color:var(--sya)}
+.tr-label{font-size:9.5px;color:var(--txl);white-space:nowrap;text-align:center;max-width:68px;overflow:hidden;text-overflow:ellipsis}
+.tr-label.active{color:var(--pmid);font-weight:600}
+.tr-label.done{color:var(--sya);font-weight:600}
+.tr-line{width:20px;height:2px;background:var(--bs);border-radius:1px;flex-shrink:0;margin-bottom:10px}
+.tr-line.done{background:var(--sya)}
+
+.main{max-width:840px;margin:0 auto;padding:24px 20px 80px}
+
+.step-card{background:var(--sf);border:1px solid var(--bs);border-radius:var(--r);margin-bottom:14px;box-shadow:var(--shadow-sm);overflow:hidden;transition:opacity .3s,filter .3s}
+.step-card.locked{opacity:.35;filter:grayscale(.5);pointer-events:none}
+.step-card.unlocked{opacity:1;filter:none}
+.step-card.completed{border-color:var(--done-bd)}
+.step-hd{display:flex;align-items:center;gap:11px;padding:13px 20px;background:var(--sf3);border-bottom:1px solid var(--bs)}
+.step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc2))}
+.step-num.done{background:var(--sya)}
+.step-title{font-family:'Amiri',serif;font-size:17px;font-weight:700;color:var(--pri)}
+.step-est{font-size:11.5px;color:var(--txl);margin-left:auto;white-space:nowrap}
+.step-body{padding:18px 22px}
+
+.callout{border-radius:var(--rs);padding:11px 15px;margin:10px 0;font-size:13.5px;line-height:1.6}
+.callout.tip{background:var(--prx);border-left:4px solid var(--pmid);color:var(--txm)}
+.callout.warn{background:#FEF3E0;border-left:4px solid #D46020;color:#5A2C04}
+.callout.sya{background:var(--syal);border-left:4px solid var(--sya);color:var(--txm)}
+.callout.info{background:var(--sf3);border-left:4px solid var(--pri);color:var(--txm)}
+
+.table-wrap{overflow-x:auto;margin:12px 0}
+.custom-table{width:100%;border-collapse:collapse;font-size:13px}
+.custom-table th{background:var(--pri);color:#fff;padding:8px 12px;text-align:left;font-size:11.5px}
+.custom-table td{padding:8px 12px;border-bottom:1px solid var(--bs);color:var(--txm);vertical-align:top}
+.custom-table tr:nth-child(even) td{background:var(--sf3)}
+.custom-table tr:last-child td{border-bottom:none}
+
+.code-box{background:#0A243E;border-radius:var(--rs);padding:14px 16px;color:#D8EEF8;font-family:'Source Code Pro',monospace;font-size:13px;line-height:1.65;margin:10px 0;overflow-x:auto;white-space:pre}
+.code-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.1);font-size:11px;color:var(--meet-acc2);font-weight:700;white-space:normal}
+.copy-btn{background:rgba(27,120,152,.25);border:1px solid rgba(27,120,152,.45);border-radius:4px;color:#fff;padding:2px 8px;font-size:10.5px;cursor:pointer}
+
+.unlock-row{display:flex;align-items:center;gap:12px;margin-top:20px;padding-top:18px;border-top:1px solid var(--bs)}
+.btn-unlock{background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc2));color:#fff;border:none;border-radius:24px;padding:11px 26px;font-family:'Source Sans 3',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;transition:opacity .2s}
+.btn-unlock:hover{opacity:.88}
+.btn-unlock.done-state{background:var(--sya);cursor:default}
+.unlock-hint{font-size:12.5px;color:var(--txl)}
+
+.challenge-box{background:linear-gradient(135deg,#0A243E,#103858);border-radius:var(--r);padding:18px 20px;color:#fff;margin:14px 0}
+.challenge-box h4{font-family:'Amiri',serif;font-size:17px;font-weight:700;margin-bottom:12px;color:#79D0FF}
+.challenge-q{background:rgba(255,255,255,.08);border-radius:var(--rs);padding:10px 14px;margin-bottom:8px;font-size:13.5px;color:rgba(255,255,255,.85)}
+.challenge-q strong{color:#fff}
+
+.completion{display:none;background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;border-radius:var(--r);padding:28px;text-align:center;margin-top:18px}
+.completion.show{display:block}
+.completion h2{font-family:'Amiri',serif;font-size:24px;font-weight:700;margin-bottom:8px}
+.completion p{color:rgba(255,255,255,.65);font-size:13.5px;margin-bottom:14px}
+.completion .next-btn{display:inline-block;background:var(--meet-acc2);color:#fff;border-radius:20px;padding:10px 24px;font-weight:700;font-size:14px;text-decoration:none}
+
+h3.sh{font-family:'Amiri',serif;font-size:18px;font-weight:700;color:var(--pri);margin:16px 0 9px;display:flex;align-items:center;gap:8px}
+h3.sh::before{content:'';width:4px;height:16px;background:var(--meet-acc2);border-radius:2px;flex-shrink:0}
+ul.lst{list-style:none;padding:0;margin-bottom:12px}
+ul.lst li{padding:5px 0 5px 20px;position:relative;color:var(--txm);font-size:14px;border-bottom:1px solid var(--bs)}
+ul.lst li:last-child{border-bottom:none}
+ul.lst li::before{content:'▸';position:absolute;left:0;color:var(--pmid);font-size:11px;top:7px}
+ul.lst li strong{color:var(--tx)}
+</style>
+
+<!-- HEADER -->
+<div class="hd">
+  <svg class="hd-ornament" viewBox="0 0 400 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs><pattern id="dots3" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="20" cy="20" r="1.5" fill="#1B7898" opacity=".6"/>
+      <path d="M0,20 L40,20 M20,0 L20,40" stroke="#1B7898" stroke-width=".25" opacity=".3"/>
+    </pattern></defs>
+    <rect width="100%" height="100%" fill="url(#dots3)"/>
+  </svg>
+  <div class="hd-inner">
+    <div class="hd-eyebrow">
+      <div class="hd-line"></div>
+      <span class="hd-eye">Sistem Informasi Akuntansi · Lembar Praktikum</span>
+      <span class="hd-badge">LAB 2 · P03</span>
+    </div>
+    <h1 class="hd-title">Konfigurasi Modul ERP &amp; Audit Rantai Pasok Halal</h1>
+    <p class="hd-sub">Value Chain Mapping · O2C &amp; P2P Integration · Halal Traceability · Skema Database HAS 23000 · PT Halal Food Nusantara</p>
+    <div class="hd-pills">
+      <span class="hpill">⏱ <strong>~75 menit</strong></span>
+      <span class="hpill">🏭 <strong>PT Halal Food Nusantara</strong></span>
+      <span class="hpill">📄 <strong>dataset-halal-supplychain-p03.csv</strong></span>
+      <span class="hpill">📝 <strong>6 Langkah Praktik</strong></span>
+    </div>
+  </div>
+  <div class="hd-arch"><svg viewBox="0 0 1200 24" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,24 L0,14 Q20,4 40,14 Q60,24 80,14 Q100,4 120,14 Q140,24 160,14 Q180,4 200,14 Q220,24 240,14 Q260,4 280,14 Q300,24 320,14 Q340,4 360,14 Q380,24 400,14 Q420,4 440,14 Q460,24 480,14 Q500,4 520,14 Q540,24 560,14 Q580,4 600,14 Q620,24 640,14 Q660,4 680,14 Q700,24 720,14 Q740,4 760,14 Q780,24 800,14 Q820,4 840,14 Q860,24 880,14 Q900,4 920,14 Q940,24 960,14 Q980,4 1000,14 Q1020,24 1040,14 Q1060,4 1080,14 Q1100,24 1120,14 Q1140,4 1160,14 Q1180,24 1200,14 L1200,24 Z" fill="var(--bg)"/>
+  </svg></div>
+</div>
+
+<!-- STEP TRACKER -->
+<div class="tracker-wrap">
+  <div class="tracker">
+    <div class="tr-step"><div class="tr-circle active" id="tc0">1</div><div class="tr-label active" id="tl0">Value Chain</div></div>
+    <div class="tr-line" id="tln0"></div>
+    <div class="tr-step"><div class="tr-circle" id="tc1">2</div><div class="tr-label" id="tl1">Alur Modul ERP</div></div>
+    <div class="tr-line" id="tln1"></div>
+    <div class="tr-step"><div class="tr-circle" id="tc2">3</div><div class="tr-label" id="tl2">Audit Halal SCM</div></div>
+    <div class="tr-line" id="tln2"></div>
+    <div class="tr-step"><div class="tr-circle" id="tc3">4</div><div class="tr-label" id="tl3">Skema DB ERP</div></div>
+    <div class="tr-line" id="tln3"></div>
+    <div class="tr-step"><div class="tr-circle" id="tc4">5</div><div class="tr-label" id="tl4">DFD ERP SCM</div></div>
+    <div class="tr-line" id="tln4"></div>
+    <div class="tr-step"><div class="tr-circle" id="tc5">6</div><div class="tr-label" id="tl5">Tantangan</div></div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ╔══ LANGKAH 1: VALUE CHAIN MAPPING ══╗ -->
+<div class="step-card unlocked" id="step0">
+  <div class="step-hd">
+    <div class="step-num" id="sn0">1</div>
+    <div class="step-title">Dekonstruksi Rantai Nilai PT Halal Food Nusantara</div>
+    <span class="step-est">⏱ ~12 menit</span>
+  </div>
+  <div class="step-body">
+    <p><strong>Profil Kasus:</strong> PT Halal Food Nusantara (HFN) memproduksi makanan olahan beku halal. Untuk menjaga margin laba dan kepatuhan syariah, setiap aktivitas bisnis dipetakan ke dalam kerangka <strong>Porter's Value Chain</strong> yang didukung oleh modul ERP spesifik.</p>
+
+    <h3 class="sh">Tabel Pemetaan Rantai Nilai ke Modul ERP</h3>
+    <div class="table-wrap">
+      <table class="custom-table">
+        <thead><tr><th>Klasifikasi Aktivitas</th><th>Nama Aktivitas di PT HFN</th><th>Modul ERP Penanggungjawab</th><th>Nilai Tambah &amp; Titik Kritis Syariah</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Inbound Logistics</strong></td>
+            <td>Penerimaan daging sapi beku &amp; rempah dari RPH bersertifikat</td>
+            <td><code>MM (Materials Mgmt) &amp; QM</code></td>
+            <td>Verifikasi sertifikat halal BPJPH &amp; sensor suhu beku (-18°C)</td>
+          </tr>
+          <tr>
+            <td><strong>Operations</strong></td>
+            <td>Penggilingan, pencampuran bumbu, pencetakan &amp; penggorengan nugget</td>
+            <td><code>PP (Production Planning)</code></td>
+            <td>Lini produksi khusus halal (<em>no cross-contamination</em>)</td>
+          </tr>
+          <tr>
+            <td><strong>Outbound Logistics</strong></td>
+            <td>Penyimpanan cold storage &amp; pengiriman armada berpendingin</td>
+            <td><code>SD (Sales &amp; Dist.) &amp; MM</code></td>
+            <td>Keterlacakan <em>Batch ID</em> pengiriman dan kepastian mutu <em>Thayyib</em></td>
+          </tr>
+          <tr>
+            <td><strong>Marketing &amp; Sales</strong></td>
+            <td>Penerimaan pesanan ritel, penetapan margin adil, &amp; invoice</td>
+            <td><code>SD &amp; CRM Module</code></td>
+            <td>Akad jual beli transparan tanpa klausul riba / denda berlipat</td>
+          </tr>
+          <tr>
+            <td><strong>Firm Infrastructure</strong></td>
+            <td>Otomasi pembukuan akuntansi, perpajakan, &amp; audit syariah</td>
+            <td><code>FI / CO (Financials &amp; Costing)</code></td>
+            <td>Penyusunan laporan laba rugi real-time &amp; pemisahan dana ZIS</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="unlock-row">
+      <button class="btn-unlock" id="btn0" onclick="completeStep(0)">✓ Langkah 1 Selesai — Rantai Nilai Terpetakan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══ LANGKAH 2: INTEGRASI MODUL ERP ══╗ -->
+<div class="step-card locked" id="step1">
+  <div class="step-hd">
+    <div class="step-num" id="sn1">2</div>
+    <div class="step-title">Alur Integrasi Lintas Modul: Procure-to-Pay (P2P)</div>
+    <span class="step-est">⏱ ~12 menit</span>
+  </div>
+  <div class="step-body">
+    <p>Buka berkas <code>dataset-erp-modules-p03.csv</code>. Analisislah bagaimana transaksi pengadaan bahan baku mengalir secara otomatis lintas departemen tanpa entri data ulang (<em>zero data re-entry</em>):</p>
+
+    <div class="code-box">
+      <div class="code-hd"><span>ALUR OTOMASI TRANSAKSI P2P LINTAS MODUL ERP</span><button class="copy-btn" onclick="copySnippet(0)">Salin Alur P2P</button></div>
+[1. Modul PP/Gudang]  --> Menemukan stok daging menipis (< Safety Stock 500kg)
+                          Sistem otomatis terbitkan: Purchase Requisition (PR-2026-089)
+
+[2. Modul MM/Purchasing] -> Merilis Purchase Order (PO-HFN-442) ke 'RPH Halal Surya Berkah'
+                            Sistem memvalidasi status Sertifikat Halal ID3211000012345 (Valid)
+
+[3. Modul QM/Inbound]   --> Truk daging tiba di dermaga pabrik.
+                            Auditor Halal scan QR-Code & catat suhu (-18.2°C). Status: Passed.
+                            Sistem terbitkan: Goods Receipt (GR-88912)
+
+[4. Modul FI (Akuntansi)]-> OTOMATIS POSTING JURNAL REAL-TIME:
+                            Debit : Persediaan Bahan Baku Daging   Rp 75.000.000
+                            Kredit: Utang Usaha Belum Difakturkan Rp 75.000.000
+
+[5. Modul FI (Invoice)] --> Menerima Tagihan Vendor. Sistem lakukan 3-Way Matching:
+                            (PO vs Goods Receipt vs Vendor Invoice) -> MATCH 100%!
+                            Debit : Utang Usaha Belum Difakturkan Rp 75.000.000
+                            Kredit: Utang Usaha Vendor (AP)       Rp 75.000.000
+    </div>
+
+    <div class="callout tip">
+      💡 <strong>Three-Way Matching Control:</strong> ERP mencegah pembayaran tagihan palsu dengan memvalidasi kesesuaian antara jumlah barang yang dipesan (PO), jumlah barang yang nyata diterima di gudang (GR), dan jumlah uang yang ditagihkan pemasok (Invoice).
+    </div>
+
+    <div class="unlock-row">
+      <button class="btn-unlock" id="btn1" onclick="completeStep(1)">✓ Langkah 2 Selesai — Alur P2P Dipahami</button>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══ LANGKAH 3: AUDIT HALAL SUPPLY CHAIN ══╗ -->
+<div class="step-card locked" id="step2">
+  <div class="step-hd">
+    <div class="step-num" id="sn2">3</div>
+    <div class="step-title">Audit Keterlacakan Rantai Pasok Halal (Halal Traceability)</div>
+    <span class="step-est">⏱ ~15 menit</span>
+  </div>
+  <div class="step-body">
+    <p>Buka berkas <code>dataset-halal-supplychain-p03.csv</code> yang berisi 10 batch produksi aktif di PT Halal Food Nusantara. Lakukan audit kepatuhan syariah pada parameter mutu berikut:</p>
+
+    <div class="table-wrap">
+      <table class="custom-table">
+        <thead><tr><th>Batch ID</th><th>Nama Produk</th><th>Pemasok Bahan Baku</th><th>No. Sertifikat Halal</th><th>QC Inbound</th><th>Suhu Cold Storage</th><th>Kepatuhan Syariah</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>BATCH-2026-H01</strong></td>
+            <td>Daging Sapi Marinasi Halal 1kg</td>
+            <td>RPH Halal Surya Berkah</td>
+            <td>ID3211000012345</td>
+            <td>Passed (Sembelihan Syar'i)</td>
+            <td>-18°C (Standar Beku)</td>
+            <td><span style="color:var(--sya);font-weight:700">✓ Compliant</span></td>
+          </tr>
+          <tr>
+            <td><strong>BATCH-2026-H02</strong></td>
+            <td>Bumbu Ekstrak Rempah 500g</td>
+            <td>PT Rempah Alami Nusantara</td>
+            <td>ID3111000054321</td>
+            <td>Passed (Bebas Alkohol)</td>
+            <td>24°C (Suhu Ruang)</td>
+            <td><span style="color:var(--sya);font-weight:700">✓ Compliant</span></td>
+          </tr>
+          <tr>
+            <td><strong>BATCH-2026-H07</strong></td>
+            <td>Keju Mozzarella Halal 250g</td>
+            <td>Koperasi Peternak Sapi Bandung</td>
+            <td>ID3221000044444</td>
+            <td>Passed (Rennet Mikroba)</td>
+            <td>4°C (Chiller)</td>
+            <td><span style="color:var(--sya);font-weight:700">✓ Compliant</span></td>
+          </tr>
+          <tr>
+            <td><strong>BATCH-2026-H09</strong></td>
+            <td>Nugget Ayam Crispy 500g</td>
+            <td>RPA Ayam Berkah Utama</td>
+            <td>ID3211000066666</td>
+            <td>Passed (Juleha Bersertifikat)</td>
+            <td>-18°C (Standar Beku)</td>
+            <td><span style="color:var(--sya);font-weight:700">✓ Compliant</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sh">Tugas Analisis Dataset: dataset-halal-supplychain-p03.csv</h3>
+    <div class="code-box">
+      <div class="code-hd"><span>CHECKLIST AUDIT HALAL SCM — 5 TITIK KRITIS (HCCP)</span><button class="copy-btn" onclick="copySnippet(2)">Salin Checklist</button></div>
+Buka dataset-halal-supplychain-p03.csv. Analisis setiap baris batch dan jawab:
+
+HCCP-1: VALIDITAS SERTIFIKAT HALAL
+  ❑ Cek kolom [No_Sertifikat_Halal] — apakah formatnya mengikuti ID<prov><kab>000XXXXX?
+  ❑ Cek kolom [Tgl_Kadaluarsa_Halal] — adakah sertifikat yang sudah expired?
+  ❑ Batch mana yang supplier-nya belum tersertifikasi? → Status = NON-CERTIFIED
+
+HCCP-2: SUHU COLD CHAIN
+  ❑ Produk daging beku: suhu wajib <= -18°C (Standar SNI 01-3820)
+  ❑ Produk chiller (keju, susu): suhu wajib 0°C - 5°C
+  ❑ Identifikasi batch dengan [Suhu_Cold_Storage] yang menyimpang dari standar!
+
+HCCP-3: HASIL UJI QC INBOUND
+  ❑ Kolom [QC_Inbound]: nilai "PASS" = layak masuk produksi
+  ❑ Temukan batch dengan QC = "PENDING" atau "FAIL" → Harus KARANTINA
+  ❑ Berapa % batch yang lulus QC dari total batch di dataset?
+
+HCCP-4: STATUS AUDIT SYARIAH
+  ❑ Kolom [Kepatuhan_Syariah]: apakah semua nilai "COMPLIANT"?
+  ❑ Identifikasi batch berlabel "SYUBHAT" atau "NON-COMPLIANT" → Larangan penggunaan
+  ❑ Dokumentasikan temuan sebagai bagian Laporan Audit Halal Internal
+
+HCCP-5: JENIS PRODUK vs RISIKO KEHALALAN
+  ❑ Produk hewani (daging, keju, gelatin): RISIKO TINGGI → Perlu double verification
+  ❑ Produk nabati murni (rempah, minyak nabati): RISIKO RENDAH
+  ❑ Klasifikasikan setiap batch berdasarkan level risikonya!
+    </div>
+
+    <div class="callout sya">
+      <strong>☾ Makna Sertifikasi Juleha (Juru Sembelih Halal):</strong> Pada produk hewani (unggas/sapi), ERP memvalidasi identitas juru sembelih halal yang teregistrasi untuk memastikan hewan disembelih sesuai syariat — membaca basmalah, memutus 3 saluran: hulqum (kerongkongan), mari' (saluran makanan), dan wadajain (dua urat leher).
+    </div>
+
+    <div class="callout warn">
+      ⚠️ <strong>Batch SYUBHAT:</strong> Jika dataset menunjukkan batch gelatin dengan pemasok tanpa keterangan asal (sapi/babi/ikan), statusnya <em>syubhat</em>. Dalam sistem ERP, batch tersebut otomatis diblokir untuk diproses dan dikirimkan ke tim QA untuk investigasi lanjutan sebelum boleh dirilis.
+    </div>
+
+    <div class="unlock-row">
+      <button class="btn-unlock" id="btn2" onclick="completeStep(2)">✓ Langkah 3 Selesai — Audit Halal Traceability Berhasil</button>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══ LANGKAH 4: SKEMA DATABASE HAS 23000 ══╗ -->
+<div class="step-card locked" id="step3">
+  <div class="step-hd">
+    <div class="step-num" id="sn3">4</div>
+    <div class="step-title">Perancangan Skema Database Modul Halal Assurance</div>
+    <span class="step-est">⏱ ~12 menit</span>
+  </div>
+  <div class="step-body">
+    <p>Agar sistem ERP mampu mendukung sertifikasi Sistem Jaminan Produk Halal (SJPH / HAS 23000), struktur tabel relasional berikut dirancang:</p>
+
+    <div class="table-wrap">
+      <table class="custom-table">
+        <thead><tr><th>Nama Tabel Relasional</th><th>Fungsi Sistem</th><th>Primary Key (PK)</th><th>Foreign Key (FK)</th><th>Atribut / Kolom Kunci</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Tbl_Master_Supplier_Halal</strong></td>
+            <td>Menyimpan profil vendor &amp; validasi izin</td>
+            <td><code>supplier_id</code></td>
+            <td>-</td>
+            <td>nama_pt, alamat, no_telp, no_sertifikat_halal, tgl_kadaluarsa_halal, status_audit</td>
+          </tr>
+          <tr>
+            <td><strong>Tbl_Master_Bahan_Baku</strong></td>
+            <td>Katalog bahan baku &amp; titik kritis kehalalan</td>
+            <td><code>material_code</code></td>
+            <td><code>supplier_id</code></td>
+            <td>nama_bahan, kategori_kritis (Tinggi/Rendah), jenis_sertifikasi, suhu_simpan_min</td>
+          </tr>
+          <tr>
+            <td><strong>Tbl_Log_Inspeksi_Inbound_QC</strong></td>
+            <td>Catatan pemeriksaan fisik saat barang datang</td>
+            <td><code>inspection_id</code></td>
+            <td><code>material_code</code>, <code>po_number</code></td>
+            <td>tgl_inspeksi, auditor_id, suhu_terukur, hasil_uji_lab, status_lolos (Pass/Reject)</td>
+          </tr>
+          <tr>
+            <td><strong>Tbl_Batch_Produksi_Halal</strong></td>
+            <td>Catatan pengolahan batch di lini pabrik</td>
+            <td><code>batch_id</code></td>
+            <td><code>product_code</code></td>
+            <td>tgl_produksi, lini_pabrik, operator_id, volume_hasil_kg, status_karantina</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="unlock-row">
+      <button class="btn-unlock" id="btn3" onclick="completeStep(3)">✓ Langkah 4 Selesai — Skema Database Terancang</button>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══ LANGKAH 5: DFD ERP RANTAI PASOK HALAL ══╗ -->
+<div class="step-card locked" id="step4">
+  <div class="step-hd">
+    <div class="step-num" id="sn4">5</div>
+    <div class="step-title">Pemodelan DFD Level 0 Sistem ERP Rantai Pasok Terpadu</div>
+    <span class="step-est">⏱ ~12 menit</span>
+  </div>
+  <div class="step-body">
+    <p>Visualisasikan arus data terintegrasi antara pemasok bahan, gudang, lini pabrik, auditor halal, dan akuntansi:</p>
+
+    <div class="code-box">
+      <div class="code-hd"><span>LOGIKA DFD LEVEL 0: SISTEM ERP MANUFAKTUR HALAL</span><button class="copy-btn" onclick="copySnippet(1)">Salin Diagram Logika</button></div>
+[Pemasok Bahan] ---> (1.0 E-Procurement & PO) ---> [Data Store: D1 PO_Table]
+                            |
+                            v
+[Penerimaan Fisik]-> (2.0 Inbound QC & Halal Audit) -> [Data Store: D2 QC_Log]
+                            |
+                            v
+[Lantai Pabrik] ---> (3.0 Production Execution & BOM) -> [Data Store: D3 Batch_Table]
+                            |
+                            v
+[Pesanan Retail] --> (4.0 Sales Order & Delivery) ---> [Data Store: D4 Sales_Invoice]
+                            |
+                            v
+[Departemen FI] ---> (5.0 Automated GL & Costing) ---> [Data Store: D5 General_Ledger]
+                            |
+                            +----> Menerbitkan: Laporan Keuangan & Audit Kepatuhan Syariah
+    </div>
+
+    <h3 class="sh">Analisis Setiap Proses dalam DFD</h3>
+    <div class="table-wrap">
+      <table class="custom-table">
+        <thead><tr><th>Proses DFD</th><th>Modul ERP</th><th>Input Data</th><th>Output Data</th><th>Pengendalian Syariah</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1.0 E-Procurement &amp; PO</strong></td><td>MM / Purchasing</td><td>Purchase Requisition, Katalog Vendor Halal</td><td>Purchase Order terotorisasi</td><td>Blokir PO jika sertifikat halal vendor expired</td></tr>
+          <tr><td><strong>2.0 Inbound QC &amp; Halal Audit</strong></td><td>QM / WM</td><td>Goods Receipt, Scan QR-Code Batch, Suhu Sensor IoT</td><td>Inspection Lot, Status PASS/REJECT</td><td>Otomatis karantina batch jika suhu/QC gagal</td></tr>
+          <tr><td><strong>3.0 Production Execution &amp; BOM</strong></td><td>PP / Manufacturing</td><td>Work Order, Bill of Materials, Batch ID bahan baku halal</td><td>Batch produksi selesai, Batch ID produk jadi</td><td>Segregasi lini produksi — no cross-contamination</td></tr>
+          <tr><td><strong>4.0 Sales Order &amp; Delivery</strong></td><td>SD / LE</td><td>Pesanan retailer, Konfirmasi stok, Sertifikat Halal Produk</td><td>Delivery Order, Invoice, Label Halal digital</td><td>Akad jual beli transparan, harga wajar tanpa manipulasi</td></tr>
+          <tr><td><strong>5.0 Automated GL &amp; Costing</strong></td><td>FI / CO</td><td>Goods Movement postings, Invoice data, Payroll data</td><td>Jurnal GL real-time, Laporan Laba Rugi, Neraca</td><td>Pemisahan otomatis pendapatan halal vs dana kebajikan</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout tip">
+      💡 <strong>Real-Time Integration:</strong> Saat auditor halal men-scan QR-Code batch di dermaga pabrik (Proses 2.0), secara simultan: Modul MM memperbarui stok gudang, Modul FI membuat jurnal penerimaan barang, dan Modul QM menyimpan log inspeksi — <strong>satu scan, tiga modul bergerak bersamaan</strong>.
+    </div>
+
+    <div class="unlock-row">
+      <button class="btn-unlock" id="btn4" onclick="completeStep(4)">✓ Langkah 5 Selesai — DFD Terpetakan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══ LANGKAH 6: TANTANGAN MANDIRI ══╗ -->
+<div class="step-card locked" id="step5">
+  <div class="step-hd">
+    <div class="step-num" id="sn5">6</div>
+    <div class="step-title">Tantangan Analisis Kasus &amp; Evaluasi Syariah</div>
+    <span class="step-est">⏱ ~12 menit</span>
+  </div>
+  <div class="step-body">
+    <p>Kerjakan 3 tugas tantangan analisis kasus berikut sebagai laporan terstruktur Tugas 1 (AIS Lab 2):</p>
+
+    <div class="challenge-box">
+      <h4>🎯 3 Kasus Analisis Rantai Pasok &amp; ERP</h4>
+      <div class="challenge-q"><strong>Tantangan 1 — Prosedur Penarikan Produk Cepat (Product Recall Simulation):</strong> Pada batch <code>BATCH-2026-H04</code> (Gelatin Kapsul), BPOM merilis temuan bahwa salah satu dokumen impor bahan baku gelatin mengandung ketidakjelasan (<em>syubhat</em>). Rancanglah 4 langkah operasional di sistem ERP untuk: (a) Mengunci stok yang masih ada di gudang, (b) Melacak daftar distributor yang sudah menerima produk tersebut, dan (c) Menjurnal pembekuan persediaan ke pos karantina!</div>
+      <div class="challenge-q"><strong>Tantangan 2 — Evaluasi Etika Negosiasi Pengadaan ('Adl vs Monopsony):</strong> PT HFN sebagai pembeli besar memiliki posisi tawar kuat. Manajer Purchasing mengusulkan untuk menunda pembayaran tagihan petani peternak sapi lokal dari tempo 14 hari menjadi 90 hari guna membiayai ekspansi pabrik baru. Evaluasilah usulan ini dari kacamata prinsip <em>Adl</em> dan kaidah <em>Wafa' bil 'Aqd</em>!</div>
+      <div class="challenge-q"><strong>Tantangan 3 — Isolasi Pendapatan Non-Halal (Dana Kebajikan):</strong> Pada akhir tahun, PT HFN menerima bunga jasa giro sebesar Rp 18.500.000 dari rekening bank operasional konvensional yang belum sempat dimigrasikan ke bank syariah. Buatlah ayat jurnal penyesuaian (<em>adjusting journal entry</em>) di Modul FI untuk memisahkan dana tersebut dari laba operasional dan memindahkannya ke pos <em>Kewajiban Dana Kebajikan (Qardhul Hasan)</em>!</div>
+    </div>
+
+    <h3 class="sh">Ketentuan Pengumpulan Laporan Tugas 1</h3>
+    <ul class="lst">
+      <li><strong>Format Berkas:</strong> File dokumen PDF/Word dengan nama <code>Tugas1_AIS_[NIM]_[Nama].pdf</code>.</li>
+      <li><strong>Isi Laporan:</strong> Hasil analisis Langkah 1 s.d. 5 + Jawaban lengkap 3 Kasus Tantangan Mandiri.</li>
+      <li><strong>Refleksi Nilai:</strong> Tuliskan 1 paragraf: Bagaimana transparansi sistem informasi enterprise mencegah perilaku <em>Ikhtikar</em> (penimbunan) dan mewujudkan keadilan rantai pasok dalam ekonomi Islam?</li>
+    </ul>
+
+    <div class="unlock-row">
+      <button class="btn-unlock" id="btn5" onclick="completeStep(5)">✓ Tantangan Selesai — Laporan Siap Disusun</button>
+      <span class="unlock-hint">Klik setelah membaca seluruh instruksi tugas</span>
+    </div>
+  </div>
+</div>
+
+<!-- COMPLETION BOX -->
+<div class="completion" id="completion">
+  <h2>🎉 Luar Biasa! Praktikum 2 (Pertemuan 03 AIS) Selesai!</h2>
+  <p>Kamu telah menguasai pemetaan rantai nilai industri halal, konfigurasi modul ERP, alur P2P, audit keterlacakan bahan baku, dan etika keadilan rantai pasok.</p>
+  <a class="next-btn" href="Pertemuan-03.html">← Kembali ke Slide Teori P03</a>
+</div>
+
+</div><!-- end .main -->
+
+<script>
+const LAB_KEY = 'tazkia-ais-p03-lab-v1';
+const TOTAL_STEPS = 6;
+let labState = {done:[]};
+
+function loadLabState(){
+  try{
+    const s = JSON.parse(localStorage.getItem(LAB_KEY));
+    if(s) labState = s;
+  }catch(e){}
+}
+function saveLabState(){
+  try{ localStorage.setItem(LAB_KEY, JSON.stringify(labState)); }catch(e){}
+}
+
+function applyLabState(){
+  labState.done.forEach(i=>applyDone(i));
+  updateTracker();
+  if(labState.done.length === TOTAL_STEPS) document.getElementById('completion').classList.add('show');
+}
+
+function applyDone(i){
+  const card = document.getElementById('step' + i);
+  if(!card) return;
+  card.className = 'step-card unlocked completed';
+  const num = document.getElementById('sn' + i);
+  if(num){ num.style.background = 'var(--sya)'; num.textContent = '✓'; }
+  const btn = document.getElementById('btn' + i);
+  if(btn){ btn.className = 'btn-unlock done-state'; btn.disabled = true; btn.textContent = '✓ Selesai'; }
+  const next = document.getElementById('step' + (i+1));
+  if(next) next.className = 'step-card unlocked';
+}
+
+function completeStep(i){
+  if(labState.done.includes(i)) return;
+  labState.done.push(i);
+  saveLabState();
+  applyDone(i);
+  updateTracker();
+  const next = document.getElementById('step' + (i+1));
+  if(next) next.scrollIntoView({behavior:'smooth', block:'start'});
+  if(labState.done.length === TOTAL_STEPS){
+    document.getElementById('completion').classList.add('show');
+    document.getElementById('completion').scrollIntoView({behavior:'smooth'});
+  }
+}
+
+function updateTracker(){
+  for(let i=0; i<TOTAL_STEPS; i++){
+    const c = document.getElementById('tc' + i);
+    const l = document.getElementById('tl' + i);
+    const ln = document.getElementById('tln' + i);
+    if(!c) continue;
+    if(labState.done.includes(i)){
+      c.className = 'tr-circle done'; c.textContent = '✓';
+      l.className = 'tr-label done';
+      if(ln) ln.className = 'tr-line done';
+    } else if(i === labState.done.length){
+      c.className = 'tr-circle active'; l.className = 'tr-label active';
+    } else {
+      c.className = 'tr-circle'; l.className = 'tr-label';
+    }
+  }
+}
+
+const SNIPPETS = [
+`[1. Modul PP/Gudang]  --> Menemukan stok daging menipis (< Safety Stock 500kg)
+                          Sistem otomatis terbitkan: Purchase Requisition (PR-2026-089)
+
+[2. Modul MM/Purchasing] -> Merilis Purchase Order (PO-HFN-442) ke 'RPH Halal Surya Berkah'
+                            Sistem memvalidasi status Sertifikat Halal ID3211000012345 (Valid)
+
+[3. Modul QM/Inbound]   --> Truk daging tiba di dermaga pabrik.
+                            Auditor Halal scan QR-Code & catat suhu (-18.2°C). Status: Passed.
+                            Sistem terbitkan: Goods Receipt (GR-88912)
+
+[4. Modul FI (Akuntansi)]-> OTOMATIS POSTING JURNAL REAL-TIME:
+                            Debit : Persediaan Bahan Baku Daging   Rp 75.000.000
+                            Kredit: Utang Usaha Belum Difakturkan Rp 75.000.000
+
+[5. Modul FI (Invoice)] --> Menerima Tagihan Vendor. Sistem lakukan 3-Way Matching:
+                            (PO vs Goods Receipt vs Vendor Invoice) -> MATCH 100%!
+                            Debit : Utang Usaha Belum Difakturkan Rp 75.000.000
+                            Kredit: Utang Usaha Vendor (AP)       Rp 75.000.000`,
+`[Pemasok Bahan] ---> (1.0 E-Procurement & PO) ---> [Data Store: D1 PO_Table]
+                            |
+                            v
+[Penerimaan Fisik]-> (2.0 Inbound QC & Halal Audit) -> [Data Store: D2 QC_Log]
+                            |
+                            v
+[Lantai Pabrik] ---> (3.0 Production Execution & BOM) -> [Data Store: D3 Batch_Table]
+                            |
+                            v
+[Pesanan Retail] --> (4.0 Sales Order & Delivery) ---> [Data Store: D4 Sales_Invoice]
+                            |
+                            v
+[Departemen FI] ---> (5.0 Automated GL & Costing) ---> [Data Store: D5 General_Ledger]
+                            |
+                            +----> Menerbitkan: Laporan Keuangan & Audit Kepatuhan Syariah`,
+`CHECKLIST AUDIT HALAL SCM — 5 TITIK KRITIS (HCCP)
+
+HCCP-1: VALIDITAS SERTIFIKAT HALAL
+  Cek kolom [No_Sertifikat_Halal] — format: ID<prov><kab>000XXXXX?
+  Cek kolom [Tgl_Kadaluarsa_Halal] — adakah sertifikat expired?
+  Batch mana supplier-nya NON-CERTIFIED?
+
+HCCP-2: SUHU COLD CHAIN
+  Produk daging beku: suhu wajib <= -18C (Standar SNI 01-3820)
+  Produk chiller (keju, susu): suhu wajib 0C - 5C
+  Identifikasi batch dengan Suhu_Cold_Storage menyimpang dari standar!
+
+HCCP-3: HASIL UJI QC INBOUND
+  Kolom QC_Inbound: nilai "PASS" = layak masuk produksi
+  Temukan batch dengan QC = "PENDING" atau "FAIL" -> Harus KARANTINA
+  Berapa % batch yang lulus QC dari total batch di dataset?
+
+HCCP-4: STATUS AUDIT SYARIAH
+  Kolom Kepatuhan_Syariah: apakah semua "COMPLIANT"?
+  Batch berlabel "SYUBHAT" atau "NON-COMPLIANT" -> Larangan penggunaan
+  Dokumentasikan temuan sebagai bagian Laporan Audit Halal Internal
+
+HCCP-5: JENIS PRODUK vs RISIKO KEHALALAN
+  Produk hewani: RISIKO TINGGI -> Perlu double verification
+  Produk nabati murni: RISIKO RENDAH
+  Klasifikasikan setiap batch berdasarkan level risikonya!`
+];
+
+function copySnippet(idx){
+  if(idx >= SNIPPETS.length) return;
+  navigator.clipboard.writeText(SNIPPETS[idx]).then(()=>{
+    const btns = document.querySelectorAll('.copy-btn');
+    const b = btns[idx];
+    if(b){
+      const orig = b.textContent;
+      b.textContent = '✓ Tersalin!';
+      setTimeout(()=>b.textContent = orig, 1500);
+    }
+  });
+}
+
+loadLabState();
+applyLabState();
+</script>

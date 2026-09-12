@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pertemuan 6 — Ancaman &amp; Keamanan Sistem Informasi</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap">
+<style>
+/* ═══ MEETING COLOR VARIABLES (P06 = Amber Flame & Crimson Burgundy) ═══ */
+:root{
+  --meet-from:#1A0800; --meet-mid:#2E1005; --meet-to:#481808;
+  --meet-acc:#D46020;  --meet-acc2:#E88030; --meet-star:#D46020;
+  /* SYSTEM TOKENS */
+  --bg:#EDF1F6;--sf:#FFFFFF;--sf2:#FBF2EC;--sf3:#F6ECE4;
+  --bd:#D8C4B8;--bs:#EADFD8;
+  --tx:#1C0C04;--txm:#4A3830;--txl:#8C756B;
+  --pri:#2E1005;--pmid:#D46020;--pril:#FCEBD8;--prx:#FAF0E8;
+  --acc:#D46020;--accl:#FCEBD8;
+  --sya:#1F9060;--syal:#D0EEE2;--syab:#40B080;
+  --ok:#1F9060;--okl:#D0EEE2;
+  --warn:#C03818;--warnl:#FCDBD0;
+  /* MATCHING PAIR COLORS */
+  --p0:#D46020;--p0l:#FCEBD8; --p1:#1F9060;--p1l:#D0EEE2;
+  --p2:#7040B0;--p2l:#EEE0FA; --p3:#1B7898;--p3l:#D8EEF6;
+  --p4:#C03818;--p4l:#FCDBD0; --p5:#9E6800;--p5l:#FDF0D0;
+  --r:8px;--rs:5px;
+  --shadow:0 4px 20px rgba(46,16,5,.12);
+  --shadow-sm:0 2px 8px rgba(46,16,5,.08);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#0E0604;--sf:#1A0D08;--sf2:#140804;--sf3:#1E100A;
+  --bd:#361C12;--bs:#28140C;
+  --tx:#F4E8E2;--txm:#B0988E;--txl:#6E554B;
+  --pri:#E88030;--pmid:#D46020;--pril:#2A1006;--prx:#1F0B04;
+  --acc:#E88030;--accl:#2A1006;
+  --sya:#30B878;--syal:#041410;--syab:#186040;
+  --ok:#30B878;--okl:#041410;
+  --warn:#E05030;--warnl:#280800;
+  --p0l:#281000;--p1l:#041410;--p2l:#180828;--p3l:#0A2030;--p4l:#200408;--p5l:#241800;
+}}
+:root[data-theme=dark]{
+  --bg:#0E0604;--sf:#1A0D08;--sf2:#140804;--sf3:#1E100A;
+  --bd:#361C12;--bs:#28140C;
+  --tx:#F4E8E2;--txm:#B0988E;--txl:#6E554B;
+  --pri:#E88030;--pmid:#D46020;--pril:#2A1006;--prx:#1F0B04;
+  --acc:#E88030;--accl:#2A1006;
+  --sya:#30B878;--syal:#041410;--syab:#186040;
+  --ok:#30B878;--okl:#041410;
+  --warn:#E05030;--warnl:#280800;
+  --p0l:#281000;--p1l:#041410;--p2l:#180828;--p3l:#0A2030;--p4l:#200408;--p5l:#241800;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color:var(--tx);margin:0;font-size:15px;line-height:1.65}
+
+/* ── TOPBAR ── */
+.topbar{background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.back-btn{color:rgba(255,255,255,.65);font-size:13px;font-weight:600;cursor:pointer;border:none;background:none;display:flex;align-items:center;gap:4px;transition:color .15s;text-decoration:none}
+.back-btn:hover{color:#fff}
+.top-div{width:1px;height:20px;background:rgba(255,255,255,.15)}
+.top-course{font-size:11.5px;color:rgba(255,255,255,.5)}
+.top-meeting{font-size:13px;font-weight:700;color:rgba(255,255,255,.95)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.top-badge{font-size:11px;font-weight:700;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:2px 10px;color:rgba(255,255,255,.85)}
+.prog-wrap{width:120px;height:5px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden}
+.prog-bar{height:100%;background:var(--meet-acc2);border-radius:3px;transition:width .4s ease}
+.prog-txt{font-size:11px;color:rgba(255,255,255,.5);text-align:right}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(160deg,var(--meet-from) 0%,var(--meet-mid) 55%,var(--meet-to) 100%);color:#fff;padding:38px 24px 0;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;pointer-events:none;opacity:.15}
+.hero-inner{max-width:840px;margin:0 auto;position:relative;z-index:1;padding-bottom:30px}
+.hero-ew{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.hero-line{width:22px;height:1px;background:var(--meet-acc2)}
+.hero-tag{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--meet-acc2)}
+.hero-bignum{font-family:'Amiri',serif;font-size:72px;font-weight:700;line-height:1;color:rgba(255,255,255,.07);position:absolute;right:0;top:-8px;letter-spacing:-.02em;-webkit-user-select:none;user-select:none}
+.hero-title{font-family:'Amiri',serif;font-size:30px;font-weight:700;margin:0 0 6px;line-height:1.2}
+.hero-sub{font-size:14.5px;color:rgba(255,255,255,.7);margin:0 0 18px}
+.hero-chips{display:flex;flex-wrap:wrap;gap:6px}
+.hchip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:3px 11px;font-size:12px;color:rgba(255,255,255,.8)}
+.hchip strong{color:#fff}
+.hero-arch{line-height:0;margin-top:-1px}
+.hero-arch svg{display:block;width:100%;height:26px}
+
+/* ── STEPS CONNECTOR ── */
+.steps-wrap{background:var(--sf);border-bottom:1px solid var(--bs);padding:12px 24px;overflow-x:auto;position:sticky;top:52px;z-index:90;box-shadow:var(--shadow-sm)}
+.steps{display:flex;align-items:center;max-width:840px;margin:0 auto}
+.step{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--txl);white-space:nowrap;cursor:default}
+.sdot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:var(--sf3);border:2px solid var(--bs);color:var(--txl);flex-shrink:0;transition:all .25s}
+.step.done .sdot{background:var(--ok);border-color:var(--ok);color:#fff}
+.step.active .sdot{background:var(--pmid);border-color:var(--pmid);color:#fff}
+.step.quiz .sdot{background:var(--accl);border-color:var(--acc);color:var(--acc)}
+.step.quiz.done .sdot{background:var(--ok);border-color:var(--ok);color:#fff}
+.slabel{display:none}
+@media(min-width:580px){.slabel{display:inline}}
+.sconn{flex:1;height:2px;background:var(--bs);min-width:10px;transition:background .25s}
+.sconn.done{background:var(--ok)}
+
+/* ── BODY ── */
+.body{max-width:840px;margin:0 auto;padding:26px 18px 80px}
+@media(min-width:640px){.body{padding:30px 26px 80px}}
+
+/* ── SECTION CARD ── */
+.sec{background:var(--sf);border:1px solid var(--bs);border-radius:var(--r);margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow-sm);transition:opacity .4s,filter .4s}
+.sec.locked{opacity:.38;filter:grayscale(.45);pointer-events:none;user-select:none}
+.sec.unlocking{animation:sIn .35s ease both}
+@keyframes sIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.sec-hd{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--bs);background:var(--sf3)}
+.sec-num{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:var(--pmid);color:#fff;flex-shrink:0;transition:background .3s}
+.sec.done-sec .sec-num{background:var(--ok)}
+.sec-title-wrap{flex:1}
+.sec-title{font-family:'Amiri',serif;font-size:17.5px;font-weight:700;color:var(--pri);margin:0}
+.sec-sub2{font-size:12px;color:var(--txl);margin:1px 0 0}
+.sec-chk{font-size:18px;color:var(--ok);flex-shrink:0;display:none}
+.sec.done-sec .sec-chk{display:block}
+.sec-body{padding:20px 22px}
+@media(max-width:480px){.sec-body{padding:14px 14px}}
+.sec-foot{padding:14px 22px;border-top:1px solid var(--bs);display:flex;justify-content:flex-end;align-items:center;gap:10px;background:var(--sf3)}
+.done-msg{font-size:12.5px;color:var(--ok);font-weight:600;display:none}
+.sec.done-sec .done-msg{display:block}
+.sec.done-sec .paham-btn{display:none}
+.paham-btn{background:var(--pmid);color:#fff;border:none;border-radius:var(--r);padding:9px 20px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s;font-family:'Source Sans 3',sans-serif}
+.paham-btn:hover{background:#E88030}
+.paham-btn::after{content:'→'}
+
+/* ── TYPOGRAPHY ── */
+.lead{font-size:15.5px;color:var(--txm);line-height:1.7;margin:0 0 16px}
+h3.sub{font-family:'Amiri',serif;font-size:18px;font-weight:700;color:var(--pri);margin:20px 0 9px;display:flex;align-items:center;gap:8px}
+h3.sub::before{content:'';width:4px;height:16px;background:var(--meet-acc2);border-radius:2px;flex-shrink:0}
+h4.sub2{font-size:13.5px;font-weight:700;color:var(--pmid);margin:14px 0 6px;text-transform:uppercase;letter-spacing:.06em}
+p{color:var(--txm);margin:0 0 11px;line-height:1.65}
+ul.detail{padding-left:0;list-style:none;margin:0 0 13px}
+ul.detail li{padding:6px 0 6px 18px;position:relative;color:var(--txm);border-bottom:1px solid var(--bs);font-size:14px;line-height:1.5}
+ul.detail li:last-child{border-bottom:none}
+ul.detail li::before{content:'▸';position:absolute;left:0;color:var(--pmid);font-size:11px;top:8px}
+ul.detail li strong{color:var(--tx)}
+ul.bullet{padding-left:20px;margin:0 0 13px}
+ul.bullet li{margin-bottom:5px;color:var(--txm);font-size:14px;line-height:1.5}
+
+/* ── CALLOUT ── */
+.callout{border-radius:var(--rs);padding:13px 16px;margin:12px 0;font-size:14px;line-height:1.6}
+.callout.info{background:var(--prx);border-left:4px solid var(--pmid);color:var(--txm)}
+.callout.info strong{color:var(--pri)}
+.callout.warn{background:var(--warnl);border-left:4px solid var(--warn);color:var(--txm)}
+.callout.warn strong{color:var(--warn)}
+.callout.sya{background:var(--syal);border-left:4px solid var(--sya);color:var(--txm)}
+.callout.sya strong{color:var(--sya)}
+.callout.case{background:var(--sf3);border:1px solid var(--bs);border-left:4px solid var(--meet-acc2);color:var(--txm)}
+.case-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--meet-acc2);margin-bottom:5px}
+
+/* ── CARDS & GRIDS ── */
+.pillars-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
+@media(max-width:680px){.pillars-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:440px){.pillars-grid{grid-template-columns:1fr}}
+.pillar-card{background:var(--sf3);border:1.5px solid var(--bs);border-radius:var(--rs);padding:13px;position:relative}
+.pillar-card.hl{border-color:var(--pmid);background:var(--prx)}
+.pillar-badge{font-size:10px;font-weight:700;background:var(--pmid);color:#fff;padding:2px 7px;border-radius:10px;display:inline-block;margin-bottom:6px}
+.pillar-title{font-family:'Amiri',serif;font-size:15px;font-weight:700;color:var(--pri);margin-bottom:4px}
+.pillar-desc{font-size:12px;color:var(--txm);line-height:1.45}
+
+.malware-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+@media(max-width:640px){.malware-grid{grid-template-columns:1fr}}
+.malware-card{background:var(--sf3);border:1.5px solid var(--bs);border-radius:var(--rs);padding:13px}
+.malware-hd{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.malware-icon{font-size:20px}
+.malware-title{font-family:'Amiri',serif;font-size:15.5px;font-weight:700;color:var(--pri)}
+.malware-desc{font-size:12.5px;color:var(--txm);line-height:1.45}
+
+/* ── COMPARISON TABLE ── */
+.cmp-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13.5px}
+.cmp-table th{background:var(--pri);color:#fff;padding:9px 12px;text-align:left;font-size:12px}
+.cmp-table td{padding:9px 12px;border-bottom:1px solid var(--bs);color:var(--txm);vertical-align:top}
+.cmp-table tr:last-child td{border-bottom:none}
+.cmp-table tr:nth-child(even) td{background:var(--sf3)}
+
+/* ── AYAT & SYARIAH ── */
+.sya-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:540px){.sya-grid{grid-template-columns:1fr}}
+.sya-card{background:var(--sf3);border:1px solid var(--bs);border-top:3px solid var(--sya);border-radius:var(--rs);padding:14px}
+.sya-card-title{font-family:'Amiri',serif;font-size:16px;font-weight:700;color:var(--sya);margin-bottom:4px}
+.sya-card-desc{font-size:13px;color:var(--txm);line-height:1.55}
+.sya-card-ref{font-size:11.5px;color:var(--syab);margin-top:6px;font-weight:600}
+
+.ayat-box{background:linear-gradient(135deg,var(--meet-from),var(--meet-mid));border-radius:var(--r);padding:18px 22px;margin:14px 0;color:#fff}
+.ayat-ar{font-family:'Amiri',serif;font-size:20px;line-height:1.85;text-align:right;direction:rtl;color:#FCEBD8;margin-bottom:12px}
+.ayat-trans{font-style:italic;color:rgba(255,255,255,.8);font-size:13.5px;line-height:1.6;margin-bottom:8px;border-top:1px solid rgba(255,255,255,.15);padding-top:9px}
+.ayat-ref{font-size:12px;color:var(--meet-acc2);font-weight:600}
+
+/* ── QUIZ STYLES ── */
+.quiz-sec{background:var(--sf);border:2px solid var(--acc);border-radius:var(--r);margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow);transition:opacity .4s,filter .4s}
+.quiz-sec.locked{opacity:.38;filter:grayscale(.45);pointer-events:none;user-select:none}
+.quiz-hd{background:linear-gradient(135deg,var(--meet-from),var(--meet-mid));color:#fff;padding:15px 22px;display:flex;align-items:center;gap:11px}
+.quiz-icon{font-size:22px}
+.quiz-hd-text{flex:1}
+.quiz-hd-title{font-family:'Amiri',serif;font-size:19px;font-weight:700;margin:0}
+.quiz-hd-sub{font-size:12px;color:rgba(255,255,255,.65);margin:2px 0 0}
+.quiz-body{padding:20px 22px}
+
+.q-item{margin-bottom:22px}
+.q-text{font-size:14.5px;font-weight:600;color:var(--tx);margin-bottom:11px;line-height:1.5}
+.q-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--pmid);color:#fff;border-radius:50%;font-size:10.5px;font-weight:700;margin-right:7px;flex-shrink:0;vertical-align:middle}
+.options{display:flex;flex-direction:column;gap:6px}
+.opt{padding:9px 14px;border-radius:var(--rs);border:2px solid var(--bs);background:var(--sf3);cursor:pointer;font-size:13.5px;color:var(--txm);transition:all .15s;display:flex;align-items:flex-start;gap:9px;-webkit-user-select:none;user-select:none}
+.opt:hover{border-color:var(--pmid);background:var(--prx);color:var(--pri)}
+.opt.selected{border-color:var(--pmid);background:var(--pril);color:var(--pri);font-weight:600}
+.opt.correct{border-color:var(--ok);background:var(--okl);color:#0A3020;font-weight:600}
+.opt.wrong{border-color:var(--warn);background:var(--warnl);color:#6A1808}
+.opt-ltr{width:20px;height:20px;border-radius:50%;background:var(--bs);display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;flex-shrink:0;transition:all .15s}
+.opt.selected .opt-ltr{background:var(--pmid);color:#fff}
+.opt.correct .opt-ltr{background:var(--ok);color:#fff}
+.opt.wrong .opt-ltr{background:var(--warn);color:#fff}
+.opt-txt{flex:1;line-height:1.5}
+.opt-fb{font-size:11.5px;font-style:italic;margin-top:4px;display:none;color:inherit;opacity:.85}
+.opt.correct .opt-fb,.opt.wrong .opt-fb{display:block}
+
+/* MATCHING */
+.match-intro{font-size:13.5px;color:var(--txm);margin-bottom:14px;line-height:1.55;padding:10px 14px;background:var(--prx);border-radius:var(--rs)}
+.match-container{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:520px){.match-container{grid-template-columns:1fr}}
+.match-col-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--txl);margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--bs)}
+.match-terms,.match-defs{display:flex;flex-direction:column;gap:5px}
+.match-term,.match-def{padding:9px 12px;border:2px solid var(--bs);border-radius:var(--rs);cursor:pointer;font-size:13px;color:var(--txm);background:var(--sf3);transition:all .15s;-webkit-user-select:none;user-select:none;line-height:1.4}
+.match-term{font-weight:700;color:var(--tx)}
+.match-term:hover,.match-def:hover{border-color:var(--pmid);background:var(--prx)}
+.match-term.selected{border-color:var(--pmid);background:var(--pril);color:var(--pri)}
+
+.quiz-foot{padding:14px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;background:var(--sf3);border-top:1px solid var(--bs)}
+.submit-btn{background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc2));color:#fff;border:none;border-radius:var(--r);padding:10px 24px;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s;font-family:'Source Sans 3',sans-serif}
+.submit-btn:hover{opacity:.9}
+.score-badge{font-size:14px;font-weight:700;padding:6px 14px;border-radius:20px;display:none}
+.score-badge.pass{background:var(--okl);color:var(--ok);border:1px solid var(--ok)}
+.score-badge.fail{background:var(--warnl);color:var(--warn);border:1px solid var(--warn)}
+
+.completion{display:none;background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;border-radius:var(--r);padding:28px;text-align:center;margin-top:18px}
+.completion.show{display:block}
+.completion h2{font-family:'Amiri',serif;font-size:24px;font-weight:700;margin-bottom:8px}
+.completion p{color:rgba(255,255,255,.75);font-size:13.5px;margin-bottom:14px}
+.completion .lab-btn{display:inline-block;background:var(--meet-acc2);color:#fff;border-radius:20px;padding:10px 24px;font-weight:700;font-size:14px;text-decoration:none;transition:transform .15s}
+.completion .lab-btn:hover{transform:translateY(-2px)}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <a class="back-btn" href="../RPS-SIA.html">← RPS</a>
+    <div class="top-div"></div>
+    <div>
+      <div class="top-course">Sistem Informasi Akuntansi · FEBI Universitas Tazkia</div>
+      <div class="top-meeting">Pertemuan 06 — Ancaman &amp; Keamanan Sistem Informasi</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span class="top-badge">CPMK-3 · Romney Ch. 5</span>
+    <div class="prog-wrap"><div class="prog-bar" id="topProg" style="width:14%"></div></div>
+    <span class="prog-txt" id="topPct">14%</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <svg class="hero-bg" viewBox="0 0 600 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs><pattern id="dots-p6" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="20" cy="20" r="1.8" fill="#D46020" opacity=".5"/>
+      <path d="M0,20 L40,20 M20,0 L20,40" stroke="#D46020" stroke-width=".3" opacity=".25"/>
+    </pattern></defs>
+    <rect width="100%" height="100%" fill="url(#dots-p6)"/>
+  </svg>
+  <div class="hero-inner">
+    <div class="hero-bignum">06</div>
+    <div class="hero-ew"><div class="hero-line"></div><span class="hero-tag">Sistem Informasi Akuntansi — Modul Teori Mendalam</span></div>
+    <h1 class="hero-title">Ancaman &amp; Keamanan Sistem Informasi</h1>
+    <p class="hero-sub">Vektor Serangan Malware &amp; Ransomware · Rekayasa Sosial &amp; Phishing · Eksploitasi Database SIA · Maqashid Syariah &amp; Perlindungan Harta</p>
+    <div class="hero-chips">
+      <span class="hchip"><strong>CPMK-3</strong> C4 — Menganalisis</span>
+      <span class="hchip">Romney &amp; Steinbart Ch. 5 &amp; NIST CSF</span>
+      <span class="hchip">Cyber Kill Chain &amp; Defense-in-Depth</span>
+      <span class="hchip">Ganjil 2026/2027</span>
+    </div>
+  </div>
+  <div class="hero-arch"><svg viewBox="0 0 1200 26" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,26 L0,14 Q20,4 40,14 Q60,26 80,14 Q100,4 120,14 Q140,26 160,14 Q180,4 200,14 Q220,26 240,14 Q260,4 280,14 Q300,26 320,14 Q340,4 360,14 Q380,26 400,14 Q420,4 440,14 Q460,26 480,14 Q500,4 520,14 Q540,26 560,14 Q580,4 600,14 Q620,26 640,14 Q660,4 680,14 Q700,26 720,14 Q740,4 760,14 Q780,26 800,14 Q820,4 840,14 Q860,26 880,14 Q900,4 920,14 Q940,26 960,14 Q980,4 1000,14 Q1020,26 1040,14 Q1060,4 1080,14 Q1100,26 1120,14 Q1140,4 1160,14 Q1180,26 1200,14 L1200,26 Z" fill="var(--bg)"/>
+  </svg></div>
+</div>
+
+<!-- STEP INDICATOR TRACK -->
+<div class="steps-wrap">
+  <div class="steps" id="stepTrack">
+    <div class="step active" id="st0"><div class="sdot">1</div><span class="slabel">Tujuan &amp; Ancaman</span></div>
+    <div class="sconn" id="sc0"></div>
+    <div class="step" id="st1"><div class="sdot">2</div><span class="slabel">Malware</span></div>
+    <div class="sconn" id="sc1"></div>
+    <div class="step" id="st2"><div class="sdot">3</div><span class="slabel">Social Engineering</span></div>
+    <div class="sconn" id="sc2"></div>
+    <div class="step" id="st3"><div class="sdot">4</div><span class="slabel">Hacking &amp; Database</span></div>
+    <div class="sconn" id="sc3"></div>
+    <div class="step" id="st4"><div class="sdot">5</div><span class="slabel">Maqashid Syariah</span></div>
+    <div class="sconn" id="sc4"></div>
+    <div class="step" id="st5"><div class="sdot">6</div><span class="slabel">Kasus Ransomware</span></div>
+    <div class="sconn" id="sc5"></div>
+    <div class="step quiz" id="st6"><div class="sdot">★</div><span class="slabel">Kuis</span></div>
+  </div>
+</div>
+
+<!-- MAIN BODY -->
+<div class="body">
+
+  <!-- SEKSI 0: TUJUAN & 4 KATEGORI ANCAMAN -->
+  <div class="sec" id="sec0">
+    <div class="sec-hd">
+      <div class="sec-num">01</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">Tujuan Pembelajaran &amp; 4 Kategori Ancaman SIA</h2>
+        <div class="sec-sub2">Capaian CPMK-3 (Bloom C4 Menganalisis) · Taksonomi Ancaman Romney &amp; Steinbart Ch. 5</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Dalam era perbankan digital dan transaksi cloud, Sistem Informasi Akuntansi menghadapi spektrum ancaman yang kian kompleks. Ancaman tidak hanya berasal dari peretas luar (<em>hackers</em>), melainkan mencakup kegagalan infrastruktur, bencana alam, hingga kelalaian pegawai internal.</p>
+
+      <h3 class="sub">Target Capaian Pembelajaran (CPMK-3)</h3>
+      <ul class="detail">
+        <li><strong>Menganalisis 4 Kategori Ancaman SIA:</strong> Membedakan antara bencana alam/politik, kegagalan software/hardware, tindakan tidak disengaja (<em>human error</em>), dan tindakan disengaja (<em>cyber attacks</em>).</li>
+        <li><strong>Membedah Vektor Malware:</strong> Mengidentifikasi karakteristik dan mekanisme penyebaran Virus, Worms, Trojan Horse, Ransomware, Spyware, Keyloggers, dan Rootkits.</li>
+        <li><strong>Membongkar Taktik Social Engineering:</strong> Menjelaskan modus operandi Phishing, Spear Phishing, Whaling, Vishing, Smishing, Pretexting, dan Baiting.</li>
+        <li><strong>Mendiagnosis Serangan Database SIA:</strong> Memahami cara kerja SQL Injection, Cross-Site Scripting (XSS), Brute-Force, Credential Stuffing, dan teknik pemotongan saldo (<em>Salami Technique</em>).</li>
+        <li><strong>Mengintegrasikan Maqashid Syariah:</strong> Menegakkan prinsip <em>Hifz al-Mal</em> (penjagaan harta) dan <em>Hifz al-Ird</em> (perlindungan privasi nasabah) serta etika <em>Tabayyun</em> dalam mitigasi siber.</li>
+      </ul>
+
+      <h3 class="sub">4 Kategori Ancaman Utama terhadap SIA (Romney Framework)</h3>
+      <div class="pillars-grid">
+        <div class="pillar-card">
+          <span class="pillar-badge" style="background:#1B7898">Kategori 1</span>
+          <div class="pillar-title">Bencana Alam &amp; Politik</div>
+          <div class="pillar-desc">Kebakaran data center, gempa bumi, banjir, pemadaman listrik massal, kerusuhan sipil, dan perang yang melumpuhkan server.</div>
+        </div>
+        <div class="pillar-card">
+          <span class="pillar-badge" style="background:#7040B0">Kategori 2</span>
+          <div class="pillar-title">Kegagalan Software &amp; HW</div>
+          <div class="pillar-desc">Kerusakan harddisk RAID, bugs sistem operasi, crash memori server database, dan kegagalan transmisi jaringan komunikasi.</div>
+        </div>
+        <div class="pillar-card hl">
+          <span class="pillar-badge">Kategori 3</span>
+          <div class="pillar-title">Tindakan Tidak Disengaja</div>
+          <div class="pillar-desc">Human error: salah hapus file (<em>accidental deletion</em>), salah ketik data transaksi, konfigurasi cloud terbuka, dan salah kirim email rahasia.</div>
+        </div>
+        <div class="pillar-card" style="border-color:var(--warn);background:#FFF0EB">
+          <span class="pillar-badge" style="background:var(--warn)">Kategori 4</span>
+          <div class="pillar-title">Kejahatan Siber Disengaja</div>
+          <div class="pillar-desc">Serangan ransomware, pencurian data nasabah (<em>data breach</em>), penipuan phishing, sabotase pegawai internal, dan spionase industri.</div>
+        </div>
+      </div>
+
+      <div class="callout info">
+        <strong>Fakta Statistik Industri Keuangan:</strong> Riset Ponemon Institute dan Verizon DBIR menunjukkan bahwa <strong>lebih dari 80% insiden kebocoran data akuntansi</strong> berawal dari faktor manusia (<em>human error</em> dan keberhasilan rekayasa sosial <em>phishing</em>), bukan semata kelemahan teknis server.
+      </div>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(0)">Saya Paham, Lanjut ke Taksonomi Malware</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 1: TAKSONOMI MALWARE -->
+  <div class="sec locked" id="sec1">
+    <div class="sec-hd">
+      <div class="sec-num">02</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">Vektor Serangan Siber &amp; Lanskap Perangkat Perusak (Malware)</h2>
+        <div class="sec-sub2">Klasifikasi Malware · Mekanisme Infeksi dan Dampak terhadap Keandalan Sistem Akuntansi</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Perangkat lunak perusak (<em>malicious software / malware</em>) dirancang oleh penyerang untuk merusak, mengganggu, menyusup, atau mengambil alih kendali komputer dan jaringan akuntansi tanpa izin pemiliknya.</p>
+
+      <div class="malware-grid">
+        <div class="malware-card">
+          <div class="malware-hd">
+            <span class="malware-icon">🦠</span>
+            <div class="malware-title">Virus Komputer</div>
+          </div>
+          <div class="malware-desc">Potongan kode jahat yang menempelkan dirinya pada program sah (seperti file Excel .xlsm atau installer .exe) dan membutuhkan interaksi manusia (klik/eksekusi) untuk menyebar.</div>
+        </div>
+        <div class="malware-card">
+          <div class="malware-hd">
+            <span class="malware-icon">🪱</span>
+            <div class="malware-title">Worms (Cacing Komputer)</div>
+          </div>
+          <div class="malware-desc">Program perusak mandiri yang mampu menggandakan dirinya dan melompat antar komputer melalui jaringan LAN/Internet tanpa memerlukan tindakan pengguna (Contoh: WannaCry).</div>
+        </div>
+        <div class="malware-card">
+          <div class="malware-hd">
+            <span class="malware-icon">🐴</span>
+            <div class="malware-title">Trojan Horse</div>
+          </div>
+          <div class="malware-desc">Malware yang menyamar sebagai software berguna (seperti converter PDF gratis atau software bajakan), namun membuka pintu belakang (<em>backdoor</em>) rahasia bagi hacker.</div>
+        </div>
+        <div class="malware-card" style="border-color:var(--warn);background:#FFF0EB">
+          <div class="malware-hd">
+            <span class="malware-icon">🔒</span>
+            <div class="malware-title" style="color:var(--warn)">Ransomware</div>
+          </div>
+          <div class="malware-desc">Malware paling berbahaya yang mengenkripsi seluruh file database akuntansi dan meminta tebusan mata uang kripto untuk mendapatkan kunci dekripsi (Contoh: LockBit, BlackCat).</div>
+        </div>
+        <div class="malware-card">
+          <div class="malware-hd">
+            <span class="malware-icon">🕵️</span>
+            <div class="malware-title">Spyware &amp; Keyloggers</div>
+          </div>
+          <div class="malware-desc">Software mata-mata yang merekam setiap ketukan tombol keyboard (menangkap password admin dan nomor rekening) lalu mengirimkannya secara diam-diam ke server hacker.</div>
+        </div>
+        <div class="malware-card">
+          <div class="malware-hd">
+            <span class="malware-icon">🤖</span>
+            <div class="malware-title">Botnets &amp; DDoS Attack</div>
+          </div>
+          <div class="malware-desc">Jaringan ribuan komputer zombie yang dikendalikan dari jarak jauh untuk membanjiri server mobile banking dengan traffic palsu (<em>Denial of Service</em>) hingga sistem tumbang.</div>
+        </div>
+      </div>
+
+      <div class="callout warn">
+        <strong>Ancaman Utama Lembaga Keuangan: Ransomware:</strong> Dalam industri perbankan, serangan ransomware tidak hanya mengenkripsi data, melainkan menerapkan taktik <em>Double Extortion</em> (mencuri data nasabah terlebih dahulu sebelum mengenkripsi, lalu mengancam akan membocorkan data nasabah ke publik jika tebusan tidak dibayar).
+      </div>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(1)">Lanjut ke Rekayasa Sosial &amp; Phishing</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 2: REKAYASA SOSIAL (SOCIAL ENGINEERING) -->
+  <div class="sec locked" id="sec2">
+    <div class="sec-hd">
+      <div class="sec-num">03</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">Rekayasa Sosial (Social Engineering) &amp; Penipuan Identitas</h2>
+        <div class="sec-sub2">Memanipulasi Psikologi Manusia · Vektor Serangan Non-Teknis Paling Efektif</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Rekayasa sosial (<em>Social Engineering</em>) adalah teknik manipulasi psikologis yang memperdaya individu agar membocorkan informasi rahasia (seperti kata sandi atau token otorisasi) atau melakukan tindakan yang membahayakan keamanan sistem organisasi.</p>
+
+      <h3 class="sub">Taktik Rekayasa Sosial Paling Sering Ditemui</h3>
+      <table class="cmp-table">
+        <thead>
+          <tr>
+            <th>Teknik Serangan</th>
+            <th>Media / Saluran</th>
+            <th>Mekanisme Penipuan &amp; Skenario Riil</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Mass Phishing</strong></td>
+            <td>Email Massal</td>
+            <td>Email tiruan mengatasnamakan bank/OJK yang meminta pengguna mengklik link palsu untuk verifikasi akun darurat.</td>
+          </tr>
+          <tr>
+            <td><strong>Spear Phishing</strong></td>
+            <td>Email Tertarget</td>
+            <td>Email yang dirancang khusus untuk staf divisi tertentu (misal: staf finance) dengan menyisipkan dokumen invoice palsu berekstensi makro.</td>
+          </tr>
+          <tr>
+            <td><strong>Whaling (BEC)</strong></td>
+            <td>Email Eksekutif</td>
+            <td><em>Business Email Compromise (BEC)</em> yang menargetkan Direktur/CFO untuk memalsukan instruksi transfer kawat bernilai miliaran rupiah.</td>
+          </tr>
+          <tr>
+            <td><strong>Vishing &amp; Smishing</strong></td>
+            <td>Telepon &amp; SMS</td>
+            <td>Menelepon staf (<em>Voice Phishing</em>) mengaku sebagai auditor IT untuk meminta OTP, atau mengirim SMS broadcast berisi tautan phishing APK.</td>
+          </tr>
+          <tr>
+            <td><strong>Pretexting</strong></td>
+            <td>Skenario Sandiwara</td>
+            <td>Penyerang menciptakan skenario palsu (misal mengaku sebagai kurir paket VIP atau teknisi AC) untuk mengelabui resepsionis.</td>
+          </tr>
+          <tr>
+            <td><strong>Baiting</strong></td>
+            <td>Fisik / USB</td>
+            <td>Meninggalkan flashdisk berlabel <em>"Daftar Gaji Karyawan 2026"</em> di area parkir kantor agar dicolokkan pegawai yang penasaran.</td>
+          </tr>
+          <tr>
+            <td><strong>Tailgating / Piggybacking</strong></td>
+            <td>Fisik Pintu Masuk</td>
+            <td>Menyusup masuk ke ruang server data center dengan cara membuntuti pegawai yang baru saja men-tap kartu akses.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout tip">
+        <strong>Pertahanan Utama: Security Awareness Training:</strong> Karena rekayasa sosial mengeksploitasi emosi manusia (rasa panik, penasaran, atau kepatuhan pada otoritas), benteng pertahanan terbaik adalah pelatihan kesadaran keamanan berkala (<em>simulasi phishing bulanan</em>) bagi seluruh jajaran karyawan.
+      </div>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(2)">Lanjut ke Eksploitasi Database &amp; Hacking</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 3: HACKING & EKSPLOITASI DATABASE -->
+  <div class="sec locked" id="sec3">
+    <div class="sec-hd">
+      <div class="sec-num">04</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">Teknik Eksploitasi Sistem Akuntansi &amp; Basis Data</h2>
+        <div class="sec-sub2">SQL Injection · Data Didling · Salami Technique · Pembobolan Kredensial</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Peretas memanfaatkan kelemahan kode aplikasi (<em>vulnerabilities</em>) dan konfigurasi database SIA untuk mencuri data saldo atau memanipulasi catatan pembukuan.</p>
+
+      <h3 class="sub">1. Serangan SQL Injection (SQLi)</h3>
+      <p>SQL Injection terjadi ketika input pengguna pada form web aplikasi tidak disanitasi secara benar, sehingga penyerang dapat menyisipkan perintah SQL ilegal langsung ke server database:</p>
+      
+      <div class="callout warn" style="font-family:'Source Code Pro',monospace;font-size:12.5px">
+        -- Input berbahaya pada form login username:<br>
+        admin' OR '1'='1' --<br><br>
+        -- Kueri SQL yang dieksekusi di server core banking:<br>
+        SELECT * FROM users WHERE username = 'admin' OR '1'='1' --' AND password = 'xxx';<br>
+        -- Hasil: Kondisi '1'='1' selalu TRUE, penyerang login sebagai admin tanpa password!
+      </div>
+
+      <p><strong>Mitigasi SIA:</strong> Gunakan <em>Parameterized Queries / Prepared Statements</em> dan Object-Relational Mapping (ORM) yang memisahkan kode kueri dari data input.</p>
+
+      <h3 class="sub">2. Kejahatan Manipulasi Data Akuntansi Khusus</h3>
+      <ul class="detail">
+        <li><strong>Data Didling (Pemalsuan Data Mentah):</strong> Mengubah data akuntansi sebelum atau saat diinput ke sistem (Contoh: Petugas kasir mengganti nominal setoran pada slip sebelum tombol simpan ditekan).</li>
+        <li><strong>Salami Technique (Teknik Irisan Tipis):</strong> Memotong pecahan desimal atau pembulatan margin bernilai sangat kecil (misal Rp 50 s.d Rp 100 per transaksi) dari ribuan rekening nasabah, lalu dialihkan ke rekening rahasia pelaku.</li>
+        <li><strong>Credential Stuffing &amp; Password Cracking:</strong> Menggunakan bot otomatis untuk menguji jutaan kombinasi email dan password hasil kebocoran situs lain pada portal mobile banking.</li>
+        <li><strong>Man-in-the-Middle (MitM) Attack:</strong> Menyadap transmisi data antara aplikasi mobile banking dan server bank pada jaringan Wi-Fi publik yang tidak terenkripsi.</li>
+      </ul>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(3)">Lanjut ke Integrasi Nilai Syariah</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 4: INTEGRASI NILAI SYARIAH -->
+  <div class="sec locked" id="sec4">
+    <div class="sec-hd">
+      <div class="sec-num">05</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">Integrasi Nilai Syariah: Maqashid Syariah &amp; Etika Perlindungan Harta</h2>
+        <div class="sec-sub2">Hifz al-Mal &amp; Hifz al-Ird · Larangan Fasad fil Ardh · Doktrin Tabayyun Melawan Hoaks/Phishing</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Dalam hukum Islam, aktivitas peretasan (<em>hacking</em> ilegal), penyebaran virus, pencurian data, dan penipuan siber bukan sekadar tindak pidana siber, melainkan perbuatan <strong>Fasad fil Ardh (kerusakan di muka bumi)</strong> dan pengkhianatan amanah yang diharamkan secara mutlak.</p>
+
+      <div class="ayat-box">
+        <div class="ayat-ar">وَإِذَا تَوَلَّىٰ سَعَىٰ فِي الْأَرْضِ لِيُفْسِدَ فِيهَا وَيُهْلِكَ الْحَرْثَ وَالنَّسْلَ ۗ وَاللَّهُ لَا يُحِبُّ الْفَسَادَ</div>
+        <div class="ayat-trans">"Dan apabila dia berpaling (dari engkau), dia berjalan di bumi untuk berbuat kerusakan padanya, dan merusak tanam-tanaman dan keturunan, sedang Allah tidak menyukai kerusakan."</div>
+        <div class="ayat-ref">QS. Al-Baqarah [2]: 205 — Larangan Perusakan Sistem, Sabotase Data &amp; Penyebaran Malware (Fasad fil Ardh)</div>
+      </div>
+
+      <div class="ayat-box" style="background:linear-gradient(135deg,#1E0C06,#2E1005)">
+        <div class="ayat-ar">يَا أَيُّهَا الَّذِينَ آمَنُوا إِن جَاءَكُمْ فَاسِقٌ بِنَبَإٍ فَتَبَيَّنُوا أَن تُصِيبُوا قَوْمًا بِجَهَالَةٍ فَتُصْبِحُوا عَلَىٰ مَا فَعَلْتُمْ نَادِمِينَ</div>
+        <div class="ayat-trans">"Wahai orang-orang yang beriman! Jika seseorang yang fasik datang kepadamu membawa suatu berita, maka telitilah kebenarannya (tabayyun), agar kamu tidak mencelakakan suatu kaum karena kebodohan (kecerobohan), yang akhirnya kamu menyesali perbuatanmu itu."</div>
+        <div class="ayat-ref">QS. Al-Hujurat [49]: 6 — Prinsip Tabayyun: Kewajiban Verifikasi Informasi dalam Menangkal Phishing &amp; Social Engineering</div>
+      </div>
+
+      <h3 class="sub">Maqashid Syariah dalam Keamanan Siber SIA</h3>
+      <div class="sya-grid">
+        <div class="sya-card">
+          <div class="sya-card-title">1. Hifz al-Mal (Perlindungan Harta)</div>
+          <div class="sya-card-desc">Mengamankan dana nasabah dan integritas saldo rekening dari pencurian siber, ransomware, dan pembobolan transfer ilegal.</div>
+          <div class="sya-card-ref">Prinsip Integritas Keuangan</div>
+        </div>
+        <div class="sya-card">
+          <div class="sya-card-title">2. Hifz al-Ird (Perlindungan Kehormatan &amp; Privasi)</div>
+          <div class="sya-card-desc">Menjaga kerahasiaan data pribadi nasabah (PII seperti KTP, foto, nomor telepon) agar tidak bocor dan disalahgunakan untuk pemerasan.</div>
+          <div class="sya-card-ref">Prinsip Kerahasiaan Data (Confidentiality)</div>
+        </div>
+        <div class="sya-card">
+          <div class="sya-card-title">3. Hifz al-Aql (Perlindungan Akal dari Manipulasi)</div>
+          <div class="sya-card-desc">Mendidik pegawai agar kritis, waspada, dan tidak mudah terperdaya oleh manipulasi psikologis rekayasa sosial penipu siber.</div>
+          <div class="sya-card-ref">Prinsip Security Awareness</div>
+        </div>
+        <div class="sya-card">
+          <div class="sya-card-title">4. Wafa bil Amanah (Integritas Pengelola Sistem)</div>
+          <div class="sya-card-desc">Administrator TI dan akuntan memegang hak akses sebagai amanah Ilahi, dilarang menyalahgunakan wewenang untuk kepentingan pribadi.</div>
+          <div class="sya-card-ref">Prinsip Tanggung Jawab Hak Akses</div>
+        </div>
+      </div>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(4)">Lanjut ke Studi Kasus Insiden Siber</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 5: STUDI KASUS INSIDEN SIBER -->
+  <div class="sec locked" id="sec5">
+    <div class="sec-hd">
+      <div class="sec-num">06</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">Studi Kasus Insiden Siber: Pembobolan Ransomware &amp; BEC</h2>
+        <div class="sec-sub2">Analisis Rantai Serangan Cyber Kill Chain · Pembobolan Server Cabang &amp; Rekayasa Email Direksi</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Tim Respons Insiden Keamanan Komputer (CSIRT) melakukan penyelidikan forensik atas dua insiden keamanan siber kritis yang tercatat pada <code>dataset-cybersecurity-incidents-p06.csv</code>:</p>
+
+      <div class="callout case">
+        <div class="case-label">KASUS 1: SERANGAN RANSOMWARE LOCKBIT DI KCP BOGOR (INC-2026-004)</div>
+        <ul class="bullet" style="margin:0;font-size:13px">
+          <li><strong>Titik Masuk (Initial Access):</strong> Port Remote Desktop Protocol (RDP / Port 3389) pada server cabang KCP Bogor dibuka langsung ke internet publik tanpa proteksi VPN oleh teknisi lokal.</li>
+          <li><strong>Eskalasi Serangan:</strong> Hacker melakukan brute-force password administrator RDP, menonaktifkan antivirus, dan mengeksekusi payload ransomware LockBit.</li>
+          <li><strong>Dampak:</strong> 12.000 file dokumen nasabah terenkripsi; penyerang meminta tebusan Rp 45 Juta dalam bentuk Bitcoin.</li>
+          <li><strong>Tindakan Mitigasi:</strong> Manajemen menolak membayar tebusan (sesuai syariat menolak tunduk pada pemerasan zalim) dan berhasil memulihkan seluruh data dari <em>Automated Daily Cloud Backup Snapshot</em> dalam 6 jam.</li>
+        </ul>
+      </div>
+
+      <div class="callout case" style="border-left-color:var(--pri)">
+        <div class="case-label" style="color:var(--pri)">KASUS 2: PERCOBAAN BUSINESS EMAIL COMPROMISE (BEC) DIREKTUR (INC-2026-014)</div>
+        <ul class="bullet" style="margin:0;font-size:13px">
+          <li><strong>Titik Masuk:</strong> Penyerang mendaftarkan domain spoofing <code>bprs-arnanah.co.id</code> (mengganti huruf 'm' dengan 'rn') dan mengirim email darurat palsu mengatasnamakan Direktur Operasional kepada staf treasury.</li>
+          <li><strong>Instruksi Jahat:</strong> Meminta transfer dana mendesak Rp 250 Juta untuk pelunasan vendor server luar negeri.</li>
+          <li><strong>Pengendalian yang Menyelamatkan:</strong> Filter email DMARC &amp; SPF menandai domain anomali, dan staf treasury menerapkan SOP <em>Verifikasi Telepon Langsung (Two-Channel Verification)</em> sebelum mengeksekusi pencairan kas.</li>
+        </ul>
+      </div>
+
+      <div class="callout tip">
+        <strong>Konsep Kunci: Defense-in-Depth (Pertahanan Berlapis):</strong> Keamanan informasi tidak boleh bergantung pada satu gembok saja. Organisasi wajib menerapkan lapisan berlapis: Firewall Perimeter $\rightarrow$ Segmentasi Jaringan LAN $\rightarrow$ Antivirus EDR $\rightarrow$ Enkripsi Data $\rightarrow$ Otentikasi Ganda (MFA) $\rightarrow$ Kesadaran Karyawan (<em>Human Firewall</em>).
+      </div>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(5)">Lanjut ke Kuis Uji Pemahaman</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 6: KUIS INTERAKTIF -->
+  <div class="quiz-sec locked" id="sec6">
+    <div class="quiz-hd">
+      <span class="quiz-icon">📝</span>
+      <div class="quiz-hd-text">
+        <h2 class="quiz-hd-title">Uji Pemahaman: Evaluasi Modul 06</h2>
+        <div class="quiz-hd-sub">4 Pilihan Ganda + 1 Permainan Pencocokan 6 Pasangan Istilah Ancaman Siber (Batas Kelulusan: 75%)</div>
+      </div>
+    </div>
+    <div class="quiz-body">
+
+      <!-- SOAL 1 -->
+      <div class="q-item" id="mcq0">
+        <div class="q-text"><span class="q-num">1</span> Jenis malware yang mampu <strong>menyebar dan menggandakan dirinya sendiri</strong> melintasi jaringan komputer organisasi secara otomatis tanpa membutuhkan interaksi atau klik dari pengguna disebut:</div>
+        <div class="options">
+          <div class="opt" onclick="selectMCQ(0, 0)">
+            <span class="opt-ltr">A</span>
+            <div class="opt-txt">Trojan Horse.<div class="opt-fb">Kurang tepat. Trojan menyamar sebagai program berguna dan tidak menggandakan dirinya secara mandiri di jaringan.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(0, 1)">
+            <span class="opt-ltr">B</span>
+            <div class="opt-txt">Worm (Cacing Komputer).<div class="opt-fb">Benar! Worm mengeksploitasi celah keamanan jaringan untuk mereplikasi dirinya secara mandiri tanpa interaksi pengguna.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(0, 2)">
+            <span class="opt-ltr">C</span>
+            <div class="opt-txt">Macro Virus.<div class="opt-fb">Kurang tepat. Macro virus menempel pada file dokumen (seperti Excel) dan butuh dibuka oleh manusia.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(0, 3)">
+            <span class="opt-ltr">D</span>
+            <div class="opt-txt">Keylogger.<div class="opt-fb">Kurang tepat. Keylogger adalah spyware pemantau ketukan keyboard.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOAL 2 -->
+      <div class="q-item" id="mcq1">
+        <div class="q-text"><span class="q-num">2</span> Seorang staf akuntansi menerima email dari pihak yang mengaku sebagai vendor resmi, melampirkan file PDF tagihan yang ternyata disusupi script pencuri kata sandi. Teknik serangan rekayasa sosial yang menargetkan individu/posisi tertentu ini disebut:</div>
+        <div class="options">
+          <div class="opt" onclick="selectMCQ(1, 0)">
+            <span class="opt-ltr">A</span>
+            <div class="opt-txt">DDoS Attack.<div class="opt-fb">Kurang tepat. DDoS adalah pembanjiran traffic server, bukan email manipulasi.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(1, 1)">
+            <span class="opt-ltr">B</span>
+            <div class="opt-txt">Spear Phishing.<div class="opt-fb">Benar! Spear phishing adalah email phishing tertarget yang dirancang khusus untuk mempedaya individu pada posisi strategis.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(1, 2)">
+            <span class="opt-ltr">C</span>
+            <div class="opt-txt">Tailgating.<div class="opt-fb">Kurang tepat. Tailgating adalah penyusupan fisik membuntuti pintu masuk kantor.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(1, 3)">
+            <span class="opt-ltr">D</span>
+            <div class="opt-txt">SQL Injection.<div class="opt-fb">Kurang tepat. SQL Injection adalah eksploitasi kode database, bukan email rekayasa sosial.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOAL 3 -->
+      <div class="q-item" id="mcq2">
+        <div class="q-text"><span class="q-num">3</span> Kejahatan akuntansi digital di mana pelaku memotong pecahan desimal atau nilai pembulatan transaksi yang sangat kecil dari ribuan rekening nasabah untuk dikumpulkan ke rekening pribadi disebut:</div>
+        <div class="options">
+          <div class="opt" onclick="selectMCQ(2, 0)">
+            <span class="opt-ltr">A</span>
+            <div class="opt-txt">Salami Technique (Teknik Irisan Salami).<div class="opt-fb">Benar! Salami technique mengambil irisan nilai yang sangat kecil dari volume transaksi masal agar tidak disadari oleh nasabah maupun auditor.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(2, 1)">
+            <span class="opt-ltr">B</span>
+            <div class="opt-txt">Piggybacking.<div class="opt-fb">Kurang tepat. Piggybacking adalah penyusupan jaringan atau akses fisik secara membuntuti.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(2, 2)">
+            <span class="opt-ltr">C</span>
+            <div class="opt-txt">Ransomware.<div class="opt-fb">Kurang tepat. Ransomware menyandera data dengan enkripsi.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(2, 3)">
+            <span class="opt-ltr">D</span>
+            <div class="opt-txt">Brute-Force.<div class="opt-fb">Kurang tepat. Brute force adalah metode membobol password dengan mencoba semua kombinasi.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOAL 4 -->
+      <div class="q-item" id="mcq3">
+        <div class="q-text"><span class="q-num">4</span> Dalam perspektif Maqashid Syariah, perlindungan atas kerahasiaan data pribadi nasabah (seperti KTP, alamat, dan data keluarga) dari ancaman kebocoran data siber merupakan wujud pemeliharaan dimensi:</div>
+        <div class="options">
+          <div class="opt" onclick="selectMCQ(3, 0)">
+            <span class="opt-ltr">A</span>
+            <div class="opt-txt">Hifz ad-Din semata.<div class="opt-fb">Kurang tepat. Walau berdimensi ibadah, perlindungan data pribadi berkaitan langsung dengan martabat dan kehormatan.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(3, 1)">
+            <span class="opt-ltr">B</span>
+            <div class="opt-txt">Hifz al-Ird (Penjagaan Kehormatan &amp; Privasi) dan Hifz al-Mal (Penjagaan Harta).<div class="opt-fb">Benar! Menjaga privasi nasabah adalah hifz al-ird, dan mengamankan saldo dari pencurian adalah hifz al-mal.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(3, 2)">
+            <span class="opt-ltr">C</span>
+            <div class="opt-txt">Hifz an-Nasl secara biologis.<div class="opt-fb">Kurang tepat. Hifz an-nasl berkaitan dengan perlindungan keturunan dan keluarga.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(3, 3)">
+            <span class="opt-ltr">D</span>
+            <div class="opt-txt">Ikhtikar.<div class="opt-fb">Salah. Ikhtikar adalah monopoli penimbunan barang dagangan.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MATCHING GAME -->
+      <div class="match-intro">
+        <strong>Tantangan Pencocokan Istilah Keamanan Siber SIA:</strong> Klik satu istilah di kolom kiri, lalu klik definisi / analogi yang tepat di kolom kanan untuk membuat pasangan berwarna!
+      </div>
+      <div class="match-container">
+        <div>
+          <div class="match-col-title">Vektor / Istilah Siber</div>
+          <div class="match-terms" id="terms">
+            <div class="match-term" onclick="selectTerm(0)">1. Ransomware</div>
+            <div class="match-term" onclick="selectTerm(1)">2. SQL Injection</div>
+            <div class="match-term" onclick="selectTerm(2)">3. Business Email Compromise</div>
+            <div class="match-term" onclick="selectTerm(3)">4. Defense-in-Depth</div>
+            <div class="match-term" onclick="selectTerm(4)">5. Doktrin Tabayyun</div>
+            <div class="match-term" onclick="selectTerm(5)">6. Salami Technique</div>
+          </div>
+        </div>
+        <div>
+          <div class="match-col-title">Definisi / Mekanisme Keamanan</div>
+          <div class="match-defs" id="defs">
+            <div class="match-def" onclick="selectDef(0)">A. Penyisipan perintah database ilegal melalui form input aplikasi web yang tidak tervalidasi secara benar.</div>
+            <div class="match-def" onclick="selectDef(1)">B. Kewajiban verifikasi dan klarifikasi kebenaran informasi sebelum mengeksekusi instruksi transaksi (QS. Al-Hujurat: 6).</div>
+            <div class="match-def" onclick="selectDef(2)">C. Perangkat perusak yang mengenkripsi file pembukuan dan menuntut tebusan uang kripto untuk pembukaan kunci.</div>
+            <div class="match-def" onclick="selectDef(3)">D. Strategi keamanan berlapis ganda (firewall, network segmentation, EDR, enkripsi, security awareness).</div>
+            <div class="match-def" onclick="selectDef(4)">E. Pengalihan saldo hasil pembulatan transaksi receh bernilai kecil dari ribuan akun nasabah ke rekening penampung.</div>
+            <div class="match-def" onclick="selectDef(5)">F. Penipuan identitas email eksekutif direksi untuk memerintahkan transfer dana ilegal bernilai material.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="quiz-foot">
+      <button class="submit-btn" onclick="submitQuiz()">Kirim Jawaban &amp; Hitung Nilai</button>
+      <span class="score-badge" id="scoreBadge"></span>
+    </div>
+  </div>
+
+  <!-- COMPLETION BOX -->
+  <div class="completion" id="completion">
+    <h2>🎉 Selamat! Anda Telah Menguasai Materi Pertemuan 06</h2>
+    <p>Pemahaman teoritis tentang Vektor Malware, Rekayasa Sosial, Eksploitasi Database, dan Maqashid Syariah Perlindungan Data telah tuntas. Lanjutkan ke lembar praktikum laboratorium!</p>
+    <a class="lab-btn" href="Praktikum-06-AIS.html">Buka Lembar Praktikum 06 (Lab 5) →</a>
+  </div>
+
+</div>
+
+<script>
+/* ═══ APPLICATION STATE MANAGEMENT ═══ */
+const STORAGE_KEY = 'tazkia-ais-p06-v1';
+const TOTAL_SECS = 7;
+const MCQ_ANSWERS = [1, 1, 0, 1]; // B, B, A, B
+const MATCH_CORRECT = {0:2, 1:0, 2:5, 3:3, 4:1, 5:4}; // 1->C, 2->A, 3->F, 4->D, 5->B, 6->E
+const PAIR_COLORS = ['#D46020', '#1F9060', '#7040B0', '#1B7898', '#C03818', '#9E6800'];
+
+let state = {
+  done: [0],
+  mcqSel: [null, null, null, null],
+  matchPairs: {},
+  submitted: false
+};
+
+let selTerm = null;
+let selDef = null;
+
+function saveState(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+}
+
+function loadState(){
+  try{
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if(saved) state = Object.assign(state, JSON.parse(saved));
+  }catch(e){}
+}
+
+function updateProgress(){
+  const doneCount = state.done.length;
+  const pct = Math.round((doneCount / TOTAL_SECS) * 100);
+  document.getElementById('topProg').style.width = pct + '%';
+  document.getElementById('topPct').textContent = pct + '%';
+
+  for(let i=0; i<TOTAL_SECS; i++){
+    const st = document.getElementById('st' + i);
+    const sc = document.getElementById('sc' + i);
+    if(!st) continue;
+    if(state.done.includes(i)){
+      st.className = (i === 6) ? 'step quiz done' : 'step done';
+      if(sc) sc.className = 'sconn done';
+    } else if(i === state.done.length){
+      st.className = (i === 6) ? 'step quiz active' : 'step active';
+      if(sc) sc.className = 'sconn';
+    } else {
+      st.className = (i === 6) ? 'step quiz' : 'step';
+      if(sc) sc.className = 'sconn';
+    }
+  }
+}
+
+function paham(idx){
+  if(!state.done.includes(idx)) state.done.push(idx);
+  const nextIdx = idx + 1;
+  if(nextIdx < TOTAL_SECS && !state.done.includes(nextIdx)){
+    state.done.push(nextIdx);
+  }
+  saveState();
+  applyState();
+
+  const nextSec = document.getElementById('sec' + nextIdx);
+  if(nextSec){
+    nextSec.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+}
+
+function selectMCQ(q, optIdx){
+  if(state.submitted) return;
+  state.mcqSel[q] = optIdx;
+  saveState();
+  const opts = document.querySelectorAll('#mcq' + q + ' .opt');
+  opts.forEach((o, i)=>o.classList.toggle('selected', i === optIdx));
+}
+
+function selectTerm(idx){
+  if(state.submitted) return;
+  selTerm = idx;
+  document.querySelectorAll('#terms .match-term').forEach((el, j)=>el.classList.toggle('selected', j === idx));
+  checkMatch();
+}
+
+function selectDef(idx){
+  if(state.submitted) return;
+  selDef = idx;
+  document.querySelectorAll('#defs .match-def').forEach((el, j)=>el.classList.toggle('selected', j === idx));
+  checkMatch();
+}
+
+function checkMatch(){
+  if(selTerm === null || selDef === null) return;
+  state.matchPairs[selTerm] = selDef;
+  saveState();
+
+  const color = PAIR_COLORS[selTerm % PAIR_COLORS.length];
+  const termEl = document.querySelectorAll('#terms .match-term')[selTerm];
+  const defEl = document.querySelectorAll('#defs .match-def')[selDef];
+
+  if(termEl){
+    termEl.style.borderColor = color;
+    termEl.style.background = color + '18';
+    termEl.style.color = color;
+  }
+  if(defEl){
+    defEl.style.borderColor = color;
+    defEl.style.background = color + '18';
+    defEl.style.color = color;
+  }
+
+  selTerm = null;
+  selDef = null;
+  document.querySelectorAll('#terms .match-term, #defs .match-def').forEach(el=>el.classList.remove('selected'));
+}
+
+function submitQuiz(){
+  state.submitted = true;
+  saveState();
+  let score = 0;
+  const total = MCQ_ANSWERS.length + Object.keys(MATCH_CORRECT).length;
+
+  // Grade MCQs
+  MCQ_ANSWERS.forEach((ans, q)=>{
+    const sel = state.mcqSel[q];
+    const opts = document.querySelectorAll('#mcq' + q + ' .opt');
+    opts.forEach((o, idx)=>{
+      if(idx === ans) o.className = 'opt correct';
+      else if(idx === sel && sel !== ans) o.className = 'opt wrong';
+    });
+    if(sel === ans) score++;
+  });
+
+  // Grade Matching
+  Object.entries(MATCH_CORRECT).forEach(([t, d])=>{
+    if(state.matchPairs[t] === d) score++;
+  });
+
+  const pct = Math.round((score / total) * 100);
+  const badge = document.getElementById('scoreBadge');
+  badge.style.display = 'inline-block';
+  badge.textContent = `Skor: ${score}/${total} (${pct}%)`;
+
+  if(pct >= 75){
+    badge.className = 'score-badge pass';
+    if(!state.done.includes(6)) state.done.push(6);
+    saveState();
+    updateProgress();
+    document.getElementById('completion').classList.add('show');
+    document.getElementById('completion').scrollIntoView({behavior:'smooth'});
+  } else {
+    badge.className = 'score-badge fail';
+    badge.textContent += ' — Pelajari kembali materi dan coba lagi!';
+  }
+}
+
+function applyState(){
+  for(let i=0; i<TOTAL_SECS; i++){
+    const sec = document.getElementById('sec' + i);
+    if(!sec) continue;
+    if(state.done.includes(i)){
+      sec.classList.remove('locked');
+      const isDone = (i < state.done.length - 1) || (state.done.length === TOTAL_SECS);
+      sec.classList.toggle('done-sec', isDone);
+    } else {
+      if(!sec.classList.contains('locked')) sec.classList.add('locked');
+      sec.classList.remove('done-sec');
+    }
+  }
+
+  state.mcqSel.forEach((sel, q)=>{
+    if(sel === null) return;
+    document.querySelectorAll('#mcq' + q + ' .opt')[sel]?.classList.add('selected');
+  });
+
+  Object.entries(state.matchPairs).forEach(([t, d])=>{
+    const color = PAIR_COLORS[t % PAIR_COLORS.length];
+    const termEl = document.querySelectorAll('#terms .match-term')[t];
+    const defEl = document.querySelectorAll('#defs .match-def')[d];
+    if(termEl){
+      termEl.style.borderColor = color;
+      termEl.style.background = color + '18';
+      termEl.style.color = color;
+    }
+    if(defEl){
+      defEl.style.borderColor = color;
+      defEl.style.background = color + '18';
+      defEl.style.color = color;
+    }
+  });
+
+  if(state.submitted) submitQuiz();
+  updateProgress();
+}
+
+loadState();
+applyState();
+</script>
+</body>
+</html>

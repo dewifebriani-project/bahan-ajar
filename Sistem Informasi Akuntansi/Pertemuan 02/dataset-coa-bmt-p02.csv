@@ -1,0 +1,33 @@
+Kode_Akun,Nama_Akun,Kategori_Akun,Tipe_Akun,Saldo_Normal,Akad_Syariah
+11101,Kas Operasional Teller,Aset Lancar,Cash & Bank,Debit,N/A
+11102,Kas ATM & Mobile Collection,Aset Lancar,Cash & Bank,Debit,N/A
+11201,Giro pada Bank Syariah Mandiri (BSI),Aset Lancar,Cash & Bank,Debit,Wadiah
+11301,Piutang Pembiayaan Murabahah,Aset Lancar,Receivables,Debit,Murabahah
+11302,Margin Murabahah Ditangguhkan,Aset Lancar,Contra Account,Kredit,Murabahah
+11401,Piutang Pembiayaan Salam,Aset Lancar,Receivables,Debit,Salam
+11501,Piutang Pembiayaan Istishna,Aset Lancar,Receivables,Debit,Istishna
+11601,Pembiayaan Bagi Hasil Mudharabah,Aset Lancar,Financing,Debit,Mudharabah
+11602,Pembiayaan Bagi Hasil Musyarakah,Aset Lancar,Financing,Debit,Musyarakah
+11701,Cadangan Kerugian Penurunan Nilai (CKPN),Aset Lancar,Contra Account,Kredit,N/A
+12101,Aset Ijarah (Sewa),Aset Tetap,Fixed Asset,Debit,Ijarah
+12102,Akumulasi Penyusutan Aset Ijarah,Aset Tetap,Contra Account,Kredit,Ijarah
+12201,Peralatan Kantor & Komputer,Aset Tetap,Fixed Asset,Debit,N/A
+12202,Akumulasi Penyusutan Peralatan,Aset Tetap,Contra Account,Kredit,N/A
+21101,Simpanan Anggota Wadiah (Tabungan),Kewajiban Lancar,Savings/Deposit,Kredit,Wadiah Yad Dhamanah
+21201,Investasi Tidak Terikat Mudharabah (Deposito),Dana Syirkah Temporer,Term Deposit,Kredit,Mudharabah Muthlaqah
+21301,Utang Usaha / Pemasok Barang Murabahah,Kewajiban Lancar,Accounts Payable,Kredit,Wafa bil Aqd
+21401,"Titipan Dana Zakat, Infaq & Sedekah",Kewajiban Lancar,ZIS Fund,Kredit,Tabarru
+31101,Simpanan Pokok Anggota,Ekuitas,Equity,Kredit,Musyarakah
+31102,Simpanan Wajib Anggota,Ekuitas,Equity,Kredit,Musyarakah
+31201,Cadangan Umum Koperasi,Ekuitas,Equity,Kredit,N/A
+31301,Sisa Hasil Usaha (SHU) Tahun Berjalan,Ekuitas,Equity,Kredit,N/A
+41101,Pendapatan Margin Murabahah,Pendapatan Operasional,Revenue,Kredit,Murabahah
+41201,Pendapatan Bagi Hasil Mudharabah,Pendapatan Operasional,Revenue,Kredit,Mudharabah
+41301,Pendapatan Bagi Hasil Musyarakah,Pendapatan Operasional,Revenue,Kredit,Musyarakah
+41401,Pendapatan Sewa Ijarah,Pendapatan Operasional,Revenue,Kredit,Ijarah
+41501,Pendapatan Administrasi & Fee Wakalah,Pendapatan Non-Bagi Hasil,Fee Income,Kredit,Wakalah bil Ujrah
+51101,Hak Bagi Hasil Anggota (Beban Distribusi),Beban Operasional,Revenue Sharing,Debit,Mudharabah
+52101,Beban Gaji & Tunjangan Pegawai (Ujrah),Beban Operasional,Operating Expense,Debit,Ijarah al-Amal
+52201,Beban Operasional IT & Software AIS,Beban Operasional,Operating Expense,Debit,N/A
+52301,"Beban Listrik, Air, & Telekomunikasi",Beban Operasional,Operating Expense,Debit,N/A
+52401,Beban Penyusutan Aset Tetap,Beban Operasional,Operating Expense,Debit,N/A

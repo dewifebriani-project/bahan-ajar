@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIS Lab Milestone — Lembar Kerja Validasi &amp; Simulasi Presentasi Project UTS</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap">
+<style>
+/* ═══ MEETING COLOR VARIABLES (P08 Lab = Imperial Violet & Amber Gold) ═══ */
+:root{
+  --meet-from:#120520; --meet-mid:#2A0A48; --meet-to:#481470;
+  --meet-acc:#D48020;  --meet-acc2:#F0A830;
+  --bg:#EDF1F6;--sf:#FFFFFF;--sf2:#FAF4FD;--sf3:#F5ECFA;
+  --bd:#D0BCD8;--bs:#E4D6EC;
+  --tx:#160520;--txm:#422850;--txl:#7A5E88;
+  --pri:#2A0A48;--pmid:#7040B0;--pril:#F4E8FC;--prx:#FAF0FF;
+  --acc:#D48020;--accl:#FCEBD8;
+  --sya:#1F9060;--syal:#D0EEE2;--syab:#40B080;
+  --done-bg:#D0EEE2;--done-bd:#40B080;--done-tx:#0A4020;
+  --r:8px;--rs:5px;
+  --shadow:0 4px 20px rgba(42,10,72,.12);
+  --shadow-sm:0 2px 8px rgba(42,10,72,.08);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#0A0310;--sf:#140720;--sf2:#0E0416;--sf3:#1A0C28;
+  --bd:#321844;--bs:#240E34;
+  --tx:#F6EEFA;--txm:#B8A4C4;--txl:#786284;
+  --pri:#B870F0;--pmid:#8C50D0;--pril:#240A38;--prx:#1A062C;
+  --acc:#F0A830;--accl:#2E1804;
+  --sya:#30B878;--syal:#041410;--syab:#186040;
+  --done-bg:#041410;--done-bd:#40C890;--done-tx:#40C890;
+}}
+:root[data-theme=dark]{
+  --bg:#0A0310;--sf:#140720;--sf2:#0E0416;--sf3:#1A0C28;
+  --bd:#321844;--bs:#240E34;
+  --tx:#F6EEFA;--txm:#B8A4C4;--txl:#786284;
+  --pri:#B870F0;--pmid:#8C50D0;--pril:#240A38;--prx:#1A062C;
+  --acc:#F0A830;--accl:#2E1804;
+  --sya:#30B878;--syal:#041410;--syab:#186040;
+  --done-bg:#041410;--done-bd:#40C890;--done-tx:#40C890;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.65}
+
+/* ── HEADER ── */
+.hd{background:linear-gradient(160deg,var(--meet-from) 0%,var(--meet-mid) 55%,var(--meet-to) 100%);color:#fff;position:relative;overflow:hidden}
+.hd-ornament{position:absolute;inset:0;pointer-events:none;opacity:.14}
+.hd-inner{max-width:840px;margin:0 auto;padding:32px 24px 12px;position:relative;z-index:1}
+.hd-eyebrow{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.hd-line{width:24px;height:1px;background:var(--meet-acc2)}
+.hd-eye{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--meet-acc2)}
+.hd-badge{font-size:11px;background:rgba(212,128,32,.25);border:1px solid rgba(240,168,48,.5);border-radius:12px;padding:2px 11px;color:#FFD488;margin-left:auto}
+.hd-title{font-family:'Amiri',serif;font-size:28px;font-weight:700;line-height:1.2;margin-bottom:5px}
+.hd-sub{font-size:13.5px;color:rgba(255,255,255,.75);margin-bottom:16px}
+.hd-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px}
+.hpill{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:2px 11px;font-size:11.5px;color:rgba(255,255,255,.8)}
+.hpill strong{color:#fff}
+.hd-arch{line-height:0}
+.hd-arch svg{display:block;width:100%;height:24px}
+
+/* ── TRACKER BAR ── */
+.tracker-wrap{background:var(--sf);border-bottom:1px solid var(--bs);position:sticky;top:0;z-index:40;box-shadow:var(--shadow-sm)}
+.tracker{max-width:840px;margin:0 auto;padding:8px 20px;display:flex;align-items:center;gap:6px;overflow-x:auto}
+.tr-step{display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0;cursor:pointer}
+.tr-circle{width:30px;height:30px;border-radius:50%;border:2px solid var(--bs);background:var(--sf3);display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;color:var(--txl);transition:all .3s}
+.tr-circle.active{border-color:var(--pmid);background:var(--prx);color:var(--pri)}
+.tr-circle.done{border-color:var(--sya);background:var(--syal);color:var(--sya)}
+.tr-label{font-size:9.5px;color:var(--txl);white-space:nowrap;text-align:center;max-width:75px;overflow:hidden;text-overflow:ellipsis}
+.tr-label.active{color:var(--pmid);font-weight:600}
+.tr-label.done{color:var(--sya);font-weight:600}
+.tr-line{width:20px;height:2px;background:var(--bs);border-radius:1px;flex-shrink:0;margin-bottom:10px}
+.tr-line.done{background:var(--sya)}
+
+/* ── MAIN ── */
+.main{max-width:840px;margin:0 auto;padding:24px 20px 80px}
+
+/* ── STEP CARDS ── */
+.step-card{background:var(--sf);border:1px solid var(--bs);border-radius:var(--r);margin-bottom:14px;box-shadow:var(--shadow-sm);overflow:hidden;transition:opacity .3s,filter .3s}
+.step-card.locked{opacity:.35;filter:grayscale(.5);pointer-events:none}
+.step-card.unlocked{opacity:1;filter:none}
+.step-card.completed{border-color:var(--done-bd)}
+.step-hd{display:flex;align-items:center;gap:11px;padding:13px 20px;background:var(--sf3);border-bottom:1px solid var(--bs)}
+.step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc2))}
+.step-num.done{background:var(--sya)}
+.step-title{font-family:'Amiri',serif;font-size:17px;font-weight:700;color:var(--pri)}
+.step-est{font-size:11.5px;color:var(--txl);margin-left:auto;white-space:nowrap}
+.step-body{padding:18px 22px}
+
+/* ── CALLOUT ── */
+.callout{border-radius:var(--rs);padding:11px 15px;margin:10px 0;font-size:13.5px;line-height:1.6}
+.callout.tip{background:var(--prx);border-left:4px solid var(--pmid);color:var(--txm)}
+.callout.warn{background:#FEF3E0;border-left:4px solid #D48020;color:#5A2C04}
+.callout.sya{background:var(--syal);border-left:4px solid var(--sya);color:var(--txm)}
+.callout.info{background:var(--sf3);border-left:4px solid var(--pri);color:var(--txm)}
+
+/* ── TABLE ── */
+.table-wrap{overflow-x:auto;margin:12px 0}
+.custom-table{width:100%;border-collapse:collapse;font-size:13px}
+.custom-table th{background:var(--pri);color:#fff;padding:8px 12px;text-align:left;font-size:11.5px}
+.custom-table td{padding:8px 12px;border-bottom:1px solid var(--bs);color:var(--txm);vertical-align:top}
+.custom-table tr:nth-child(even) td{background:var(--sf3)}
+.custom-table tr:last-child td{border-bottom:none}
+
+/* ── CODE BOX ── */
+.code-box{background:#120520;border-radius:var(--rs);padding:14px 16px;color:#F4E8FC;font-family:'Source Code Pro',monospace;font-size:13px;line-height:1.65;margin:10px 0;overflow-x:auto;white-space:pre}
+.code-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.12);font-size:11px;color:var(--meet-acc2);font-weight:700;white-space:normal}
+.copy-btn{background:rgba(212,128,32,.3);border:1px solid rgba(240,168,48,.5);border-radius:4px;color:#fff;padding:2px 8px;font-size:10.5px;cursor:pointer}
+
+/* ── INTERACTIVE FORM INPUTS ── */
+.form-group{margin:14px 0}
+.form-label{display:block;font-size:13px;font-weight:700;color:var(--pri);margin-bottom:5px}
+.form-textarea{width:100%;min-height:85px;padding:10px 12px;border-radius:var(--rs);border:1.5px solid var(--bs);background:var(--sf);color:var(--tx);font-family:'Source Sans 3',sans-serif;font-size:13.5px;line-height:1.5;resize:vertical}
+.form-textarea:focus{outline:none;border-color:var(--pmid);box-shadow:0 0 0 3px var(--pril)}
+.form-hint{font-size:11.5px;color:var(--txl);margin-top:4px}
+
+/* ── UNLOCK ROW ── */
+.unlock-row{display:flex;align-items:center;gap:12px;margin-top:20px;padding-top:18px;border-top:1px solid var(--bs)}
+.btn-unlock{background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc2));color:#fff;border:none;border-radius:24px;padding:11px 26px;font-family:'Source Sans 3',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;transition:opacity .2s}
+.btn-unlock:hover{opacity:.88}
+.btn-unlock.done-state{background:var(--sya);cursor:default}
+.unlock-hint{font-size:12.5px;color:var(--txl)}
+
+/* ── CHALLENGE BOX ── */
+.challenge-box{background:linear-gradient(135deg,#120520,#2A0A48);border-radius:var(--r);padding:18px 20px;color:#fff;margin:14px 0}
+.challenge-box h4{font-family:'Amiri',serif;font-size:17px;font-weight:700;margin-bottom:12px;color:#FFD488}
+.challenge-q{background:rgba(255,255,255,.08);border-radius:var(--rs);padding:10px 14px;margin-bottom:8px;font-size:13.5px;color:rgba(255,255,255,.88)}
+.challenge-q strong{color:#fff}
+
+/* ── COMPLETION ── */
+.completion{display:none;background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;border-radius:var(--r);padding:28px;text-align:center;margin-top:18px}
+.completion.show{display:block}
+.completion h2{font-family:'Amiri',serif;font-size:24px;font-weight:700;margin-bottom:8px}
+.completion p{color:rgba(255,255,255,.75);font-size:13.5px;margin-bottom:14px}
+.completion .next-btn{display:inline-block;background:var(--meet-acc2);color:#fff;border-radius:20px;padding:10px 24px;font-weight:700;font-size:14px;text-decoration:none;margin:4px;border:none;cursor:pointer}
+
+h3.sh{font-family:'Amiri',serif;font-size:18px;font-weight:700;color:var(--pri);margin:16px 0 9px;display:flex;align-items:center;gap:8px}
+h3.sh::before{content:'';width:4px;height:16px;background:var(--meet-acc2);border-radius:2px;flex-shrink:0}
+ul.lst{list-style:none;padding:0;margin-bottom:12px}
+ul.lst li{padding:5px 0 5px 20px;position:relative;color:var(--txm);font-size:14px;border-bottom:1px solid var(--bs)}
+ul.lst li:last-child{border-bottom:none}
+ul.lst li::before{content:'▸';position:absolute;left:0;color:var(--pmid);font-size:11px;top:7px}
+ul.lst li strong{color:var(--tx)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hd">
+  <svg class="hd-ornament" viewBox="0 0 400 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs><pattern id="dots-lab8" width="30" height="30" patternUnits="userSpaceOnUse">
+      <circle cx="15" cy="15" r="1.5" fill="#D48020" opacity=".5"/>
+      <path d="M0,15 L30,15 M15,0 L15,30" stroke="#D48020" stroke-width=".2" opacity=".25"/>
+    </pattern></defs>
+    <rect width="100%" height="100%" fill="url(#dots-lab8)"/>
+  </svg>
+  <div class="hd-inner">
+    <div class="hd-eyebrow">
+      <div class="hd-line"></div>
+      <span class="hd-eye">Sistem Informasi Akuntansi · Lembar Kerja Milestone</span>
+      <span class="hd-badge">MILESTONE UTS · P08</span>
+    </div>
+    <h1 class="hd-title">Lembar Kerja Validasi &amp; Simulasi Sidang Presentasi Project UTS</h1>
+    <p class="hd-sub">Checklist Evaluasi 5 Dimensi · Validasi DFD &amp; Flowchart · Diagnosis Matriks COSO &amp; IT Controls · Uji Kepatuhan Syariah &amp; Simulasi Q&amp;A</p>
+    <div class="hd-pills">
+      <span class="hpill">⏱ <strong>~90 menit</strong></span>
+      <span class="hpill">📁 <strong>dataset-uts-rubrik-penilaian-p08.csv (20 indikator)</strong></span>
+      <span class="hpill">🎯 <strong>CPMK-4 (Bloom C5 Mengevaluasi)</strong></span>
+      <span class="hpill">⚖️ <strong>Bobot Penilaian: 30%</strong></span>
+    </div>
+  </div>
+  <div class="hd-arch"><svg viewBox="0 0 1200 24" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,24 L0,12 Q30,0 60,12 Q90,24 120,12 Q150,0 180,12 Q210,24 240,12 Q270,0 300,12 Q330,24 360,12 Q390,0 420,12 Q450,24 480,12 Q510,0 540,12 Q570,24 600,12 Q630,0 660,12 Q690,24 720,12 Q750,0 780,12 Q810,24 840,12 Q870,0 900,12 Q930,24 960,12 Q990,0 1020,12 Q1050,24 1080,12 Q1110,0 1140,12 Q1170,24 1200,12 L1200,24 Z" fill="var(--bg)"/>
+  </svg></div>
+</div>
+
+<!-- TRACKER BAR -->
+<div class="tracker-wrap">
+  <div class="tracker" id="tracker">
+    <div class="tr-step" onclick="jumpStep(0)">
+      <div class="tr-circle active" id="tc0">1</div>
+      <div class="tr-label active" id="tl0">Profil Objek</div>
+    </div>
+    <div class="tr-line" id="tline0"></div>
+    <div class="tr-step" onclick="jumpStep(1)">
+      <div class="tr-circle" id="tc1">2</div>
+      <div class="tr-label" id="tl1">Validasi Diagram</div>
+    </div>
+    <div class="tr-line" id="tline1"></div>
+    <div class="tr-step" onclick="jumpStep(2)">
+      <div class="tr-circle" id="tc2">3</div>
+      <div class="tr-label" id="tl2">COSO &amp; Fraud</div>
+    </div>
+    <div class="tr-line" id="tline2"></div>
+    <div class="tr-step" onclick="jumpStep(3)">
+      <div class="tr-circle" id="tc3">4</div>
+      <div class="tr-label" id="tl3">Kepatuhan Syariah</div>
+    </div>
+    <div class="tr-line" id="tline3"></div>
+    <div class="tr-step" onclick="jumpStep(4)">
+      <div class="tr-circle" id="tc4">5</div>
+      <div class="tr-label" id="tl4">Simulasi Sidang</div>
+    </div>
+    <div class="tr-line" id="tline4"></div>
+    <div class="tr-step" onclick="jumpStep(5)">
+      <div class="tr-circle" id="tc5">6</div>
+      <div class="tr-label" id="tl5">Finalisasi &amp; Skor</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+  <!-- LANGKAH 1: PROFIL OBJEK ANALISIS & 6 KOMPONEN AIS -->
+  <div class="step-card unlocked" id="card0">
+    <div class="step-hd">
+      <div class="step-num" id="sn0">1</div>
+      <div class="step-title">Registrasi Objek Analisis &amp; Pemetaan 6 Komponen Sistem Riil</div>
+      <div class="step-est">⏱ 15 menit</div>
+    </div>
+    <div class="step-body">
+      <p>Lakukan pendaftaran data objek penelitian lapangan kelompok Anda (BMT, BPRS, Koperasi Syariah, atau UMKM Halal) dan petakan 6 komponen Sistem Informasi Akuntansi yang sedang dioperasikan oleh entitas tersebut:</p>
+
+      <div class="table-wrap">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Komponen AIS (Romney Ch. 1)</th>
+              <th>Kondisi Aktual pada Objek Penelitian Kelompok</th>
+              <th>Status Otomatisasi (Manual / Hybrid / Full Digital)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1. People (Pengguna Sistem)</strong></td>
+              <td>Struktur user operasional (Manager, Account Officer, Teller, Pembukuan/Accounting, Dewan Pengawas Syariah).</td>
+              <td>Kesesuaian latar belakang SDM dengan tugas pengoperasian sistem.</td>
+            </tr>
+            <tr>
+              <td><strong>2. Procedures &amp; Instructions</strong></td>
+              <td>SOP tertulis alur transaksi (Pengajuan akad, pencairan dana, verifikasi angsuran, penutupan buku harian).</td>
+              <td>Ketersediaan buku petunjuk operasional dan manual sistem.</td>
+            </tr>
+            <tr>
+              <td><strong>3. Data (Data Transaksi &amp; Ledger)</strong></td>
+              <td>Struktur basis data nasabah, formulir permohonan pembiayaan, bagan akun (Chart of Accounts), dan mutasi buku besar.</td>
+              <td>Penyimpanan file (Fisik lemari arsip vs Database Relasional).</td>
+            </tr>
+            <tr>
+              <td><strong>4. Software (Perangkat Lunak)</strong></td>
+              <td>Aplikasi akuntansi yang digunakan (Spreadsheet Excel, Software Core Banking Lokal, atau ERP Web-based).</td>
+              <td>Keterhubungan modul front-office dengan general ledger otomatis.</td>
+            </tr>
+            <tr>
+              <td><strong>5. IT Infrastructure (Perangkat Keras &amp; Jaringan)</strong></td>
+              <td>Komputer kasir, server lokal cabang, koneksi jaringan LAN/VPN, dan perangkat backup eksternal.</td>
+              <td>Ketersediaan UPS (Uninterruptible Power Supply) dan proteksi server.</td>
+            </tr>
+            <tr>
+              <td><strong>6. Internal Controls (Pengendalian Internal)</strong></td>
+              <td>Kunci brankas ganda, otorisasi tanda tangan berjenjang, password login user, dan rekonsiliasi kas harian.</td>
+              <td>Efektivitas mekanisme pencegahan fraud dan kesalahan pembukuan.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Lembar Kerja 1.1 — Identitas Objek &amp; Diagnosis 6 Komponen AIS</label>
+        <textarea class="form-textarea" id="ans_1_1" placeholder="Tuliskan: 1) Nama Lembaga/UMKM, alamat, jenis badan hukum, dan produk utama. 2) Ringkasan kondisi aktual 6 komponen AIS pada entitas tersebut beserta identifikasi kelemahan utama yang paling mendesak untuk diperbaiki."></textarea>
+      </div>
+
+      <div class="unlock-row">
+        <button class="btn-unlock" id="btn0" onclick="unlockNext(0)">Verifikasi &amp; Lanjut ke Langkah 2</button>
+        <span class="unlock-hint">Langkah 2 akan terbuka setelah Anda menekan tombol di atas.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LANGKAH 2: VALIDASI DIAGRAM DFD & FLOWCHART -->
+  <div class="step-card locked" id="card1">
+    <div class="step-hd">
+      <div class="step-num" id="sn1">2</div>
+      <div class="step-title">Checklist Validasi Diagram Sistem (DFD &amp; Document Flowchart)</div>
+      <div class="step-est">⏱ 15 menit</div>
+    </div>
+    <div class="step-body">
+      <p>Lakukan audit mandiri (<em>Self-Audit</em>) terhadap diagram DFD Level 0, DFD Level 1, dan Document Flowchart yang telah dibuat kelompok Anda sebelum diserahkan dalam berkas UTS:</p>
+
+      <div class="table-wrap">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Aspek Pemeriksaan Diagram</th>
+              <th>Kriteria Standar Romney &amp; Yourdon</th>
+              <th>Status Checklist Kelompok</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Diagram Konteks Level 0</strong></td>
+              <td>Hanya ada 1 lingkaran proses utama (0.0). Tidak memuat Data Store. Seluruh entitas eksternal teridentifikasi lengkap.</td>
+              <td>[Wajib Diverifikasi]</td>
+            </tr>
+            <tr>
+              <td><strong>Prinsip Balancing DFD</strong></td>
+              <td>Jumlah dan nama aliran data masuk/keluar pada Diagram Konteks cocok persis dengan batas luar DFD Level 1.</td>
+              <td>[Bebas Selisih Aliran Data]</td>
+            </tr>
+            <tr>
+              <td><strong>Bebas Black Hole &amp; Miracle</strong></td>
+              <td>Setiap proses bernomor (1.0, 2.0, dst) memiliki minimal 1 input data dan menghasilkan minimal 1 output data logis.</td>
+              <td>[Bebas Proses Buntu / Ajaib]</td>
+            </tr>
+            <tr>
+              <td><strong>Konektivitas Data Store</strong></td>
+              <td>Tidak ada aliran data langsung antara Entitas Eksternal ke Data Store tanpa melalui lingkaran Proses.</td>
+              <td>[Sesuai Aturan Aliran Data]</td>
+            </tr>
+            <tr>
+              <td><strong>Swimlane Document Flowchart</strong></td>
+              <td>Setiap kolom departemen terpisah tegas. Dokumen memiliki garis alur jelas dengan simbol dokumen, proses manual, keputusan, dan arsip.</td>
+              <td>[Jelas Otorisasi &amp; Alur Fisik]</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Lembar Kerja 2.1 — Refleksi Validasi Diagram Aliran Data</label>
+        <textarea class="form-textarea" id="ans_2_1" placeholder="Jelaskan: 1) Siklus transaksi utama apa yang Anda petakan dalam DFD Level 1 (misal: Siklus Pembiayaan Murabahah dari permohonan hingga pelunasan)? 2) Apakah ada perbaikan alur dokumen fisik yang berhasil Anda identifikasi setelah menyusun Document Flowchart swimlane?"></textarea>
+      </div>
+
+      <div class="unlock-row">
+        <button class="btn-unlock" id="btn1" onclick="unlockNext(1)">Verifikasi &amp; Lanjut ke Langkah 3</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LANGKAH 3: EVALUASI COSO & TITIK RAWAN FRAUD -->
+  <div class="step-card locked" id="card2">
+    <div class="step-hd">
+      <div class="step-num" id="sn2">3</div>
+      <div class="step-title">Matriks Evaluasi 5 Komponen COSO &amp; Titik Rawan Fraud Triangle</div>
+      <div class="step-est">⏱ 15 menit</div>
+    </div>
+    <div class="step-body">
+      <p>Diagnosis titik rawan kecurangan (<em>Fraud Risk Points</em>) pada objek penelitian kelompok Anda menggunakan pisau analisis Segitiga Kecurangan (<em>Fraud Triangle</em>) dan 5 Komponen Pengendalian Internal COSO:</p>
+
+      <div class="table-wrap">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Dimensi Fraud Triangle</th>
+              <th>Potensi Risiko Riil pada Objek BMT / BPRS</th>
+              <th>Pengendalian COSO &amp; IT yang Diusulkan</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1. Opportunity (Peluang)</strong></td>
+              <td>Account Officer menerima angsuran tunai di pasar tanpa bukti e-receipt seketika, membuka celah <em>lapping fraud</em>.</td>
+              <td>Wajib e-collection mobile app dengan integrasi SMS/WhatsApp notifikasi instan ke nomor nasabah (Control Activity).</td>
+            </tr>
+            <tr>
+              <td><strong>2. Pressure (Tekanan Finansial/Target)</strong></td>
+              <td>Target pencairan pembiayaan bulanan yang sangat tinggi memicu AO meloloskan nasabah berisiko tanpa verifikasi agunan.</td>
+              <td>Komite Pembiayaan independen terpisah dari tim sales dan verifikasi silang data NIK (Control Environment &amp; Risk Assessment).</td>
+            </tr>
+            <tr>
+              <td><strong>3. Rationalization (Pembenaran)</strong></td>
+              <td>Karyawan merasa gaji di bawah standar pasar sehingga menganggap mengambil uang pembulatan kas adalah hal lumrah.</td>
+              <td>Penetapan standar upah adil (Ujrah yang layak), pembinaan ruhiyah berkala, dan sistem whistleblowing anonim (Monitoring).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Lembar Kerja 3.1 — Diagnosis 3 Titik Rawan Fraud &amp; Matriks Solusi COSO</label>
+        <textarea class="form-textarea" id="ans_3_1" placeholder="Uraikan minimal 2 titik rawan fraud spesifik yang Anda temukan pada objek penelitian Anda (misal pada bagian kasir, pembelian barang, atau pencairan dana) dan rancang pengendalian preventif serta detektif yang efektif untuk menutup celah tersebut."></textarea>
+      </div>
+
+      <div class="unlock-row">
+        <button class="btn-unlock" id="btn2" onclick="unlockNext(2)">Verifikasi &amp; Lanjut ke Langkah 4</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LANGKAH 4: UJI KEPATUHAN SYARIAH & SYAHADAH DIGITAL -->
+  <div class="step-card locked" id="card3">
+    <div class="step-hd">
+      <div class="step-num" id="sn3">4</div>
+      <div class="step-title">Evaluasi Kepatuhan Akad Syariah &amp; Doktrin Syahadah Digital</div>
+      <div class="step-est">⏱ 15 menit</div>
+    </div>
+    <div class="step-body">
+      <p>Periksa kepatuhan sistem informasi akuntansi terhadap rukun dan syarat akad syariah (bebas riba, gharar, maysir, tadlis, dan zulm) serta implementasi doktrin <strong>Syahadah Digital</strong> (pencatatan log transaksi yang akurat dan kekal):</p>
+
+      <div class="table-wrap">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Parameter Syariah</th>
+              <th>Kaidah Fikih Muamalah</th>
+              <th>Evaluasi Penerapan pada Sistem Objek Penelitian</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Akad Murabahah</strong></td>
+              <td>Harga beli pokok dan margin keuntungan wajib transparan diketahui pembeli sebelum akad disepakati.</td>
+              <td>Apakah sistem memisahkan field Harga Beli dan Margin secara eksplisit pada formulir permohonan dan kartu piutang?</td>
+            </tr>
+            <tr>
+              <td><strong>Akad Wadiah Yad Dhamanah</strong></td>
+              <td>Titipan dana nasabah dapat dimanfaatkan bank dengan jaminan pengembalian utuh tanpa syarat imbalan pasti di awal.</td>
+              <td>Apakah sistem akuntansi mencatat bonus wadiah secara sukarela tanpa persentase bunga mengikat?</td>
+            </tr>
+            <tr>
+              <td><strong>Akad Mudharabah / Musyarakah</strong></td>
+              <td>Nisbah bagi hasil disepakati di awal atas keuntungan riil (bukan persentase dari pokok modal).</td>
+              <td>Apakah sistem menghitung bagi hasil berdasarkan revenue sharing aktual bulanan atau proyeksi fiktif?</td>
+            </tr>
+            <tr>
+              <td><strong>Syahadah Digital (QS. Yasin: 65)</strong></td>
+              <td>Setiap transaksi meninggalkan rekam jejak elektronik yang adil, tidak dapat dimanipulasi, dan menjadi saksi di hadapan Allah SWT.</td>
+              <td>Apakah database sistem memiliki immutable audit trail yang mencatat User ID, Timestamp, dan perubahan saldo ledger?</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Lembar Kerja 4.1 — Evaluasi Kepatuhan Syariah &amp; Integritas Jejak Audit</label>
+        <textarea class="form-textarea" id="ans_4_1" placeholder="Jelaskan: 1) Apakah terdapat potensi ketidaksesuaian syariah pada alur transaksi objek yang Anda amati (misal akad mendahului kepemilikan barang/bai al-madum)? 2) Bagaimana kelompok Anda merancang integrasi nilai syariah (amanah & syahadah digital) dalam perbaikan sistem?"></textarea>
+      </div>
+
+      <div class="unlock-row">
+        <button class="btn-unlock" id="btn3" onclick="unlockNext(3)">Verifikasi &amp; Lanjut ke Langkah 5</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LANGKAH 5: SIMULASI SIDANG PRESENTASI & CHECKLIST SLIDE -->
+  <div class="step-card locked" id="card4">
+    <div class="step-hd">
+      <div class="step-num" id="sn4">5</div>
+      <div class="step-title">Simulasi Skenario Tanya Jawab (Q&amp;A) Sidang &amp; Checklist Presentasi</div>
+      <div class="step-est">⏱ 15 menit</div>
+    </div>
+    <div class="step-body">
+      <p>Persiapkan kelompok Anda untuk menghadapi sidang presentasi UTS (10–15 menit presentasi + 10 menit tanya jawab mendalam dengan dosen penguji):</p>
+
+      <div class="code-box">
+        <div class="code-hd">
+          <span>DAFTAR 5 PERTANYAAN KRITIS YANG PASTI DIAJUKAN DOSEN PENGUJI SIDANG UTS</span>
+          <button class="copy-btn" onclick="copyCode(this)">Salin Daftar Pertanyaan Sidang</button>
+        </div>1. "Jelaskan mengapa kelompok Anda memilih menggunakan notasi DFD Level 1 dibanding Flowchart untuk menggambarkan proses verifikasi kelayakan pembiayaan?"
+2. "Berdasarkan evaluasi COSO Anda, pada komponen mana titik terlemah dari objek BMT ini dan apa bukti konkret kelemahan tersebut?"
+3. "Jika Database Administrator (DBA) di objek Anda memiliki akses penuh mengubah saldo di tabel database tanpa tiket persetujuan, kontrol ITGC apa yang wajib Anda pasang?"
+4. "Bagaimana kelompok Anda menjamin bahwa akad murabahah yang Anda petakan bebas dari praktik Riba Nasiah dan Riba Fadhl?"
+5. "Tunjukkan bagaimana solusi perbaikan sistem yang Anda rekomendasikan dapat memangkas waktu pemrosesan transaksi sekaligus meningkatkan keandalan pengendalian internal!"</div>
+
+      <div class="form-group">
+        <label class="form-label">Lembar Kerja 5.1 — Rencana Pembagian Peran Presentasi &amp; Antisipasi Jawaban Sidang</label>
+        <textarea class="form-textarea" id="ans_5_1" placeholder="Tuliskan: 1) Pembagian peran seluruh anggota tim saat presentasi (Moderator, Pemapar Profil & DFD, Analis COSO & IT, Pemapar Solusi Syariah). 2) Jawaban kelompok Anda terhadap salah satu dari 5 pertanyaan kritis penguji di atas."></textarea>
+      </div>
+
+      <div class="unlock-row">
+        <button class="btn-unlock" id="btn4" onclick="unlockNext(4)">Verifikasi &amp; Lanjut ke Langkah 6</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LANGKAH 6: SELF-ASSESSMENT RUBRIK & FINALISASI LAPORAN -->
+  <div class="step-card locked" id="card5">
+    <div class="step-hd">
+      <div class="step-num" id="sn5">6</div>
+      <div class="step-title">Self-Assessment Rubrik Skor Kelompok &amp; Finalisasi Berkas UTS</div>
+      <div class="step-est">⏱ 15 menit</div>
+    </div>
+    <div class="step-body">
+      <div class="challenge-box">
+        <h4>🎯 Checklist Kelengkapan Berkas Project UTS (Wajib Lengkap Sebelum Sidang)</h4>
+        <div class="challenge-q">
+          <strong>1. Dokumen Laporan Akhir (PDF):</strong> 15–20 Halaman, font serif/sans 11pt, spasi 1.15, memuat 5 Bab lengkap + lampiran dokumentasi wawancara &amp; foto bukti formulir.
+        </div>
+        <div class="challenge-q">
+          <strong>2. Berkas Presentasi (Slide PPT/PDF):</strong> Maksimal 12–15 slide ringkas, berbasis visual grafis &amp; diagram (hindari wall-of-text), memuat DFD dan flowchart resolusi tinggi.
+        </div>
+        <div class="challenge-q">
+          <strong>3. Format Penamaan Berkas:</strong> <code>AIS_ProjectUTS_KelompokX_NamaObjek.pdf</code> dan <code>AIS_SlideUTS_KelompokX_NamaObjek.pptx</code>.
+        </div>
+      </div>
+
+      <h3 class="sh">Ketentuan Sidang Presentasi UTS</h3>
+      <ul class="lst">
+        <li><strong>Waktu Sesi:</strong> Sesuai jadwal Pertemuan 08 yang ditetapkan di portal e-learning Tazkia.</li>
+        <li><strong>Durasi:</strong> 15 menit presentasi tim + 10 menit Q&amp;A dosen penguji.</li>
+        <li><strong>Pakaian:</strong> Busana formal akademik Tazkia (Jas Almamater resmi).</li>
+        <li><strong>Komponen Penilaian Dosen:</strong> Penguasaan materi individu, kerjasama tim, ketajaman analisis diagram, dan kesesuaian rekomendasi syariah.</li>
+      </ul>
+
+      <div class="unlock-row">
+        <button class="btn-unlock" id="btn5" onclick="finishLab()">Selesaikan Lembar Kerja &amp; Cetak Validasi UTS</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPLETION BOX -->
+  <div class="completion" id="compBox">
+    <h2>🎉 Luar Biasa! Lembar Validasi Project UTS Telah Lengkap</h2>
+    <p>Seluruh rekaman diagnosis profil sistem, checklist diagram DFD, matriks evaluasi COSO, kesesuaian syariah, dan persiapan sidang kelompok Anda telah tersimpan rapi di browser ini. Segera cetak halaman ini sebagai lampiran resmi Laporan UTS Anda.</p>
+    <button class="next-btn" onclick="window.print()">🖨 Cetak / Simpan Lembar Validasi ke PDF</button>
+    <a class="next-btn" href="Pertemuan-08.html">← Kembali ke Panduan Teori &amp; Rubrik Pertemuan 08</a>
+  </div>
+
+</div>
+
+<script>
+/* ═══ APPLICATION STATE & LOCAL STORAGE ═══ */
+const STORAGE_KEY = 'tazkia-ais-p08-lab-v1';
+const TOTAL_STEPS = 6;
+
+let labState = {
+  unlocked: [0],
+  inputs: {
+    ans_1_1: '',
+    ans_2_1: '',
+    ans_3_1: '',
+    ans_4_1: '',
+    ans_5_1: ''
+  },
+  completed: false
+};
+
+function saveLab(){
+  try{
+    Object.keys(labState.inputs).forEach(id => {
+      const el = document.getElementById(id);
+      if(el) labState.inputs[id] = el.value;
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(labState));
+  }catch(e){}
+}
+
+function loadLab(){
+  try{
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if(saved) {
+      labState = Object.assign(labState, JSON.parse(saved));
+      Object.keys(labState.inputs).forEach(id => {
+        const el = document.getElementById(id);
+        if(el && labState.inputs[id]) el.value = labState.inputs[id];
+      });
+    }
+  }catch(e){}
+}
+
+function updateTracker(){
+  for(let i=0; i<TOTAL_STEPS; i++){
+    const circle = document.getElementById('tc' + i);
+    const label = document.getElementById('tl' + i);
+    const line = document.getElementById('tline' + i);
+    const card = document.getElementById('card' + i);
+    const btn = document.getElementById('btn' + i);
+    const num = document.getElementById('sn' + i);
+
+    const isUnlocked = labState.unlocked.includes(i);
+    const isDone = (i < labState.unlocked.length - 1) || labState.completed;
+
+    if(card){
+      if(isUnlocked){
+        card.className = 'step-card unlocked';
+        if(isDone) card.classList.add('completed');
+      } else {
+        card.className = 'step-card locked';
+      }
+    }
+
+    if(circle && label){
+      if(isDone){
+        circle.className = 'tr-circle done';
+        circle.textContent = '✓';
+        label.className = 'tr-label done';
+      } else if(isUnlocked){
+        circle.className = 'tr-circle active';
+        circle.textContent = i + 1;
+        label.className = 'tr-label active';
+      } else {
+        circle.className = 'tr-circle';
+        circle.textContent = i + 1;
+        label.className = 'tr-label';
+      }
+    }
+
+    if(line){
+      line.className = isDone ? 'tr-line done' : 'tr-line';
+    }
+
+    if(btn && isDone){
+      btn.className = 'btn-unlock done-state';
+      btn.textContent = '✓ Selesai Diverifikasi';
+    }
+    if(num && isDone){
+      num.className = 'step-num done';
+      num.textContent = '✓';
+    }
+  }
+
+  if(labState.completed){
+    document.getElementById('compBox').classList.add('show');
+  }
+}
+
+function unlockNext(stepIdx){
+  saveLab();
+  const nextIdx = stepIdx + 1;
+  if(nextIdx < TOTAL_STEPS && !labState.unlocked.includes(nextIdx)){
+    labState.unlocked.push(nextIdx);
+  }
+  saveLab();
+  updateTracker();
+
+  const nextCard = document.getElementById('card' + nextIdx);
+  if(nextCard){
+    nextCard.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+}
+
+function jumpStep(stepIdx){
+  if(labState.unlocked.includes(stepIdx)){
+    const card = document.getElementById('card' + stepIdx);
+    if(card) card.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+}
+
+function finishLab(){
+  saveLab();
+  labState.completed = true;
+  saveLab();
+  updateTracker();
+  const comp = document.getElementById('compBox');
+  comp.classList.add('show');
+  comp.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function copyCode(btn){
+  const codeBox = btn.closest('.code-box');
+  const text = codeBox.innerText.replace(codeBox.querySelector('.code-hd').innerText, '').trim();
+  navigator.clipboard.writeText(text).then(()=>{
+    const old = btn.textContent;
+    btn.textContent = '✓ Tersalin!';
+    setTimeout(()=>btn.textContent = old, 1800);
+  });
+}
+
+// Auto-save on input change
+document.addEventListener('input', (e)=>{
+  if(e.target.classList.contains('form-textarea')){
+    saveLab();
+  }
+});
+
+loadLab();
+updateTracker();
+</script>
+</body>
+</html>

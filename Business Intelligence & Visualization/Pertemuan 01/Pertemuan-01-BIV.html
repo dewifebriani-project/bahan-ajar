@@ -1,0 +1,934 @@
+<title>BIV P01 — Pengantar BI &amp; Ekosistem Tools Visualisasi</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── BIV P01 · PURPLE-GOLD THEME ── */
+:root{
+  --meet-from:#0E0420;--meet-mid:#1A0838;--meet-to:#2A1060;
+  --meet-acc:#C09030;--meet-acc2:#D0A840;--meet-star:#C09030;
+  --bg:#EDF1F6;--sf:#fff;--sf2:#F4EFF8;--sf3:#F8F5FC;
+  --bd:#C4CDD8;--bs:#DDE3EC;
+  --tx:#0C1824;--txm:#475569;--txl:#8A9AB0;
+  --pri:#1A0838;--pril:#EAD8F8;--prx:#F4EEF8;
+  --acc:#C09030;--accl:#F8EDD0;--acc2:#D0A840;
+  --sya:#1F9060;--syal:#D0EEE2;--syab:#40B080;
+  --p0:#6030B0;--p0l:#EEE0FA;
+  --p1:#C09030;--p1l:#F8EDD0;
+  --p2:#1F9060;--p2l:#D0EEE2;
+  --p3:#2A7898;--p3l:#D8EEF6;
+  --p4:#A03020;--p4l:#F8E0D8;
+  --r:8px;--rs:5px;
+  --shadow:0 4px 20px rgba(26,8,56,.1);--shadow-sm:0 2px 8px rgba(26,8,56,.06);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#06030E;--sf:#100818;--sf2:#160C28;--sf3:#0E0618;
+  --bd:#28104A;--bs:#180830;
+  --tx:#E8D8F8;--txm:#8060A8;--txl:#3A1860;
+  --pri:#8050D0;--pril:#18082A;--prx:#0C0418;
+  --acc:#D0A840;--accl:#18100A;
+  --sya:#40C890;--syal:#031410;
+  --p0l:#0E0820;--p1l:#180A00;--p2l:#031410;--p3l:#051A28;--p4l:#180600;
+}}
+:root[data-theme=dark]{
+  --bg:#06030E;--sf:#100818;--sf2:#160C28;--sf3:#0E0618;
+  --bd:#28104A;--bs:#180830;
+  --tx:#E8D8F8;--txm:#8060A8;--txl:#3A1860;
+  --pri:#8050D0;--pril:#18082A;--prx:#0C0418;
+  --acc:#D0A840;--accl:#18100A;
+  --sya:#40C890;--syal:#031410;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.65}
+
+/* ── HEADER ── */
+.hd{background:linear-gradient(160deg,var(--meet-from) 0%,var(--meet-mid) 55%,var(--meet-to) 100%);color:#fff;position:relative;overflow:hidden}
+.hd-ornament{position:absolute;inset:0;pointer-events:none;opacity:.12}
+.hd-inner{max-width:860px;margin:0 auto;padding:38px 28px 12px;position:relative;z-index:1}
+.hd-eyebrow{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.hd-line{width:28px;height:1px;background:var(--meet-acc)}
+.hd-eye{font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--meet-acc)}
+.hd-kode{font-size:12px;background:rgba(192,144,48,.15);border:1px solid rgba(192,144,48,.3);border-radius:12px;padding:2px 12px;color:var(--meet-acc2);margin-left:auto}
+.hd-title{font-family:'Amiri',serif;font-size:34px;font-weight:700;line-height:1.15;margin-bottom:6px}
+.hd-sub{font-size:14.5px;color:rgba(255,255,255,.55);margin-bottom:18px}
+.hd-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.hpill{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:3px 12px;font-size:12px;color:rgba(255,255,255,.7)}
+.hpill strong{color:#fff}
+.hd-arch{line-height:0}
+.hd-arch svg{display:block;width:100%;height:28px}
+
+/* ── PROGRESS BAR ── */
+.prog-wrap{background:var(--sf);border-bottom:1px solid var(--bs);position:sticky;top:0;z-index:40;box-shadow:var(--shadow-sm)}
+.prog-inner{max-width:860px;margin:0 auto;padding:10px 24px;display:flex;align-items:center;gap:12px}
+.prog-label{font-size:12px;font-weight:700;color:var(--txl);white-space:nowrap;flex-shrink:0}
+.prog-steps{display:flex;gap:5px;flex:1}
+.prog-dot{width:28px;height:6px;border-radius:3px;background:var(--bs);transition:background .3s}
+.prog-dot.done{background:var(--meet-acc)}
+.prog-dot.active{background:rgba(192,144,48,.35)}
+.prog-pct{font-size:12px;font-weight:700;color:var(--acc);white-space:nowrap}
+
+/* ── MAIN LAYOUT ── */
+.main{max-width:860px;margin:0 auto;padding:28px 24px 80px}
+
+/* ── SECTION CARD ── */
+.sec-card{background:var(--sf);border:1px solid var(--bs);border-radius:var(--r);margin-bottom:16px;box-shadow:var(--shadow-sm);overflow:hidden;transition:opacity .3s,filter .3s}
+.sec-card.locked{opacity:.45;filter:grayscale(.4);pointer-events:none}
+.sec-card.unlocked{opacity:1;filter:none;pointer-events:auto}
+.sec-hd{display:flex;align-items:center;gap:12px;padding:15px 22px;background:var(--sf3);border-bottom:1px solid var(--bs)}
+.sec-num{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc));color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.sec-num.done{background:var(--sya)}
+.sec-title{font-family:'Amiri',serif;font-size:19px;font-weight:700;color:var(--pri)}
+.sec-cpmk{font-size:11px;color:var(--acc);font-weight:700;margin-left:auto;background:var(--accl);padding:2px 9px;border-radius:10px;white-space:nowrap}
+.sec-body{padding:22px 26px}
+
+/* ── TYPOGRAPHY ── */
+h3.sh{font-family:'Amiri',serif;font-size:20px;font-weight:700;color:var(--pri);margin:22px 0 10px;display:flex;align-items:center;gap:9px}
+h3.sh::before{content:'';width:4px;height:18px;background:var(--meet-acc);border-radius:2px;flex-shrink:0}
+h4.shs{font-size:14px;font-weight:700;color:var(--tx);margin:14px 0 7px}
+p{color:var(--txm);margin-bottom:10px;font-size:14.5px}
+ul.lst{list-style:none;padding:0;margin-bottom:12px}
+ul.lst li{padding:5px 0 5px 20px;position:relative;color:var(--txm);font-size:14px;border-bottom:1px solid var(--bs)}
+ul.lst li:last-child{border-bottom:none}
+ul.lst li::before{content:'▸';position:absolute;left:0;color:var(--acc);font-size:11px;top:7px}
+ul.lst li strong{color:var(--tx)}
+.callout{border-radius:var(--rs);padding:12px 16px;margin:12px 0;font-size:13.5px;line-height:1.6}
+.callout.info{background:var(--prx);border-left:4px solid var(--acc);color:var(--txm)}
+.callout.sya{background:var(--syal);border-left:4px solid var(--sya);color:var(--txm)}
+.callout.warn{background:#FEF3E0;border-left:4px solid #D46020;color:#5A2C04}
+.callout.syn{background:rgba(192,144,48,.07);border-left:4px solid var(--acc);color:var(--txm)}
+
+/* ── CPMK TABLE ── */
+.cpmk-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:14px}
+.cpmk-table th{background:var(--meet-mid);color:#fff;padding:7px 12px;text-align:left;font-size:11.5px}
+.cpmk-table td{padding:7px 12px;border-bottom:1px solid var(--bs);color:var(--txm)}
+.cpmk-table tr:last-child td{border-bottom:none}
+.cpmk-table tr:nth-child(even) td{background:var(--sf3)}
+.badge{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:9px}
+.badge-c2{background:#E0F0F8;color:#1B6080}
+.badge-c3{background:#E8E0FA;color:#5020A0}
+
+/* ── SECTION MAP ── */
+.sec-map{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
+@media(max-width:480px){.sec-map{grid-template-columns:1fr 1fr}}
+.sec-map-item{background:var(--sf3);border:1px solid var(--bs);border-radius:var(--rs);padding:10px 13px;display:flex;align-items:center;gap:9px}
+.sec-map-item .ico{font-size:20px;flex-shrink:0}
+.sec-map-item .lbl{font-size:12.5px;font-weight:600;color:var(--tx);line-height:1.3}
+.sec-map-item .sub{font-size:11px;color:var(--txl);margin-top:2px}
+
+/* ── PIPELINE SVG ── */
+.pipeline-wrap{overflow-x:auto;margin:16px 0;padding:4px 0}
+.pipeline-svg{min-width:560px;width:100%}
+
+/* ── COMPARISON GRID ── */
+.tri-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:14px 0}
+@media(max-width:600px){.tri-grid{grid-template-columns:1fr}}
+.tri-card{border-radius:var(--r);padding:16px;border:1px solid var(--bs)}
+.tri-card.rep{background:#F5F5F0;border-color:#C8B870;border-top:4px solid #A09030}
+.tri-card.ana{background:#F0F5FB;border-color:#8090C0;border-top:4px solid #4060A8}
+.tri-card.bi{background:var(--sf2);border-color:var(--acc);border-top:4px solid var(--acc)}
+.tri-card h4{font-size:14.5px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.tri-card.rep h4{color:#706010}
+.tri-card.ana h4{color:#3050A0}
+.tri-card.bi h4{color:var(--pri)}
+.tri-row{display:flex;align-items:flex-start;gap:7px;margin-bottom:7px;font-size:12.5px;color:var(--txm);line-height:1.45}
+.tri-row .ico{flex-shrink:0;font-size:14px;margin-top:1px}
+.tri-card .ask{font-style:italic;font-size:13px;color:var(--txl);border-top:1px solid var(--bs);padding-top:8px;margin-top:8px}
+
+/* ── TOOLS GRID ── */
+.tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+@media(max-width:500px){.tools-grid{grid-template-columns:1fr 1fr}}
+.tool-card{background:var(--sf3);border:1px solid var(--bs);border-radius:var(--r);padding:14px;transition:box-shadow .2s}
+.tool-card:hover{box-shadow:var(--shadow-sm)}
+.tool-card.featured{border-color:var(--acc);background:var(--accl)}
+.tool-icon{font-size:26px;margin-bottom:6px}
+.tool-name{font-weight:700;font-size:14px;color:var(--tx);margin-bottom:3px}
+.tool-desc{font-size:11.5px;color:var(--txm);line-height:1.5;margin-bottom:6px}
+.tool-pill{display:inline-block;font-size:10.5px;background:var(--accl);color:var(--pri);border-radius:10px;padding:1px 8px;font-weight:600}
+.tool-card.featured .tool-pill{background:var(--acc);color:#fff}
+
+/* ── NILAI SYARIAH ── */
+.nilai-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+@media(max-width:500px){.nilai-grid{grid-template-columns:1fr}}
+.nilai-card{background:var(--sf3);border:1px solid var(--bs);border-radius:var(--r);padding:15px;border-top:3px solid var(--sya)}
+.nilai-name{font-family:'Amiri',serif;font-size:18px;font-weight:700;color:var(--sya);margin-bottom:4px}
+.nilai-ar{font-family:'Amiri',serif;font-size:22px;color:var(--tx);text-align:right;direction:rtl;margin:8px 0;line-height:1.8}
+.nilai-tr{font-size:13px;color:var(--txm);font-style:italic;margin-bottom:8px}
+.nilai-ref{font-size:11.5px;color:var(--syab);font-weight:600}
+
+/* ── QUIZ ── */
+.quiz-head{background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;padding:16px 22px;border-radius:var(--r) var(--r) 0 0;display:flex;align-items:center;gap:10px}
+.quiz-head h3{font-family:'Amiri',serif;font-size:18px;font-weight:700}
+.quiz-head .q-info{font-size:12.5px;color:rgba(255,255,255,.6);margin-left:auto}
+.quiz-body{background:var(--sf);border:1px solid var(--bs);border-radius:0 0 var(--r) var(--r);padding:22px}
+.q-block{margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--bs)}
+.q-block:last-of-type{border-bottom:none}
+.q-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--acc);margin-bottom:6px}
+.q-text{font-size:14.5px;font-weight:600;color:var(--tx);margin-bottom:12px;line-height:1.5}
+.q-opts{display:flex;flex-direction:column;gap:7px}
+.q-opt{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border:1.5px solid var(--bs);border-radius:var(--rs);cursor:pointer;transition:all .18s;font-size:13.5px;color:var(--txm);background:var(--sf3)}
+.q-opt:hover{border-color:var(--acc);background:var(--accl)}
+.q-opt.selected{border-color:var(--acc);background:var(--accl);color:var(--tx)}
+.q-opt.correct{border-color:var(--sya)!important;background:var(--syal)!important;color:var(--sya)!important}
+.q-opt.wrong{border-color:#D44040!important;background:#FEE0E0!important;color:#A01010!important}
+.q-opt-letter{width:22px;height:22px;border-radius:50%;background:var(--bs);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--txl);flex-shrink:0}
+.q-opt.selected .q-opt-letter{background:var(--acc);color:#fff}
+.q-feedback{font-size:13px;color:var(--txm);background:var(--prx);border-radius:var(--rs);padding:10px 14px;margin-top:10px;display:none;border-left:3px solid var(--acc)}
+.q-feedback.show{display:block}
+
+/* ── MATCHING ── */
+.match-wrap{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:500px){.match-wrap{grid-template-columns:1fr}}
+.match-col-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--txl);margin-bottom:7px}
+.match-items{display:flex;flex-direction:column;gap:7px}
+.match-term,.match-def{padding:10px 14px;border:1.5px solid var(--bs);border-radius:var(--rs);cursor:pointer;font-size:13px;color:var(--txm);background:var(--sf3);transition:all .18s;line-height:1.4;user-select:none}
+.match-term:hover,.match-def:hover{border-color:var(--acc);background:var(--accl)}
+.match-term.selected,.match-def.selected{border-color:var(--acc)!important;box-shadow:0 0 0 2px var(--accl)}
+.match-term strong{display:block;font-size:12px;color:var(--tx);margin-bottom:2px}
+.match-hint{font-size:12.5px;color:var(--txl);margin-bottom:10px}
+
+/* ── QUIZ SUBMIT ── */
+.quiz-submit-row{display:flex;align-items:center;gap:12px;margin-top:20px}
+.btn-submit{background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc));color:#fff;border:none;border-radius:var(--r);padding:12px 28px;font-family:'Source Sans 3',sans-serif;font-size:14.5px;font-weight:700;cursor:pointer;transition:opacity .2s;letter-spacing:.03em}
+.btn-submit:hover{opacity:.88}
+.quiz-score{font-size:14px;color:var(--txm);display:none}
+.quiz-result{display:none;margin-top:16px;border-radius:var(--r);padding:16px 20px;text-align:center}
+.quiz-result.pass{background:var(--syal);border:1.5px solid var(--sya)}
+.quiz-result.fail{background:#FEE8D8;border:1.5px solid #D46020}
+.quiz-result .big{font-family:'Amiri',serif;font-size:28px;font-weight:700}
+.quiz-result.pass .big{color:var(--sya)}
+.quiz-result.fail .big{color:#A04010}
+.quiz-result p{font-size:13.5px;color:var(--txm);margin-top:6px}
+
+/* ── PAHAM BUTTON ── */
+.paham-row{display:flex;justify-content:flex-end;margin-top:22px}
+.btn-paham{background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc));color:#fff;border:none;border-radius:24px;padding:11px 28px;font-family:'Source Sans 3',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;letter-spacing:.03em;transition:opacity .2s}
+.btn-paham:hover{opacity:.88}
+.btn-paham.done{background:var(--sya);cursor:default}
+
+/* ── COMPLETION ── */
+.completion{display:none;background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;border-radius:var(--r);padding:30px;text-align:center;margin-top:20px}
+.completion.show{display:block}
+.completion h2{font-family:'Amiri',serif;font-size:26px;font-weight:700;margin-bottom:8px}
+.completion p{color:rgba(255,255,255,.7);font-size:14px}
+.completion .lab-link{display:inline-block;margin-top:16px;background:var(--meet-acc);color:var(--meet-from);border-radius:20px;padding:10px 24px;font-weight:700;font-size:14px;text-decoration:none}
+
+/* ── BI ECOSYSTEM LAYER ── */
+.bi-layer-wrap{margin:16px 0;overflow-x:auto;padding:4px 0}
+.bi-layer-svg{min-width:500px;width:100%}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .hd-inner{padding:28px 18px 10px}
+  .main{padding:18px 14px 60px}
+  .sec-body{padding:16px 16px}
+  .tools-grid{grid-template-columns:1fr 1fr}
+  .nilai-grid{grid-template-columns:1fr}
+  .hd-title{font-size:26px}
+  .tri-grid{grid-template-columns:1fr}
+}
+</style>
+
+<!-- ── HEADER ── -->
+<div class="hd">
+  <svg class="hd-ornament" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs><pattern id="sp1" width="70" height="70" patternUnits="userSpaceOnUse">
+      <path d="M49,35 L40.8,37.2 L45.2,44.5 L37.8,40.1 L35,49 L32.2,40.1 L24.8,44.5 L29.2,37.2 L21,35 L29.2,32.8 L24.8,25.5 L32.2,29.9 L35,21 L37.8,29.9 L45.2,25.5 L40.8,32.8 Z" fill="none" stroke="#C09030" stroke-width="1.2"/>
+      <line x1="0" y1="35" x2="21" y2="35" stroke="#C09030" stroke-width=".5" opacity=".5"/>
+      <line x1="49" y1="35" x2="70" y2="35" stroke="#C09030" stroke-width=".5" opacity=".5"/>
+      <line x1="35" y1="0" x2="35" y2="21" stroke="#C09030" stroke-width=".5" opacity=".5"/>
+      <line x1="35" y1="49" x2="35" y2="70" stroke="#C09030" stroke-width=".5" opacity=".5"/>
+    </pattern></defs>
+    <rect width="100%" height="100%" fill="url(#sp1)"/>
+  </svg>
+  <div class="hd-inner">
+    <div class="hd-eyebrow">
+      <div class="hd-line"></div>
+      <span class="hd-eye">Business Intelligence &amp; Visualization · Universitas Tazkia</span>
+      <span class="hd-kode">BIV · P01</span>
+    </div>
+    <h1 class="hd-title">Pengantar BI &amp;<br>Ekosistem Tools Visualisasi</h1>
+    <p class="hd-sub">BI vs Analytics vs Reporting · 5 Komponen Ekosistem BI · Landscape Tools · Power BI · Bayan</p>
+    <div class="hd-pills">
+      <span class="hpill"><strong>CPMK-1</strong></span>
+      <span class="hpill">Bloom C2 — Memahami</span>
+      <span class="hpill">Ceramah + LAB</span>
+      <span class="hpill">Ganjil 2026/2027</span>
+    </div>
+  </div>
+  <div class="hd-arch"><svg viewBox="0 0 1200 28" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,28 L0,16 Q20,4 40,16 Q60,28 80,16 Q100,4 120,16 Q140,28 160,16 Q180,4 200,16 Q220,28 240,16 Q260,4 280,16 Q300,28 320,16 Q340,4 360,16 Q380,28 400,16 Q420,4 440,16 Q460,28 480,16 Q500,4 520,16 Q540,28 560,16 Q580,4 600,16 Q620,28 640,16 Q660,4 680,16 Q700,28 720,16 Q740,4 760,16 Q780,28 800,16 Q820,4 840,16 Q860,28 880,16 Q900,4 920,16 Q940,28 960,16 Q980,4 1000,16 Q1020,28 1040,16 Q1060,4 1080,16 Q1100,28 1120,16 Q1140,4 1160,16 Q1180,28 1200,16 L1200,28 Z" fill="var(--bg)"/>
+  </svg></div>
+</div>
+
+<!-- ── PROGRESS ── -->
+<div class="prog-wrap">
+  <div class="prog-inner">
+    <span class="prog-label">Progress P01</span>
+    <div class="prog-steps" id="progSteps">
+      <div class="prog-dot active" id="pd0"></div>
+      <div class="prog-dot" id="pd1"></div>
+      <div class="prog-dot" id="pd2"></div>
+      <div class="prog-dot" id="pd3"></div>
+      <div class="prog-dot" id="pd4"></div>
+      <div class="prog-dot" id="pd5"></div>
+      <div class="prog-dot" id="pd6"></div>
+    </div>
+    <span class="prog-pct" id="progPct">0%</span>
+  </div>
+</div>
+
+<!-- ── MAIN ── -->
+<div class="main">
+
+<!-- ╔═══ SEKSI 1: TUJUAN PEMBELAJARAN ═══╗ -->
+<div class="sec-card unlocked" id="sec0">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn0">1</div>
+    <div class="sec-title">Tujuan Pembelajaran</div>
+    <span class="sec-cpmk">CPMK-1</span>
+  </div>
+  <div class="sec-body">
+    <h3 class="sh">Setelah pertemuan ini kamu mampu...</h3>
+    <table class="cpmk-table">
+      <thead><tr><th>Sub-CPMK</th><th>Bloom</th><th>Kemampuan</th></tr></thead>
+      <tbody>
+        <tr><td><strong>C2.1</strong></td><td><span class="badge badge-c2">C2</span></td><td>Menjelaskan posisi BIV dalam pipeline data science dan perbedaannya dengan ADA</td></tr>
+        <tr><td><strong>C2.2</strong></td><td><span class="badge badge-c2">C2</span></td><td>Membedakan Business Intelligence, Analytics, dan Reporting — dan menjelaskan kapan masing-masing digunakan</td></tr>
+        <tr><td><strong>C2.3</strong></td><td><span class="badge badge-c2">C2</span></td><td>Mengidentifikasi 5 komponen ekosistem BI dan fungsi setiap lapisan dalam pipeline informasi bisnis</td></tr>
+        <tr><td><strong>C2.4</strong></td><td><span class="badge badge-c2">C2</span></td><td>Mendeskripsikan landscape tools BI utama (Power BI, Tableau, Looker) dan keunggulan Power BI untuk konteks matakuliah ini</td></tr>
+      </tbody>
+    </table>
+    <h3 class="sh">Peta Materi Pertemuan Ini</h3>
+    <div class="sec-map">
+      <div class="sec-map-item"><div class="ico">🗺️</div><div><div class="lbl">BIV dalam Pipeline</div><div class="sub">Seksi 2</div></div></div>
+      <div class="sec-map-item"><div class="ico">🔍</div><div><div class="lbl">BI vs Analytics vs Reporting</div><div class="sub">Seksi 3</div></div></div>
+      <div class="sec-map-item"><div class="ico">🏗️</div><div><div class="lbl">5 Komponen Ekosistem BI</div><div class="sub">Seksi 4</div></div></div>
+      <div class="sec-map-item"><div class="ico">🛠️</div><div><div class="lbl">Landscape Tools BI</div><div class="sub">Seksi 5</div></div></div>
+      <div class="sec-map-item"><div class="ico">☽</div><div><div class="lbl">Nilai Syariah: Bayan</div><div class="sub">Seksi 6</div></div></div>
+      <div class="sec-map-item"><div class="ico">✏️</div><div><div class="lbl">Uji Pemahaman</div><div class="sub">3 MCQ + Matching</div></div></div>
+    </div>
+    <div class="callout info">
+      <strong>📋 Praktikum P01</strong> — setelah kamu selesai slide ini, buka file <strong>Praktikum-01-BIV.html</strong> untuk langsung mengenal antarmuka Power BI Desktop dan mengkoneksikan dataset Retail Syariah pertamamu!
+    </div>
+    <div class="paham-row"><button class="btn-paham" onclick="unlock(0)">Saya Paham — Lanjut ▸</button></div>
+  </div>
+</div>
+
+<!-- ╔═══ SEKSI 2: BIV DALAM PIPELINE ═══╗ -->
+<div class="sec-card locked" id="sec1">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn1">2</div>
+    <div class="sec-title">BIV dalam Pipeline Data Science</div>
+    <span class="sec-cpmk">C2.1</span>
+  </div>
+  <div class="sec-body">
+    <h3 class="sh">Di Mana BIV Berada dalam Rantai Nilai Data?</h3>
+    <p>Data science bukan satu pekerjaan — ia adalah <strong>pipeline</strong> dari data mentah hingga keputusan bisnis. BIV menempati lapisan paling kritis: lapisan yang menentukan apakah insight dari analitik benar-benar sampai kepada pengambil keputusan dan mendorong tindakan nyata.</p>
+
+    <div class="pipeline-wrap">
+      <svg class="pipeline-svg" viewBox="0 0 780 230" aria-label="Pipeline Data Science — posisi BIV">
+        <defs>
+          <marker id="arrg" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 Z" fill="#8A9AB0"/></marker>
+          <marker id="arr-biv" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 Z" fill="#C09030"/></marker>
+          <marker id="arr-ada" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 Z" fill="#20C8D0"/></marker>
+        </defs>
+        <!-- 1: Sumber Data -->
+        <rect x="2" y="52" width="96" height="56" rx="8" fill="#1A2840" stroke="#2A4060" stroke-width="1.5"/>
+        <text x="50" y="74" font-family="Source Sans 3,sans-serif" font-size="11" font-weight="700" fill="#C8D8E8" text-anchor="middle">📦 Sumber</text>
+        <text x="50" y="88" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6090B0" text-anchor="middle">Data</text>
+        <text x="50" y="122" font-family="Source Sans 3,sans-serif" font-size="9" fill="#4A6A80" text-anchor="middle">CSV, DB, API</text>
+        <!-- Arrow 1→2 -->
+        <line x1="98" y1="80" x2="118" y2="80" stroke="#4A6A80" stroke-width="1.5" marker-end="url(#arrg)"/>
+        <!-- 2: ETL/ADA -->
+        <rect x="120" y="52" width="116" height="56" rx="8" fill="#082840" stroke="#20C8D0" stroke-width="2"/>
+        <text x="178" y="74" font-family="Source Sans 3,sans-serif" font-size="11" font-weight="700" fill="#20C8D0" text-anchor="middle">🧹 ETL + Analisis</text>
+        <text x="178" y="88" font-family="Source Sans 3,sans-serif" font-size="10" fill="#40A8B8" text-anchor="middle">Python / ADA</text>
+        <text x="178" y="118" font-family="Source Sans 3,sans-serif" font-size="9" fill="#30A8C0" text-anchor="middle">pandas, sklearn</text>
+        <!-- ADA bracket -->
+        <line x1="122" y1="32" x2="234" y2="32" stroke="#20C8D0" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <line x1="122" y1="32" x2="122" y2="52" stroke="#20C8D0" stroke-width="1.5"/>
+        <line x1="234" y1="32" x2="234" y2="52" stroke="#20C8D0" stroke-width="1.5"/>
+        <rect x="140" y="16" width="78" height="18" rx="9" fill="#082840" stroke="#20C8D0" stroke-width="1"/>
+        <text x="179" y="29" font-family="Source Sans 3,sans-serif" font-size="9.5" font-weight="700" fill="#20C8D0" text-anchor="middle">⬤ ADA</text>
+        <!-- Arrow 2→3 -->
+        <line x1="236" y1="80" x2="256" y2="80" stroke="#C09030" stroke-width="1.8" marker-end="url(#arr-biv)"/>
+        <!-- 3: Data Warehouse -->
+        <rect x="258" y="52" width="108" height="56" rx="8" fill="#1A0838" stroke="#6030B0" stroke-width="1.5"/>
+        <text x="312" y="74" font-family="Source Sans 3,sans-serif" font-size="11" font-weight="700" fill="#C080F8" text-anchor="middle">🗄️ Data Store</text>
+        <text x="312" y="88" font-family="Source Sans 3,sans-serif" font-size="10" fill="#9060C0" text-anchor="middle">Warehouse</text>
+        <text x="312" y="118" font-family="Source Sans 3,sans-serif" font-size="9" fill="#7050A0" text-anchor="middle">Excel, SharePoint</text>
+        <!-- Arrow 3→4 -->
+        <line x1="366" y1="80" x2="386" y2="80" stroke="#C09030" stroke-width="1.8" marker-end="url(#arr-biv)"/>
+        <!-- 4: Power BI (BIV) -->
+        <rect x="388" y="52" width="130" height="56" rx="8" fill="#2A0848" stroke="#C09030" stroke-width="2.5"/>
+        <text x="453" y="72" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#D0A840" text-anchor="middle">📊 Visualisasi</text>
+        <text x="453" y="86" font-family="Source Sans 3,sans-serif" font-size="10.5" fill="#C09030" text-anchor="middle">Dashboard · BIV</text>
+        <text x="453" y="118" font-family="Source Sans 3,sans-serif" font-size="9.5" fill="#B08030" text-anchor="middle">Power BI, Tableau</text>
+        <!-- BIV bracket -->
+        <line x1="260" y1="32" x2="516" y2="32" stroke="#C09030" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <line x1="260" y1="32" x2="260" y2="52" stroke="#C09030" stroke-width="1.5"/>
+        <line x1="516" y1="32" x2="516" y2="52" stroke="#C09030" stroke-width="1.5"/>
+        <rect x="330" y="16" width="148" height="18" rx="9" fill="#1A0838" stroke="#C09030" stroke-width="1"/>
+        <text x="404" y="29" font-family="Source Sans 3,sans-serif" font-size="9.5" font-weight="700" fill="#D0A840" text-anchor="middle">⬤ BIV ← kamu di sini</text>
+        <!-- Arrow 4→5 -->
+        <line x1="518" y1="80" x2="540" y2="80" stroke="#D4A030" stroke-width="1.8" marker-end="url(#arr-biv)"/>
+        <!-- 5: Keputusan -->
+        <rect x="542" y="52" width="100" height="56" rx="8" fill="#1A1008" stroke="#C09030" stroke-width="1.5"/>
+        <text x="592" y="72" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#E8C060" text-anchor="middle">💡 Keputusan</text>
+        <text x="592" y="86" font-family="Source Sans 3,sans-serif" font-size="10" fill="#B08030" text-anchor="middle">Decision</text>
+        <text x="592" y="118" font-family="Source Sans 3,sans-serif" font-size="9" fill="#908020" text-anchor="middle">Manajemen bertindak</text>
+        <!-- Arrow 5→6 -->
+        <line x1="642" y1="80" x2="660" y2="80" stroke="#4A6A80" stroke-width="1.5" marker-end="url(#arrg)"/>
+        <!-- 6: Dampak -->
+        <rect x="662" y="52" width="104" height="56" rx="8" fill="#0A1A08" stroke="#40A060" stroke-width="1.5"/>
+        <text x="714" y="72" font-family="Source Sans 3,sans-serif" font-size="11" font-weight="700" fill="#60C878" text-anchor="middle">🌱 Dampak</text>
+        <text x="714" y="86" font-family="Source Sans 3,sans-serif" font-size="10" fill="#40A050" text-anchor="middle">Business Value</text>
+        <text x="714" y="118" font-family="Source Sans 3,sans-serif" font-size="9" fill="#308040" text-anchor="middle">Efisiensi, pertumbuhan</text>
+        <!-- Sinergi arrow bottom -->
+        <path d="M453,108 Q453,175 312,175 Q236,175 190,175" stroke="#C09030" stroke-width="1.5" stroke-dasharray="5,3" fill="none" marker-end="url(#arr-biv)"/>
+        <text x="360" y="192" font-family="Source Sans 3,sans-serif" font-size="9.5" fill="#A07828" text-anchor="middle">P13: output Python ADA → input Power BI BIV (sinergi paralel)</text>
+      </svg>
+    </div>
+
+    <div class="callout syn">
+      <strong>💡 BIV adalah "bahasa komunikasi" ADA.</strong> ADA membuat analisis yang benar; BIV memastikan analisis itu berdampak — dimengerti, dipercaya, dan mendorong tindakan oleh pengambil keputusan yang tidak membaca kode Python.
+    </div>
+
+    <h4 class="shs">Contoh Konkrit — Minimarket Syariah Berkah Bogor</h4>
+    <p>Minimarket Berkah memiliki 60 transaksi penjualan selama 6 bulan. Manajer ingin tahu: <em>"Kategori produk mana yang paling besar sumbangannya? Bulan mana penjualan paling tinggi?"</em></p>
+    <ul class="lst">
+      <li><strong>Layer ADA:</strong> Tim mengimpor data CSV dengan pandas, membersihkan, menghitung total penjualan per kategori — menghasilkan angka-angka.</li>
+      <li><strong>Layer BIV:</strong> Tim BI membuat dashboard Power BI — bar chart kategori, line chart tren bulanan, KPI card total — sehingga manajer bisa langsung melihat dan memutuskan strategi promosi.</li>
+      <li><strong>Tanpa BIV:</strong> Insight dari ADA akan tetap tersembunyi dalam tabel CSV yang tidak bisa "berbicara" kepada pengambil keputusan.</li>
+    </ul>
+    <div class="paham-row"><button class="btn-paham" onclick="unlock(1)">Saya Paham — Lanjut ▸</button></div>
+  </div>
+</div>
+
+<!-- ╔═══ SEKSI 3: BI vs ANALYTICS vs REPORTING ═══╗ -->
+<div class="sec-card locked" id="sec2">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn2">3</div>
+    <div class="sec-title">BI vs Analytics vs Reporting — Tiga Konsep Berbeda</div>
+    <span class="sec-cpmk">C2.2</span>
+  </div>
+  <div class="sec-body">
+    <p>Tiga istilah ini sering digunakan bergantian — padahal ketiganya berbeda secara fundamental dalam <em>tujuan</em>, <em>audiens</em>, dan <em>pertanyaan yang dijawab</em>. Memahami perbedaan ini adalah fondasi untuk merancang solusi informasi yang tepat.</p>
+
+    <div class="tri-grid">
+      <div class="tri-card rep">
+        <h4>📋 Reporting</h4>
+        <div class="tri-row"><span class="ico">🕐</span><span>Melihat ke belakang — apa yang terjadi</span></div>
+        <div class="tri-row"><span class="ico">👥</span><span>Audiens: operasional, manajer lini</span></div>
+        <div class="tri-row"><span class="ico">📄</span><span>Output: laporan periodik, tabel, PDF</span></div>
+        <div class="tri-row"><span class="ico">🔄</span><span>Frekuensi: harian, mingguan, bulanan (terjadwal)</span></div>
+        <div class="tri-row"><span class="ico">⚙️</span><span>Tools: Excel, Crystal Reports, SAP FICO</span></div>
+        <div class="ask">"Berapa penjualan bulan ini?" "Berapa nasabah baru minggu ini?"</div>
+      </div>
+
+      <div class="tri-card ana">
+        <h4>🔬 Analytics</h4>
+        <div class="tri-row"><span class="ico">🔍</span><span>Menggali lebih dalam — mengapa dan bagaimana</span></div>
+        <div class="tri-row"><span class="ico">👥</span><span>Audiens: analis, data scientist</span></div>
+        <div class="tri-row"><span class="ico">🤖</span><span>Output: model, segmentasi, prediksi</span></div>
+        <div class="tri-row"><span class="ico">🔄</span><span>Frekuensi: ad-hoc, berbasis kebutuhan</span></div>
+        <div class="tri-row"><span class="ico">⚙️</span><span>Tools: Python/R, SQL, scikit-learn (ADA)</span></div>
+        <div class="ask">"Mengapa NPF naik?" "Nasabah mana yang berisiko gagal bayar?"</div>
+      </div>
+
+      <div class="tri-card bi">
+        <h4>📊 Business Intelligence</h4>
+        <div class="tri-row"><span class="ico">🎯</span><span>Mendukung keputusan — from insight to action</span></div>
+        <div class="tri-row"><span class="ico">👥</span><span>Audiens: eksekutif, pengambil keputusan</span></div>
+        <div class="tri-row"><span class="ico">🖥️</span><span>Output: dashboard interaktif, data story</span></div>
+        <div class="tri-row"><span class="ico">🔄</span><span>Frekuensi: real-time atau near real-time</span></div>
+        <div class="tri-row"><span class="ico">⚙️</span><span>Tools: Power BI, Tableau, Looker (BIV)</span></div>
+        <div class="ask">"Apa yang harus dilakukan sekarang?" "Di mana fokus perhatian kita?"</div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <strong>🗝️ Kunci Pembeda:</strong> Reporting menjawab "APA?" — Analytics menjawab "MENGAPA?" — BI menjawab "SEKARANG APA YANG HARUS KITA LAKUKAN?" BI yang baik mengintegrasikan keduanya dan menyampaikannya ke pengambil keputusan dalam format yang bisa langsung ditindaklanjuti.
+    </div>
+
+    <h3 class="sh">Empat Tipe Analytics dalam Hierarki BI</h3>
+    <ul class="lst">
+      <li><strong>Descriptive Analytics (Deskriptif):</strong> Apa yang terjadi? — KPI dashboard, laporan penjualan, tren historis. Paling banyak digunakan (80% praktik BI sehari-hari).</li>
+      <li><strong>Diagnostic Analytics (Diagnostik):</strong> Mengapa terjadi? — drill-down analysis, root cause, korelasi antar variabel. Membutuhkan data yang lebih kaya.</li>
+      <li><strong>Predictive Analytics (Prediktif):</strong> Apa yang kemungkinan akan terjadi? — forecasting, model machine learning dari ADA yang diintegrasikan ke Power BI di P13.</li>
+      <li><strong>Prescriptive Analytics (Preskriptif):</strong> Apa yang sebaiknya dilakukan? — rekomendasi berbasis data, optimization, "what-if" scenarios. Level tertinggi dan paling berdampak.</li>
+    </ul>
+    <div class="callout warn">
+      <strong>⚠️ Kesalahan Umum:</strong> Banyak "dashboard" di organisasi Indonesia hanya melakukan Descriptive Analytics (menyajikan ulang data dalam grafik) tanpa memberikan Diagnostic atau Prescriptive insights. Dashboard seperti ini indah tapi tidak mendorong keputusan. Kita akan belajar menghindari ini.
+    </div>
+    <div class="paham-row"><button class="btn-paham" onclick="unlock(2)">Saya Paham — Lanjut ▸</button></div>
+  </div>
+</div>
+
+<!-- ╔═══ SEKSI 4: EKOSISTEM BI ═══╗ -->
+<div class="sec-card locked" id="sec3">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn3">4</div>
+    <div class="sec-title">Ekosistem BI — 5 Komponen Utama</div>
+    <span class="sec-cpmk">C2.3</span>
+  </div>
+  <div class="sec-body">
+    <p>Sebuah sistem BI yang lengkap terdiri dari <strong>5 lapisan</strong> yang saling terhubung — dari sumber data mentah hingga pengambil keputusan. Kita belajar di lapisan ke-4 (visualisasi), tapi penting untuk memahami seluruh arsitektur agar bisa membangun solusi yang kohesif.</p>
+
+    <div class="bi-layer-wrap">
+      <svg class="bi-layer-svg" viewBox="0 0 700 360" aria-label="5 Lapisan Ekosistem BI">
+        <!-- Layer 5 — Source Data (bottom) -->
+        <rect x="10" y="295" width="680" height="54" rx="8" fill="#1A2840" stroke="#2A4060" stroke-width="1.5"/>
+        <text x="24" y="316" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#C8D8E8">📦 Lapisan 1 — Sumber Data (Source Systems)</text>
+        <text x="24" y="336" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6090B0">Database OLTP (MySQL, Oracle) · File Excel/CSV · REST API · Web Scraping · ERP (SAP, Odoo) · Google Forms</text>
+        <text x="650" y="326" font-family="Source Sans 3,sans-serif" font-size="11" fill="#4A6A80" text-anchor="middle">L1</text>
+
+        <!-- Arrow up 1→2 -->
+        <line x1="350" y1="293" x2="350" y2="282" stroke="#4A6A80" stroke-width="1.5" marker-end="url(#arrupg)"/>
+
+        <!-- Layer 4 — ETL/ELT -->
+        <rect x="10" y="228" width="680" height="54" rx="8" fill="#082840" stroke="#20C8D0" stroke-width="1.5"/>
+        <text x="24" y="249" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#20C8D0">🔄 Lapisan 2 — ETL/ELT Pipeline (Extract, Transform, Load)</text>
+        <text x="24" y="269" font-family="Source Sans 3,sans-serif" font-size="11" fill="#40A8B8">Power Query (di Power BI) · Python pandas (ADA) · dbt · Azure Data Factory · Apache Spark</text>
+        <text x="650" y="259" font-family="Source Sans 3,sans-serif" font-size="11" fill="#20A8B8" text-anchor="middle">L2</text>
+
+        <!-- Arrow up 2→3 -->
+        <line x1="350" y1="226" x2="350" y2="215" stroke="#4A6A80" stroke-width="1.5" marker-end="url(#arrupg)"/>
+
+        <!-- Layer 3 — Data Warehouse -->
+        <rect x="10" y="161" width="680" height="54" rx="8" fill="#1A0838" stroke="#6030B0" stroke-width="1.5"/>
+        <text x="24" y="182" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#C080F8">🗄️ Lapisan 3 — Data Storage (Warehouse / Lakehouse)</text>
+        <text x="24" y="202" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9060C0">Excel/SharePoint · Azure Synapse · Snowflake · BigQuery · CSV/Parquet files · SQL Server</text>
+        <text x="650" y="192" font-family="Source Sans 3,sans-serif" font-size="11" fill="#8050C0" text-anchor="middle">L3</text>
+
+        <!-- Arrow up 3→4 -->
+        <line x1="350" y1="159" x2="350" y2="148" stroke="#C09030" stroke-width="2" marker-end="url(#arrupg)"/>
+
+        <!-- Layer 2 — Analytics (BIV) HIGHLIGHTED -->
+        <rect x="10" y="94" width="680" height="54" rx="8" fill="#2A0848" stroke="#C09030" stroke-width="2.5"/>
+        <text x="24" y="115" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#D0A840">📊 Lapisan 4 — Analytics &amp; Visualization ← KITA DI SINI (BIV)</text>
+        <text x="24" y="135" font-family="Source Sans 3,sans-serif" font-size="11" fill="#C09030">Power BI Desktop/Service · Tableau · Looker Studio · Plotly · OLAP Cube · DAX Measures</text>
+        <text x="650" y="125" font-family="Source Sans 3,sans-serif" font-size="11" fill="#C09030" text-anchor="middle">L4</text>
+
+        <!-- Arrow up 4→5 -->
+        <line x1="350" y1="92" x2="350" y2="81" stroke="#C09030" stroke-width="2" marker-end="url(#arrupg)"/>
+
+        <!-- Layer 1 — Consumer (top) -->
+        <rect x="10" y="10" width="680" height="54" rx="8" fill="#1A0A08" stroke="#D0A840" stroke-width="1.5"/>
+        <text x="24" y="31" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#E8C060">💡 Lapisan 5 — Konsumen Informasi (Decision Makers)</text>
+        <text x="24" y="51" font-family="Source Sans 3,sans-serif" font-size="11" fill="#B08030">Direktur &amp; Eksekutif · Manajer Cabang · Analis Bisnis · Dewan Pengawas Syariah · Stakeholder</text>
+        <text x="650" y="41" font-family="Source Sans 3,sans-serif" font-size="11" fill="#908020" text-anchor="middle">L5</text>
+
+        <defs>
+          <marker id="arrupg" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,8 L4,0 L8,8 Z" fill="#4A6A80"/></marker>
+        </defs>
+      </svg>
+    </div>
+
+    <h4 class="shs">Memahami Setiap Lapisan</h4>
+    <ul class="lst">
+      <li><strong>L1 — Sumber Data:</strong> Di mana data lahir — transaksi penjualan di kasir, data nasabah di sistem BPRS, survei kepuasan. Data belum siap dianalisis di sini.</li>
+      <li><strong>L2 — ETL Pipeline:</strong> Proses membersihkan, mengubah format, dan memindahkan data. Power Query di Power BI melakukan ini secara visual; Python/ADA melakukannya dengan kode.</li>
+      <li><strong>L3 — Data Storage:</strong> Tempat data yang sudah bersih disimpan dan diorganisir. Untuk skala kecil-menengah: Excel, SharePoint, SQL Server. Untuk skala enterprise: Data Warehouse cloud.</li>
+      <li><strong>L4 — Analytics &amp; Visualization:</strong> Di sinilah BIV bekerja — mengubah data yang sudah bersih menjadi chart, dashboard, dan narasi yang bisa dimengerti pengambil keputusan.</li>
+      <li><strong>L5 — Konsumen Informasi:</strong> Direktur yang membuka dashboard pagi hari, manajer yang mengklik slicer untuk melihat data cabangnya, DPS yang memeriksa rasio syariah compliance.</li>
+    </ul>
+
+    <div class="callout info">
+      <strong>Tentang OLAP:</strong> OLAP (Online Analytical Processing) adalah engine analitik yang memungkinkan "slicing and dicing" data dari berbagai dimensi. Power BI menggunakan model OLAP secara internal — itulah mengapa kamu bisa memfilter dashboard dari berbagai arah (per bulan, per cabang, per produk) secara instan.
+    </div>
+    <div class="paham-row"><button class="btn-paham" onclick="unlock(3)">Saya Paham — Lanjut ▸</button></div>
+  </div>
+</div>
+
+<!-- ╔═══ SEKSI 5: LANDSCAPE TOOLS BI ═══╗ -->
+<div class="sec-card locked" id="sec4">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn4">5</div>
+    <div class="sec-title">Landscape Tools BI — Mengenal 5 Pemain Utama</div>
+    <span class="sec-cpmk">C2.4</span>
+  </div>
+  <div class="sec-body">
+    <p>Pasar BI memiliki banyak tools — masing-masing dengan kekuatan, kelemahan, dan segmen pengguna yang berbeda. Mengenal landscape ini penting agar kamu bisa merekomendasikan tools yang tepat kepada klien di masa kerja.</p>
+
+    <div class="tools-grid">
+      <div class="tool-card featured">
+        <div class="tool-icon">⚡</div>
+        <div class="tool-name">Microsoft Power BI</div>
+        <div class="tool-desc">Tool utama BIV. Desktop gratis, cloud berbayar. Ekosistem Microsoft (Excel, Azure, Teams). DAX sebagai bahasa kalkulasi. Pemimpin Gartner Magic Quadrant BI 2024.</div>
+        <span class="tool-pill">🎯 Kita pakai ini — Gratis & Powerful</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">🔵</div>
+        <div class="tool-name">Tableau</div>
+        <div class="tool-desc">Pioneer visualisasi interaktif, desain visual yang sangat kuat, kemampuan chart yang lebih kaya dari Power BI. Berbayar (~$70/user/bulan). Tersedia versi Public (gratis, data publik).</div>
+        <span class="tool-pill">Industry Standard — Mahal tapi Powerful</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">🔴</div>
+        <div class="tool-name">Google Looker Studio</div>
+        <div class="tool-desc">Gratis berbasis cloud, terintegrasi native dengan Google Analytics, BigQuery, Google Sheets. Cocok untuk data berbasis Google ecosystem. Fitur lebih terbatas, tapi zero cost.</div>
+        <span class="tool-pill">Gratis — P12 kita kenalkan ini</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">🟢</div>
+        <div class="tool-name">Qlik Sense</div>
+        <div class="tool-desc">Associative model — pengguna bisa mengeksplorasi data dari arah mana saja tanpa predefined hierarchy. Sangat kuat untuk discovery analytics. Enterprise-focused, harga tinggi.</div>
+        <span class="tool-pill">Enterprise · Associative Model</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">🟡</div>
+        <div class="tool-name">Metabase</div>
+        <div class="tool-desc">Open source BI tool yang bisa di-deploy sendiri (self-hosted). Antarmuka sederhana, SQL-friendly, cocok untuk tim teknis kecil atau startup. Gratis versi komunitas.</div>
+        <span class="tool-pill">Open Source · Self-hosted</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">🐍</div>
+        <div class="tool-name">Plotly / Streamlit</div>
+        <div class="tool-desc">Visualisasi interaktif berbasis Python. Plotly untuk charts; Streamlit untuk membuat web app analytics. Output dari ADA — dashboard Python yang bisa dideploy ke cloud.</div>
+        <span class="tool-pill">Python-based — Sinergi ADA-BIV</span>
+      </div>
+    </div>
+
+    <h3 class="sh">Mengapa Power BI untuk Matakuliah Ini?</h3>
+    <ul class="lst">
+      <li><strong>Gratis (Desktop):</strong> Power BI Desktop dapat diunduh gratis — tidak ada biaya lisensi untuk belajar dan latihan</li>
+      <li><strong>Standar industri:</strong> 90% perusahaan Fortune 500 menggunakan Power BI atau Microsoft BI stack — kamu langsung belajar tool yang relevan industri</li>
+      <li><strong>Ekosistem Microsoft:</strong> Terintegrasi sempurna dengan Excel (yang sudah kamu kenal), SharePoint, Teams, dan Azure</li>
+      <li><strong>DAX yang powerful:</strong> Data Analysis Expressions (DAX) adalah bahasa kalkulasi yang sangat kuat — lebih ekspresif dari formula Excel biasa</li>
+      <li><strong>Python integration:</strong> Di P13, kita akan mengintegrasikan output Python dari ADA langsung ke Power BI — bridging the gap antara dua matakuliah</li>
+      <li><strong>Ekosistem Indonesia:</strong> Mayoritas lowongan Data Analyst di Indonesia mensyaratkan Power BI — keahlian ini langsung bisa dipakai setelah lulus</li>
+    </ul>
+
+    <div class="callout warn">
+      <strong>⚠️ Power BI Desktop hanya tersedia untuk Windows.</strong> Jika kamu menggunakan Mac, ada beberapa opsi: (1) pakai Power BI Service di browser (punya fitur lebih terbatas), (2) pinjam laptop Windows dari lab komputer, atau (3) install Windows via Parallels/Boot Camp. Konsultasikan dengan dosen di pertemuan ini.
+    </div>
+    <div class="paham-row"><button class="btn-paham" onclick="unlock(4)">Saya Paham — Lanjut ▸</button></div>
+  </div>
+</div>
+
+<!-- ╔═══ SEKSI 6: NILAI SYARIAH ═══╗ -->
+<div class="sec-card locked" id="sec5">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn5">6</div>
+    <div class="sec-title">Nilai Syariah — Bayan: Kejelasan untuk Keputusan</div>
+    <span class="sec-cpmk">CPL-S2</span>
+  </div>
+  <div class="sec-body">
+    <p>Business Intelligence bukan sekadar teknologi — ia adalah <strong>tanggung jawab moral</strong> untuk menyampaikan informasi yang benar kepada orang yang tepat dengan cara yang jelas. Nilai Islam memberikan fondasi etis yang kuat untuk praktik BI yang bertanggung jawab.</p>
+    <div class="nilai-grid">
+      <div class="nilai-card">
+        <div class="nilai-name">☾ Bayan — البيان</div>
+        <div class="nilai-ar">عَلَّمَهُ ٱلْبَيَانَ</div>
+        <div class="nilai-tr">"Dia mengajarkan bayan (kejelasan ekspresi)" — (QS. Ar-Rahman: 4)</div>
+        <p style="font-size:13px;margin-top:8px"><strong>Dalam BIV:</strong> Bayan adalah kemampuan menyampaikan kebenaran dengan cara yang bisa dipahami. BI adalah bayan dalam dunia bisnis — mengubah data yang kompleks dan membingungkan menjadi informasi yang jelas, sehingga pemimpin bisa mengambil keputusan yang benar, tepat waktu, dan bertanggung jawab. Dashboard yang membingungkan adalah kegagalan bayan.</p>
+        <div class="nilai-ref">QS. Ar-Rahman: 4 | QS. Ibrahim: 4</div>
+      </div>
+      <div class="nilai-card">
+        <div class="nilai-name">☾ Sidq — الصدق</div>
+        <div class="nilai-ar">يَـٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوا۟ ٱتَّقُوا۟ ٱللَّهَ وَكُونُوا۟ مَعَ ٱلصَّـٰدِقِينَ</div>
+        <div class="nilai-tr">"Wahai orang-orang yang beriman, bertakwalah kepada Allah, dan jadilah bersama orang-orang yang jujur." (QS. At-Taubah: 119)</div>
+        <p style="font-size:13px;margin-top:8px"><strong>Dalam BIV:</strong> Sidq (kejujuran) dalam visualisasi berarti setiap grafik merepresentasikan data secara proporsional dan akurat. Grafik yang menyesatkan — truncated y-axis, 3D pie chart, cherry-picking data — adalah pelanggaran sidq dalam komunikasi bisnis. Di P3 kita akan membahas ini secara khusus.</p>
+        <div class="nilai-ref">QS. At-Taubah: 119 | QS. Al-Maidah: 8</div>
+      </div>
+    </div>
+    <div class="callout sya">
+      <strong>Aplikasi Praktis P01:</strong> Ketika kamu membangun dashboard pertamamu di praktikum — ingat bahwa setiap pilihan visual adalah keputusan etis. Apakah axis dimulai dari nol (jujur)? Apakah chart yang dipilih sesuai dengan tipe data (tepat)? Apakah semua informasi relevan tersedia (lengkap)? Ini bukan hanya soal estetika — ini soal amanah informasi.
+    </div>
+    <div class="paham-row"><button class="btn-paham" onclick="unlock(5)">Saya Paham — Mulai Kuis ▸</button></div>
+  </div>
+</div>
+
+<!-- ╔═══ KUIS ═══╗ -->
+<div class="sec-card locked" id="sec6">
+  <div class="quiz-head">
+    <div>✏️</div>
+    <h3>Uji Pemahaman P01</h3>
+    <span class="q-info">3 MCQ + Matching · Lulus ≥ 75%</span>
+  </div>
+  <div class="quiz-body">
+
+    <!-- MCQ 1 -->
+    <div class="q-block">
+      <div class="q-label">Soal 1 dari 3 · MCQ</div>
+      <div class="q-text">Pak Irfan, direktur BPRS Tazkia, setiap pagi membuka sebuah halaman yang menampilkan total pembiayaan hari ini, NPF terkini, dan tren pendapatan 12 bulan terakhir — semuanya bisa diklik dan difilter per cabang. Jenis sistem apa yang sedang digunakan Pak Irfan?</div>
+      <div class="q-opts" id="q0">
+        <div class="q-opt" onclick="selectMCQ(0,0)"><div class="q-opt-letter">A</div><div>Reporting System — karena sistem ini menampilkan laporan keuangan periodik</div></div>
+        <div class="q-opt" onclick="selectMCQ(0,1)"><div class="q-opt-letter">B</div><div>Business Intelligence System — karena menyajikan insight interaktif, multi-dimensi, dan mendukung pengambilan keputusan real-time</div></div>
+        <div class="q-opt" onclick="selectMCQ(0,2)"><div class="q-opt-letter">C</div><div>Predictive Analytics — karena menampilkan tren 12 bulan yang berarti ada prediksi masa depan</div></div>
+        <div class="q-opt" onclick="selectMCQ(0,3)"><div class="q-opt-letter">D</div><div>OLTP System — karena data ini langsung dari sistem transaksi operasional BPRS</div></div>
+      </div>
+      <div class="q-feedback" id="fb0">✅ <strong>Tepat!</strong> Sistem yang digunakan Pak Irfan adalah BI — ciri khasnya: interaktif (bisa diklik dan difilter), multi-dimensi (per cabang), mendukung keputusan strategis (direktur), dan near real-time. Jika hanya PDF statis yang dikirim via email, itu Reporting. Jika tim analis menggali data untuk mencari pola NPF, itu Analytics.</div>
+    </div>
+
+    <!-- MCQ 2 -->
+    <div class="q-block">
+      <div class="q-label">Soal 2 dari 3 · MCQ</div>
+      <div class="q-text">Dalam arsitektur ekosistem BI yang terdiri dari 5 lapisan, di lapisan manakah Power Query (yang kita gunakan di dalam Power BI) bekerja?</div>
+      <div class="q-opts" id="q1">
+        <div class="q-opt" onclick="selectMCQ(1,0)"><div class="q-opt-letter">A</div><div>Lapisan 1 — Sumber Data, karena Power Query membaca data dari sumber seperti CSV dan Excel</div></div>
+        <div class="q-opt" onclick="selectMCQ(1,1)"><div class="q-opt-letter">B</div><div>Lapisan 2 — ETL Pipeline, karena Power Query bertugas mengekstrak, mentransformasi (membersihkan), dan memuat data ke model Power BI</div></div>
+        <div class="q-opt" onclick="selectMCQ(1,2)"><div class="q-opt-letter">C</div><div>Lapisan 4 — Analytics & Visualization, karena Power Query ada di dalam Power BI yang merupakan tool visualisasi</div></div>
+        <div class="q-opt" onclick="selectMCQ(1,3)"><div class="q-opt-letter">D</div><div>Lapisan 5 — Konsumen Informasi, karena pengguna akhir berinteraksi dengan Power Query</div></div>
+      </div>
+      <div class="q-feedback" id="fb1">✅ <strong>Tepat!</strong> Power Query adalah komponen ETL (Extract, Transform, Load) di dalam Power BI — ia berada di Lapisan 2, meskipun secara fisik terintegrasi dalam aplikasi Power BI (Lapisan 4). Power Query bertugas: membaca data dari sumber (Extract), membersihkan dan mengubah format (Transform), lalu memuat ke model data Power BI (Load) siap divisualisasikan.</div>
+    </div>
+
+    <!-- MCQ 3 -->
+    <div class="q-block">
+      <div class="q-label">Soal 3 dari 3 · Skenario</div>
+      <div class="q-text">Bu Rahma, koordinator IT koperasi syariah kecil dengan 3 karyawan, ingin membuat dashboard penjualan yang bisa diakses dari browser tanpa perlu install apapun, dan datanya tersimpan di Google Sheets. Dari tools yang dipelajari, mana yang paling tepat direkomendasikan?</div>
+      <div class="q-opts" id="q2">
+        <div class="q-opt" onclick="selectMCQ(2,0)"><div class="q-opt-letter">A</div><div>Power BI Desktop — karena paling powerful dan standar industri, walaupun harus install di Windows</div></div>
+        <div class="q-opt" onclick="selectMCQ(2,1)"><div class="q-opt-letter">B</div><div>Tableau — karena pioneer visualisasi dan desain visualnya paling kuat</div></div>
+        <div class="q-opt" onclick="selectMCQ(2,2)"><div class="q-opt-letter">C</div><div>Google Looker Studio — karena gratis, berbasis browser tanpa instalasi, dan terintegrasi native dengan Google Sheets</div></div>
+        <div class="q-opt" onclick="selectMCQ(2,3)"><div class="q-opt-letter">D</div><div>Qlik Sense — karena associative model-nya paling cocok untuk eksplorasi data koperasi</div></div>
+      </div>
+      <div class="q-feedback" id="fb2">✅ <strong>Tepat!</strong> Ini adalah soal <em>ikhtiyar</em> — memilih tools yang paling sesuai konteks. Bu Rahma membutuhkan: (1) gratis, (2) browser-based tanpa instalasi, (3) connect ke Google Sheets. Looker Studio memenuhi ketiganya. Power BI Desktop gratis tapi perlu install di Windows. Tableau sangat mahal. Qlik untuk enterprise besar. Pilihan tools harus mempertimbangkan anggaran, infrastruktur, dan kebutuhan nyata klien.</div>
+    </div>
+
+    <!-- MATCHING -->
+    <div class="q-block" style="border-bottom:none">
+      <div class="q-label">Soal Matching · Pasangkan Konsep BI dengan Definisinya</div>
+      <div class="q-text">Klik satu <strong>konsep</strong> di kiri, lalu klik <strong>definisi</strong> yang tepat di kanan.</div>
+      <p class="match-hint">Pasangan yang benar akan diberi warna yang sama. Klik ulang untuk membatalkan pilihan.</p>
+      <div class="match-wrap">
+        <div>
+          <div class="match-col-label">Konsep BI</div>
+          <div class="match-items" id="matchTerms">
+            <div class="match-term" data-ti="0" onclick="selectTerm(0)"><strong>OLAP</strong></div>
+            <div class="match-term" data-ti="1" onclick="selectTerm(1)"><strong>ETL</strong></div>
+            <div class="match-term" data-ti="2" onclick="selectTerm(2)"><strong>DAX</strong></div>
+            <div class="match-term" data-ti="3" onclick="selectTerm(3)"><strong>Data Warehouse</strong></div>
+            <div class="match-term" data-ti="4" onclick="selectTerm(4)"><strong>Prescriptive Analytics</strong></div>
+          </div>
+        </div>
+        <div>
+          <div class="match-col-label">Definisi</div>
+          <div class="match-items" id="matchDefs">
+            <div class="match-def" data-di="0" onclick="selectDef(0)">Repositori data terpusat yang terorganisir untuk keperluan analitik dan pelaporan — bukan transaksi operasional</div>
+            <div class="match-def" data-di="1" onclick="selectDef(1)">Bahasa formula di Power BI untuk membuat kalkulasi measures seperti Total Penjualan, Growth YoY, dan Ranking</div>
+            <div class="match-def" data-di="2" onclick="selectDef(2)">Level analytics tertinggi — memberikan rekomendasi tindakan spesifik berdasarkan data ("tambah stok produk X di cabang Y")</div>
+            <div class="match-def" data-di="3" onclick="selectDef(3)">Proses ambil data dari sumber (E), bersihkan dan ubah format (T), lalu muat ke tujuan (L)</div>
+            <div class="match-def" data-di="4" onclick="selectDef(4)">Teknologi yang memungkinkan "slicing and dicing" data dari berbagai dimensi secara instan — fondasi Power BI</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBMIT -->
+    <div class="quiz-submit-row">
+      <button class="btn-submit" id="btnSubmit" onclick="submitQuiz()">Kumpulkan Jawaban</button>
+      <span class="quiz-score" id="quizScore"></span>
+    </div>
+    <div class="quiz-result" id="quizResult">
+      <div class="big" id="resultScore"></div>
+      <p id="resultMsg"></p>
+    </div>
+  </div>
+</div>
+
+<!-- COMPLETION -->
+<div class="completion" id="completion">
+  <h2>🎉 Pertemuan 01 BIV Selesai!</h2>
+  <p>Kamu sudah memahami konsep BI, ekosistem 5 lapisan, landscape tools, dan nilai Bayan. Siap untuk praktikum Power BI pertamamu!</p>
+  <a class="lab-link" href="Praktikum-01-BIV.html">▶ Buka Lembar Praktikum P01</a>
+</div>
+
+</div><!-- end .main -->
+
+<script>
+const STORAGE_KEY = 'tazkia-biv-p01-v1';
+// MATCH: OLAP→def4, ETL→def3, DAX→def1, DataWarehouse→def0, Prescriptive→def2
+const MATCH_CORRECT = {0:4, 1:3, 2:1, 3:0, 4:2};
+const MCQ_ANSWERS = [1, 1, 2]; // Q1=B, Q2=B, Q3=C (0-indexed)
+const PAIR_COLORS = [
+  {b:'var(--p0)',l:'var(--p0l)'},
+  {b:'var(--p1)',l:'var(--p1l)'},
+  {b:'var(--p2)',l:'var(--p2l)'},
+  {b:'var(--p3)',l:'var(--p3l)'},
+  {b:'var(--p4)',l:'var(--p4l)'}
+];
+
+let state = {done:[], mcq:[null,null,null], matchPairs:{}, submitted:false, passed:false};
+
+function loadState(){
+  try{const s=JSON.parse(localStorage.getItem(STORAGE_KEY));if(s)state=s;}catch(e){}
+}
+function saveState(){
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}
+}
+
+function applyState(){
+  for(let i=0;i<=state.done.length;i++){
+    const el=document.getElementById('sec'+i);
+    if(el) el.className='sec-card unlocked';
+  }
+  state.done.forEach(i=>{
+    const n=document.getElementById('sn'+i);
+    if(n){n.className='sec-num done';n.textContent='✓';}
+  });
+  state.mcq.forEach((ans,qi)=>{
+    if(ans!==null) restoreMCQ(qi,ans);
+  });
+  Object.entries(state.matchPairs).forEach(([ti,di])=>{
+    applyPairColor(+ti,+di);
+  });
+  if(state.submitted) showQuizResult();
+  updateProgress();
+}
+
+function unlock(secIdx){
+  if(state.done.includes(secIdx)) return;
+  state.done.push(secIdx);
+  saveState();
+  const next=document.getElementById('sec'+(secIdx+1));
+  if(next) next.className='sec-card unlocked';
+  const num=document.getElementById('sn'+secIdx);
+  if(num){num.className='sec-num done';num.textContent='✓';}
+  const btn=document.querySelector('#sec'+secIdx+' .btn-paham');
+  if(btn){btn.className='btn-paham done';btn.disabled=true;btn.textContent='✓ Selesai';}
+  updateProgress();
+  if(next) next.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function updateProgress(){
+  const total=7;
+  const done=state.done.length+(state.passed?1:0);
+  const pct=Math.round((done/total)*100);
+  document.getElementById('progPct').textContent=pct+'%';
+  for(let i=0;i<7;i++){
+    const d=document.getElementById('pd'+i);
+    if(!d) continue;
+    if(i<state.done.length+(state.passed?1:0)) d.className='prog-dot done';
+    else if(i===state.done.length) d.className='prog-dot active';
+    else d.className='prog-dot';
+  }
+}
+
+/* ── MCQ LOGIC ── */
+function selectMCQ(qi,ai){
+  if(state.submitted) return;
+  state.mcq[qi]=ai;
+  saveState();
+  restoreMCQ(qi,ai);
+}
+function restoreMCQ(qi,ai){
+  const opts=document.querySelectorAll('#q'+qi+' .q-opt');
+  opts.forEach((o,i)=>{
+    o.className='q-opt'+(i===ai?' selected':'');
+    o.querySelector('.q-opt-letter').style.background=i===ai?'var(--acc)':'';
+    o.querySelector('.q-opt-letter').style.color=i===ai?'#fff':'';
+  });
+}
+
+/* ── MATCHING LOGIC ── */
+let activeTerm=null, activeDef=null;
+const usedTerms={}, usedDefs={}, pairColors={};
+
+function selectTerm(ti){
+  if(state.submitted) return;
+  if(usedTerms[ti]) return;
+  const terms=document.querySelectorAll('.match-term');
+  terms.forEach(t=>t.classList.remove('selected'));
+  activeTerm=ti;
+  terms[ti].classList.add('selected');
+  tryMatch();
+}
+function selectDef(di){
+  if(state.submitted) return;
+  if(usedDefs[di]) return;
+  const defs=document.querySelectorAll('.match-def');
+  defs.forEach(d=>d.classList.remove('selected'));
+  activeDef=di;
+  defs[di].classList.add('selected');
+  tryMatch();
+}
+function tryMatch(){
+  if(activeTerm===null||activeDef===null) return;
+  const ti=activeTerm, di=activeDef;
+  const colorIdx=Object.keys(usedTerms).length;
+  pairColors[ti]=PAIR_COLORS[colorIdx%PAIR_COLORS.length];
+  usedTerms[ti]=true; usedDefs[di]=true;
+  state.matchPairs[ti]=di;
+  saveState();
+  applyPairColor(ti,di);
+  activeTerm=null; activeDef=null;
+}
+function applyPairColor(ti,di){
+  const colorIdx=Object.keys(state.matchPairs).indexOf(String(ti));
+  const c=PAIR_COLORS[colorIdx%PAIR_COLORS.length];
+  const terms=document.querySelectorAll('.match-term');
+  const defs=document.querySelectorAll('.match-def');
+  if(terms[ti]){terms[ti].style.background=c.l;terms[ti].style.borderColor=c.b;terms[ti].style.color=c.b;terms[ti].classList.remove('selected');}
+  if(defs[di]){defs[di].style.background=c.l;defs[di].style.borderColor=c.b;defs[di].style.color=c.b;defs[di].classList.remove('selected');}
+  usedTerms[ti]=true; usedDefs[di]=true;
+}
+
+/* ── SUBMIT QUIZ ── */
+function submitQuiz(){
+  if(state.submitted) return;
+  state.submitted=true;
+  saveState();
+
+  // grade MCQ
+  let mcqScore=0;
+  state.mcq.forEach((ans,qi)=>{
+    const opts=document.querySelectorAll('#q'+qi+' .q-opt');
+    const correct=MCQ_ANSWERS[qi];
+    opts.forEach((o,i)=>{
+      if(i===correct) o.classList.add('correct');
+      else if(i===ans&&i!==correct) o.classList.add('wrong');
+    });
+    const fb=document.getElementById('fb'+qi);
+    if(fb) fb.classList.add('show');
+    if(ans===correct) mcqScore++;
+  });
+
+  // grade matching
+  let matchScore=0;
+  const terms=document.querySelectorAll('.match-term');
+  const defs=document.querySelectorAll('.match-def');
+  Object.entries(state.matchPairs).forEach(([ti,di])=>{
+    const correct=MATCH_CORRECT[+ti];
+    if(+di===correct){
+      matchScore++;
+      if(terms[+ti]){terms[+ti].style.borderColor='var(--sya)';terms[+ti].style.background='var(--syal)';}
+      if(defs[+di]){defs[+di].style.borderColor='var(--sya)';defs[+di].style.background='var(--syal)';}
+    } else {
+      if(terms[+ti]){terms[+ti].style.borderColor='#D44040';terms[+ti].style.background='#FEE0E0';}
+      if(defs[+di]){defs[+di].style.borderColor='#D44040';defs[+di].style.background='#FEE0E0';}
+    }
+  });
+
+  const total=3+5; // 3 MCQ + 5 matching
+  const score=mcqScore+matchScore;
+  const pct=Math.round((score/total)*100);
+  state.passed=pct>=75;
+  saveState();
+  showQuizResult();
+  updateProgress();
+  if(state.passed){
+    document.getElementById('completion').classList.add('show');
+    document.getElementById('completion').scrollIntoView({behavior:'smooth'});
+  }
+}
+
+function showQuizResult(){
+  const total=8, score=(state.mcq.filter((a,i)=>a===MCQ_ANSWERS[i]).length)+
+    Object.entries(state.matchPairs).filter(([ti,di])=>+di===MATCH_CORRECT[+ti]).length;
+  const pct=Math.round((score/total)*100);
+  const el=document.getElementById('quizResult');
+  el.style.display='block';
+  el.className='quiz-result '+(pct>=75?'pass':'fail');
+  document.getElementById('resultScore').textContent=score+'/'+total+' ('+pct+'%)';
+  document.getElementById('resultMsg').textContent=pct>=75?
+    'Selamat! Kamu sudah memahami konsep BI P01. Lanjutkan ke Praktikum!' :
+    'Nilai belum cukup. Baca ulang materi yang belum dipahami, lalu muat ulang halaman untuk mencoba lagi.';
+  document.getElementById('quizScore').style.display='inline';
+  document.getElementById('quizScore').textContent=score+'/'+total;
+  document.getElementById('btnSubmit').disabled=true;
+}
+
+// ── INIT ──
+loadState();
+applyState();
+</script>

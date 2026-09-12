@@ -1,0 +1,957 @@
+<title>ADA P01 — Pengantar &amp; Setup Python</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── ADA P01 · TEAL DATA SCIENCE ── */
+:root{
+  --meet-from:#041820;--meet-mid:#082840;--meet-to:#104060;
+  --meet-acc:#20C8D0;--meet-acc2:#30D8E0;--meet-star:#20C8D0;
+  --bg:#EDF1F6;--sf:#fff;--sf2:#E8F6F8;--sf3:#F4FAFB;
+  --bd:#C4CDD8;--bs:#DDE3EC;
+  --tx:#0C1824;--txm:#475569;--txl:#8A9AB0;
+  --pri:#082840;--pril:#D8EEF6;--prx:#EAF6F8;
+  --acc:#20C8D0;--accl:#D0F4F6;
+  --sya:#1F9060;--syal:#D0EEE2;--syab:#40B080;
+  --p0:#1B7898;--p0l:#D8EEF6;
+  --p1:#D46020;--p1l:#FCEBD8;
+  --p2:#1F9060;--p2l:#D0EEE2;
+  --p3:#7040B0;--p3l:#EEE0FA;
+  --p4:#2A50B0;--p4l:#D8E4F8;
+  --r:8px;--rs:5px;
+  --shadow:0 4px 20px rgba(8,40,64,.1);--shadow-sm:0 2px 8px rgba(8,40,64,.06);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#030E18;--sf:#071828;--sf2:#071C28;--sf3:#041220;
+  --bd:#0C2840;--bs:#081830;
+  --tx:#C8E8F8;--txm:#6090B0;--txl:#2A5070;
+  --pri:#20C8D0;--pril:#051830;--prx:#040E18;
+  --acc:#20C8D0;--accl:#041820;
+  --sya:#40C890;--syal:#031410;
+  --p0l:#0A2030;--p1l:#180A00;--p2l:#041410;--p3l:#0E0820;--p4l:#060C20;
+}}
+:root[data-theme=dark]{
+  --bg:#030E18;--sf:#071828;--sf2:#071C28;--sf3:#041220;
+  --bd:#0C2840;--bs:#081830;
+  --tx:#C8E8F8;--txm:#6090B0;--txl:#2A5070;
+  --pri:#20C8D0;--pril:#051830;--prx:#040E18;
+  --acc:#20C8D0;--accl:#041820;
+  --sya:#40C890;--syal:#031410;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.65}
+
+/* ── HEADER ── */
+.hd{background:linear-gradient(160deg,var(--meet-from) 0%,var(--meet-mid) 55%,var(--meet-to) 100%);color:#fff;position:relative;overflow:hidden}
+.hd-ornament{position:absolute;inset:0;pointer-events:none;opacity:.12}
+.hd-inner{max-width:860px;margin:0 auto;padding:38px 28px 12px;position:relative;z-index:1}
+.hd-eyebrow{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.hd-line{width:28px;height:1px;background:var(--meet-acc)}
+.hd-eye{font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--meet-acc)}
+.hd-kode{font-size:12px;background:rgba(32,200,208,.15);border:1px solid rgba(32,200,208,.3);border-radius:12px;padding:2px 12px;color:var(--meet-acc2);margin-left:auto}
+.hd-title{font-family:'Amiri',serif;font-size:34px;font-weight:700;line-height:1.15;margin-bottom:6px}
+.hd-sub{font-size:14.5px;color:rgba(255,255,255,.55);margin-bottom:18px}
+.hd-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.hpill{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:3px 12px;font-size:12px;color:rgba(255,255,255,.7)}
+.hpill strong{color:#fff}
+.hd-arch{line-height:0}
+.hd-arch svg{display:block;width:100%;height:28px}
+
+/* ── PROGRESS BAR ── */
+.prog-wrap{background:var(--sf);border-bottom:1px solid var(--bs);position:sticky;top:0;z-index:40;box-shadow:var(--shadow-sm)}
+.prog-inner{max-width:860px;margin:0 auto;padding:10px 24px;display:flex;align-items:center;gap:12px}
+.prog-label{font-size:12px;font-weight:700;color:var(--txl);white-space:nowrap;flex-shrink:0}
+.prog-steps{display:flex;gap:5px;flex:1}
+.prog-dot{width:28px;height:6px;border-radius:3px;background:var(--bs);transition:background .3s}
+.prog-dot.done{background:var(--meet-acc)}
+.prog-dot.active{background:rgba(32,200,208,.4)}
+.prog-pct{font-size:12px;font-weight:700;color:var(--acc);white-space:nowrap}
+
+/* ── MAIN LAYOUT ── */
+.main{max-width:860px;margin:0 auto;padding:28px 24px 80px}
+
+/* ── SECTION CARD ── */
+.sec-card{background:var(--sf);border:1px solid var(--bs);border-radius:var(--r);margin-bottom:16px;box-shadow:var(--shadow-sm);overflow:hidden;transition:opacity .3s,filter .3s}
+.sec-card.locked{opacity:.45;filter:grayscale(.4);pointer-events:none}
+.sec-card.unlocked{opacity:1;filter:none;pointer-events:auto}
+.sec-hd{display:flex;align-items:center;gap:12px;padding:15px 22px;background:var(--sf3);border-bottom:1px solid var(--bs)}
+.sec-num{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc));color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.sec-num.done{background:var(--sya)}
+.sec-title{font-family:'Amiri',serif;font-size:19px;font-weight:700;color:var(--pri)}
+.sec-cpmk{font-size:11px;color:var(--acc);font-weight:700;margin-left:auto;background:var(--accl);padding:2px 9px;border-radius:10px;white-space:nowrap}
+.sec-body{padding:22px 26px}
+
+/* ── TYPOGRAPHY ── */
+h3.sh{font-family:'Amiri',serif;font-size:20px;font-weight:700;color:var(--pri);margin:22px 0 10px;display:flex;align-items:center;gap:9px}
+h3.sh::before{content:'';width:4px;height:18px;background:var(--meet-acc);border-radius:2px;flex-shrink:0}
+h4.shs{font-size:14px;font-weight:700;color:var(--tx);margin:14px 0 7px}
+p{color:var(--txm);margin-bottom:10px;font-size:14.5px}
+ul.lst{list-style:none;padding:0;margin-bottom:12px}
+ul.lst li{padding:5px 0 5px 20px;position:relative;color:var(--txm);font-size:14px;border-bottom:1px solid var(--bs)}
+ul.lst li:last-child{border-bottom:none}
+ul.lst li::before{content:'▸';position:absolute;left:0;color:var(--acc);font-size:11px;top:7px}
+ul.lst li strong{color:var(--tx)}
+.callout{border-radius:var(--rs);padding:12px 16px;margin:12px 0;font-size:13.5px}
+.callout.info{background:var(--prx);border-left:4px solid var(--acc);color:var(--txm)}
+.callout.sya{background:var(--syal);border-left:4px solid var(--sya);color:var(--txm)}
+.callout.warn{background:#FEF3E0;border-left:4px solid #D46020;color:#5A2C04}
+
+/* ── CPMK TABLE ── */
+.cpmk-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:14px}
+.cpmk-table th{background:var(--meet-mid);color:#fff;padding:7px 12px;text-align:left;font-size:11.5px}
+.cpmk-table td{padding:7px 12px;border-bottom:1px solid var(--bs);color:var(--txm)}
+.cpmk-table tr:last-child td{border-bottom:none}
+.cpmk-table tr:nth-child(even) td{background:var(--sf3)}
+.badge{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:9px}
+.badge-c2{background:#E0F0F8;color:#1B6080}
+.badge-c3{background:#E8E0FA;color:#5020A0}
+
+/* ── SECTION MAP ── */
+.sec-map{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
+@media(max-width:480px){.sec-map{grid-template-columns:1fr 1fr}}
+.sec-map-item{background:var(--sf3);border:1px solid var(--bs);border-radius:var(--rs);padding:10px 13px;display:flex;align-items:center;gap:9px}
+.sec-map-item .ico{font-size:20px;flex-shrink:0}
+.sec-map-item .lbl{font-size:12.5px;font-weight:600;color:var(--tx);line-height:1.3}
+.sec-map-item .sub{font-size:11px;color:var(--txl);margin-top:2px}
+
+/* ── PIPELINE SVG DIAGRAM ── */
+.pipeline-wrap{overflow-x:auto;margin:16px 0;padding:4px 0}
+.pipeline-svg{min-width:560px;width:100%}
+
+/* ── COMPARISON CARDS ── */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+@media(max-width:500px){.compare-grid{grid-template-columns:1fr}}
+.cmp-card{border-radius:var(--r);padding:16px;border:1px solid var(--bs)}
+.cmp-card.old{background:#F8F6F0;border-color:#D4B870}
+.cmp-card.new{background:var(--prx);border-color:var(--acc)}
+.cmp-card h4{font-size:15px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.cmp-card.old h4{color:#7A5810}
+.cmp-card.new h4{color:var(--pri)}
+.cmp-row{display:flex;align-items:baseline;gap:7px;margin-bottom:7px;font-size:13px;color:var(--txm)}
+.cmp-row .ico{flex-shrink:0;font-size:14px}
+
+/* ── TOOLS GRID ── */
+.tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+@media(max-width:500px){.tools-grid{grid-template-columns:1fr 1fr}}
+.tool-card{background:var(--sf3);border:1px solid var(--bs);border-radius:var(--r);padding:14px;transition:box-shadow .2s}
+.tool-card:hover{box-shadow:var(--shadow-sm)}
+.tool-icon{font-size:28px;margin-bottom:6px}
+.tool-name{font-weight:700;font-size:14px;color:var(--tx);margin-bottom:3px}
+.tool-desc{font-size:12px;color:var(--txm);line-height:1.5;margin-bottom:6px}
+.tool-pill{display:inline-block;font-size:10.5px;background:var(--accl);color:var(--pri);border-radius:10px;padding:1px 8px;font-weight:600}
+
+/* ── COLAB SVG ── */
+.colab-svg-wrap{background:var(--sf3);border:1px solid var(--bs);border-radius:var(--r);overflow:hidden;margin:14px 0}
+
+/* ── SHORTCUT TABLE ── */
+.shortcut-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:12px 0}
+.shortcut-row{display:flex;align-items:center;gap:10px;background:var(--sf3);border:1px solid var(--bs);border-radius:var(--rs);padding:8px 12px}
+.kbd{display:inline-block;font-family:monospace;font-size:11.5px;background:var(--sf);border:1px solid var(--bd);border-bottom:2px solid var(--bd);border-radius:4px;padding:2px 8px;color:var(--tx);font-weight:600}
+.shortcut-desc{font-size:12.5px;color:var(--txm)}
+
+/* ── SYARIAH SECTION ── */
+.nilai-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+@media(max-width:500px){.nilai-grid{grid-template-columns:1fr}}
+.nilai-card{background:var(--sf3);border:1px solid var(--bs);border-radius:var(--r);padding:15px;border-top:3px solid var(--sya)}
+.nilai-name{font-family:'Amiri',serif;font-size:18px;font-weight:700;color:var(--sya);margin-bottom:4px}
+.nilai-ar{font-family:'Amiri',serif;font-size:20px;color:var(--tx);text-align:right;direction:rtl;margin:8px 0;line-height:1.8}
+.nilai-tr{font-size:13px;color:var(--txm);font-style:italic;margin-bottom:8px}
+.nilai-ref{font-size:11.5px;color:var(--syab);font-weight:600}
+
+/* ── QUIZ ── */
+.quiz-head{background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;padding:16px 22px;border-radius:var(--r) var(--r) 0 0;display:flex;align-items:center;gap:10px}
+.quiz-head h3{font-family:'Amiri',serif;font-size:18px;font-weight:700}
+.quiz-head .q-info{font-size:12.5px;color:rgba(255,255,255,.6);margin-left:auto}
+.quiz-body{background:var(--sf);border:1px solid var(--bs);border-radius:0 0 var(--r) var(--r);padding:22px}
+.q-block{margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--bs)}
+.q-block:last-of-type{border-bottom:none}
+.q-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--acc);margin-bottom:6px}
+.q-text{font-size:14.5px;font-weight:600;color:var(--tx);margin-bottom:12px;line-height:1.5}
+.q-opts{display:flex;flex-direction:column;gap:7px}
+.q-opt{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border:1.5px solid var(--bs);border-radius:var(--rs);cursor:pointer;transition:all .18s;font-size:13.5px;color:var(--txm);background:var(--sf3)}
+.q-opt:hover{border-color:var(--acc);background:var(--accl)}
+.q-opt.selected{border-color:var(--acc);background:var(--accl);color:var(--tx)}
+.q-opt.correct{border-color:var(--sya)!important;background:var(--syal)!important;color:var(--sya)!important}
+.q-opt.wrong{border-color:#D44040!important;background:#FEE0E0!important;color:#A01010!important}
+.q-opt-letter{width:22px;height:22px;border-radius:50%;background:var(--bs);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--txl);flex-shrink:0}
+.q-opt.selected .q-opt-letter{background:var(--acc);color:#fff}
+.q-feedback{font-size:13px;color:var(--txm);background:var(--prx);border-radius:var(--rs);padding:10px 14px;margin-top:10px;display:none;border-left:3px solid var(--acc)}
+.q-feedback.show{display:block}
+
+/* ── MATCHING QUIZ ── */
+.match-wrap{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:500px){.match-wrap{grid-template-columns:1fr}}
+.match-col-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--txl);margin-bottom:7px}
+.match-items{display:flex;flex-direction:column;gap:7px}
+.match-term,.match-def{padding:10px 14px;border:1.5px solid var(--bs);border-radius:var(--rs);cursor:pointer;font-size:13.5px;color:var(--txm);background:var(--sf3);transition:all .18s;line-height:1.4;user-select:none}
+.match-term:hover,.match-def:hover{border-color:var(--acc);background:var(--accl)}
+.match-term.selected,.match-def.selected{border-color:var(--acc)!important;box-shadow:0 0 0 2px var(--accl)}
+.match-term strong{display:block;font-size:12px;color:var(--tx);margin-bottom:2px}
+.match-term .icon{font-size:18px}
+.match-hint{font-size:12.5px;color:var(--txl);margin-bottom:10px}
+
+/* ── QUIZ SUBMIT ── */
+.quiz-submit-row{display:flex;align-items:center;gap:12px;margin-top:20px}
+.btn-submit{background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc));color:#fff;border:none;border-radius:var(--r);padding:12px 28px;font-family:'Source Sans 3',sans-serif;font-size:14.5px;font-weight:700;cursor:pointer;transition:opacity .2s;letter-spacing:.03em}
+.btn-submit:hover{opacity:.88}
+.quiz-score{font-size:14px;color:var(--txm);display:none}
+.quiz-result{display:none;margin-top:16px;border-radius:var(--r);padding:16px 20px;text-align:center}
+.quiz-result.pass{background:var(--syal);border:1.5px solid var(--sya)}
+.quiz-result.fail{background:#FEE8D8;border:1.5px solid #D46020}
+.quiz-result .big{font-family:'Amiri',serif;font-size:28px;font-weight:700}
+.quiz-result.pass .big{color:var(--sya)}
+.quiz-result.fail .big{color:#A04010}
+.quiz-result p{font-size:13.5px;color:var(--txm);margin-top:6px}
+
+/* ── PAHAM BUTTON ── */
+.paham-row{display:flex;justify-content:flex-end;margin-top:22px}
+.btn-paham{background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc));color:#fff;border:none;border-radius:24px;padding:11px 28px;font-family:'Source Sans 3',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;letter-spacing:.03em;transition:opacity .2s}
+.btn-paham:hover{opacity:.88}
+.btn-paham.done{background:var(--sya);cursor:default}
+
+/* ── COMPLETION ── */
+.completion{display:none;background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;border-radius:var(--r);padding:30px;text-align:center;margin-top:20px}
+.completion.show{display:block}
+.completion h2{font-family:'Amiri',serif;font-size:26px;font-weight:700;margin-bottom:8px}
+.completion p{color:rgba(255,255,255,.7);font-size:14px}
+.completion .lab-link{display:inline-block;margin-top:16px;background:var(--meet-acc);color:var(--meet-from);border-radius:20px;padding:10px 24px;font-weight:700;font-size:14px;text-decoration:none}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .hd-inner{padding:28px 18px 10px}
+  .main{padding:18px 14px 60px}
+  .sec-body{padding:16px 16px}
+  .tools-grid{grid-template-columns:1fr 1fr}
+  .nilai-grid{grid-template-columns:1fr}
+  .shortcut-grid{grid-template-columns:1fr}
+  .hd-title{font-size:26px}
+}
+</style>
+
+<!-- ── HEADER ── -->
+<div class="hd">
+  <svg class="hd-ornament" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs><pattern id="star1" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M42,30 L35.2,32 L38.5,38.5 L32,35.2 L30,42 L28,35.2 L21.5,38.5 L24.8,32 L18,30 L24.8,28 L21.5,21.5 L28,24.8 L30,18 L32,24.8 L38.5,21.5 L35.2,28 Z" fill="none" stroke="#20C8D0" stroke-width="1.2"/>
+      <line x1="0" y1="30" x2="18" y2="30" stroke="#20C8D0" stroke-width=".5" opacity=".6"/>
+      <line x1="42" y1="30" x2="60" y2="30" stroke="#20C8D0" stroke-width=".5" opacity=".6"/>
+      <line x1="30" y1="0" x2="30" y2="18" stroke="#20C8D0" stroke-width=".5" opacity=".6"/>
+      <line x1="30" y1="42" x2="30" y2="60" stroke="#20C8D0" stroke-width=".5" opacity=".6"/>
+    </pattern></defs>
+    <rect width="100%" height="100%" fill="url(#star1)"/>
+  </svg>
+  <div class="hd-inner">
+    <div class="hd-eyebrow">
+      <div class="hd-line"></div>
+      <span class="hd-eye">Applied Data Analytics · Universitas Tazkia</span>
+      <span class="hd-kode">DTA-402 · P01</span>
+    </div>
+    <h1 class="hd-title">Pengantar ADA &amp;<br>Setup Python Environment</h1>
+    <p class="hd-sub">Dari RapidMiner ke Python · Ekosistem Tools · Google Colab · Amanah &amp; Itqan</p>
+    <div class="hd-pills">
+      <span class="hpill"><strong>CPMK-1</strong></span>
+      <span class="hpill">Bloom C2 — Memahami</span>
+      <span class="hpill">Ceramah + LAB</span>
+      <span class="hpill">Ganjil 2026/2027</span>
+    </div>
+  </div>
+  <div class="hd-arch"><svg viewBox="0 0 1200 28" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,28 L0,16 Q20,4 40,16 Q60,28 80,16 Q100,4 120,16 Q140,28 160,16 Q180,4 200,16 Q220,28 240,16 Q260,4 280,16 Q300,28 320,16 Q340,4 360,16 Q380,28 400,16 Q420,4 440,16 Q460,28 480,16 Q500,4 520,16 Q540,28 560,16 Q580,4 600,16 Q620,28 640,16 Q660,4 680,16 Q700,28 720,16 Q740,4 760,16 Q780,28 800,16 Q820,4 840,16 Q860,28 880,16 Q900,4 920,16 Q940,28 960,16 Q980,4 1000,16 Q1020,28 1040,16 Q1060,4 1080,16 Q1100,28 1120,16 Q1140,4 1160,16 Q1180,28 1200,16 L1200,28 Z" fill="var(--bg)"/>
+  </svg></div>
+</div>
+
+<!-- ── PROGRESS ── -->
+<div class="prog-wrap">
+  <div class="prog-inner">
+    <span class="prog-label">Progress P01</span>
+    <div class="prog-steps" id="progSteps">
+      <div class="prog-dot active" id="pd0"></div>
+      <div class="prog-dot" id="pd1"></div>
+      <div class="prog-dot" id="pd2"></div>
+      <div class="prog-dot" id="pd3"></div>
+      <div class="prog-dot" id="pd4"></div>
+      <div class="prog-dot" id="pd5"></div>
+      <div class="prog-dot" id="pd6"></div>
+    </div>
+    <span class="prog-pct" id="progPct">0%</span>
+  </div>
+</div>
+
+<!-- ── MAIN ── -->
+<div class="main">
+
+<!-- ╔═══ SEKSI 1: TUJUAN PEMBELAJARAN ═══╗ -->
+<div class="sec-card unlocked" id="sec0">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn0">1</div>
+    <div class="sec-title">Tujuan Pembelajaran</div>
+    <span class="sec-cpmk">CPMK-1</span>
+  </div>
+  <div class="sec-body">
+    <h3 class="sh">Setelah pertemuan ini kamu mampu...</h3>
+    <table class="cpmk-table">
+      <thead><tr><th>Sub-CPMK</th><th>Bloom</th><th>Kemampuan</th></tr></thead>
+      <tbody>
+        <tr><td><strong>C2.1</strong></td><td><span class="badge badge-c2">C2</span></td><td>Menjelaskan posisi ADA dalam pipeline data science dan hubungannya dengan BIV</td></tr>
+        <tr><td><strong>C2.2</strong></td><td><span class="badge badge-c2">C2</span></td><td>Membedakan pendekatan GUI (RapidMiner) vs kode (Python) dan menjelaskan keunggulan masing-masing</td></tr>
+        <tr><td><strong>C2.3</strong></td><td><span class="badge badge-c2">C2</span></td><td>Mengidentifikasi 6 library Python inti ADA, fungsinya, dan pertemuan ketika masing-masing diperkenalkan</td></tr>
+        <tr><td><strong>C2.4</strong></td><td><span class="badge badge-c2">C2</span></td><td>Mendeskripsikan lingkungan kerja Google Colab dan cara membuat notebook pertama</td></tr>
+      </tbody>
+    </table>
+    <h3 class="sh">Peta Materi Pertemuan Ini</h3>
+    <div class="sec-map">
+      <div class="sec-map-item"><div class="ico">🗺️</div><div><div class="lbl">Ekosistem Data Science</div><div class="sub">Seksi 2</div></div></div>
+      <div class="sec-map-item"><div class="ico">🔄</div><div><div class="lbl">RapidMiner → Python</div><div class="sub">Seksi 3</div></div></div>
+      <div class="sec-map-item"><div class="ico">🧰</div><div><div class="lbl">6 Tools Inti ADA</div><div class="sub">Seksi 4</div></div></div>
+      <div class="sec-map-item"><div class="ico">☁️</div><div><div class="lbl">Google Colab Setup</div><div class="sub">Seksi 5</div></div></div>
+      <div class="sec-map-item"><div class="ico">☽</div><div><div class="lbl">Nilai Syariah</div><div class="sub">Seksi 6</div></div></div>
+      <div class="sec-map-item"><div class="ico">✏️</div><div><div class="lbl">Uji Pemahaman</div><div class="sub">Kuis (3 MCQ + Matching)</div></div></div>
+    </div>
+    <div class="callout info">
+      <strong>📋 Praktikum P01</strong> — setelah kamu selesai slide ini, buka file <strong>Praktikum-01-ADA.html</strong> untuk langsung setup Google Colab dan menjalankan kode Python pertamamu dari dataset BPRS!
+    </div>
+    <div class="paham-row"><button class="btn-paham" onclick="unlock(0)">Saya Paham — Lanjut ▸</button></div>
+  </div>
+</div>
+
+<!-- ╔═══ SEKSI 2: EKOSISTEM DATA SCIENCE ═══╗ -->
+<div class="sec-card locked" id="sec1">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn1">2</div>
+    <div class="sec-title">ADA dalam Ekosistem Data Science</div>
+    <span class="sec-cpmk">C2.1</span>
+  </div>
+  <div class="sec-body">
+    <h3 class="sh">Pipeline Data Science — Di Mana ADA Berada?</h3>
+    <p>Data science bukan satu pekerjaan — ia adalah <strong>pipeline</strong> dari data mentah hingga keputusan bisnis. Setiap tahap membutuhkan kemampuan berbeda, dan dua matakuliah kamu semester ini masing-masing menguasai satu layer penting.</p>
+
+    <!-- PIPELINE SVG -->
+    <div class="pipeline-wrap">
+      <svg class="pipeline-svg" viewBox="0 0 760 220" aria-label="Pipeline Data Science">
+        <defs>
+          <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 Z" fill="#8A9AB0"/></marker>
+          <marker id="arr-acc" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 Z" fill="#20C8D0"/></marker>
+        </defs>
+        <!-- Stage boxes -->
+        <!-- 1: Sumber Data -->
+        <rect x="2" y="50" width="100" height="56" rx="8" fill="#1A2840" stroke="#2A4060" stroke-width="1.5"/>
+        <text x="52" y="72" font-family="Source Sans 3,sans-serif" font-size="11" font-weight="700" fill="#C8D8E8" text-anchor="middle">📦 Sumber</text>
+        <text x="52" y="86" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6090B0" text-anchor="middle">Data</text>
+        <text x="52" y="120" font-family="Source Sans 3,sans-serif" font-size="9.5" fill="#4A6A80" text-anchor="middle">CSV, Excel,</text>
+        <text x="52" y="132" font-family="Source Sans 3,sans-serif" font-size="9.5" fill="#4A6A80" text-anchor="middle">Database, Survey</text>
+        <!-- Arrow 1→2 -->
+        <line x1="102" y1="78" x2="124" y2="78" stroke="#4A6A80" stroke-width="1.5" marker-end="url(#arr)"/>
+        <!-- 2: Kumpul -->
+        <rect x="126" y="50" width="100" height="56" rx="8" fill="#1A2840" stroke="#2A4060" stroke-width="1.5"/>
+        <text x="176" y="72" font-family="Source Sans 3,sans-serif" font-size="11" font-weight="700" fill="#C8D8E8" text-anchor="middle">🔍 Kumpul</text>
+        <text x="176" y="86" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6090B0" text-anchor="middle">Collection</text>
+        <text x="176" y="120" font-family="Source Sans 3,sans-serif" font-size="9.5" fill="#4A6A80" text-anchor="middle">Web scraping,</text>
+        <text x="176" y="132" font-family="Source Sans 3,sans-serif" font-size="9.5" fill="#4A6A80" text-anchor="middle">API, form input</text>
+        <!-- Arrow 2→3 -->
+        <line x1="226" y1="78" x2="248" y2="78" stroke="#20C8D0" stroke-width="1.8" marker-end="url(#arr-acc)"/>
+        <!-- ADA bracket top -->
+        <line x1="250" y1="30" x2="504" y2="30" stroke="#20C8D0" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <line x1="250" y1="30" x2="250" y2="50" stroke="#20C8D0" stroke-width="1.5"/>
+        <line x1="504" y1="30" x2="504" y2="50" stroke="#20C8D0" stroke-width="1.5"/>
+        <rect x="330" y="14" width="116" height="18" rx="9" fill="#082840" stroke="#20C8D0" stroke-width="1"/>
+        <text x="388" y="27" font-family="Source Sans 3,sans-serif" font-size="10" font-weight="700" fill="#20C8D0" text-anchor="middle">⬤ ADA ← kamu di sini</text>
+        <!-- 3: Bersihkan (ADA) -->
+        <rect x="250" y="50" width="118" height="56" rx="8" fill="#082840" stroke="#20C8D0" stroke-width="2"/>
+        <text x="309" y="72" font-family="Source Sans 3,sans-serif" font-size="11" font-weight="700" fill="#20C8D0" text-anchor="middle">🧹 Bersihkan</text>
+        <text x="309" y="86" font-family="Source Sans 3,sans-serif" font-size="10" fill="#40A8B8" text-anchor="middle">Cleaning / ETL</text>
+        <text x="309" y="120" font-family="Source Sans 3,sans-serif" font-size="9.5" fill="#30A8C0" text-anchor="middle">pandas,</text>
+        <text x="309" y="132" font-family="Source Sans 3,sans-serif" font-size="9.5" fill="#30A8C0" text-anchor="middle">Power Query</text>
+        <!-- Arrow 3→4 -->
+        <line x1="368" y1="78" x2="386" y2="78" stroke="#20C8D0" stroke-width="1.8" marker-end="url(#arr-acc)"/>
+        <!-- 4: Analisis (ADA) -->
+        <rect x="388" y="50" width="116" height="56" rx="8" fill="#082840" stroke="#20C8D0" stroke-width="2"/>
+        <text x="446" y="72" font-family="Source Sans 3,sans-serif" font-size="11" font-weight="700" fill="#20C8D0" text-anchor="middle">📊 Analisis</text>
+        <text x="446" y="86" font-family="Source Sans 3,sans-serif" font-size="10" fill="#40A8B8" text-anchor="middle">EDA + ML</text>
+        <text x="446" y="120" font-family="Source Sans 3,sans-serif" font-size="9.5" fill="#30A8C0" text-anchor="middle">pandas, sklearn,</text>
+        <text x="446" y="132" font-family="Source Sans 3,sans-serif" font-size="9.5" fill="#30A8C0" text-anchor="middle">DuckDB, numpy</text>
+        <!-- Arrow 4→5 -->
+        <line x1="504" y1="78" x2="522" y2="78" stroke="#8060B0" stroke-width="1.8" marker-end="url(#arr)"/>
+        <!-- BIV bracket -->
+        <line x1="524" y1="30" x2="658" y2="30" stroke="#9060D0" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <line x1="524" y1="30" x2="524" y2="50" stroke="#9060D0" stroke-width="1.5"/>
+        <line x1="658" y1="30" x2="658" y2="50" stroke="#9060D0" stroke-width="1.5"/>
+        <rect x="553" y="14" width="76" height="18" rx="9" fill="#1A0838" stroke="#9060D0" stroke-width="1"/>
+        <text x="591" y="27" font-family="Source Sans 3,sans-serif" font-size="10" font-weight="700" fill="#C080F8" text-anchor="middle">⬤ BIV</text>
+        <!-- 5: Visualisasi (BIV) -->
+        <rect x="524" y="50" width="134" height="56" rx="8" fill="#1A0838" stroke="#7040B0" stroke-width="1.8"/>
+        <text x="591" y="72" font-family="Source Sans 3,sans-serif" font-size="11" font-weight="700" fill="#C080F8" text-anchor="middle">📈 Visualisasi</text>
+        <text x="591" y="86" font-family="Source Sans 3,sans-serif" font-size="10" fill="#9060C0" text-anchor="middle">Dashboard</text>
+        <text x="591" y="120" font-family="Source Sans 3,sans-serif" font-size="9.5" fill="#7050A0" text-anchor="middle">Power BI,</text>
+        <text x="591" y="132" font-family="Source Sans 3,sans-serif" font-size="9.5" fill="#7050A0" text-anchor="middle">Tableau, Plotly</text>
+        <!-- Arrow 5→6 -->
+        <line x1="658" y1="78" x2="674" y2="78" stroke="#D4A030" stroke-width="1.5" marker-end="url(#arr)"/>
+        <!-- 6: Keputusan -->
+        <rect x="676" y="50" width="80" height="56" rx="8" fill="#1A1008" stroke="#C09030" stroke-width="1.5"/>
+        <text x="716" y="72" font-family="Source Sans 3,sans-serif" font-size="11" font-weight="700" fill="#E8C060" text-anchor="middle">💡 Keputusan</text>
+        <text x="716" y="86" font-family="Source Sans 3,sans-serif" font-size="10" fill="#B08030" text-anchor="middle">Decision</text>
+        <text x="716" y="120" font-family="Source Sans 3,sans-serif" font-size="9.5" fill="#908020" text-anchor="middle">Manajemen</text>
+        <text x="716" y="132" font-family="Source Sans 3,sans-serif" font-size="9.5" fill="#908020" text-anchor="middle">bertindak</text>
+        <!-- Sinergi arrow bottom -->
+        <path d="M446,106 Q446,170 309,170 Q250,170 209,170" stroke="#20C8D0" stroke-width="1.5" stroke-dasharray="5,3" fill="none" marker-end="url(#arr-acc)"/>
+        <text x="370" y="185" font-family="Source Sans 3,sans-serif" font-size="9.5" fill="#20A0B0" text-anchor="middle">P13: ADA output → BIV input (sinergi paralel)</text>
+        <path d="M591,106 L591,170" stroke="#9060D0" stroke-width="1.5" stroke-dasharray="5,3" fill="none"/>
+      </svg>
+    </div>
+
+    <div class="callout info">
+      <strong>Insight Kunci:</strong> ADA adalah "otak" — menganalisis dan menemukan insight. BIV adalah "wajah" — mengkomunikasikan insight kepada pengambil keputusan. Kamu butuh keduanya untuk menjadi data analyst yang lengkap.
+    </div>
+
+    <h4 class="shs">Contoh Konkrit — BPRS Berkah Syariah Bogor</h4>
+    <p>BPRS Berkah Syariah memiliki data 890 nasabah dan ribuan transaksi pembiayaan. Tim mereka perlu menjawab: <em>"Nasabah jenis apa yang paling sering gagal bayar (NPF tinggi)? Bagaimana kita bisa prediksi lebih awal?"</em></p>
+    <ul class="lst">
+      <li><strong>Layer ADA:</strong> Tim analis mengimpor data transaksi dengan pandas, membersihkan data (hapus duplikat, isi nilai kosong), membuat model klasifikasi dengan scikit-learn — menghasilkan <strong>daftar nasabah berisiko tinggi</strong>.</li>
+      <li><strong>Layer BIV:</strong> Tim BI memvisualisasikan hasil di Power BI — dashboard NPF per cabang, tren bulanan, heatmap risiko — sehingga direktur bisa <strong>langsung melihat dan memutuskan</strong>.</li>
+    </ul>
+    <div class="paham-row"><button class="btn-paham" onclick="unlock(1)">Saya Paham — Lanjut ▸</button></div>
+  </div>
+</div>
+
+<!-- ╔═══ SEKSI 3: RAPIDMINER → PYTHON ═══╗ -->
+<div class="sec-card locked" id="sec2">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn2">3</div>
+    <div class="sec-title">Dari RapidMiner ke Python — Kenapa?</div>
+    <span class="sec-cpmk">C2.2</span>
+  </div>
+  <div class="sec-body">
+    <p>Semester lalu kamu belajar konsep analitik data dengan RapidMiner. Itu fondasi yang baik. Sekarang kita naik level — bukan karena RapidMiner buruk, tapi karena Python membuka pintu yang tidak bisa dibuka RapidMiner.</p>
+    <div class="compare-grid">
+      <div class="cmp-card old">
+        <h4>🟡 RapidMiner (sebelumnya)</h4>
+        <div class="cmp-row"><span class="ico">🖱️</span><span>Visual drag-and-drop — nyaman untuk belajar konsep</span></div>
+        <div class="cmp-row"><span class="ico">🔒</span><span>Proprietary/berbayar — akses terbatas di luar kampus</span></div>
+        <div class="cmp-row"><span class="ico">📦</span><span>Operator bawaan — kurang fleksibel untuk kasus khusus</span></div>
+        <div class="cmp-row"><span class="ico">📊</span><span>Cocok untuk: prototyping, belajar algoritma visual</span></div>
+        <div class="cmp-row"><span class="ico">🏭</span><span>Jarang dipakai di industri data Indonesia skala startup/enterprise</span></div>
+      </div>
+      <div class="cmp-card new">
+        <h4>🟦 Python (sekarang)</h4>
+        <div class="cmp-row"><span class="ico">⌨️</span><span>Berbasis kode — kontrol penuh atas setiap langkah analisis</span></div>
+        <div class="cmp-row"><span class="ico">🆓</span><span>Open source, gratis selamanya, komunitas global terbesar</span></div>
+        <div class="cmp-row"><span class="ico">♾️</span><span>Ribuan library — tidak ada batasan kemampuan</span></div>
+        <div class="cmp-row"><span class="ico">🚀</span><span>Bisa deploy: buat app analytics, API, laporan otomatis</span></div>
+        <div class="cmp-row"><span class="ico">💼</span><span>Standar industri data science global dan Indonesia</span></div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <strong>Insight Penting:</strong> Kamu TIDAK memulai dari nol. Di RapidMiner, kamu sudah belajar konsep EDA, klasifikasi, regresi, clustering. Di Python, kamu tinggal MENGIMPLEMENTASIKAN konsep yang sama dengan kode — hasilnya bisa dikustomisasi, di-deploy, dan diintegrasikan ke sistem nyata.
+    </div>
+
+    <h4 class="shs">Yang sudah kamu miliki vs yang akan kita tambah</h4>
+    <ul class="lst">
+      <li><strong>✅ Sudah punya:</strong> Memahami konsep EDA (distribusi, outlier, korelasi)</li>
+      <li><strong>✅ Sudah punya:</strong> Tahu perbedaan supervised vs unsupervised learning</li>
+      <li><strong>✅ Sudah punya:</strong> Bisa interpretasi confusion matrix, precision, recall</li>
+      <li><strong>🆕 Akan ditambah:</strong> Implementasi kode Python — pandas, sklearn, numpy</li>
+      <li><strong>🆕 Akan ditambah:</strong> Membangun pipeline analitik dari nol dan mendeploy sebagai app</li>
+      <li><strong>🆕 Akan ditambah:</strong> Menangani dataset besar (10–50 juta baris) dengan DuckDB</li>
+    </ul>
+    <div class="paham-row"><button class="btn-paham" onclick="unlock(2)">Saya Paham — Lanjut ▸</button></div>
+  </div>
+</div>
+
+<!-- ╔═══ SEKSI 4: 6 TOOLS INTI ═══╗ -->
+<div class="sec-card locked" id="sec3">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn3">4</div>
+    <div class="sec-title">6 Library Inti yang Akan Kita Pelajari</div>
+    <span class="sec-cpmk">C2.3</span>
+  </div>
+  <div class="sec-body">
+    <p>Ekosistem Python untuk data science sangat luas. Semester ini kita fokus pada <strong>6 library inti</strong> yang membentuk pipeline analitik dari data mentah hingga aplikasi yang bisa digunakan.</p>
+    <div class="tools-grid">
+      <div class="tool-card">
+        <div class="tool-icon">🐼</div>
+        <div class="tool-name">pandas</div>
+        <div class="tool-desc">Manipulasi data tabular — load, clean, filter, group, transform. "Spreadsheet versi Python" yang ribuan kali lebih kuat.</div>
+        <span class="tool-pill">P1–P11 (inti)</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">🔢</div>
+        <div class="tool-name">numpy</div>
+        <div class="tool-desc">Komputasi numerik dan array multidimensi. Fondasi matematis hampir semua library data science Python.</div>
+        <span class="tool-pill">P1–P11 (fondasi)</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">📉</div>
+        <div class="tool-name">matplotlib / seaborn</div>
+        <div class="tool-desc">Visualisasi statis — grafik, histogram, scatter plot. BIV akan lebih dalam, tapi kita pakai ini untuk EDA cepat.</div>
+        <span class="tool-pill">P2–P8 (EDA)</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">🤖</div>
+        <div class="tool-name">scikit-learn</div>
+        <div class="tool-desc">Machine learning pipeline lengkap — preprocessing, train/test split, model (classification, regression, clustering), evaluation.</div>
+        <span class="tool-pill">P7–P11</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">🌐</div>
+        <div class="tool-name">Streamlit</div>
+        <div class="tool-desc">Build web app analytics dengan Python murni — tanpa HTML/CSS. Deploy ke cloud gratis. Output utama UAS ADA.</div>
+        <span class="tool-pill">P12–P14</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">🦆</div>
+        <div class="tool-name">DuckDB</div>
+        <div class="tool-desc">SQL analytics pada file CSV/Parquet besar (jutaan baris) langsung di Colab — tanpa server database.</div>
+        <span class="tool-pill">P15</span>
+      </div>
+    </div>
+    <div class="callout warn">
+      <strong>⚠️ Jangan panik!</strong> Kamu tidak harus menguasai semua sekarang. Kita belajar satu per satu, mulai dari pandas dan numpy sebagai fondasi. Setiap library diperkenalkan tepat saat kita butuh — bukan dijejalkan sekaligus.
+    </div>
+    <div class="paham-row"><button class="btn-paham" onclick="unlock(3)">Saya Paham — Lanjut ▸</button></div>
+  </div>
+</div>
+
+<!-- ╔═══ SEKSI 5: GOOGLE COLAB ═══╗ -->
+<div class="sec-card locked" id="sec4">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn4">5</div>
+    <div class="sec-title">Google Colab — Lingkungan Kerja Kita</div>
+    <span class="sec-cpmk">C2.4</span>
+  </div>
+  <div class="sec-body">
+    <p>Google Colaboratory (Colab) adalah notebook Python berbasis cloud yang berjalan di browser. Tidak perlu instalasi apapun — buka browser, kode, selesai.</p>
+
+    <!-- COLAB INTERFACE SVG -->
+    <div class="colab-svg-wrap">
+      <svg viewBox="0 0 700 310" aria-label="Tampilan antarmuka Google Colab">
+        <!-- Header bar -->
+        <rect x="0" y="0" width="700" height="310" fill="#1E1E2E"/>
+        <rect x="0" y="0" width="700" height="44" fill="#2D2D3E"/>
+        <!-- Colab logo area -->
+        <circle cx="20" cy="22" r="8" fill="#F9AB00"/>
+        <text x="32" y="28" font-family="monospace" font-size="13" fill="#F9AB00" font-weight="bold">CO</text>
+        <text x="52" y="28" font-family="monospace" font-size="13" fill="#4FC3F7" font-weight="bold">LAB</text>
+        <!-- Menu bar items -->
+        <text x="110" y="28" font-family="Source Sans 3,sans-serif" font-size="12" fill="#B0B0C8">File</text>
+        <text x="140" y="28" font-family="Source Sans 3,sans-serif" font-size="12" fill="#B0B0C8">Edit</text>
+        <text x="170" y="28" font-family="Source Sans 3,sans-serif" font-size="12" fill="#B0B0C8">View</text>
+        <text x="204" y="28" font-family="Source Sans 3,sans-serif" font-size="12" fill="#B0B0C8">Insert</text>
+        <text x="246" y="28" font-family="Source Sans 3,sans-serif" font-size="12" fill="#B0B0C8">Runtime</text>
+        <text x="302" y="28" font-family="Source Sans 3,sans-serif" font-size="12" fill="#B0B0C8">Tools</text>
+        <!-- Notebook title -->
+        <rect x="0" y="44" width="700" height="32" fill="#252535"/>
+        <text x="14" y="65" font-family="Source Sans 3,sans-serif" font-size="13" fill="#D0D0E8">📄 P01_Pengantar_ADA.ipynb</text>
+        <rect x="580" y="50" width="100" height="18" rx="9" fill="#1A73E8"/>
+        <text x="630" y="63" font-family="Source Sans 3,sans-serif" font-size="11" fill="white" text-anchor="middle">▶ Run All</text>
+        <!-- Left sidebar -->
+        <rect x="0" y="76" width="38" height="234" fill="#1E1E2E"/>
+        <text x="19" y="105" font-family="sans-serif" font-size="16" fill="#5A5A7A" text-anchor="middle">📁</text>
+        <text x="19" y="135" font-family="sans-serif" font-size="16" fill="#5A5A7A" text-anchor="middle">🔍</text>
+        <text x="19" y="165" font-family="sans-serif" font-size="16" fill="#5A5A7A" text-anchor="middle">⚙️</text>
+        <!-- Code cell 1 -->
+        <rect x="44" y="82" width="648" height="72" rx="6" fill="#282840" stroke="#3A3A54" stroke-width="1"/>
+        <!-- Cell run button -->
+        <circle cx="62" cy="118" r="12" fill="#1A73E8" opacity=".9"/>
+        <text x="62" y="123" font-family="sans-serif" font-size="12" fill="white" text-anchor="middle">▶</text>
+        <text x="60" y="96" font-family="sans-serif" font-size="10" fill="#6A6A8A">[1]</text>
+        <!-- Code content -->
+        <text x="85" y="100" font-family="monospace" font-size="11.5" fill="#CF8EF4">import</text>
+        <text x="132" y="100" font-family="monospace" font-size="11.5" fill="#C9D1D9"> pandas </text>
+        <text x="192" y="100" font-family="monospace" font-size="11.5" fill="#CF8EF4">as</text>
+        <text x="208" y="100" font-family="monospace" font-size="11.5" fill="#79C0FF"> pd</text>
+        <text x="85" y="118" font-family="monospace" font-size="11.5" fill="#CF8EF4">import</text>
+        <text x="132" y="118" font-family="monospace" font-size="11.5" fill="#C9D1D9"> numpy </text>
+        <text x="195" y="118" font-family="monospace" font-size="11.5" fill="#CF8EF4">as</text>
+        <text x="212" y="118" font-family="monospace" font-size="11.5" fill="#79C0FF"> np</text>
+        <text x="85" y="136" font-family="monospace" font-size="11.5" fill="#79C0FF">print</text>
+        <text x="117" y="136" font-family="monospace" font-size="11.5" fill="#C9D1D9">(</text>
+        <text x="122" y="136" font-family="monospace" font-size="11.5" fill="#A5D6FF">"Library siap!"</text>
+        <text x="226" y="136" font-family="monospace" font-size="11.5" fill="#C9D1D9">)</text>
+        <!-- Output area -->
+        <rect x="44" y="157" width="648" height="28" rx="4" fill="#1A1A2A"/>
+        <text x="85" y="175" font-family="monospace" font-size="11.5" fill="#56D364">Library siap!</text>
+        <!-- Annot 1: Code cell -->
+        <line x1="50" y1="210" x2="50" y2="250" stroke="#20C8D0" stroke-width="1.5" stroke-dasharray="3,2"/>
+        <rect x="58" y="205" width="160" height="22" rx="5" fill="#082840" stroke="#20C8D0" stroke-width="1"/>
+        <text x="138" y="220" font-family="Source Sans 3,sans-serif" font-size="10.5" fill="#20C8D0" text-anchor="middle">← Code cell (klik ▶ untuk run)</text>
+        <!-- Annot 2: Output -->
+        <line x1="100" y1="250" x2="100" y2="280" stroke="#40B080" stroke-width="1.5" stroke-dasharray="3,2"/>
+        <rect x="108" y="272" width="130" height="22" rx="5" fill="#041410" stroke="#40B080" stroke-width="1"/>
+        <text x="173" y="287" font-family="Source Sans 3,sans-serif" font-size="10.5" fill="#40B080" text-anchor="middle">← Output cell (hasil)</text>
+        <!-- Annot 3: Run button -->
+        <line x1="62" y1="92" x2="62" y2="76" stroke="#F9AB00" stroke-width="1.5" stroke-dasharray="3,2"/>
+        <rect x="30" y="55" width="100" height="22" rx="5" fill="#181008" stroke="#F9AB00" stroke-width="1"/>
+        <text x="80" y="70" font-family="Source Sans 3,sans-serif" font-size="10.5" fill="#F9AB00" text-anchor="middle">▶ Klik untuk run</text>
+      </svg>
+    </div>
+
+    <h4 class="shs">Kenapa Colab (dan bukan install Python lokal)?</h4>
+    <ul class="lst">
+      <li><strong>Zero setup:</strong> Tidak perlu install Python, pip, atau library apapun — semuanya sudah tersedia</li>
+      <li><strong>Cloud-based:</strong> Kode kamu tersimpan di Google Drive — tidak hilang, bisa diakses dari HP</li>
+      <li><strong>GPU gratis:</strong> Untuk model ML yang berat, bisa pakai GPU Tesla T4 secara gratis</li>
+      <li><strong>Kolaborasi:</strong> Share notebook seperti Google Docs — cocok untuk kerja kelompok</li>
+      <li><strong>Akses:</strong> <code style="background:var(--sf3);padding:1px 5px;border-radius:3px;font-size:12px">colab.new</code> atau <code style="background:var(--sf3);padding:1px 5px;border-radius:3px;font-size:12px">colab.research.google.com</code></li>
+    </ul>
+
+    <h4 class="shs">Shortcut Wajib Hafal</h4>
+    <div class="shortcut-grid">
+      <div class="shortcut-row"><span class="kbd">Ctrl + Enter</span><span class="shortcut-desc">Jalankan cell aktif</span></div>
+      <div class="shortcut-row"><span class="kbd">Shift + Enter</span><span class="shortcut-desc">Jalankan dan pindah ke cell berikutnya</span></div>
+      <div class="shortcut-row"><span class="kbd">Ctrl + M, B</span><span class="shortcut-desc">Tambah code cell di bawah</span></div>
+      <div class="shortcut-row"><span class="kbd">Ctrl + M, D</span><span class="shortcut-desc">Hapus cell yang aktif</span></div>
+    </div>
+    <div class="paham-row"><button class="btn-paham" onclick="unlock(4)">Saya Paham — Lanjut ▸</button></div>
+  </div>
+</div>
+
+<!-- ╔═══ SEKSI 6: NILAI SYARIAH ═══╗ -->
+<div class="sec-card locked" id="sec5">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn5">6</div>
+    <div class="sec-title">Nilai Syariah — Amanah &amp; Itqan dalam Analitik</div>
+    <span class="sec-cpmk">CPL-S2</span>
+  </div>
+  <div class="sec-body">
+    <p>Analitik data bukan sekadar teknik — ia adalah <strong>tanggung jawab moral</strong>. Dua nilai Islam ini menjadi panduan etis sepanjang semester ADA.</p>
+    <div class="nilai-grid">
+      <div class="nilai-card">
+        <div class="nilai-name">☾ Amanah — الأمانة</div>
+        <div class="nilai-ar">وَلَا تَأْكُلُوٓا۟ أَمْوَٰلَكُم بَيْنَكُم بِٱلْبَـٰطِلِ</div>
+        <div class="nilai-tr">"Sesungguhnya Allah menyuruh kamu menyampaikan amanah kepada yang berhak menerimanya." (QS. An-Nisa: 58)</div>
+        <p style="font-size:13px;margin-top:8px"><strong>Dalam ADA:</strong> Data nasabah BPRS, data transaksi keuangan, data kesehatan pelanggan — semuanya adalah <strong>amanah</strong>. Analis data wajib menjaga kerahasiaan, tidak menyalahgunakan, dan menganalisis dengan jujur tanpa cherry-pick.</p>
+        <div class="nilai-ref">QS. An-Nisa: 58 | QS. Al-Baqarah: 282</div>
+      </div>
+      <div class="nilai-card">
+        <div class="nilai-name">☾ Itqan — الإتقان</div>
+        <div class="nilai-ar">إِنَّ اللَّهَ يُحِبُّ إِذَا عَمِلَ أَحَدُكُمْ عَمَلاً أَنْ يُتْقِنَهُ</div>
+        <div class="nilai-tr">"Sesungguhnya Allah mencintai jika seseorang di antara kalian melakukan sebuah pekerjaan, maka ia melakukannya dengan itqan (sempurna/tuntas)." (HR. Baihaqi)</div>
+        <p style="font-size:13px;margin-top:8px"><strong>Dalam ADA:</strong> Kode yang ditulis asal-asalan, analisis yang tidak divalidasi, insight yang disampaikan tanpa verifikasi — bukan itqan. Tulis kode yang bersih, beri komentar, dan validasi selalu sebelum menyimpulkan.</p>
+        <div class="nilai-ref">HR. Baihaqi · Mu'jam Al-Awsath, Thabarani</div>
+      </div>
+    </div>
+    <div class="callout sya">
+      <strong>Aplikasi Praktis P01:</strong> Ketika kamu me-load dataset BPRS di praktikum nanti — ingat bahwa data nasabah yang kamu analisis adalah amanah. Gunakan data simulasi (bukan data nyata) untuk belajar. Di dunia kerja nyata, wajib mengikuti kebijakan privasi data dan tidak menyebarkan data klien.
+    </div>
+    <div class="paham-row"><button class="btn-paham" onclick="unlock(5)">Saya Paham — Mulai Kuis ▸</button></div>
+  </div>
+</div>
+
+<!-- ╔═══ KUIS ═══╗ -->
+<div class="sec-card locked" id="sec6">
+  <div class="quiz-head">
+    <div>✏️</div>
+    <h3>Uji Pemahaman P01</h3>
+    <span class="q-info">3 MCQ + Matching · Lulus ≥ 75% (6/8)</span>
+  </div>
+  <div class="quiz-body">
+
+    <!-- MCQ 1 -->
+    <div class="q-block">
+      <div class="q-label">Soal 1 dari 3 · MCQ</div>
+      <div class="q-text">Apa perbedaan utama antara RapidMiner dan Python dalam analitik data?</div>
+      <div class="q-opts" id="q0">
+        <div class="q-opt" onclick="selectMCQ(0,0)"><div class="q-opt-letter">A</div><div>Python lebih mudah dipelajari oleh pemula yang tidak punya latar belakang programming</div></div>
+        <div class="q-opt" onclick="selectMCQ(0,1)"><div class="q-opt-letter">B</div><div>RapidMiner hanya bisa digunakan untuk machine learning, sementara Python untuk semua kebutuhan</div></div>
+        <div class="q-opt" onclick="selectMCQ(0,2)"><div class="q-opt-letter">C</div><div>RapidMiner berbasis GUI drag-and-drop sehingga lebih mudah, sementara Python berbasis kode yang lebih fleksibel dan bisa dikustomisasi sepenuhnya</div></div>
+        <div class="q-opt" onclick="selectMCQ(0,3)"><div class="q-opt-letter">D</div><div>RapidMiner adalah open source sementara Python bersifat proprietary dan berbayar</div></div>
+      </div>
+      <div class="q-feedback" id="fb0">✅ <strong>Tepat!</strong> RapidMiner menyederhanakan proses analitik dengan GUI yang visual dan intuitif — cocok untuk belajar konsep. Python memberikan kontrol penuh karena berbasis kode, sehingga kamu bisa membangun pipeline yang tidak mungkin dilakukan di RapidMiner — termasuk deploy ke web app, integrasi API, dan automate reports.</div>
+    </div>
+
+    <!-- MCQ 2 -->
+    <div class="q-block">
+      <div class="q-label">Soal 2 dari 3 · MCQ</div>
+      <div class="q-text">Dalam pipeline data science semester ini, fokus utama matakuliah ADA (Applied Data Analytics) adalah pada tahap:</div>
+      <div class="q-opts" id="q1">
+        <div class="q-opt" onclick="selectMCQ(1,0)"><div class="q-opt-letter">A</div><div>Pengumpulan data mentah dari berbagai sumber (web scraping, API, survei)</div></div>
+        <div class="q-opt" onclick="selectMCQ(1,1)"><div class="q-opt-letter">B</div><div>Membersihkan dan menganalisis data sehingga insight bisa dikomunikasikan melalui visualisasi oleh BIV</div></div>
+        <div class="q-opt" onclick="selectMCQ(1,2)"><div class="q-opt-letter">C</div><div>Membuat dashboard visual yang menarik untuk presentasi kepada manajemen</div></div>
+        <div class="q-opt" onclick="selectMCQ(1,3)"><div class="q-opt-letter">D</div><div>Deploy model machine learning ke server produksi yang diakses pengguna akhir</div></div>
+      </div>
+      <div class="q-feedback" id="fb1">✅ <strong>Tepat!</strong> ADA adalah "layer analisis" — kita membersihkan data (ETL dengan pandas), mengeksplorasi (EDA), dan membangun model (sklearn). Output ADA kemudian menjadi input BIV untuk divisualisasikan. Di P13, ini terjadi secara nyata: dataset bersih dari ADA langsung diimpor ke Power BI di BIV.</div>
+    </div>
+
+    <!-- MCQ 3 - Skenario -->
+    <div class="q-block">
+      <div class="q-label">Soal 3 dari 3 · Skenario</div>
+      <div class="q-text">Pak Reza, analis di BPRS Amanah Insani Surabaya, ingin menganalisis 1.560 baris data nasabah yang tersimpan sebagai file <em>nasabah_bprs.csv</em>. Ia perlu membersihkan data (menghapus duplikat, mengisi nilai kosong) sebelum bisa membuat visualisasi. Library Python mana yang paling tepat untuk tugas ini?</div>
+      <div class="q-opts" id="q2">
+        <div class="q-opt" onclick="selectMCQ(2,0)"><div class="q-opt-letter">A</div><div>numpy — karena numpy digunakan untuk komputasi numerik dan array</div></div>
+        <div class="q-opt" onclick="selectMCQ(2,1)"><div class="q-opt-letter">B</div><div>scikit-learn — karena scikit-learn bisa membuat model prediksi dari data nasabah</div></div>
+        <div class="q-opt" onclick="selectMCQ(2,2)"><div class="q-opt-letter">C</div><div>pandas — karena pandas adalah library utama untuk manipulasi data tabular seperti CSV</div></div>
+        <div class="q-opt" onclick="selectMCQ(2,3)"><div class="q-opt-letter">D</div><div>Streamlit — karena Streamlit bisa menampilkan data nasabah dalam web app</div></div>
+      </div>
+      <div class="q-feedback" id="fb2">✅ <strong>Tepat!</strong> <code>pandas</code> adalah "tulang punggung" analitik data di Python. Hampir semua pekerjaan dimulai dari <code>df = pd.read_csv('nasabah_bprs.csv')</code>, lalu <code>df.dropna()</code>, <code>df.drop_duplicates()</code> dan seterusnya. numpy, sklearn, dan Streamlit digunakan setelah data sudah bersih dan siap.</div>
+    </div>
+
+    <!-- MATCHING -->
+    <div class="q-block" style="border-bottom:none">
+      <div class="q-label">Soal Matching · Pasangkan Library dengan Fungsinya</div>
+      <div class="q-text">Klik satu <strong>library</strong> di kiri, lalu klik <strong>definisi</strong> yang tepat di kanan. Ulangi untuk semua 5 pasangan.</div>
+      <p class="match-hint">Pasangan yang benar akan diberi warna yang sama. Klik ulang untuk membatalkan pilihan.</p>
+      <div class="match-wrap">
+        <div>
+          <div class="match-col-label">Library Python</div>
+          <div class="match-items" id="matchTerms">
+            <div class="match-term" data-ti="0" onclick="selectTerm(0)"><span class="icon">🐼</span> <strong>pandas</strong></div>
+            <div class="match-term" data-ti="1" onclick="selectTerm(1)"><span class="icon">🔢</span> <strong>numpy</strong></div>
+            <div class="match-term" data-ti="2" onclick="selectTerm(2)"><span class="icon">🤖</span> <strong>scikit-learn</strong></div>
+            <div class="match-term" data-ti="3" onclick="selectTerm(3)"><span class="icon">🌐</span> <strong>Streamlit</strong></div>
+            <div class="match-term" data-ti="4" onclick="selectTerm(4)"><span class="icon">🦆</span> <strong>DuckDB</strong></div>
+          </div>
+        </div>
+        <div>
+          <div class="match-col-label">Fungsi Utama</div>
+          <div class="match-items" id="matchDefs">
+            <div class="match-def" data-di="0" onclick="selectDef(0)">Komputasi numerik dan array multidimensi — fondasi matematis Python</div>
+            <div class="match-def" data-di="1" onclick="selectDef(1)">Machine learning: klasifikasi, regresi, clustering, dan evaluasi model</div>
+            <div class="match-def" data-di="2" onclick="selectDef(2)">SQL analytics pada dataset besar (CSV/Parquet) tanpa perlu database server</div>
+            <div class="match-def" data-di="3" onclick="selectDef(3)">Membangun dan men-deploy web app analytics yang interaktif</div>
+            <div class="match-def" data-di="4" onclick="selectDef(4)">Manipulasi data tabular — load, clean, filter, group, transform</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBMIT -->
+    <div class="quiz-submit-row">
+      <button class="btn-submit" id="btnSubmit" onclick="submitQuiz()">Kumpulkan Jawaban</button>
+      <span class="quiz-score" id="quizScore"></span>
+    </div>
+    <div class="quiz-result" id="quizResult">
+      <div class="big" id="resultScore"></div>
+      <p id="resultMsg"></p>
+    </div>
+  </div>
+</div>
+
+<!-- COMPLETION -->
+<div class="completion" id="completion">
+  <h2>🎉 Pertemuan 01 Selesai!</h2>
+  <p>Kamu sudah memahami posisi ADA, tools Python, dan Google Colab. Siap untuk praktikum!</p>
+  <a class="lab-link" href="Praktikum-01-ADA.html">▶ Buka Lembar Praktikum P01</a>
+</div>
+
+</div><!-- end .main -->
+
+<script>
+const STORAGE_KEY = 'tazkia-ada-p01-v1';
+const MATCH_CORRECT = {0:4, 1:0, 2:1, 3:3, 4:2};
+// pandas→def4, numpy→def0, sklearn→def1, Streamlit→def3, DuckDB→def2
+const MCQ_ANSWERS = [2, 1, 2]; // Q1=C, Q2=B, Q3=C (0-indexed)
+const PAIR_COLORS = [
+  {b:'var(--p0)',l:'var(--p0l)'},
+  {b:'var(--p1)',l:'var(--p1l)'},
+  {b:'var(--p2)',l:'var(--p2l)'},
+  {b:'var(--p3)',l:'var(--p3l)'},
+  {b:'var(--p4)',l:'var(--p4l)'}
+];
+
+let state = {done:[], mcq:[null,null,null], matchPairs:{}, submitted:false, passed:false};
+
+function loadState(){
+  try{const s=JSON.parse(localStorage.getItem(STORAGE_KEY));if(s)state=s;}catch(e){}
+}
+function saveState(){
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}
+}
+
+function applyState(){
+  // unlock done sections
+  for(let i=0;i<=state.done.length;i++){
+    const el=document.getElementById('sec'+i);
+    if(el) el.className='sec-card unlocked';
+  }
+  // mark done nums
+  state.done.forEach(i=>{
+    const n=document.getElementById('sn'+i);
+    if(n){n.className='sec-num done';n.textContent='✓';}
+  });
+  // restore MCQ
+  state.mcq.forEach((ans,qi)=>{
+    if(ans!==null) restoreMCQ(qi,ans);
+  });
+  // restore matching
+  Object.entries(state.matchPairs).forEach(([ti,di])=>{
+    applyPairColor(+ti,+di);
+  });
+  if(state.submitted) showQuizResult();
+  updateProgress();
+}
+
+function unlock(secIdx){
+  if(state.done.includes(secIdx)) return;
+  state.done.push(secIdx);
+  saveState();
+  const next=document.getElementById('sec'+(secIdx+1));
+  if(next) next.className='sec-card unlocked';
+  const num=document.getElementById('sn'+secIdx);
+  if(num){num.className='sec-num done';num.textContent='✓';}
+  const btn=document.querySelector('#sec'+secIdx+' .btn-paham');
+  if(btn){btn.className='btn-paham done';btn.disabled=true;btn.textContent='✓ Selesai';}
+  updateProgress();
+  if(next) next.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function updateProgress(){
+  const total=7;
+  const done=state.done.length+(state.passed?1:0);
+  const pct=Math.round((done/total)*100);
+  document.getElementById('progPct').textContent=pct+'%';
+  for(let i=0;i<total;i++){
+    const d=document.getElementById('pd'+i);
+    if(!d)continue;
+    if(i<state.done.length||(i===6&&state.passed)) d.className='prog-dot done';
+    else if(i===state.done.length) d.className='prog-dot active';
+    else d.className='prog-dot';
+  }
+}
+
+// MCQ
+function selectMCQ(qi,oi){
+  if(state.submitted) return;
+  state.mcq[qi]=oi;
+  saveState();
+  restoreMCQ(qi,oi);
+}
+function restoreMCQ(qi,oi){
+  const opts=document.querySelectorAll('#q'+qi+' .q-opt');
+  opts.forEach((o,i)=>{
+    o.className='q-opt'+(i===oi?' selected':'');
+  });
+}
+
+// Matching
+let selTerm=null, selDef=null;
+
+function selectTerm(ti){
+  if(state.submitted) return;
+  // if already paired, unpair
+  if(state.matchPairs[ti]!==undefined){
+    const di=state.matchPairs[ti];
+    delete state.matchPairs[ti];
+    clearPairColor(ti,di);
+    saveState();
+    selTerm=null; selDef=null;
+    return;
+  }
+  // deselect prev selected term
+  document.querySelectorAll('.match-term').forEach(e=>e.classList.remove('selected'));
+  selTerm=ti;
+  document.querySelector('[data-ti="'+ti+'"]').classList.add('selected');
+  if(selDef!==null){
+    makePair(selTerm,selDef);
+    selTerm=null; selDef=null;
+  }
+}
+
+function selectDef(di){
+  if(state.submitted) return;
+  // if already paired, unpair
+  const existTerm=Object.keys(state.matchPairs).find(t=>state.matchPairs[t]===di);
+  if(existTerm!==undefined){
+    clearPairColor(+existTerm,di);
+    delete state.matchPairs[existTerm];
+    saveState();
+    selTerm=null; selDef=null;
+    return;
+  }
+  document.querySelectorAll('.match-def').forEach(e=>e.classList.remove('selected'));
+  selDef=di;
+  document.querySelector('[data-di="'+di+'"]').classList.add('selected');
+  if(selTerm!==null){
+    makePair(selTerm,selDef);
+    selTerm=null; selDef=null;
+  }
+}
+
+function makePair(ti,di){
+  // find a color not yet used
+  const usedColors=Object.keys(state.matchPairs).length;
+  const colorIdx=usedColors % PAIR_COLORS.length;
+  state.matchPairs[ti]=di;
+  saveState();
+  applyPairColor(ti,di,colorIdx);
+  document.querySelectorAll('.match-term,.match-def').forEach(e=>e.classList.remove('selected'));
+}
+
+function applyPairColor(ti,di,colorIdx){
+  // find color index from order of ti in state
+  const keys=Object.keys(state.matchPairs).map(Number).sort((a,b)=>a-b);
+  const idx=keys.indexOf(ti);
+  const c=PAIR_COLORS[idx>=0?idx%5:0];
+  const te=document.querySelector('[data-ti="'+ti+'"]');
+  const de=document.querySelector('[data-di="'+di+'"]');
+  if(te){te.style.background=c.l;te.style.borderColor=c.b;te.style.color='var(--tx)';}
+  if(de){de.style.background=c.l;de.style.borderColor=c.b;de.style.color='var(--tx)';}
+}
+
+function clearPairColor(ti,di){
+  const te=document.querySelector('[data-ti="'+ti+'"]');
+  const de=document.querySelector('[data-di="'+di+'"]');
+  if(te){te.style.background='';te.style.borderColor='';te.style.color='';}
+  if(de){de.style.background='';de.style.borderColor='';de.style.color='';}
+}
+
+function submitQuiz(){
+  if(state.submitted) return;
+  state.submitted=true;
+  let score=0;
+
+  // Score MCQ
+  MCQ_ANSWERS.forEach((correct,qi)=>{
+    const opts=document.querySelectorAll('#q'+qi+' .q-opt');
+    opts.forEach((o,oi)=>{
+      if(oi===correct) o.classList.add('correct');
+      else if(oi===state.mcq[qi]&&state.mcq[qi]!==correct) o.classList.add('wrong');
+    });
+    document.getElementById('fb'+qi).classList.add('show');
+    if(state.mcq[qi]===correct) score++;
+  });
+
+  // Score matching
+  const terms=document.querySelectorAll('.match-term');
+  const defs=document.querySelectorAll('.match-def');
+  Object.entries(MATCH_CORRECT).forEach(([ti,di])=>{
+    const paired=state.matchPairs[ti];
+    if(+paired===+di){
+      score++;
+      document.querySelector('[data-ti="'+ti+'"]').style.borderWidth='2.5px';
+      document.querySelector('[data-di="'+di+'"]').style.borderWidth='2.5px';
+    } else {
+      if(document.querySelector('[data-ti="'+ti+'"]')){
+        document.querySelector('[data-ti="'+ti+'"]').style.border='2px dashed #D44040';
+        document.querySelector('[data-ti="'+ti+'"]').style.background='#FEE0E0';
+      }
+    }
+  });
+
+  state.passed=(score>=6);
+  saveState();
+  showQuizResult(score);
+  updateProgress();
+}
+
+function showQuizResult(score){
+  if(score===undefined){
+    // recalculate from state
+    score=0;
+    MCQ_ANSWERS.forEach((c,i)=>{if(state.mcq[i]===c)score++;});
+    Object.entries(MATCH_CORRECT).forEach(([ti,di])=>{if(+state.matchPairs[ti]===+di)score++;});
+  }
+  const r=document.getElementById('quizResult');
+  r.className='quiz-result '+(state.passed?'pass':'fail');
+  r.style.display='block';
+  document.getElementById('resultScore').textContent=score+'/8';
+  document.getElementById('resultMsg').textContent=state.passed
+    ? '✅ Selamat! Kamu lulus P01. Buka Lembar Praktikum untuk sesi LAB!'
+    : '❌ Belum lulus (butuh ≥ 6). Review seksi yang belum dipahami, lalu muat ulang halaman untuk coba lagi.';
+  document.getElementById('btnSubmit').disabled=true;
+  document.getElementById('quizScore').textContent='Skor: '+score+'/8 ('+Math.round(score/8*100)+'%)';
+  document.getElementById('quizScore').style.display='inline';
+  if(state.passed) document.getElementById('completion').classList.add('show');
+}
+
+// INIT
+loadState();
+applyState();
+</script>

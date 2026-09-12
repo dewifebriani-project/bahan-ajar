@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pertemuan 7 — Pengendalian Sistem Informasi Berbasis IT</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap">
+<style>
+/* ═══ MEETING COLOR VARIABLES (P07 = Amber Flame & Crimson Burgundy) ═══ */
+:root{
+  --meet-from:#1A0800; --meet-mid:#2E1005; --meet-to:#481808;
+  --meet-acc:#D46020;  --meet-acc2:#E88030; --meet-star:#D46020;
+  /* SYSTEM TOKENS */
+  --bg:#EDF1F6;--sf:#FFFFFF;--sf2:#FBF2EC;--sf3:#F6ECE4;
+  --bd:#D8C4B8;--bs:#EADFD8;
+  --tx:#1C0C04;--txm:#4A3830;--txl:#8C756B;
+  --pri:#2E1005;--pmid:#D46020;--pril:#FCEBD8;--prx:#FAF0E8;
+  --acc:#D46020;--accl:#FCEBD8;
+  --sya:#1F9060;--syal:#D0EEE2;--syab:#40B080;
+  --ok:#1F9060;--okl:#D0EEE2;
+  --warn:#C03818;--warnl:#FCDBD0;
+  /* MATCHING PAIR COLORS */
+  --p0:#D46020;--p0l:#FCEBD8; --p1:#1F9060;--p1l:#D0EEE2;
+  --p2:#7040B0;--p2l:#EEE0FA; --p3:#1B7898;--p3l:#D8EEF6;
+  --p4:#C03818;--p4l:#FCDBD0; --p5:#9E6800;--p5l:#FDF0D0;
+  --r:8px;--rs:5px;
+  --shadow:0 4px 20px rgba(46,16,5,.12);
+  --shadow-sm:0 2px 8px rgba(46,16,5,.08);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#0E0604;--sf:#1A0D08;--sf2:#140804;--sf3:#1E100A;
+  --bd:#361C12;--bs:#28140C;
+  --tx:#F4E8E2;--txm:#B0988E;--txl:#6E554B;
+  --pri:#E88030;--pmid:#D46020;--pril:#2A1006;--prx:#1F0B04;
+  --acc:#E88030;--accl:#2A1006;
+  --sya:#30B878;--syal:#041410;--syab:#186040;
+  --ok:#30B878;--okl:#041410;
+  --warn:#E05030;--warnl:#280800;
+  --p0l:#281000;--p1l:#041410;--p2l:#180828;--p3l:#0A2030;--p4l:#200408;--p5l:#241800;
+}}
+:root[data-theme=dark]{
+  --bg:#0E0604;--sf:#1A0D08;--sf2:#140804;--sf3:#1E100A;
+  --bd:#361C12;--bs:#28140C;
+  --tx:#F4E8E2;--txm:#B0988E;--txl:#6E554B;
+  --pri:#E88030;--pmid:#D46020;--pril:#2A1006;--prx:#1F0B04;
+  --acc:#E88030;--accl:#2A1006;
+  --sya:#30B878;--syal:#041410;--syab:#186040;
+  --ok:#30B878;--okl:#041410;
+  --warn:#E05030;--warnl:#280800;
+  --p0l:#281000;--p1l:#041410;--p2l:#180828;--p3l:#0A2030;--p4l:#200408;--p5l:#241800;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color:var(--tx);margin:0;font-size:15px;line-height:1.65}
+
+/* ── TOPBAR ── */
+.topbar{background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.back-btn{color:rgba(255,255,255,.65);font-size:13px;font-weight:600;cursor:pointer;border:none;background:none;display:flex;align-items:center;gap:4px;transition:color .15s;text-decoration:none}
+.back-btn:hover{color:#fff}
+.top-div{width:1px;height:20px;background:rgba(255,255,255,.15)}
+.top-course{font-size:11.5px;color:rgba(255,255,255,.5)}
+.top-meeting{font-size:13px;font-weight:700;color:rgba(255,255,255,.95)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.top-badge{font-size:11px;font-weight:700;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:2px 10px;color:rgba(255,255,255,.85)}
+.prog-wrap{width:120px;height:5px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden}
+.prog-bar{height:100%;background:var(--meet-acc2);border-radius:3px;transition:width .4s ease}
+.prog-txt{font-size:11px;color:rgba(255,255,255,.5);text-align:right}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(160deg,var(--meet-from) 0%,var(--meet-mid) 55%,var(--meet-to) 100%);color:#fff;padding:38px 24px 0;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;pointer-events:none;opacity:.15}
+.hero-inner{max-width:840px;margin:0 auto;position:relative;z-index:1;padding-bottom:30px}
+.hero-ew{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.hero-line{width:22px;height:1px;background:var(--meet-acc2)}
+.hero-tag{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--meet-acc2)}
+.hero-bignum{font-family:'Amiri',serif;font-size:72px;font-weight:700;line-height:1;color:rgba(255,255,255,.07);position:absolute;right:0;top:-8px;letter-spacing:-.02em;-webkit-user-select:none;user-select:none}
+.hero-title{font-family:'Amiri',serif;font-size:30px;font-weight:700;margin:0 0 6px;line-height:1.2}
+.hero-sub{font-size:14.5px;color:rgba(255,255,255,.7);margin:0 0 18px}
+.hero-chips{display:flex;flex-wrap:wrap;gap:6px}
+.hchip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:3px 11px;font-size:12px;color:rgba(255,255,255,.8)}
+.hchip strong{color:#fff}
+.hero-arch{line-height:0;margin-top:-1px}
+.hero-arch svg{display:block;width:100%;height:26px}
+
+/* ── STEPS CONNECTOR ── */
+.steps-wrap{background:var(--sf);border-bottom:1px solid var(--bs);padding:12px 24px;overflow-x:auto;position:sticky;top:52px;z-index:90;box-shadow:var(--shadow-sm)}
+.steps{display:flex;align-items:center;max-width:840px;margin:0 auto}
+.step{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--txl);white-space:nowrap;cursor:default}
+.sdot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:var(--sf3);border:2px solid var(--bs);color:var(--txl);flex-shrink:0;transition:all .25s}
+.step.done .sdot{background:var(--ok);border-color:var(--ok);color:#fff}
+.step.active .sdot{background:var(--pmid);border-color:var(--pmid);color:#fff}
+.step.quiz .sdot{background:var(--accl);border-color:var(--acc);color:var(--acc)}
+.step.quiz.done .sdot{background:var(--ok);border-color:var(--ok);color:#fff}
+.slabel{display:none}
+@media(min-width:580px){.slabel{display:inline}}
+.sconn{flex:1;height:2px;background:var(--bs);min-width:10px;transition:background .25s}
+.sconn.done{background:var(--ok)}
+
+/* ── BODY ── */
+.body{max-width:840px;margin:0 auto;padding:26px 18px 80px}
+@media(min-width:640px){.body{padding:30px 26px 80px}}
+
+/* ── SECTION CARD ── */
+.sec{background:var(--sf);border:1px solid var(--bs);border-radius:var(--r);margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow-sm);transition:opacity .4s,filter .4s}
+.sec.locked{opacity:.38;filter:grayscale(.45);pointer-events:none;user-select:none}
+.sec.unlocking{animation:sIn .35s ease both}
+@keyframes sIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.sec-hd{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--bs);background:var(--sf3)}
+.sec-num{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:var(--pmid);color:#fff;flex-shrink:0;transition:background .3s}
+.sec.done-sec .sec-num{background:var(--ok)}
+.sec-title-wrap{flex:1}
+.sec-title{font-family:'Amiri',serif;font-size:17.5px;font-weight:700;color:var(--pri);margin:0}
+.sec-sub2{font-size:12px;color:var(--txl);margin:1px 0 0}
+.sec-chk{font-size:18px;color:var(--ok);flex-shrink:0;display:none}
+.sec.done-sec .sec-chk{display:block}
+.sec-body{padding:20px 22px}
+@media(max-width:480px){.sec-body{padding:14px 14px}}
+.sec-foot{padding:14px 22px;border-top:1px solid var(--bs);display:flex;justify-content:flex-end;align-items:center;gap:10px;background:var(--sf3)}
+.done-msg{font-size:12.5px;color:var(--ok);font-weight:600;display:none}
+.sec.done-sec .done-msg{display:block}
+.sec.done-sec .paham-btn{display:none}
+.paham-btn{background:var(--pmid);color:#fff;border:none;border-radius:var(--r);padding:9px 20px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s;font-family:'Source Sans 3',sans-serif}
+.paham-btn:hover{background:#E88030}
+.paham-btn::after{content:'→'}
+
+/* ── TYPOGRAPHY ── */
+.lead{font-size:15.5px;color:var(--txm);line-height:1.7;margin:0 0 16px}
+h3.sub{font-family:'Amiri',serif;font-size:18px;font-weight:700;color:var(--pri);margin:20px 0 9px;display:flex;align-items:center;gap:8px}
+h3.sub::before{content:'';width:4px;height:16px;background:var(--meet-acc2);border-radius:2px;flex-shrink:0}
+h4.sub2{font-size:13.5px;font-weight:700;color:var(--pmid);margin:14px 0 6px;text-transform:uppercase;letter-spacing:.06em}
+p{color:var(--txm);margin:0 0 11px;line-height:1.65}
+ul.detail{padding-left:0;list-style:none;margin:0 0 13px}
+ul.detail li{padding:6px 0 6px 18px;position:relative;color:var(--txm);border-bottom:1px solid var(--bs);font-size:14px;line-height:1.5}
+ul.detail li:last-child{border-bottom:none}
+ul.detail li::before{content:'▸';position:absolute;left:0;color:var(--pmid);font-size:11px;top:8px}
+ul.detail li strong{color:var(--tx)}
+ul.bullet{padding-left:20px;margin:0 0 13px}
+ul.bullet li{margin-bottom:5px;color:var(--txm);font-size:14px;line-height:1.5}
+
+/* ── CALLOUT ── */
+.callout{border-radius:var(--rs);padding:13px 16px;margin:12px 0;font-size:14px;line-height:1.6}
+.callout.info{background:var(--prx);border-left:4px solid var(--pmid);color:var(--txm)}
+.callout.info strong{color:var(--pri)}
+.callout.warn{background:var(--warnl);border-left:4px solid var(--warn);color:var(--txm)}
+.callout.warn strong{color:var(--warn)}
+.callout.sya{background:var(--syal);border-left:4px solid var(--sya);color:var(--txm)}
+.callout.sya strong{color:var(--sya)}
+.callout.case{background:var(--sf3);border:1px solid var(--bs);border-left:4px solid var(--meet-acc2);color:var(--txm)}
+.case-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--meet-acc2);margin-bottom:5px}
+
+/* ── TRUST SERVICES & GRID CARDS ── */
+.trust-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:14px 0}
+@media(max-width:760px){.trust-grid{grid-template-columns:1fr}}
+.trust-card{background:var(--sf3);border:1.5px solid var(--bs);border-radius:var(--rs);padding:12px 10px;text-align:center;transition:all .2s}
+.trust-card:hover{border-color:var(--pmid);box-shadow:var(--shadow-sm);transform:translateY(-2px)}
+.trust-num{font-size:10.5px;font-weight:700;color:var(--pmid);letter-spacing:.06em}
+.trust-title{font-family:'Amiri',serif;font-size:14.5px;font-weight:700;color:var(--pri);margin:3px 0 4px}
+.trust-desc{font-size:11.5px;color:var(--txm);line-height:1.4}
+
+.itgc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+@media(max-width:680px){.itgc-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:440px){.itgc-grid{grid-template-columns:1fr}}
+.itgc-card{background:var(--sf3);border:1.5px solid var(--bs);border-radius:var(--rs);padding:13px}
+.itgc-badge{font-size:10px;font-weight:700;background:var(--pmid);color:#fff;padding:2px 7px;border-radius:10px;display:inline-block;margin-bottom:6px}
+.itgc-title{font-family:'Amiri',serif;font-size:15px;font-weight:700;color:var(--pri);margin-bottom:4px}
+.itgc-desc{font-size:12px;color:var(--txm);line-height:1.45}
+
+/* ── COMPARISON TABLE ── */
+.cmp-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13.5px}
+.cmp-table th{background:var(--pri);color:#fff;padding:9px 12px;text-align:left;font-size:12px}
+.cmp-table td{padding:9px 12px;border-bottom:1px solid var(--bs);color:var(--txm);vertical-align:top}
+.cmp-table tr:last-child td{border-bottom:none}
+.cmp-table tr:nth-child(even) td{background:var(--sf3)}
+
+/* ── AYAT & SYARIAH ── */
+.sya-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:540px){.sya-grid{grid-template-columns:1fr}}
+.sya-card{background:var(--sf3);border:1px solid var(--bs);border-top:3px solid var(--sya);border-radius:var(--rs);padding:14px}
+.sya-card-title{font-family:'Amiri',serif;font-size:16px;font-weight:700;color:var(--sya);margin-bottom:4px}
+.sya-card-desc{font-size:13px;color:var(--txm);line-height:1.55}
+.sya-card-ref{font-size:11.5px;color:var(--syab);margin-top:6px;font-weight:600}
+
+.ayat-box{background:linear-gradient(135deg,var(--meet-from),var(--meet-mid));border-radius:var(--r);padding:18px 22px;margin:14px 0;color:#fff}
+.ayat-ar{font-family:'Amiri',serif;font-size:20px;line-height:1.85;text-align:right;direction:rtl;color:#FCEBD8;margin-bottom:12px}
+.ayat-trans{font-style:italic;color:rgba(255,255,255,.8);font-size:13.5px;line-height:1.6;margin-bottom:8px;border-top:1px solid rgba(255,255,255,.15);padding-top:9px}
+.ayat-ref{font-size:12px;color:var(--meet-acc2);font-weight:600}
+
+/* ── QUIZ STYLES ── */
+.quiz-sec{background:var(--sf);border:2px solid var(--acc);border-radius:var(--r);margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow);transition:opacity .4s,filter .4s}
+.quiz-sec.locked{opacity:.38;filter:grayscale(.45);pointer-events:none;user-select:none}
+.quiz-hd{background:linear-gradient(135deg,var(--meet-from),var(--meet-mid));color:#fff;padding:15px 22px;display:flex;align-items:center;gap:11px}
+.quiz-icon{font-size:22px}
+.quiz-hd-text{flex:1}
+.quiz-hd-title{font-family:'Amiri',serif;font-size:19px;font-weight:700;margin:0}
+.quiz-hd-sub{font-size:12px;color:rgba(255,255,255,.65);margin:2px 0 0}
+.quiz-body{padding:20px 22px}
+
+.q-item{margin-bottom:22px}
+.q-text{font-size:14.5px;font-weight:600;color:var(--tx);margin-bottom:11px;line-height:1.5}
+.q-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--pmid);color:#fff;border-radius:50%;font-size:10.5px;font-weight:700;margin-right:7px;flex-shrink:0;vertical-align:middle}
+.options{display:flex;flex-direction:column;gap:6px}
+.opt{padding:9px 14px;border-radius:var(--rs);border:2px solid var(--bs);background:var(--sf3);cursor:pointer;font-size:13.5px;color:var(--txm);transition:all .15s;display:flex;align-items:flex-start;gap:9px;-webkit-user-select:none;user-select:none}
+.opt:hover{border-color:var(--pmid);background:var(--prx);color:var(--pri)}
+.opt.selected{border-color:var(--pmid);background:var(--pril);color:var(--pri);font-weight:600}
+.opt.correct{border-color:var(--ok);background:var(--okl);color:#0A3020;font-weight:600}
+.opt.wrong{border-color:var(--warn);background:var(--warnl);color:#6A1808}
+.opt-ltr{width:20px;height:20px;border-radius:50%;background:var(--bs);display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;flex-shrink:0;transition:all .15s}
+.opt.selected .opt-ltr{background:var(--pmid);color:#fff}
+.opt.correct .opt-ltr{background:var(--ok);color:#fff}
+.opt.wrong .opt-ltr{background:var(--warn);color:#fff}
+.opt-txt{flex:1;line-height:1.5}
+.opt-fb{font-size:11.5px;font-style:italic;margin-top:4px;display:none;color:inherit;opacity:.85}
+.opt.correct .opt-fb,.opt.wrong .opt-fb{display:block}
+
+/* MATCHING */
+.match-intro{font-size:13.5px;color:var(--txm);margin-bottom:14px;line-height:1.55;padding:10px 14px;background:var(--prx);border-radius:var(--rs)}
+.match-container{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:520px){.match-container{grid-template-columns:1fr}}
+.match-col-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--txl);margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--bs)}
+.match-terms,.match-defs{display:flex;flex-direction:column;gap:5px}
+.match-term,.match-def{padding:9px 12px;border:2px solid var(--bs);border-radius:var(--rs);cursor:pointer;font-size:13px;color:var(--txm);background:var(--sf3);transition:all .15s;-webkit-user-select:none;user-select:none;line-height:1.4}
+.match-term{font-weight:700;color:var(--tx)}
+.match-term:hover,.match-def:hover{border-color:var(--pmid);background:var(--prx)}
+.match-term.selected{border-color:var(--pmid);background:var(--pril);color:var(--pri)}
+
+.quiz-foot{padding:14px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;background:var(--sf3);border-top:1px solid var(--bs)}
+.submit-btn{background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc2));color:#fff;border:none;border-radius:var(--r);padding:10px 24px;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s;font-family:'Source Sans 3',sans-serif}
+.submit-btn:hover{opacity:.9}
+.score-badge{font-size:14px;font-weight:700;padding:6px 14px;border-radius:20px;display:none}
+.score-badge.pass{background:var(--okl);color:var(--ok);border:1px solid var(--ok)}
+.score-badge.fail{background:var(--warnl);color:var(--warn);border:1px solid var(--warn)}
+
+.completion{display:none;background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;border-radius:var(--r);padding:28px;text-align:center;margin-top:18px}
+.completion.show{display:block}
+.completion h2{font-family:'Amiri',serif;font-size:24px;font-weight:700;margin-bottom:8px}
+.completion p{color:rgba(255,255,255,.75);font-size:13.5px;margin-bottom:14px}
+.completion .lab-btn{display:inline-block;background:var(--meet-acc2);color:#fff;border-radius:20px;padding:10px 24px;font-weight:700;font-size:14px;text-decoration:none;transition:transform .15s}
+.completion .lab-btn:hover{transform:translateY(-2px)}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <a class="back-btn" href="../RPS-SIA.html">← RPS</a>
+    <div class="top-div"></div>
+    <div>
+      <div class="top-course">Sistem Informasi Akuntansi · FEBI Universitas Tazkia</div>
+      <div class="top-meeting">Pertemuan 07 — Pengendalian Sistem Informasi Berbasis IT</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span class="top-badge">CPMK-3 · Romney Ch. 8 &amp; COBIT 2019</span>
+    <div class="prog-wrap"><div class="prog-bar" id="topProg" style="width:14%"></div></div>
+    <span class="prog-txt" id="topPct">14%</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <svg class="hero-bg" viewBox="0 0 600 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs><pattern id="dots-p7" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="20" cy="20" r="1.8" fill="#D46020" opacity=".5"/>
+      <path d="M0,20 L40,20 M20,0 L20,40" stroke="#D46020" stroke-width=".3" opacity=".25"/>
+    </pattern></defs>
+    <rect width="100%" height="100%" fill="url(#dots-p7)"/>
+  </svg>
+  <div class="hero-inner">
+    <div class="hero-bignum">07</div>
+    <div class="hero-ew"><div class="hero-line"></div><span class="hero-tag">Sistem Informasi Akuntansi — Modul Teori Mendalam</span></div>
+    <h1 class="hero-title">Pengendalian Sistem Informasi Berbasis IT</h1>
+    <p class="hero-sub">IT General Controls (ITGC) · IT Application Controls (Input, Processing, Output) · Tata Kelola COBIT 2019 · Doktrin Khilafah &amp; Syahadah Digital</p>
+    <div class="hero-chips">
+      <span class="hchip"><strong>CPMK-3</strong> C4 — Menganalisis</span>
+      <span class="hchip">Romney &amp; Steinbart Ch. 8 &amp; COBIT 2019</span>
+      <span class="hchip">IT Audit &amp; Syahadah Digital</span>
+      <span class="hchip">Ganjil 2026/2027</span>
+    </div>
+  </div>
+  <div class="hero-arch"><svg viewBox="0 0 1200 26" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,26 L0,14 Q20,4 40,14 Q60,26 80,14 Q100,4 120,14 Q140,26 160,14 Q180,4 200,14 Q220,26 240,14 Q260,4 280,14 Q300,26 320,14 Q340,4 360,14 Q380,26 400,14 Q420,4 440,14 Q460,26 480,14 Q500,4 520,14 Q540,26 560,14 Q580,4 600,14 Q620,26 640,14 Q660,4 680,14 Q700,26 720,14 Q740,4 760,14 Q780,26 800,14 Q820,4 840,14 Q860,26 880,14 Q900,4 920,14 Q940,26 960,14 Q980,4 1000,14 Q1020,26 1040,14 Q1060,4 1080,14 Q1100,26 1120,14 Q1140,4 1160,14 Q1180,26 1200,14 L1200,26 Z" fill="var(--bg)"/>
+  </svg></div>
+</div>
+
+<!-- STEP INDICATOR TRACK -->
+<div class="steps-wrap">
+  <div class="steps" id="stepTrack">
+    <div class="step active" id="st0"><div class="sdot">1</div><span class="slabel">Tujuan &amp; Trust</span></div>
+    <div class="sconn" id="sc0"></div>
+    <div class="step" id="st1"><div class="sdot">2</div><span class="slabel">ITGC &amp; COBIT</span></div>
+    <div class="sconn" id="sc1"></div>
+    <div class="step" id="st2"><div class="sdot">3</div><span class="slabel">Input Controls</span></div>
+    <div class="sconn" id="sc2"></div>
+    <div class="step" id="st3"><div class="sdot">4</div><span class="slabel">Processing &amp; Output</span></div>
+    <div class="sconn" id="sc3"></div>
+    <div class="step" id="st4"><div class="sdot">5</div><span class="slabel">Syahadah Digital</span></div>
+    <div class="sconn" id="sc4"></div>
+    <div class="step" id="st5"><div class="sdot">6</div><span class="slabel">Kasus Audit IT</span></div>
+    <div class="sconn" id="sc5"></div>
+    <div class="step quiz" id="st6"><div class="sdot">★</div><span class="slabel">Kuis</span></div>
+  </div>
+</div>
+
+<!-- MAIN BODY -->
+<div class="body">
+
+  <!-- SEKSI 0: TUJUAN & TRUST SERVICES FRAMEWORK -->
+  <div class="sec" id="sec0">
+    <div class="sec-hd">
+      <div class="sec-num">01</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">Tujuan Pembelajaran &amp; Trust Services Framework</h2>
+        <div class="sec-sub2">Capaian CPMK-3 (Bloom C4 Menganalisis) · 5 Prinsip Keandalan Sistem Akuntansi</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Pengendalian berbasis teknologi informasi merupakan tulang punggung keandalan Sistem Informasi Akuntansi modern. AICPA dan CPA Canada merumuskan <strong>Trust Services Framework</strong> yang menetapkan 5 kriteria utama sistem informasi yang dapat dipercaya:</p>
+
+      <div class="trust-grid">
+        <div class="trust-card">
+          <div class="trust-num">PILAR 1</div>
+          <div class="trust-title">Security (Keamanan)</div>
+          <div class="trust-desc">Perlindungan fisik dan logis terhadap akses tidak sah ke aset data akuntansi.</div>
+        </div>
+        <div class="trust-card">
+          <div class="trust-num">PILAR 2</div>
+          <div class="trust-title">Confidentiality</div>
+          <div class="trust-desc">Perlindungan informasi sensitif bisnis organisasi dari kebocoran ke pihak ketiga.</div>
+        </div>
+        <div class="trust-card">
+          <div class="trust-num">PILAR 3</div>
+          <div class="trust-title">Privacy (Privasi)</div>
+          <div class="trust-desc">Pengelolaan dan pengamanan data pribadi nasabah/karyawan (PII) sesuai regulasi UU PDP.</div>
+        </div>
+        <div class="trust-card" style="border-color:var(--pmid);background:var(--prx)">
+          <div class="trust-num" style="color:var(--pmid)">PILAR 4</div>
+          <div class="trust-title" style="color:var(--pri)">Processing Integrity</div>
+          <div class="trust-desc">Pemrosesan transaksi secara akurat, lengkap, tepat waktu, dan dengan otorisasi sah.</div>
+        </div>
+        <div class="trust-card">
+          <div class="trust-num">PILAR 5</div>
+          <div class="trust-title">Availability</div>
+          <div class="trust-desc">Ketersediaan sistem dan data saat dibutuhkan untuk operasional dan pengambilan keputusan.</div>
+        </div>
+      </div>
+
+      <h3 class="sub">Target Capaian Pembelajaran (CPMK-3)</h3>
+      <ul class="detail">
+        <li><strong>Membedah IT General Controls (ITGC):</strong> Menganalisis tata kelola akses, change management, operasional batch, dan disaster recovery plan (DRP).</li>
+        <li><strong>Menguasai 9 Teknik Input Controls:</strong> Mengimplementasikan validasi form transaksi (Field, Sign, Limit, Range, Size, Completeness, Validity, Reasonableness, Check Digit).</li>
+        <li><strong>Mengevaluasi Processing &amp; Output Controls:</strong> Memeriksa batch controls (Financial total, Hash total, Record count), cross-footing, dan teknik data masking.</li>
+        <li><strong>Mengadopsi Tata Kelola COBIT 2019:</strong> Memetakan pemisahan tugas dalam departemen TI (SoD IT) pada 5 domain COBIT.</li>
+        <li><strong>Mengintegrasikan Nilai Syariah Khilafah &amp; Syahadah Digital:</strong> Memaknai log jejak audit sebagai saksi digital yang tidak dapat disangkal di hadapan Allah SWT (QS. Al-Zalzalah: 7–8, QS. Yasin: 65).</li>
+      </ul>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(0)">Saya Paham, Lanjut ke IT General Controls &amp; COBIT</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 1: ITGC & COBIT 2019 -->
+  <div class="sec locked" id="sec1">
+    <div class="sec-hd">
+      <div class="sec-num">02</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">IT General Controls (ITGC) &amp; Tata Kelola COBIT 2019</h2>
+        <div class="sec-sub2">Pengendalian Lingkungan TI · Pemisahan Tugas (SoD IT) · 5 Domain Tata Kelola COBIT</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead"><em>IT General Controls (ITGC)</em> adalah pengendalian menyeluruh yang berlaku pada seluruh sistem komputer dan infrastruktur organisasi. Jika ITGC lemah, maka kontrol aplikasi di dalamnya tidak dapat dipercaya.</p>
+
+      <h3 class="sub">4 Domain Utama IT General Controls (ITGC)</h3>
+      <div class="itgc-grid">
+        <div class="itgc-card">
+          <span class="itgc-badge">Domain 1</span>
+          <div class="itgc-title">Access Controls</div>
+          <div class="itgc-desc">Manajemen hak akses pengguna (RBAC), otentikasi ganda (MFA), password complexity, dan penonaktifan akun pegawai nonaktif (<em>deprovisioning</em>).</div>
+        </div>
+        <div class="itgc-card" style="border-color:var(--pmid);background:var(--prx)">
+          <span class="itgc-badge">Domain 2</span>
+          <div class="itgc-title">Change Management</div>
+          <div class="itgc-desc">Prosedur formal pengajuan perubahan kode, pengujian di lingkungan UAT/Staging, dan pemisahan tegas dari server Production.</div>
+        </div>
+        <div class="itgc-card">
+          <span class="itgc-badge">Domain 3</span>
+          <div class="itgc-title">Computer Operations</div>
+          <div class="itgc-desc">Penjadwalan otomatis job harian (<em>batch processing</em>), pemantauan kapasitas server, antivirus, dan penanganan insiden sistem.</div>
+        </div>
+        <div class="itgc-card">
+          <span class="itgc-badge">Domain 4</span>
+          <div class="itgc-title">Business Continuity (DRP)</div>
+          <div class="itgc-desc">Pencadangan data berkala (<em>Daily Backup Snapshot</em>), replikasi data ke offsite cloud, dan pengujian berkala pemulihan bencana.</div>
+        </div>
+      </div>
+
+      <h3 class="sub">Pemisahan Tugas Wajib dalam Organisasi TI (IT Segregation of Duties)</h3>
+      <table class="cmp-table">
+        <thead>
+          <tr>
+            <th>Peran Personel TI</th>
+            <th>Tanggung Jawab Utama</th>
+            <th>Larangan Keras (Aktivitas yang Tidak Boleh Dirangkap)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Systems Analysts &amp; Programmers</strong></td>
+            <td>Merancang dan menulis kode software aplikasi SIA.</td>
+            <td>Dilarang memiliki hak akses langsung ke server dan database <em>Production</em> yang sedang beroperasi.</td>
+          </tr>
+          <tr>
+            <td><strong>Computer Operators</strong></td>
+            <td>Menjalankan dan memantau eksekusi batch job di server production.</td>
+            <td>Dilarang mengubah atau memodifikasi source code program aplikasi.</td>
+          </tr>
+          <tr>
+            <td><strong>Database Administrator (DBA)</strong></td>
+            <td>Mengelola struktur tabel, performa, dan integritas database.</td>
+            <td>Dilarang menginput transaksi keuangan atau merangkap sebagai programmer aplikasi bisnis.</td>
+          </tr>
+          <tr>
+            <td><strong>Security Officer / CISO</strong></td>
+            <td>Memantau log keamanan, ancaman siber, dan menegakkan kebijakan akses.</td>
+            <td>Independen dari tim operasional TI dan melapor langsung ke Komite Audit / Direksi.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout info">
+        <strong>Kerangka Kerja COBIT 2019:</strong> ISACA menerbitkan COBIT 2019 yang membagi tata kelola TI menjadi 5 Domain: <em>EDM (Evaluate, Direct, Monitor)</em> untuk tingkat Dewan/Direksi, serta 4 domain manajemen: <em>APO (Align, Plan, Organize)</em>, <em>BAI (Build, Acquire, Implement)</em>, <em>DSS (Deliver, Service, Support)</em>, dan <em>MEA (Monitor, Evaluate, Assess)</em>.
+      </div>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(1)">Lanjut ke IT Application Controls: Validasi Input</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 2: INPUT CONTROLS -->
+  <div class="sec locked" id="sec2">
+    <div class="sec-hd">
+      <div class="sec-num">03</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">IT Application Controls: 9 Teknik Validasi Input Data</h2>
+        <div class="sec-sub2">Garbage In, Garbage Out Prevention · Pengujian Data Form Transaksi SIA Terprogram</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Prinsip <strong>Garbage In, Garbage Out (GIGO)</strong> menegaskan bahwa secanggih apa pun software akuntansi, jika data mentah yang dimasukkan salah, maka output laporan keuangan akan menyesatkan. <em>Input Controls</em> dirancang untuk menyaring dan menolak data salah sebelum disimpan ke database.</p>
+
+      <h3 class="sub">9 Teknik Validasi Input Data Terprogram</h3>
+      <table class="cmp-table">
+        <thead>
+          <tr>
+            <th>Teknik Input Control</th>
+            <th>Mekanisme Pengujian Sistem</th>
+            <th>Contoh Kasus Transaksi Perbankan Syariah</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Field Check (Type Check)</strong></td>
+            <td>Memastikan data yang diinput hanya berisi karakter dengan tipe data yang tepat (numerik, teks, tanggal).</td>
+            <td>Menolak input nominal setoran <code>1500000A</code> karena terdapat karakter huruf pada field angka.</td>
+          </tr>
+          <tr>
+            <td><strong>2. Sign Check</strong></td>
+            <td>Memastikan angka bernilai tanda aritmatika yang sesuai (positif atau negatif).</td>
+            <td>Menolak input penarikan tabungan bertanda minus <code>-500.000</code>.</td>
+          </tr>
+          <tr>
+            <td><strong>3. Limit Check</strong></td>
+            <td>Menguji apakah nilai input berada di bawah atau di atas batas batas mutlak yang telah ditetapkan.</td>
+            <td>Memblokir pencairan pembiayaan Rp 65 Juta jika wewenang Account Officer maksimal Rp 50 Juta.</td>
+          </tr>
+          <tr>
+            <td><strong>4. Range Check</strong></td>
+            <td>Menguji apakah nilai input berada di dalam rentang batas minimum dan maksimum yang diperbolehkan.</td>
+            <td>Menolak usia debitur 12 tahun (kebijakan 17–75 tahun) atau nisbah bagi hasil 110%.</td>
+          </tr>
+          <tr>
+            <td><strong>5. Size Check</strong></td>
+            <td>Memastikan jumlah karakter input sesuai dengan panjang field yang disyaratkan.</td>
+            <td>Menolak Nomor Induk Kependudukan (NIK) yang hanya terdiri dari 14 digit (wajib 16 digit).</td>
+          </tr>
+          <tr>
+            <td><strong>6. Completeness Check</strong></td>
+            <td>Memeriksa bahwa seluruh kolom data yang bersifat wajib (<em>mandatory/required</em>) tidak boleh kosong (NULL).</td>
+            <td>Memblokir penyimpanan akad murabahah jika nama nasabah atau nomor akad belum diisi.</td>
+          </tr>
+          <tr>
+            <td><strong>7. Validity Check</strong></td>
+            <td>Mencocokkan kode input terhadap daftar referensi master file yang sah.</td>
+            <td>Menolak kode akun <code>GL-99999</code> jika tidak terdaftar dalam Master Chart of Accounts (COA).</td>
+          </tr>
+          <tr>
+            <td><strong>8. Reasonableness Check</strong></td>
+            <td>Menguji kewajaran logis hubungan antara dua atau lebih elemen data yang saling terkait.</td>
+            <td>Menolak potongan pelunasan dini pembiayaan sebesar 95% dari pokok pembiayaan.</td>
+          </tr>
+          <tr>
+            <td><strong>9. Check Digit Verification</strong></td>
+            <td>Memvalidasi keaslian nomor identitas menggunakan algoritma matematis (Luhn Modulo 10 checksum).</td>
+            <td>Mendeteksi salah ketik digit pada nomor kartu ATM atau nomor rekening nasabah.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(2)">Lanjut ke Processing &amp; Output Controls</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 3: PROCESSING & OUTPUT CONTROLS -->
+  <div class="sec locked" id="sec3">
+    <div class="sec-hd">
+      <div class="sec-num">04</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">Processing &amp; Output Controls dalam Sistem Informasi Akuntansi</h2>
+        <div class="sec-sub2">Integritas Pemrosesan Data · Batch Controls (Financial &amp; Hash Total) · Pengamanan Output</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Setelah data lolos validasi input, sistem harus menjamin bahwa pemrosesan transaksi dan penyajian laporan keuangan bebas dari kesalahan kalkulasi, data hilang, maupun kebocoran informasi.</p>
+
+      <h3 class="sub">1. Pengendalian Batch Processing (Batch Controls)</h3>
+      <p>Ketika ribuan transaksi diproses secara berkala dalam satu kelompok (batch), sistem menghitung 3 angka kontrol pengendali:</p>
+      
+      <div class="pillars-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="pillar-card">
+          <span class="pillar-badge">Financial Total</span>
+          <div class="pillar-title">Total Moneter (Rupiah)</div>
+          <div class="pillar-desc">Jumlah total nilai uang dari seluruh transaksi dalam batch (Contoh: Total setoran angsuran Rp 145.000.000).</div>
+        </div>
+        <div class="pillar-card hl">
+          <span class="pillar-badge">Hash Total</span>
+          <div class="pillar-title">Total Kontrol Non-Moneter</div>
+          <div class="pillar-desc">Jumlah penjumlahan dari field numerik yang tidak bermakna finansial, seperti menjumlahkan nomor rekening atau NIK untuk mendeteksi baris yang hilang.</div>
+        </div>
+        <div class="pillar-card">
+          <span class="pillar-badge">Record Count</span>
+          <div class="pillar-title">Jumlah Baris Transaksi</div>
+          <div class="pillar-desc">Jumlah total baris catatan transaksi dalam batch (Contoh: Tepat 150 transaksi diproses tanpa ada yang tertinggal).</div>
+        </div>
+      </div>
+
+      <h3 class="sub">2. Processing Controls Lainnya</h3>
+      <ul class="detail">
+        <li><strong>Cross-Footing Balance Test:</strong> Memverifikasi kesamaan saldo debet dan kredit dalam jurnal, serta memeriksa keselarasan antara total baris dan total kolom pada neraca lajur.</li>
+        <li><strong>Zero-Balance Test:</strong> Memastikan bahwa akun perantara/kliring (<em>clearing accounts</em>) bersaldo nol setelah pemrosesan batch selesai (Contoh: Akun Kas Antar Cabang harus nol setelah rekonsiliasi).</li>
+        <li><strong>Data Matching:</strong> Pencocokan otomatis 3 dokumen (<em>Three-Way Matching</em>) antara Purchase Order, Receiving Report, dan Vendor Invoice sebelum pembayaran disetujui.</li>
+      </ul>
+
+      <h3 class="sub">3. Output Controls (Pengendalian Keluaran)</h3>
+      <ul class="bullet">
+        <li><strong>Data Masking / Redaction:</strong> Menyembunyikan digit sensitif nomor kartu atau NIK nasabah pada slip bukti dan laporan (Contoh: <code>4512-****-****-8821</code>) untuk menjaga privasi.</li>
+        <li><strong>Laporan Rekonsiliasi Otomatis:</strong> Pencocokan berkala antara saldo buku pembantu piutang murabahah dengan akun kontrol di buku besar (GL).</li>
+        <li><strong>Watermarking &amp; Enkripsi PDF:</strong> Penyematan identitas pengunduh dan enkripsi AES-256 pada laporan keuangan dan log audit yang diekspor.</li>
+      </ul>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(3)">Lanjut ke Nilai Syariah &amp; Syahadah Digital</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 4: SYAHADAH DIGITAL & SYARIAH -->
+  <div class="sec locked" id="sec4">
+    <div class="sec-hd">
+      <div class="sec-num">05</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">Jejak Audit Kekal (Audit Trail) &amp; Konsep Syahadah Digital</h2>
+        <div class="sec-sub2">Mandat Khilafah dalam Tata Kelola TI · Log Transaksi sebagai Saksi Digital Tak Terbantahkan</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Dalam perspektif Islam, manusia mengemban amanah sebagai <strong>Khalifah di muka bumi</strong>, termasuk dalam merancang dan mengoperasikan sistem teknologi akuntansi. Jejak audit elektronik (<em>audit trail</em>) bukan sekadar instrumen audit kepatuhan, melainkan wujud <strong>Syahadah Digital (kesaksian elektronik)</strong> yang merekam setiap rekam jejak amal manusia.</p>
+
+      <div class="ayat-box">
+        <div class="ayat-ar">فَمَن يَعْمَلْ مِثْقَالَ ذَرَّةٍ خَيْرًا يَرَهُ ۝ وَمَن يَعْمَلْ مِثْقَالَ ذَرَّةٍ شَرًّا يَرَهُ</div>
+        <div class="ayat-trans">"Maka barangsiapa mengerjakan kebaikan seberat zarrah, niscaya dia akan melihat (balasan)nya, dan barangsiapa mengerjakan kejahatan seberat zarrah, niscaya dia akan melihat (balasan)nya."</div>
+        <div class="ayat-ref">QS. Al-Zalzalah [99]: 7–8 — Prinsip Kepastian Pencatatan Amalan: Tidak Ada Transaksi yang Luput dari Jejak Audit Ilahiah</div>
+      </div>
+
+      <div class="ayat-box" style="background:linear-gradient(135deg,#1E0C06,#2E1005)">
+        <div class="ayat-ar">الْيَوْمَ نَخْتِمُ عَلَىٰ أَفْوَاهِهِمْ وَتُكَلِّمُنَا أَيْدِيهِمْ وَتَشْهَدُ أَرْجُلُهُم بِمَا كَانُوا يَكْسِبُونَ</div>
+        <div class="ayat-trans">"Pada hari ini Kami tutup mulut mereka; tangan mereka akan berkata kepada Kami dan kaki mereka akan memberi kesaksian terhadap apa yang dahulu mereka kerjakan."</div>
+        <div class="ayat-ref">QS. Yasin [36]: 65 — Konsep Syahadah Digital: Log Sistem sebagai Saksi Otomatis yang Mengungkap Kebenaran Tanpa Dapat Disangkal (Non-Repudiation)</div>
+      </div>
+
+      <h3 class="sub">Dimensi Syariah dalam Arsitektur Kontrol TI</h3>
+      <div class="sya-grid">
+        <div class="sya-card">
+          <div class="sya-card-title">1. Al-Khilafah &amp; Amanah IT</div>
+          <div class="sya-card-desc">Kewenangan mengelola database dan infrastruktur server adalah mandat amanah. Mengabaikan kontrol atau mematikan log audit adalah bentuk khianat.</div>
+          <div class="sya-card-ref">Prinsip Tata Kelola TI Islami</div>
+        </div>
+        <div class="sya-card">
+          <div class="sya-card-title">2. As-Syahadah &amp; Non-Repudiation</div>
+          <div class="sya-card-desc">Log jejak audit kekal memastikan pelaku transaksi tidak dapat menyangkal perbuatannya (<em>non-repudiation</em>), menegakkan keadilan pembuktian forensik.</div>
+          <div class="sya-card-ref">Prinsip Integritas Bukti Hukum</div>
+        </div>
+        <div class="sya-card">
+          <div class="sya-card-title">3. Al-Adl dalam Alokasi Wewenang</div>
+          <div class="sya-card-desc">Pemisahan tugas (SoD) antara analis, programmer, dan operator mencegah penumpukan kekuasaan sepihak yang memicu tirani dan kecurangan.</div>
+          <div class="sya-card-ref">Prinsip Keadilan Sistemik</div>
+        </div>
+        <div class="sya-card">
+          <div class="sya-card-title">4. Hifz al-Mal &amp; Zero Error (Itqan)</div>
+          <div class="sya-card-desc">Pengendalian validasi input dan batch controls adalah wujud kesungguhan (<em>itqan</em>) untuk menjaga harta umat dari salah saji dan ketidaktepatan bagi hasil.</div>
+          <div class="sya-card-ref">Prinsip Ketelitian Akuntansi Syariah</div>
+        </div>
+      </div>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(4)">Lanjut ke Studi Kasus Audit IT</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 5: STUDI KASUS AUDIT IT -->
+  <div class="sec locked" id="sec5">
+    <div class="sec-hd">
+      <div class="sec-num">06</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">Studi Kasus Audit IT: Pengujian Kontrol Aplikasi Core Banking</h2>
+        <div class="sec-sub2">Evaluasi Temuan Log Audit · Anomali Batch Hash Total &amp; Pelanggaran Change Management</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Tim Auditor Sistem Informasi melakukan pengujian substantif atas data log kontrol aplikasi core banking pada BPRS Amanah Ummah yang tercatat dalam <code>dataset-it-controls-audit-p07.csv</code>. Ditemukan dua insiden defisiensi kritis:</p>
+
+      <div class="callout case">
+        <div class="case-label">KASUS 1: ANOMALI BATCH HASH TOTAL MISMATCH (LOG-2026-013)</div>
+        <ul class="bullet" style="margin:0;font-size:13px">
+          <li><strong>Gejala Sistem:</strong> Pada proses closing harian <em>BATCH-0701-B</em>, sistem mendeteksi ketidaksesuaian Hash Total: nilai pada header batch tercatat <code>592.810</code>, namun kalkulasi aktual sistem hanya <code>582.810</code> (selisih tepat 10.000).</li>
+          <li><strong>Penyebab Forensik:</strong> Satu transaksi angsuran murabahah terputus di tengah transmisi jaringan akibat timeout server dan belum tersimpan sempurna di database buku pembantu.</li>
+          <li><strong>Tindakan Pengendalian:</strong> Modul Processing Control berhasil menahan (<em>suspend</em>) batch agar tidak ter-posting ke General Ledger sampai data rekonsiliasi diperbaiki.</li>
+        </ul>
+      </div>
+
+      <div class="callout case" style="border-left-color:var(--warn)">
+        <div class="case-label" style="color:var(--warn)">KASUS 2: PELANGGARAN FATAL CHANGE MANAGEMENT OLEH DBA (LOG-2026-015)</div>
+        <ul class="bullet" style="margin:0;font-size:13px">
+          <li><strong>Peristiwa:</strong> Database Administrator (DBA) mengeksekusi perintah langsung <code>ALTER TABLE customer</code> pada server production tanpa tiket persetujuan (<em>Change Request Ticket</em>).</li>
+          <li><strong>Pelanggaran ITGC:</strong> Melanggar prinsip Change Management COBIT 2019 (Domain BAI06). Segala perubahan struktur tabel wajib melalui pengujian lingkungan UAT dan persetujuan Change Advisory Board (CAB).</li>
+          <li><strong>Deteksi:</strong> Jejak audit database (<em>Database Activity Monitoring</em>) secara otomatis mencatat User ID, IP, dan script yang dijalankan sebagai temuan <strong>Material Weakness ITGC</strong>.</li>
+        </ul>
+      </div>
+
+      <div class="callout tip">
+        <strong>Persiapan Sesi Praktikum:</strong> Pada lembar <code>Praktikum-07-AIS.html</code>, Anda akan menguji secara langsung 25 data log kontrol aplikasi, merekonstruksi penghitungan Hash Total, serta merancang matriks ITGC dan SoD IT berbasis standar COBIT 2019!
+      </div>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(5)">Lanjut ke Kuis Uji Pemahaman</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 6: KUIS INTERAKTIF -->
+  <div class="quiz-sec locked" id="sec6">
+    <div class="quiz-hd">
+      <span class="quiz-icon">📝</span>
+      <div class="quiz-hd-text">
+        <h2 class="quiz-hd-title">Uji Pemahaman: Evaluasi Modul 07</h2>
+        <div class="quiz-hd-sub">4 Pilihan Ganda + 1 Permainan Pencocokan 6 Istilah IT Controls &amp; Syariah (Batas Kelulusan: 75%)</div>
+      </div>
+    </div>
+    <div class="quiz-body">
+
+      <!-- SOAL 1 -->
+      <div class="q-item" id="mcq0">
+        <div class="q-text"><span class="q-num">1</span> Manakah jenis pengendalian aplikasi (<em>Application Control</em>) yang memverifikasi bahwa seluruh kolom data yang bersifat wajib (<em>mandatory/required</em>) telah diisi sebelum transaksi dapat disimpan ke database?</div>
+        <div class="options">
+          <div class="opt" onclick="selectMCQ(0, 0)">
+            <span class="opt-ltr">A</span>
+            <div class="opt-txt">Sign Check.<div class="opt-fb">Kurang tepat. Sign check menguji tanda positif/negatif angka.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(0, 1)">
+            <span class="opt-ltr">B</span>
+            <div class="opt-txt">Completeness Check (Pemeriksaan Kelengkapan).<div class="opt-fb">Benar! Completeness check memastikan tidak ada field wajib yang bernilai NULL/kosong sebelum data disimpan.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(0, 2)">
+            <span class="opt-ltr">C</span>
+            <div class="opt-txt">Limit Check.<div class="opt-fb">Kurang tepat. Limit check menguji batas atas/bawah nilai angka.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(0, 3)">
+            <span class="opt-ltr">D</span>
+            <div class="opt-txt">Check Digit Verification.<div class="opt-fb">Kurang tepat. Check digit menguji algoritma checksum nomor identitas.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOAL 2 -->
+      <div class="q-item" id="mcq1">
+        <div class="q-text"><span class="q-num">2</span> Dalam pemrosesan batch, penjumlahan atas field non-finansial (seperti menjumlahkan kumpulan nomor rekening nasabah atau nomor invoice) yang digunakan khusus untuk mendeteksi adanya data yang hilang atau tertukar disebut:</div>
+        <div class="options">
+          <div class="opt" onclick="selectMCQ(1, 0)">
+            <span class="opt-ltr">A</span>
+            <div class="opt-txt">Financial Total.<div class="opt-fb">Kurang tepat. Financial total menjumlahkan nilai moneter (Rupiah).</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(1, 1)">
+            <span class="opt-ltr">B</span>
+            <div class="opt-txt">Hash Total.<div class="opt-fb">Benar! Hash total adalah penjumlahan field numerik non-finansial untuk memverifikasi keutuhan batch transaksi.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(1, 2)">
+            <span class="opt-ltr">C</span>
+            <div class="opt-txt">Record Count.<div class="opt-fb">Kurang tepat. Record count hanya menghitung jumlah total baris.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(1, 3)">
+            <span class="opt-ltr">D</span>
+            <div class="opt-txt">Parity Check.<div class="opt-fb">Kurang tepat. Parity check adalah transmisi bit di level perangkat keras.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOAL 3 -->
+      <div class="q-item" id="mcq2">
+        <div class="q-text"><span class="q-num">3</span> Dalam prinsip pemisahan tugas departemen teknologi informasi (<em>IT Segregation of Duties</em>), personel yang menulis kode aplikasi (Programmer) <strong>dilarang keras</strong> memiliki hak akses untuk:</div>
+        <div class="options">
+          <div class="opt" onclick="selectMCQ(2, 0)">
+            <span class="opt-ltr">A</span>
+            <div class="opt-txt">Mengakses dan memodifikasi data langsung di server lingkungan Production.<div class="opt-fb">Benar! Programmer hanya boleh mengakses lingkungan Development/Testing guna mencegah modifikasi kode liar atau kecurangan data di live server.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(2, 1)">
+            <span class="opt-ltr">B</span>
+            <div class="opt-txt">Membaca dokumen spesifikasi kebutuhan sistem (SRS).<div class="opt-fb">Kurang tepat. Programmer wajib membaca SRS untuk membuat program.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(2, 2)">
+            <span class="opt-ltr">C</span>
+            <div class="opt-txt">Melakukan pengujian unit testing di komputer lokal pengembang.<div class="opt-fb">Kurang tepat. Unit testing adalah tanggung jawab rutin programmer.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(2, 3)">
+            <span class="opt-ltr">D</span>
+            <div class="opt-txt">Berdiskusi dengan Systems Analyst mengenai diagram alur data.<div class="opt-fb">Kurang tepat. Komunikasi desain sistem adalah hal wajar.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOAL 4 -->
+      <div class="q-item" id="mcq3">
+        <div class="q-text"><span class="q-num">4</span> Konsep bahwa rekaman log jejak audit elektronik berfungsi sebagai saksi digital yang adil, akurat, dan tidak dapat disangkal oleh pelaku transaksi di hadapan Allah SWT berakar pada firman-Nya dalam:</div>
+        <div class="options">
+          <div class="opt" onclick="selectMCQ(3, 0)">
+            <span class="opt-ltr">A</span>
+            <div class="opt-txt">QS. Al-Baqarah ayat 275 (tentang larangan riba).<div class="opt-fb">Kurang tepat. Ayat ini berbicara tentang pengharaman riba dan kehalalan jual beli.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(3, 1)">
+            <span class="opt-ltr">B</span>
+            <div class="opt-txt">QS. Al-Zalzalah ayat 7–8 dan QS. Yasin ayat 65 (Syahadah Digital &amp; Pencatatan Amal).<div class="opt-fb">Benar! Ayat-ayat ini menegaskan kepastian pencatatan amalan sekecil zarrah dan kesaksian anggota tubuh paralel dengan fungsi immutable audit log.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(3, 2)">
+            <span class="opt-ltr">C</span>
+            <div class="opt-txt">QS. Yusuf ayat 55 (tentang kepemimpinan bendahara Mesir).<div class="opt-fb">Kurang tepat. Ayat ini berbicara tentang kompetensi bendahara (hafizhun 'alim).</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(3, 3)">
+            <span class="opt-ltr">D</span>
+            <div class="opt-txt">QS. At-Takatsur ayat 1–2 (tentang bermegah-megahan).<div class="opt-fb">Kurang tepat. Ayat ini mencela sifat bermegah-megahan yang melalaikan.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MATCHING GAME -->
+      <div class="match-intro">
+        <strong>Tantangan Pencocokan Konsep IT Controls &amp; Syariah:</strong> Klik satu istilah di kolom kiri, lalu klik definisi / analogi yang tepat di kolom kanan untuk membuat pasangan berwarna!
+      </div>
+      <div class="match-container">
+        <div>
+          <div class="match-col-title">Konsep / Teknik Kontrol</div>
+          <div class="match-terms" id="terms">
+            <div class="match-term" onclick="selectTerm(0)">1. Change Management</div>
+            <div class="match-term" onclick="selectTerm(1)">2. Check Digit (Luhn)</div>
+            <div class="match-term" onclick="selectTerm(2)">3. Hash Total</div>
+            <div class="match-term" onclick="selectTerm(3)">4. Zero-Balance Test</div>
+            <div class="match-term" onclick="selectTerm(4)">5. Syahadah Digital</div>
+            <div class="match-term" onclick="selectTerm(5)">6. Reasonableness Check</div>
+          </div>
+        </div>
+        <div>
+          <div class="match-col-title">Definisi / Mekanisme Sistem</div>
+          <div class="match-defs" id="defs">
+            <div class="match-def" onclick="selectDef(0)">A. Algoritma matematis pada digit terakhir nomor identitas/rekening untuk mendeteksi kesalahan ketik.</div>
+            <div class="match-def" onclick="selectDef(1)">B. Tata kelola pengujian dan persetujuan formal sebelum modifikasi kode sistem dirilis ke server production.</div>
+            <div class="match-def" onclick="selectDef(2)">C. Pengujian kewajaran logis keterkaitan antara dua field data transaksi yang saling berhubungan.</div>
+            <div class="match-def" onclick="selectDef(3)">D. Penjumlahan field numerik non-finansial dalam satu batch untuk memverifikasi keutuhan data transaksi.</div>
+            <div class="match-def" onclick="selectDef(4)">E. Rekaman log jejak audit kekal sebagai saksi elektronik tak terbantahkan di hadapan hukum dan Allah SWT.</div>
+            <div class="match-def" onclick="selectDef(5)">F. Pengujian verifikasi bahwa akun kliring/perantara telah bersaldo nol di akhir siklus pemrosesan.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="quiz-foot">
+      <button class="submit-btn" onclick="submitQuiz()">Kirim Jawaban &amp; Hitung Nilai</button>
+      <span class="score-badge" id="scoreBadge"></span>
+    </div>
+  </div>
+
+  <!-- COMPLETION BOX -->
+  <div class="completion" id="completion">
+    <h2>🎉 Selamat! Anda Telah Menguasai Materi Pertemuan 07</h2>
+    <p>Pemahaman teoritis tentang IT General Controls, Validasi Input, Processing &amp; Output Controls, serta Doktrin Syahadah Digital telah tuntas. Lanjutkan ke lembar praktikum laboratorium!</p>
+    <a class="lab-btn" href="Praktikum-07-AIS.html">Buka Lembar Praktikum 07 (Lab 6) →</a>
+  </div>
+
+</div>
+
+<script>
+/* ═══ APPLICATION STATE MANAGEMENT ═══ */
+const STORAGE_KEY = 'tazkia-ais-p07-v1';
+const TOTAL_SECS = 7;
+const MCQ_ANSWERS = [1, 1, 0, 1]; // B, B, A, B
+const MATCH_CORRECT = {0:1, 1:0, 2:3, 3:5, 4:4, 5:2}; // 1->B, 2->A, 3->D, 4->F, 5->E, 6->C
+const PAIR_COLORS = ['#D46020', '#1F9060', '#7040B0', '#1B7898', '#C03818', '#9E6800'];
+
+let state = {
+  done: [0],
+  mcqSel: [null, null, null, null],
+  matchPairs: {},
+  submitted: false
+};
+
+let selTerm = null;
+let selDef = null;
+
+function saveState(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+}
+
+function loadState(){
+  try{
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if(saved) state = Object.assign(state, JSON.parse(saved));
+  }catch(e){}
+}
+
+function updateProgress(){
+  const doneCount = state.done.length;
+  const pct = Math.round((doneCount / TOTAL_SECS) * 100);
+  document.getElementById('topProg').style.width = pct + '%';
+  document.getElementById('topPct').textContent = pct + '%';
+
+  for(let i=0; i<TOTAL_SECS; i++){
+    const st = document.getElementById('st' + i);
+    const sc = document.getElementById('sc' + i);
+    if(!st) continue;
+    if(state.done.includes(i)){
+      st.className = (i === 6) ? 'step quiz done' : 'step done';
+      if(sc) sc.className = 'sconn done';
+    } else if(i === state.done.length){
+      st.className = (i === 6) ? 'step quiz active' : 'step active';
+      if(sc) sc.className = 'sconn';
+    } else {
+      st.className = (i === 6) ? 'step quiz' : 'step';
+      if(sc) sc.className = 'sconn';
+    }
+  }
+}
+
+function paham(idx){
+  if(!state.done.includes(idx)) state.done.push(idx);
+  const nextIdx = idx + 1;
+  if(nextIdx < TOTAL_SECS && !state.done.includes(nextIdx)){
+    state.done.push(nextIdx);
+  }
+  saveState();
+  applyState();
+
+  const nextSec = document.getElementById('sec' + nextIdx);
+  if(nextSec){
+    nextSec.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+}
+
+function selectMCQ(q, optIdx){
+  if(state.submitted) return;
+  state.mcqSel[q] = optIdx;
+  saveState();
+  const opts = document.querySelectorAll('#mcq' + q + ' .opt');
+  opts.forEach((o, i)=>o.classList.toggle('selected', i === optIdx));
+}
+
+function selectTerm(idx){
+  if(state.submitted) return;
+  selTerm = idx;
+  document.querySelectorAll('#terms .match-term').forEach((el, j)=>el.classList.toggle('selected', j === idx));
+  checkMatch();
+}
+
+function selectDef(idx){
+  if(state.submitted) return;
+  selDef = idx;
+  document.querySelectorAll('#defs .match-def').forEach((el, j)=>el.classList.toggle('selected', j === idx));
+  checkMatch();
+}
+
+function checkMatch(){
+  if(selTerm === null || selDef === null) return;
+  state.matchPairs[selTerm] = selDef;
+  saveState();
+
+  const color = PAIR_COLORS[selTerm % PAIR_COLORS.length];
+  const termEl = document.querySelectorAll('#terms .match-term')[selTerm];
+  const defEl = document.querySelectorAll('#defs .match-def')[selDef];
+
+  if(termEl){
+    termEl.style.borderColor = color;
+    termEl.style.background = color + '18';
+    termEl.style.color = color;
+  }
+  if(defEl){
+    defEl.style.borderColor = color;
+    defEl.style.background = color + '18';
+    defEl.style.color = color;
+  }
+
+  selTerm = null;
+  selDef = null;
+  document.querySelectorAll('#terms .match-term, #defs .match-def').forEach(el=>el.classList.remove('selected'));
+}
+
+function submitQuiz(){
+  state.submitted = true;
+  saveState();
+  let score = 0;
+  const total = MCQ_ANSWERS.length + Object.keys(MATCH_CORRECT).length;
+
+  // Grade MCQs
+  MCQ_ANSWERS.forEach((ans, q)=>{
+    const sel = state.mcqSel[q];
+    const opts = document.querySelectorAll('#mcq' + q + ' .opt');
+    opts.forEach((o, idx)=>{
+      if(idx === ans) o.className = 'opt correct';
+      else if(idx === sel && sel !== ans) o.className = 'opt wrong';
+    });
+    if(sel === ans) score++;
+  });
+
+  // Grade Matching
+  Object.entries(MATCH_CORRECT).forEach(([t, d])=>{
+    if(state.matchPairs[t] === d) score++;
+  });
+
+  const pct = Math.round((score / total) * 100);
+  const badge = document.getElementById('scoreBadge');
+  badge.style.display = 'inline-block';
+  badge.textContent = `Skor: ${score}/${total} (${pct}%)`;
+
+  if(pct >= 75){
+    badge.className = 'score-badge pass';
+    if(!state.done.includes(6)) state.done.push(6);
+    saveState();
+    updateProgress();
+    document.getElementById('completion').classList.add('show');
+    document.getElementById('completion').scrollIntoView({behavior:'smooth'});
+  } else {
+    badge.className = 'score-badge fail';
+    badge.textContent += ' — Pelajari kembali materi dan coba lagi!';
+  }
+}
+
+function applyState(){
+  for(let i=0; i<TOTAL_SECS; i++){
+    const sec = document.getElementById('sec' + i);
+    if(!sec) continue;
+    if(state.done.includes(i)){
+      sec.classList.remove('locked');
+      const isDone = (i < state.done.length - 1) || (state.done.length === TOTAL_SECS);
+      sec.classList.toggle('done-sec', isDone);
+    } else {
+      if(!sec.classList.contains('locked')) sec.classList.add('locked');
+      sec.classList.remove('done-sec');
+    }
+  }
+
+  state.mcqSel.forEach((sel, q)=>{
+    if(sel === null) return;
+    document.querySelectorAll('#mcq' + q + ' .opt')[sel]?.classList.add('selected');
+  });
+
+  Object.entries(state.matchPairs).forEach(([t, d])=>{
+    const color = PAIR_COLORS[t % PAIR_COLORS.length];
+    const termEl = document.querySelectorAll('#terms .match-term')[t];
+    const defEl = document.querySelectorAll('#defs .match-def')[d];
+    if(termEl){
+      termEl.style.borderColor = color;
+      termEl.style.background = color + '18';
+      termEl.style.color = color;
+    }
+    if(defEl){
+      defEl.style.borderColor = color;
+      defEl.style.background = color + '18';
+      defEl.style.color = color;
+    }
+  });
+
+  if(state.submitted) submitQuiz();
+  updateProgress();
+}
+
+loadState();
+applyState();
+</script>
+</body>
+</html>

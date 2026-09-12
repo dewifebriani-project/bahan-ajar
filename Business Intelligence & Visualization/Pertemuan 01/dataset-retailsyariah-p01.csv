@@ -1,0 +1,61 @@
+id_transaksi,tanggal,nama_toko,kota,provinsi,kategori_produk,nama_produk,qty,harga_satuan,total_penjualan,metode_pembayaran,status_halal
+T001,2026-01-05,Minimarket Berkah,Bogor,Jawa Barat,Makanan & Minuman,Beras Premium 5 kg,3,75000,225000,QRIS,Bersertifikat MUI
+T002,2026-01-07,Toko Amanah,Jakarta,DKI Jakarta,Herbal & Kesehatan,Madu Hutan 500g,2,145000,290000,Transfer Bank,Bersertifikat MUI
+T003,2026-01-09,Minimarket Syariah Barokah,Bandung,Jawa Barat,Perawatan Diri,Sampo Zaitun 200ml,4,35000,140000,Tunai,Bersertifikat MUI
+T004,2026-01-12,Toko Halal Mandiri,Surabaya,Jawa Timur,Pakaian Muslim,Mukena Premium,1,185000,185000,Kartu Debit,Bersertifikat MUI
+T005,2026-01-14,Minimarket Hijau,Yogyakarta,DI Yogyakarta,Makanan & Minuman,Kurma Ajwa 500g,5,125000,625000,QRIS,Bersertifikat MUI
+T006,2026-01-16,Minimarket Berkah,Bogor,Jawa Barat,Perawatan Diri,Pasta Gigi Siwak,6,22000,132000,Tunai,Bersertifikat MUI
+T007,2026-01-18,Toko Amanah,Jakarta,DKI Jakarta,Perlengkapan Rumah,Deterjen Halal 1kg,8,25000,200000,QRIS,Bersertifikat MUI
+T008,2026-01-20,Minimarket Syariah Barokah,Bandung,Jawa Barat,Herbal & Kesehatan,Habbatussauda 100 kapsul,3,55000,165000,Transfer Bank,Bersertifikat MUI
+T009,2026-01-22,Toko Halal Mandiri,Surabaya,Jawa Timur,Makanan & Minuman,Minyak Goreng Bimoli,10,28000,280000,Tunai,Bersertifikat MUI
+T010,2026-01-25,Minimarket Hijau,Yogyakarta,DI Yogyakarta,Pakaian Muslim,Jilbab Jersey,2,65000,130000,Kartu Debit,Bersertifikat MUI
+T011,2026-02-03,Minimarket Berkah,Bogor,Jawa Barat,Makanan & Minuman,Susu Full Cream 1L,12,18000,216000,QRIS,Bersertifikat MUI
+T012,2026-02-05,Toko Amanah,Jakarta,DKI Jakarta,Perawatan Diri,Krim Wajah Aloe Vera,3,45000,135000,Transfer Bank,Dalam Proses
+T013,2026-02-08,Minimarket Syariah Barokah,Bandung,Jawa Barat,Makanan & Minuman,Mie Instan Halal,20,3500,70000,Tunai,Bersertifikat MUI
+T014,2026-02-10,Toko Halal Mandiri,Surabaya,Jawa Timur,Herbal & Kesehatan,Temulawak Instant,5,28000,140000,QRIS,Bersertifikat MUI
+T015,2026-02-12,Minimarket Hijau,Yogyakarta,DI Yogyakarta,Perlengkapan Rumah,Sabun Cuci Piring,10,15000,150000,Tunai,Bersertifikat MUI
+T016,2026-02-15,Minimarket Berkah,Bogor,Jawa Barat,Pakaian Muslim,Sarung Tenun,3,95000,285000,Transfer Bank,Bersertifikat MUI
+T017,2026-02-18,Toko Amanah,Jakarta,DKI Jakarta,Makanan & Minuman,Beras Premium 5 kg,5,75000,375000,QRIS,Bersertifikat MUI
+T018,2026-02-20,Minimarket Syariah Barokah,Bandung,Jawa Barat,Herbal & Kesehatan,Sari Kurma 300ml,4,85000,340000,Kartu Debit,Bersertifikat MUI
+T019,2026-02-22,Toko Halal Mandiri,Surabaya,Jawa Timur,Perawatan Diri,Sabun Mandi Halal,15,12000,180000,Tunai,Bersertifikat MUI
+T020,2026-02-25,Minimarket Hijau,Yogyakarta,DI Yogyakarta,Makanan & Minuman,Kurma Ajwa 500g,3,125000,375000,QRIS,Bersertifikat MUI
+T021,2026-03-02,Minimarket Berkah,Bogor,Jawa Barat,Herbal & Kesehatan,Madu Hutan 500g,3,145000,435000,Transfer Bank,Bersertifikat MUI
+T022,2026-03-05,Toko Amanah,Jakarta,DKI Jakarta,Perlengkapan Rumah,Pengharum Ruangan,6,32000,192000,QRIS,Dalam Proses
+T023,2026-03-07,Minimarket Syariah Barokah,Bandung,Jawa Barat,Pakaian Muslim,Mukena Premium,2,185000,370000,Kartu Debit,Bersertifikat MUI
+T024,2026-03-10,Toko Halal Mandiri,Surabaya,Jawa Timur,Makanan & Minuman,Minyak Goreng Bimoli,15,28000,420000,Tunai,Bersertifikat MUI
+T025,2026-03-12,Minimarket Hijau,Yogyakarta,DI Yogyakarta,Perawatan Diri,Sampo Zaitun 200ml,5,35000,175000,QRIS,Bersertifikat MUI
+T026,2026-03-15,Minimarket Berkah,Bogor,Jawa Barat,Makanan & Minuman,Susu Full Cream 1L,20,18000,360000,Tunai,Bersertifikat MUI
+T027,2026-03-18,Toko Amanah,Jakarta,DKI Jakarta,Herbal & Kesehatan,Habbatussauda 100 kapsul,5,55000,275000,Transfer Bank,Bersertifikat MUI
+T028,2026-03-20,Minimarket Syariah Barokah,Bandung,Jawa Barat,Makanan & Minuman,Mie Instan Halal,30,3500,105000,Tunai,Bersertifikat MUI
+T029,2026-03-22,Toko Halal Mandiri,Surabaya,Jawa Timur,Pakaian Muslim,Jilbab Jersey,5,65000,325000,Kartu Debit,Bersertifikat MUI
+T030,2026-03-25,Minimarket Hijau,Yogyakarta,DI Yogyakarta,Perlengkapan Rumah,Deterjen Halal 1kg,12,25000,300000,QRIS,Bersertifikat MUI
+T031,2026-04-01,Minimarket Berkah,Bogor,Jawa Barat,Makanan & Minuman,Kurma Ajwa 500g,10,125000,1250000,QRIS,Bersertifikat MUI
+T032,2026-04-03,Toko Amanah,Jakarta,DKI Jakarta,Makanan & Minuman,Beras Premium 5 kg,8,75000,600000,Transfer Bank,Bersertifikat MUI
+T033,2026-04-05,Minimarket Syariah Barokah,Bandung,Jawa Barat,Perawatan Diri,Pasta Gigi Siwak,10,22000,220000,Tunai,Bersertifikat MUI
+T034,2026-04-08,Toko Halal Mandiri,Surabaya,Jawa Timur,Herbal & Kesehatan,Madu Hutan 500g,5,145000,725000,QRIS,Bersertifikat MUI
+T035,2026-04-10,Minimarket Hijau,Yogyakarta,DI Yogyakarta,Pakaian Muslim,Sarung Tenun,8,95000,760000,Kartu Debit,Bersertifikat MUI
+T036,2026-04-12,Minimarket Berkah,Bogor,Jawa Barat,Perlengkapan Rumah,Sabun Cuci Piring,15,15000,225000,Tunai,Bersertifikat MUI
+T037,2026-04-15,Toko Amanah,Jakarta,DKI Jakarta,Herbal & Kesehatan,Temulawak Instant,8,28000,224000,QRIS,Bersertifikat MUI
+T038,2026-04-18,Minimarket Syariah Barokah,Bandung,Jawa Barat,Makanan & Minuman,Susu Full Cream 1L,18,18000,324000,Transfer Bank,Bersertifikat MUI
+T039,2026-04-20,Toko Halal Mandiri,Surabaya,Jawa Timur,Perawatan Diri,Krim Wajah Aloe Vera,6,45000,270000,Kartu Debit,Dalam Proses
+T040,2026-04-22,Minimarket Hijau,Yogyakarta,DI Yogyakarta,Makanan & Minuman,Minyak Goreng Bimoli,20,28000,560000,Tunai,Bersertifikat MUI
+T041,2026-05-04,Minimarket Berkah,Bogor,Jawa Barat,Herbal & Kesehatan,Sari Kurma 300ml,6,85000,510000,QRIS,Bersertifikat MUI
+T042,2026-05-06,Toko Amanah,Jakarta,DKI Jakarta,Pakaian Muslim,Mukena Premium,3,185000,555000,Transfer Bank,Bersertifikat MUI
+T043,2026-05-08,Minimarket Syariah Barokah,Bandung,Jawa Barat,Makanan & Minuman,Kurma Ajwa 500g,7,125000,875000,QRIS,Bersertifikat MUI
+T044,2026-05-10,Toko Halal Mandiri,Surabaya,Jawa Timur,Perlengkapan Rumah,Pengharum Ruangan,9,32000,288000,Tunai,Dalam Proses
+T045,2026-05-14,Minimarket Hijau,Yogyakarta,DI Yogyakarta,Perawatan Diri,Sampo Zaitun 200ml,8,35000,280000,Kartu Debit,Bersertifikat MUI
+T046,2026-05-16,Minimarket Berkah,Bogor,Jawa Barat,Makanan & Minuman,Beras Premium 5 kg,10,75000,750000,QRIS,Bersertifikat MUI
+T047,2026-05-18,Toko Amanah,Jakarta,DKI Jakarta,Herbal & Kesehatan,Habbatussauda 100 kapsul,7,55000,385000,Transfer Bank,Bersertifikat MUI
+T048,2026-05-20,Minimarket Syariah Barokah,Bandung,Jawa Barat,Pakaian Muslim,Jilbab Jersey,10,65000,650000,QRIS,Bersertifikat MUI
+T049,2026-05-22,Toko Halal Mandiri,Surabaya,Jawa Timur,Makanan & Minuman,Mie Instan Halal,50,3500,175000,Tunai,Bersertifikat MUI
+T050,2026-05-25,Minimarket Hijau,Yogyakarta,DI Yogyakarta,Perlengkapan Rumah,Deterjen Halal 1kg,15,25000,375000,QRIS,Bersertifikat MUI
+T051,2026-06-02,Minimarket Berkah,Bogor,Jawa Barat,Makanan & Minuman,Minyak Goreng Bimoli,12,28000,336000,Tunai,Bersertifikat MUI
+T052,2026-06-04,Toko Amanah,Jakarta,DKI Jakarta,Perawatan Diri,Sabun Mandi Halal,20,12000,240000,QRIS,Bersertifikat MUI
+T053,2026-06-07,Minimarket Syariah Barokah,Bandung,Jawa Barat,Herbal & Kesehatan,Madu Hutan 500g,4,145000,580000,Transfer Bank,Bersertifikat MUI
+T054,2026-06-09,Toko Halal Mandiri,Surabaya,Jawa Timur,Pakaian Muslim,Sarung Tenun,6,95000,570000,Kartu Debit,Bersertifikat MUI
+T055,2026-06-12,Minimarket Hijau,Yogyakarta,DI Yogyakarta,Makanan & Minuman,Susu Full Cream 1L,25,18000,450000,Tunai,Bersertifikat MUI
+T056,2026-06-14,Minimarket Berkah,Bogor,Jawa Barat,Herbal & Kesehatan,Temulawak Instant,10,28000,280000,QRIS,Bersertifikat MUI
+T057,2026-06-16,Toko Amanah,Jakarta,DKI Jakarta,Perlengkapan Rumah,Sabun Cuci Piring,20,15000,300000,Transfer Bank,Bersertifikat MUI
+T058,2026-06-18,Minimarket Syariah Barokah,Bandung,Jawa Barat,Makanan & Minuman,Kurma Ajwa 500g,6,125000,750000,QRIS,Bersertifikat MUI
+T059,2026-06-21,Toko Halal Mandiri,Surabaya,Jawa Timur,Perawatan Diri,Krim Wajah Aloe Vera,4,45000,180000,Kartu Debit,Dalam Proses
+T060,2026-06-24,Minimarket Hijau,Yogyakarta,DI Yogyakarta,Herbal & Kesehatan,Sari Kurma 300ml,8,85000,680000,QRIS,Bersertifikat MUI

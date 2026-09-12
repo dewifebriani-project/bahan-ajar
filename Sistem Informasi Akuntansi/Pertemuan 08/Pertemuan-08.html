@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pertemuan 8 — Ujian Tengah Semester (UTS): Analisis &amp; Pemetaan AIS pada Organisasi Syariah</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap">
+<style>
+/* ═══ MEETING COLOR VARIABLES (P08 = Imperial Violet & Amber Gold) ═══ */
+:root{
+  --meet-from:#120520; --meet-mid:#2A0A48; --meet-to:#481470;
+  --meet-acc:#D48020;  --meet-acc2:#F0A830; --meet-star:#E09020;
+  /* SYSTEM TOKENS */
+  --bg:#EDF1F6;--sf:#FFFFFF;--sf2:#FAF4FD;--sf3:#F5ECFA;
+  --bd:#D0BCD8;--bs:#E4D6EC;
+  --tx:#160520;--txm:#422850;--txl:#7A5E88;
+  --pri:#2A0A48;--pmid:#7040B0;--pril:#F4E8FC;--prx:#FAF0FF;
+  --acc:#D48020;--accl:#FCEBD8;
+  --sya:#1F9060;--syal:#D0EEE2;--syab:#40B080;
+  --ok:#1F9060;--okl:#D0EEE2;
+  --warn:#C03818;--warnl:#FCDBD0;
+  /* MATCHING PAIR COLORS */
+  --p0:#7040B0;--p0l:#F4E8FC; --p1:#D48020;--p1l:#FCEBD8;
+  --p2:#1F9060;--p2l:#D0EEE2; --p3:#1B7898;--p3l:#D8EEF6;
+  --p4:#C03818;--p4l:#FCDBD0; --p5:#9E6800;--p5l:#FDF0D0;
+  --r:8px;--rs:5px;
+  --shadow:0 4px 20px rgba(42,10,72,.12);
+  --shadow-sm:0 2px 8px rgba(42,10,72,.08);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#0A0310;--sf:#140720;--sf2:#0E0416;--sf3:#1A0C28;
+  --bd:#321844;--bs:#240E34;
+  --tx:#F6EEFA;--txm:#B8A4C4;--txl:#786284;
+  --pri:#B870F0;--pmid:#8C50D0;--pril:#240A38;--prx:#1A062C;
+  --acc:#F0A830;--accl:#2E1804;
+  --sya:#30B878;--syal:#041410;--syab:#186040;
+  --ok:#30B878;--okl:#041410;
+  --warn:#E05030;--warnl:#280800;
+  --p0l:#240A38;--p1l:#2E1804;--p2l:#041410;--p3l:#0A2030;--p4l:#200408;--p5l:#241800;
+}}
+:root[data-theme=dark]{
+  --bg:#0A0310;--sf:#140720;--sf2:#0E0416;--sf3:#1A0C28;
+  --bd:#321844;--bs:#240E34;
+  --tx:#F6EEFA;--txm:#B8A4C4;--txl:#786284;
+  --pri:#B870F0;--pmid:#8C50D0;--pril:#240A38;--prx:#1A062C;
+  --acc:#F0A830;--accl:#2E1804;
+  --sya:#30B878;--syal:#041410;--syab:#186040;
+  --ok:#30B878;--okl:#041410;
+  --warn:#E05030;--warnl:#280800;
+  --p0l:#240A38;--p1l:#2E1804;--p2l:#041410;--p3l:#0A2030;--p4l:#200408;--p5l:#241800;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color:var(--tx);margin:0;font-size:15px;line-height:1.65}
+
+/* ── TOPBAR ── */
+.topbar{background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.back-btn{color:rgba(255,255,255,.65);font-size:13px;font-weight:600;cursor:pointer;border:none;background:none;display:flex;align-items:center;gap:4px;transition:color .15s;text-decoration:none}
+.back-btn:hover{color:#fff}
+.top-div{width:1px;height:20px;background:rgba(255,255,255,.15)}
+.top-course{font-size:11.5px;color:rgba(255,255,255,.5)}
+.top-meeting{font-size:13px;font-weight:700;color:rgba(255,255,255,.95)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.top-badge{font-size:11px;font-weight:700;background:rgba(212,128,32,.3);border:1px solid rgba(240,168,48,.5);border-radius:12px;padding:2px 10px;color:#FFD488}
+.prog-wrap{width:120px;height:5px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden}
+.prog-bar{height:100%;background:var(--meet-acc2);border-radius:3px;transition:width .4s ease}
+.prog-txt{font-size:11px;color:rgba(255,255,255,.5);text-align:right}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(160deg,var(--meet-from) 0%,var(--meet-mid) 55%,var(--meet-to) 100%);color:#fff;padding:38px 24px 0;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;pointer-events:none;opacity:.15}
+.hero-inner{max-width:840px;margin:0 auto;position:relative;z-index:1;padding-bottom:30px}
+.hero-ew{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.hero-line{width:22px;height:1px;background:var(--meet-acc2)}
+.hero-tag{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--meet-acc2)}
+.hero-bignum{font-family:'Amiri',serif;font-size:72px;font-weight:700;line-height:1;color:rgba(255,255,255,.08);position:absolute;right:0;top:-8px;letter-spacing:-.02em;-webkit-user-select:none;user-select:none}
+.hero-title{font-family:'Amiri',serif;font-size:30px;font-weight:700;margin:0 0 6px;line-height:1.2}
+.hero-sub{font-size:14.5px;color:rgba(255,255,255,.7);margin:0 0 18px}
+.hero-chips{display:flex;flex-wrap:wrap;gap:6px}
+.hchip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:3px 11px;font-size:12px;color:rgba(255,255,255,.8)}
+.hchip strong{color:#fff}
+.hero-arch{line-height:0;margin-top:-1px}
+.hero-arch svg{display:block;width:100%;height:26px}
+
+/* ── STEPS CONNECTOR ── */
+.steps-wrap{background:var(--sf);border-bottom:1px solid var(--bs);padding:12px 24px;overflow-x:auto;position:sticky;top:52px;z-index:90;box-shadow:var(--shadow-sm)}
+.steps{display:flex;align-items:center;max-width:840px;margin:0 auto}
+.step{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--txl);white-space:nowrap;cursor:default}
+.sdot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:var(--sf3);border:2px solid var(--bs);color:var(--txl);flex-shrink:0;transition:all .25s}
+.step.done .sdot{background:var(--ok);border-color:var(--ok);color:#fff}
+.step.active .sdot{background:var(--pmid);border-color:var(--pmid);color:#fff}
+.step.quiz .sdot{background:var(--accl);border-color:var(--acc);color:var(--acc)}
+.step.quiz.done .sdot{background:var(--ok);border-color:var(--ok);color:#fff}
+.slabel{display:none}
+@media(min-width:580px){.slabel{display:inline}}
+.sconn{flex:1;height:2px;background:var(--bs);min-width:10px;transition:background .25s}
+.sconn.done{background:var(--ok)}
+
+/* ── BODY ── */
+.body{max-width:840px;margin:0 auto;padding:26px 18px 80px}
+@media(min-width:640px){.body{padding:30px 26px 80px}}
+
+/* ── SECTION CARD ── */
+.sec{background:var(--sf);border:1px solid var(--bs);border-radius:var(--r);margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow-sm);transition:opacity .4s,filter .4s}
+.sec.locked{opacity:.38;filter:grayscale(.45);pointer-events:none;user-select:none}
+.sec.unlocking{animation:sIn .35s ease both}
+@keyframes sIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.sec-hd{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--bs);background:var(--sf3)}
+.sec-num{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:var(--pmid);color:#fff;flex-shrink:0;transition:background .3s}
+.sec.done-sec .sec-num{background:var(--ok)}
+.sec-title-wrap{flex:1}
+.sec-title{font-family:'Amiri',serif;font-size:17.5px;font-weight:700;color:var(--pri);margin:0}
+.sec-sub2{font-size:12px;color:var(--txl);margin:1px 0 0}
+.sec-chk{font-size:18px;color:var(--ok);flex-shrink:0;display:none}
+.sec.done-sec .sec-chk{display:block}
+.sec-body{padding:20px 22px}
+@media(max-width:480px){.sec-body{padding:14px 14px}}
+.sec-foot{padding:14px 22px;border-top:1px solid var(--bs);display:flex;justify-content:flex-end;align-items:center;gap:10px;background:var(--sf3)}
+.done-msg{font-size:12.5px;color:var(--ok);font-weight:600;display:none}
+.sec.done-sec .done-msg{display:block}
+.sec.done-sec .paham-btn{display:none}
+.paham-btn{background:var(--pmid);color:#fff;border:none;border-radius:var(--r);padding:9px 20px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s;font-family:'Source Sans 3',sans-serif}
+.paham-btn:hover{background:#8C50D0}
+.paham-btn::after{content:'→'}
+
+/* ── TYPOGRAPHY ── */
+.lead{font-size:15.5px;color:var(--txm);line-height:1.7;margin:0 0 16px}
+h3.sub{font-family:'Amiri',serif;font-size:18px;font-weight:700;color:var(--pri);margin:20px 0 9px;display:flex;align-items:center;gap:8px}
+h3.sub::before{content:'';width:4px;height:16px;background:var(--meet-acc2);border-radius:2px;flex-shrink:0}
+h4.sub2{font-size:13.5px;font-weight:700;color:var(--pmid);margin:14px 0 6px;text-transform:uppercase;letter-spacing:.06em}
+p{color:var(--txm);margin:0 0 11px;line-height:1.65}
+ul.detail{padding-left:0;list-style:none;margin:0 0 13px}
+ul.detail li{padding:6px 0 6px 18px;position:relative;color:var(--txm);border-bottom:1px solid var(--bs);font-size:14px;line-height:1.5}
+ul.detail li:last-child{border-bottom:none}
+ul.detail li::before{content:'▸';position:absolute;left:0;color:var(--pmid);font-size:11px;top:8px}
+ul.detail li strong{color:var(--tx)}
+ul.bullet{padding-left:20px;margin:0 0 13px}
+ul.bullet li{margin-bottom:5px;color:var(--txm);font-size:14px;line-height:1.5}
+
+/* ── CALLOUT ── */
+.callout{border-radius:var(--rs);padding:13px 16px;margin:12px 0;font-size:14px;line-height:1.6}
+.callout.info{background:var(--prx);border-left:4px solid var(--pmid);color:var(--txm)}
+.callout.info strong{color:var(--pri)}
+.callout.warn{background:var(--warnl);border-left:4px solid var(--warn);color:var(--txm)}
+.callout.warn strong{color:var(--warn)}
+.callout.sya{background:var(--syal);border-left:4px solid var(--sya);color:var(--txm)}
+.callout.sya strong{color:var(--sya)}
+.callout.case{background:var(--sf3);border:1px solid var(--bs);border-left:4px solid var(--meet-acc2);color:var(--txm)}
+.case-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--meet-acc2);margin-bottom:5px}
+
+/* ── GRIDS & TILES ── */
+.dim-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:14px 0}
+@media(max-width:760px){.dim-grid{grid-template-columns:1fr}}
+.dim-card{background:var(--sf3);border:1.5px solid var(--bs);border-radius:var(--rs);padding:12px 10px;text-align:center;transition:all .2s}
+.dim-card:hover{border-color:var(--pmid);box-shadow:var(--shadow-sm);transform:translateY(-2px)}
+.dim-num{font-size:10.5px;font-weight:700;color:var(--pmid);letter-spacing:.06em}
+.dim-title{font-family:'Amiri',serif;font-size:14.5px;font-weight:700;color:var(--pri);margin:3px 0 4px}
+.dim-desc{font-size:11.5px;color:var(--txm);line-height:1.4}
+
+.rubrik-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+@media(max-width:700px){.rubrik-grid{grid-template-columns:repeat(2,1fr)}}
+.rubrik-card{background:var(--sf);border:1px solid var(--bs);border-radius:var(--rs);padding:14px;position:relative;border-top:4px solid var(--pmid)}
+.rubrik-pct{font-size:24px;font-weight:700;color:var(--pmid);line-height:1;margin-bottom:4px}
+.rubrik-name{font-family:'Amiri',serif;font-size:15px;font-weight:700;color:var(--pri);margin-bottom:6px}
+.rubrik-desc{font-size:12px;color:var(--txm);line-height:1.45}
+
+/* ── COMPARISON TABLE ── */
+.table-wrap{overflow-x:auto;margin:14px 0}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{background:var(--pri);color:#fff;padding:9px 12px;text-align:left;font-size:12px;letter-spacing:.03em}
+.tbl td{padding:9px 12px;border-bottom:1px solid var(--bs);color:var(--txm);vertical-align:top}
+.tbl tr:nth-child(even) td{background:var(--sf3)}
+.tbl tr:last-child td{border-bottom:none}
+
+/* ── AYAT & SYARIAH ── */
+.ayat-box{background:linear-gradient(135deg,#120520,#2A0A48);border-radius:var(--rs);padding:18px 20px;color:#fff;margin:14px 0}
+.ayat-ar{font-family:'Amiri',serif;font-size:19px;line-height:1.9;color:#FFD898;direction:rtl;text-align:right;margin-bottom:8px}
+.ayat-trans{font-size:13px;color:rgba(255,255,255,.8);line-height:1.55;font-style:italic}
+.ayat-ref{font-size:11px;color:var(--meet-acc2);font-weight:700;margin-top:6px;letter-spacing:.05em}
+
+/* ── QUIZ STYLES ── */
+.quiz-sec{background:var(--sf);border:1.5px solid var(--bs);border-radius:var(--r);margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow-sm);transition:opacity .4s,filter .4s}
+.quiz-sec.locked{opacity:.38;filter:grayscale(.45);pointer-events:none;user-select:none}
+.quiz-hd{display:flex;align-items:center;gap:12px;padding:16px 22px;background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff}
+.quiz-icon{font-size:22px}
+.quiz-hd-title{font-family:'Amiri',serif;font-size:19px;font-weight:700;margin:0}
+.quiz-hd-sub{font-size:12px;color:rgba(255,255,255,.7);margin:2px 0 0}
+.quiz-body{padding:22px}
+.q-item{margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--bs)}
+.q-item:last-of-type{border-bottom:none;margin-bottom:12px}
+.q-text{font-size:14.5px;font-weight:600;color:var(--pri);margin-bottom:10px;line-height:1.5}
+.q-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--pmid);color:#fff;border-radius:50%;font-size:11px;margin-right:6px}
+.options{display:grid;gap:7px}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:9px 13px;border:1.5px solid var(--bs);border-radius:var(--rs);cursor:pointer;background:var(--sf);transition:all .15s}
+.opt:hover{border-color:var(--pmid);background:var(--prx)}
+.opt.selected{border-color:var(--pmid);background:var(--pril)}
+.opt.correct{border-color:var(--ok);background:var(--okl)}
+.opt.wrong{border-color:var(--warn);background:var(--warnl)}
+.opt-ltr{width:22px;height:22px;border-radius:50%;background:var(--sf3);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--txm);flex-shrink:0;margin-top:1px}
+.opt.selected .opt-ltr{background:var(--pmid);color:#fff;border-color:var(--pmid)}
+.opt.correct .opt-ltr{background:var(--ok);color:#fff;border-color:var(--ok)}
+.opt.wrong .opt-ltr{background:var(--warn);color:#fff;border-color:var(--warn)}
+.opt-txt{font-size:13.5px;color:var(--txm);line-height:1.45}
+.opt-fb{font-size:12px;margin-top:4px;display:none}
+.opt.correct .opt-fb{display:block;color:var(--ok);font-weight:600}
+.opt.wrong .opt-fb{display:block;color:var(--warn)}
+
+/* MATCHING */
+.match-intro{font-size:13.5px;color:var(--txm);margin-bottom:12px;line-height:1.5}
+.match-container{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:600px){.match-container{grid-template-columns:1fr}}
+.match-col-title{font-size:12px;font-weight:700;color:var(--pri);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.match-terms,.match-defs{display:grid;gap:6px}
+.match-term,.match-def{padding:9px 12px;border:1.5px solid var(--bs);border-radius:var(--rs);background:var(--sf3);font-size:13px;cursor:pointer;transition:all .15s;min-height:42px;display:flex;align-items:center}
+.match-term:hover,.match-def:hover{border-color:var(--pmid)}
+.match-term.selected,.match-def.selected{border-color:var(--pmid);background:var(--pril);box-shadow:0 0 0 2px var(--pmid)}
+.quiz-foot{padding:14px 22px;border-top:1px solid var(--bs);display:flex;justify-content:space-between;align-items:center;background:var(--sf3)}
+.submit-btn{background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;border:none;border-radius:var(--r);padding:10px 22px;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s;font-family:'Source Sans 3',sans-serif}
+.submit-btn:hover{opacity:.9}
+.score-badge{font-size:13px;font-weight:700;padding:5px 14px;border-radius:14px;display:none}
+.score-badge.pass{background:var(--okl);color:var(--ok);border:1px solid var(--ok)}
+.score-badge.fail{background:var(--warnl);color:var(--warn);border:1px solid var(--warn)}
+
+/* ── COMPLETION ── */
+.completion{display:none;background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;border-radius:var(--r);padding:28px 24px;text-align:center;margin-top:18px}
+.completion.show{display:block}
+.completion h2{font-family:'Amiri',serif;font-size:24px;font-weight:700;margin:0 0 8px}
+.completion p{color:rgba(255,255,255,.8);font-size:14px;margin:0 0 16px;max-width:600px;margin-left:auto;margin-right:auto}
+.completion .lab-btn{display:inline-block;background:var(--meet-acc2);color:#fff;border-radius:20px;padding:11px 26px;font-weight:700;font-size:14px;text-decoration:none;transition:background .15s}
+.completion .lab-btn:hover{background:#FFC050}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-left">
+    <a class="back-btn" href="../RPS-SIA.html" title="Kembali ke RPS SIA">← RPS</a>
+    <div class="top-div"></div>
+    <div>
+      <div class="top-course">Sistem Informasi Akuntansi</div>
+      <div class="top-meeting">Pertemuan 08 — Milestone Ujian Tengah Semester (UTS)</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span class="top-badge">BOBOT 30% · CPMK-4</span>
+    <div>
+      <div class="prog-wrap"><div class="prog-bar" id="topProg" style="width:14%"></div></div>
+      <div class="prog-txt" id="topPct">14%</div>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <svg class="hero-bg" viewBox="0 0 400 160" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs><pattern id="dots8" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="12" cy="12" r="1.5" fill="#D48020" opacity=".4"/>
+    </pattern></defs>
+    <rect width="100%" height="100%" fill="url(#dots8)"/>
+  </svg>
+  <div class="hero-inner">
+    <div class="hero-ew">
+      <div class="hero-line"></div>
+      <span class="hero-tag">Milestone Evaluasi Tengah Semester · Tahap 1</span>
+    </div>
+    <div class="hero-bignum">08</div>
+    <h1 class="hero-title">Ujian Tengah Semester: Analisis &amp; Pemetaan AIS pada Organisasi Syariah</h1>
+    <p class="hero-sub">Sintesis Komprehensif CPMK-1 s.d. CPMK-3 · Pemodelan DFD &amp; Flowchart · Evaluasi Pengendalian COSO &amp; IT Controls · Kepatuhan Syariah &amp; Sidang Presentasi</p>
+    <div class="hero-chips">
+      <span class="hchip">🎯 <strong>CPMK-4 (Bloom C5 Mengevaluasi)</strong></span>
+      <span class="hchip">⚖️ <strong>Bobot Penilaian: 30% Nilai Akhir</strong></span>
+      <span class="hchip">🏢 <strong>Objek: BMT / BPRS / Koperasi / UMKM Halal</strong></span>
+      <span class="hchip">📄 <strong>Laporan 15–20 Hal + Presentasi</strong></span>
+      <span class="hchip">✨ <strong>Doktrin: Itqan dalam Karya Akademik</strong></span>
+    </div>
+  </div>
+  <div class="hero-arch"><svg viewBox="0 0 1200 26" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,26 L0,13 Q30,0 60,13 Q90,26 120,13 Q150,0 180,13 Q210,26 240,13 Q270,0 300,13 Q330,26 360,13 Q390,0 420,13 Q450,26 480,13 Q510,0 540,13 Q570,26 600,13 Q630,0 660,13 Q690,26 720,13 Q750,0 780,13 Q810,26 840,13 Q870,0 900,13 Q930,26 960,13 Q990,0 1020,13 Q1050,26 1080,13 Q1110,0 1140,13 Q1170,26 1200,13 L1200,26 Z" fill="var(--bg)"/>
+  </svg></div>
+</section>
+
+<!-- STEPS CONNECTOR -->
+<nav class="steps-wrap" aria-label="Progres Pembelajaran">
+  <div class="steps">
+    <div class="step active" id="st0"><div class="sdot">1</div><span class="slabel">Mandat UTS</span></div>
+    <div class="sconn" id="sc0"></div>
+    <div class="step" id="st1"><div class="sdot">2</div><span class="slabel">5 Dimensi Analisis</span></div>
+    <div class="sconn" id="sc1"></div>
+    <div class="step" id="st2"><div class="sdot">3</div><span class="slabel">DFD &amp; Flowchart</span></div>
+    <div class="sconn" id="sc2"></div>
+    <div class="step" id="st3"><div class="sdot">4</div><span class="slabel">Evaluasi COSO &amp; IT</span></div>
+    <div class="sconn" id="sc3"></div>
+    <div class="step" id="st4"><div class="sdot">5</div><span class="slabel">Rubrik Penilaian</span></div>
+    <div class="sconn" id="sc4"></div>
+    <div class="step" id="st5"><div class="sdot">6</div><span class="slabel">Benchmark Kasus</span></div>
+    <div class="sconn" id="sc5"></div>
+    <div class="step quiz" id="st6"><div class="sdot">7</div><span class="slabel">Kuis Kesiapan</span></div>
+  </div>
+</nav>
+
+<!-- BODY -->
+<div class="body">
+
+  <!-- SEKSI 0: MANDAT & OVERVIEW PROJECT UTS -->
+  <div class="sec" id="sec0">
+    <div class="sec-hd">
+      <div class="sec-num">01</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">Mandat &amp; Kerangka Kerja Project Ujian Tengah Semester</h2>
+        <div class="sec-sub2">Sintesis Fase 1 (P01–P07) · Bobot 30% · Kolaborasi Kelompok 3–4 Mahasiswa</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Project Ujian Tengah Semester (UTS) adalah puncak evaluasi Fase 1 perkuliahan Sistem Informasi Akuntansi. Mahasiswa ditantang untuk menerapkan seluruh teori, teknik pemodelan proses, dan kerangka pengendalian internal pada <strong>organisasi bisnis syariah nyata</strong> (BMT, BPRS, Koperasi Syariah, atau UMKM Halal).</p>
+
+      <div class="callout info">
+        <strong>Tujuan Capaian (CPMK-4):</strong> Mampu merancang pemetaan proses bisnis terintegrasi (DFD &amp; Document Flowchart), mengevaluasi titik rawan kecurangan (Fraud Triangle), menguji 5 komponen pengendalian internal COSO serta kontrol IT, dan memberikan rekomendasi perbaikan sistem yang berakar pada nilai-nilai syariah.
+      </div>
+
+      <h3 class="sub">Integrasi Pengetahuan Fase 1 (Pertemuan 1 s.d. 7)</h3>
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Pertemuan</th>
+              <th>Topik Utama &amp; Modul Referensi</th>
+              <th>Integrasi dalam Laporan Project UTS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>P01 &amp; P02</strong></td>
+              <td>Fondasi AIS, 6 Komponen Sistem, Siklus Transaksi, &amp; Hierarki Data</td>
+              <td>Pemetaan profil organisasi, 6 komponen sistem riil, dan bagan akun (Chart of Accounts).</td>
+            </tr>
+            <tr>
+              <td><strong>P03</strong></td>
+              <td>Enterprise Systems (ERP), Value Chain, SCM, CRM &amp; Prinsip Adl</td>
+              <td>Analisis integrasi fungsi rantai nilai bisnis dan keterhubungan pertukaran data antar divisi.</td>
+            </tr>
+            <tr>
+              <td><strong>P04</strong></td>
+              <td>Etika Bisnis, Fraud Triangle, Tata Kelola &amp; Nilai Sidq-Amanah</td>
+              <td>Identifikasi titik rawan penyalahgunaan aset, korupsi, dan tekanan fraud operasional.</td>
+            </tr>
+            <tr>
+              <td><strong>P05</strong></td>
+              <td>Pengendalian Internal COSO 5 Komponen &amp; Doktrin Raqabah-Muhasabah</td>
+              <td>Evaluasi matriks 5 komponen COSO: Control Environment, Risk Assessment, Control Activities, Info-Com, Monitoring.</td>
+            </tr>
+            <tr>
+              <td><strong>P06</strong></td>
+              <td>Ancaman Siber, Social Engineering, Malware &amp; Defense-in-Depth</td>
+              <td>Audit keamanan data nasabah/transaksi dari phishing, ransomware, kebocoran data, dan privasi.</td>
+            </tr>
+            <tr>
+              <td><strong>P07</strong></td>
+              <td>ITGC, 9 Input Controls, Batch Processing, &amp; Syahadah Digital</td>
+              <td>Pemeriksaan kontrol masukan formulir, batch hash totals, rekonsiliasi, dan jejak audit elektronik.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(0)">Lanjut ke 5 Dimensi Analisis</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 1: 5 DIMENSI ANALISIS SISTEM -->
+  <div class="sec locked" id="sec1">
+    <div class="sec-hd">
+      <div class="sec-num">02</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">5 Dimensi Analisis Komprehensif Laporan UTS</h2>
+        <div class="sec-sub2">Struktur Baku 15–20 Halaman · Metodologi Investigasi &amp; Diagnosis Sistem</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Setiap laporan project UTS wajib membedah organisasi syariah yang dipilih melalui 5 pilar dimensi analitis terstruktur berikut:</p>
+
+      <div class="dim-grid">
+        <div class="dim-card">
+          <div class="dim-num">DIMENSI 1</div>
+          <div class="dim-title">Profil &amp; Proses Bisnis</div>
+          <div class="dim-desc">Identifikasi 6 komponen AIS entitas, model bisnis, dan struktur tata kelola.</div>
+        </div>
+        <div class="dim-card">
+          <div class="dim-num">DIMENSI 2</div>
+          <div class="dim-title">Pemetaan Diagram Sistem</div>
+          <div class="dim-desc">Penyusunan Diagram Konteks, DFD Level 1, dan Document Flowchart transaksi utama.</div>
+        </div>
+        <div class="dim-card">
+          <div class="dim-num">DIMENSI 3</div>
+          <div class="dim-title">Titik Rawan Fraud</div>
+          <div class="dim-desc">Analisis Fraud Triangle (Pressure, Opportunity, Rationalization) pada kasir/AO.</div>
+        </div>
+        <div class="dim-card">
+          <div class="dim-num">DIMENSI 4</div>
+          <div class="dim-title">Evaluasi COSO &amp; ITGC</div>
+          <div class="dim-desc">Pemeriksaan 5 pilar COSO, 9 input controls, batch controls, dan akses sistem.</div>
+        </div>
+        <div class="dim-card">
+          <div class="dim-num">DIMENSI 5</div>
+          <div class="dim-title">Kepatuhan Syariah &amp; Solusi</div>
+          <div class="dim-desc">Pemeriksaan keabsahan rukun akad dan rekomendasi perbaikan berbasis nilai Islam.</div>
+        </div>
+      </div>
+
+      <h3 class="sub">Struktur Sistematika Laporan UTS (15–20 Halaman)</h3>
+      <ul class="detail">
+        <li><strong>BAB I — Pendahuluan &amp; Profil Entitas:</strong> Latar belakang pemilihan objek, sejarah, visi-misi, bagan organisasi, dan identifikasi 6 komponen AIS yang berjalan saat ini.</li>
+        <li><strong>BAB II — Pemodelan Proses Bisnis &amp; Aliran Data:</strong> Diagram Konteks Level 0, DFD Level 1 (Siklus Pendanaan / Pembiayaan), dan Document Flowchart lintas bagian (swimlane).</li>
+        <li><strong>BAB III — Identifikasi Risiko &amp; Evaluasi Pengendalian Internal:</strong> Pemetaan Fraud Triangle, evaluasi matriks COSO 5 komponen, audit kontrol IT (ITGC dan IT Application Controls).</li>
+        <li><strong>BAB IV — Analisis Kesesuaian Syariah &amp; Titik Kritis Akad:</strong> Tinjauan kepatuhan akad fikih muamalah (bebas riba, gharar, maysir, tadlis, zulm) dan penerapan Syahadah Digital.</li>
+        <li><strong>BAB V — Rekomendasi Perbaikan Sistem &amp; Rencana Implementasi:</strong> Usulan perbaikan alur otorisasi, pemisahan tugas (SoD), desain kontrol formulir baru, dan rancangan tabel basis data.</li>
+        <li><strong>Daftar Pustaka &amp; Lampiran:</strong> Notulensi wawancara, foto bukti fisik formulir/sistem, transkrip observasi, dan lembar bimbingan.</li>
+      </ul>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(1)">Lanjut ke Standar DFD &amp; Flowchart</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 2: STANDAR PEMODELAN DFD & FLOWCHART -->
+  <div class="sec locked" id="sec2">
+    <div class="sec-hd">
+      <div class="sec-num">03</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">Standar Pemodelan Diagram DFD &amp; Document Flowchart</h2>
+        <div class="sec-sub2">Konvensi Notasi Edward Yourdon · Prinsip Balancing · Swimlane Flowchart</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Ketepatan notasi diagram adalah komponen dengan bobot 25% pada penilaian UTS. Pastikan diagram kelompok Anda mematuhi konvensi baku Romney &amp; Steinbart:</p>
+
+      <h3 class="sub">1. Aturan Baku Data Flow Diagram (DFD)</h3>
+      <ul class="bullet">
+        <li><strong>Diagram Konteks (Level 0):</strong> Hanya memuat 1 lingkaran proses utama (misal: <em>0.0 Sistem Informasi Akuntansi BMT</em>), entitas eksternal (Nasabah, Bank Mitra, DPS, OJK), dan aliran data masuk/keluar tanpa memunculkan Data Store.</li>
+        <li><strong>DFD Level 1:</strong> Mendekomposisi proses 0.0 menjadi sub-proses bernomor (1.0 Penerimaan Simpanan, 2.0 Pengajuan Akad Murabahah, 3.0 Penyaluran Dana, 4.0 Penutupan Buku Besar), lengkap dengan Data Store (<em>D1 Master Anggota, D2 Jurnal Transaksi</em>).</li>
+        <li><strong>Prinsip Balancing:</strong> Semua input dan output data flow pada Diagram Konteks WAJIB muncul secara konsisten pada DFD Level 1 tanpa ada aliran data siluman yang hilang.</li>
+        <li><strong>Larangan Kesalahan Fatal DFD:</strong>
+          <ul class="compact" style="margin-top:4px">
+            <li><em>Black Hole:</em> Proses menerima input tetapi tidak menghasilkan output data apa pun.</li>
+            <li><em>Miracle:</em> Proses menghasilkan output data tanpa ada input data yang masuk.</li>
+            <li><em>Direct Link:</em> Aliran data langsung dari Entitas Eksternal ke Data Store tanpa melewati lingkaran Proses.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3 class="sub">2. Aturan Baku Document Flowchart (Bagan Alir Dokumen)</h3>
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Simbol Standar</th>
+              <th>Nama Notasi</th>
+              <th>Fungsi Penggambaran pada Siklus Transaksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Persegi Panjang Melengkung Bawah</strong></td>
+              <td>Document Symbol</td>
+              <td>Menyatakan dokumen fisik/elektronik (Formulir Akad, Slip Setoran, Kuitansi, Faktur Tagihan).</td>
+            </tr>
+            <tr>
+              <td><strong>Persegi Panjang Biasa</strong></td>
+              <td>Manual Process</td>
+              <td>Aktivitas manual staf (Memeriksa berkas agunan, menghitung uang kasir, menandatangani akad).</td>
+            </tr>
+            <tr>
+              <td><strong>Persegi Panjang Ujung Melingkar</strong></td>
+              <td>Computer Process</td>
+              <td>Pemrosesan otomatis server/aplikasi (Posting saldo ledger, verifikasi limit pembiayaan otomatis).</td>
+            </tr>
+            <tr>
+              <td><strong>Belah Ketupat (Diamond)</strong></td>
+              <td>Decision Symbol</td>
+              <td>Titik keputusan otorisasi (Apakah berkas lengkap? Ya $\rightarrow$ Lanjut, Tidak $\rightarrow$ Tolak).</td>
+            </tr>
+            <tr>
+              <td><strong>Segitiga Terbalik</strong></td>
+              <td>File / Storage</td>
+              <td>Pengarsipan fisik dokumen secara permanen berdasarkan Nomor Urut (N), Tanggal (D), atau Alfabet (A).</td>
+            </tr>
+            <tr>
+              <td><strong>Garis Kolom Vertikal (Swimlane)</strong></td>
+              <td>Department Boundary</td>
+              <td>Memisahkan kolom wewenang (Nasabah, Teller, Account Officer, Komite Pembiayaan, Accounting).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(2)">Lanjut ke Matriks COSO &amp; IT Controls</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 3: EVALUASI COSO & IT CONTROLS -->
+  <div class="sec locked" id="sec3">
+    <div class="sec-hd">
+      <div class="sec-num">04</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">Matriks Evaluasi Pengendalian Internal (COSO &amp; IT Controls)</h2>
+        <div class="sec-sub2">Diagnosis Titik Rawan Fraud · Lembar Kerja Audit Lapangan Kelompok</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Dalam Bab III laporan UTS, mahasiswa wajib menyajikan matriks evaluasi pengendalian internal yang mencakup 5 komponen COSO terintegrasi dengan audit kontrol IT:</p>
+
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Komponen COSO</th>
+              <th>Pertanyaan Diagnosis Kritis pada Entitas Objek</th>
+              <th>Contoh Temuan Defisiensi &amp; Rekomendasi Solusi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1. Control Environment</strong></td>
+              <td>Apakah terdapat struktur organisasi formal, uraian tugas tertulis, dan Dewan Pengawas Syariah (DPS) yang aktif mengawasi?</td>
+              <td><em>Temuan:</em> Staf operasional merangkap kasir dan pembukuan.<br><em>Solusi:</em> Pemisahan fungsi otorisasi dan pencatatan (SoD).</td>
+            </tr>
+            <tr>
+              <td><strong>2. Risk Assessment</strong></td>
+              <td>Apakah manajemen mengidentifikasi risiko kredit macet, risiko fraud kasir, dan risiko kegagalan sistem komputer?</td>
+              <td><em>Temuan:</em> Tidak ada batas limit persetujuan pembiayaan berjenjang.<br><em>Solusi:</em> Pembatasan wewenang AO max 20 juta, di atas itu wajib persetujuan Manajer.</td>
+            </tr>
+            <tr>
+              <td><strong>3. Control Activities</strong></td>
+              <td>Apakah terdapat kontrol preventif (password ganda, brankas dua kunci) dan kontrol detektif (rekonsiliasi bank harian)?</td>
+              <td><em>Temuan:</em> Rekonsiliasi kas antar cabang hanya dilakukan sebulan sekali.<br><em>Solusi:</em> Rekonsiliasi harian otomatis berbasis sistem core banking.</td>
+            </tr>
+            <tr>
+              <td><strong>4. Information &amp; Comms</strong></td>
+              <td>Apakah informasi transaksi tercatat tepat waktu (real-time) dan didukung slip kuitansi bernomor urut tercetak?</td>
+              <td><em>Temuan:</em> Kuitansi setoran nasabah ditulis tangan tanpa nomor seri pre-printed.<br><em>Solusi:</em> Penggunaan aplikasi mobile BMT dengan e-receipt instan.</td>
+            </tr>
+            <tr>
+              <td><strong>5. Monitoring</strong></td>
+              <td>Apakah SPI (Satuan Pengawas Internal) atau audit internal melakukan pemeriksaan kas mendadak (cash surprise count)?</td>
+              <td><em>Temuan:</em> Tidak pernah dilakukan audit kas mendadak dalam 2 tahun terakhir.<br><em>Solusi:</em> Penetapan jadwal surprise audit triwulanan oleh pengawas.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout warn">
+        <strong>Peringatan Khusus Audit IT (P06–P07):</strong> Pastikan kelompok Anda memeriksa kontrol TI: 1) Apakah password pengguna dibagikan bersama (shared account)? 2) Apakah terdapat pencadangan data otomatis ke offsite cloud (DRP)? 3) Apakah formulir input dilengkapi validasi field check, limit check, dan NIK completeness check?
+      </div>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(3)">Lanjut ke Rubrik Penilaian</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 4: RUBRIK PENILAIAN & KRITERIA KELULUSAN -->
+  <div class="sec locked" id="sec4">
+    <div class="sec-hd">
+      <div class="sec-num">05</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">Rubrik Penilaian Holistik &amp; Kriteria Kelulusan Project UTS</h2>
+        <div class="sec-sub2">Proporsi Bobot 30% Nilai Akhir Mata Kuliah · 4 Komponen Deliverables</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Penilaian Project UTS dilakukan secara objektif dan terukur menggunakan 4 instrumen pembobotan sesuai standar RPS AKS-302:</p>
+
+      <div class="rubrik-grid">
+        <div class="rubrik-card">
+          <div class="rubrik-pct">40%</div>
+          <div class="rubrik-name">Laporan Tertulis (15–20 Hal)</div>
+          <div class="rubrik-desc">Kedalaman analisis 5 dimensi, ketepatan identifikasi fraud, orisinalitas solusi perbaikan, dan kerapian format ilmiah.</div>
+        </div>
+        <div class="rubrik-card" style="border-top-color:var(--meet-acc2)">
+          <div class="rubrik-pct" style="color:var(--meet-acc2)">25%</div>
+          <div class="rubrik-name">Diagram DFD &amp; Flowchart</div>
+          <div class="rubrik-desc">Ketepatan notasi Yourdon, kepatuhan prinsip balancing, kejelasan swimlane, dan logika alur transaksi akuntansi.</div>
+        </div>
+        <div class="rubrik-card" style="border-top-color:var(--sya)">
+          <div class="rubrik-pct" style="color:var(--sya)">25%</div>
+          <div class="rubrik-name">Presentasi &amp; Q&amp;A Sidang</div>
+          <div class="rubrik-desc">Kejelasan penyampaian slide (10–15 menit), pembagian peran tim, ketajaman argumentasi, dan penguasaan materi saat tanya jawab.</div>
+        </div>
+        <div class="rubrik-card" style="border-top-color:#1B7898">
+          <div class="rubrik-pct" style="color:#1B7898">10%</div>
+          <div class="rubrik-name">Refleksi Nilai Syariah</div>
+          <div class="rubrik-desc">Ketajaman integrasi nilai amanah, sidq, itqan, hisbah, dan dalil syariah kontekstual dalam menjustifikasi sistem.</div>
+        </div>
+      </div>
+
+      <h3 class="sub">Tingkatan Skor Kinerja (Grading Scale)</h3>
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Kategori Nilai</th>
+              <th>Rentang Skor</th>
+              <th>Deskripsi Capaian Mutu Project</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:#FAF0FF">
+              <td><strong>Sangat Baik (A / A-)</strong></td>
+              <td><strong>80.0 – 100</strong></td>
+              <td>Analisis sangat mendalam, DFD &amp; flowchart bebas kesalahan notasi, identifikasi fraud tajam, solusi rekomendasi sangat aplikatif dan berbasis nilai syariah kuat, presentasi meyakinkan dengan penguasaan materi sempurna.</td>
+            </tr>
+            <tr>
+              <td><strong>Baik (B+ / B)</strong></td>
+              <td><strong>70.0 – 79.9</strong></td>
+              <td>Analisis lengkap namun beberapa diagram memiliki sedikit ketidakkonsistenan simbol, evaluasi COSO memadai, presentasi lancar meski ada anggota kelompok yang kurang aktif dalam menjawab pertanyaan.</td>
+            </tr>
+            <tr>
+              <td><strong>Cukup (B- / C+)</strong></td>
+              <td><strong>60.0 – 69.9</strong></td>
+              <td>Laporan bersifat deskriptif tanpa analisis kritis, diagram DFD melanggar prinsip balancing atau black hole, rekomendasi perbaikan generik, presentasi membaca teks slide.</td>
+            </tr>
+            <tr>
+              <td><strong>Kurang / Tidak Lulus</strong></td>
+              <td><strong>&lt; 60.0</strong></td>
+              <td>Laporan tidak lengkap, terindikasi plagiasi/copy-paste dari kelompok lain, tidak memuat DFD/Flowchart, tidak hadir dalam sesi presentasi sidang UTS.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(4)">Lanjut ke Benchmark Studi Kasus</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 5: BENCHMARK STUDI KASUS -->
+  <div class="sec locked" id="sec5">
+    <div class="sec-hd">
+      <div class="sec-num">06</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">Benchmark Studi Kasus: Teladan Project Mutu Grade A</h2>
+        <div class="sec-sub2">Bedah Kasus Nyata Analisis AIS BPRS Al-Amanah · Best Practice Solusi</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Berikut adalah cuplikan model analisis bernilai Grade A yang menganalisis siklus pembiayaan murabahah pada BPRS Al-Amanah Syariah:</p>
+
+      <div class="callout case">
+        <div class="case-label">CONTOH TEMUAN AUDIT &amp; ANALISIS SIKLUS MURABAHAH BPRS AL-AMANAH</div>
+        <ul class="bullet" style="margin:0;font-size:13px">
+          <li><strong>Gejala Masalah Lapangan:</strong> Nasabah mengeluhkan pencairan pembiayaan murabahah memakan waktu 14 hari kerja, dan sering terjadi selisih pencatatan uang muka (<em>Urbun</em>) antara slip teller cabang dengan catatan Account Officer (AO) di lapangan.</li>
+          <li><strong>Hasil Investigasi Diagram DFD &amp; Flowchart:</strong> Ditemukan bahwa berkas fisik akad murabahah harus dibawa secara manual antar gedung sebanyak 4 kali untuk ditandatangani 3 pejabat berbeda tanpa ada sistem pelacakan digital (<em>tracking system</em>).</li>
+          <li><strong>Titik Rawan Fraud Triangle:</strong> AO memegang uang muka tunai dari nasabah hingga 3 hari sebelum disetorkan ke teller (Peluang / <em>Opportunity</em> terjadinya <em>lapping fraud</em>).</li>
+          <li><strong>Rekomendasi Perbaikan Sistem (Ishlah):</strong>
+            <ol style="padding-left:16px;margin-top:4px">
+              <li>Digitalisasi formulir pengajuan pembiayaan dengan 9 input controls ganda dan validasi NIK online.</li>
+              <li>Penyetoran urbun wajib melalui virtual account resmi bank (meniadakan penerimaan uang tunai oleh AO).</li>
+              <li>Otorisasi berjenjang digital dengan tanda tangan elektronik terenkripsi (memangkas SLA pencairan menjadi 2 hari kerja).</li>
+            </ol>
+          </li>
+        </ul>
+      </div>
+
+      <div class="ayat-box">
+        <div class="ayat-ar">إِنَّ اللَّهَ يُحِبُّ إِذَا عَمِلَ أَحَدُكُمْ عَمَلًا أَنْ يُتْقِنَهُ</div>
+        <div class="ayat-trans">"Sesungguhnya Allah mencintai seseorang di antara kamu yang apabila melakukan suatu pekerjaan, dia melakukannya dengan itqan (sungguh-sungguh, rapi, dan sempurna)."</div>
+        <div class="ayat-ref">HR. Thabrani &amp; Al-Baihaqi — Landasan Etika Profesional: Menyusun Laporan &amp; Presentasi dengan Kualitas Terbaik</div>
+      </div>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(5)">Lanjut ke Kuis Kesiapan Sidang</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 6: KUIS KESIAPAN SIDANG -->
+  <div class="quiz-sec locked" id="sec6">
+    <div class="quiz-hd">
+      <span class="quiz-icon">📝</span>
+      <div class="quiz-hd-text">
+        <h2 class="quiz-hd-title">Uji Kesiapan Sidang: Evaluasi Penguasaan Project UTS</h2>
+        <div class="quiz-hd-sub">4 Pilihan Ganda + 1 Permainan Pencocokan 6 Komponen Kunci (Batas Kelulusan: 75%)</div>
+      </div>
+    </div>
+    <div class="quiz-body">
+
+      <!-- SOAL 1 -->
+      <div class="q-item" id="mcq0">
+        <div class="q-text"><span class="q-num">1</span> Dalam pembuatan Data Flow Diagram (DFD), manakah kondisi berikut yang dikategorikan sebagai kesalahan fatal berupa "Black Hole"?</div>
+        <div class="options">
+          <div class="opt" onclick="selectMCQ(0, 0)">
+            <span class="opt-ltr">A</span>
+            <div class="opt-txt">Proses yang menghasilkan aliran data keluar tanpa adanya aliran data masuk sama sekali.<div class="opt-fb">Kurang tepat. Kondisi ini disebut "Miracle".</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(0, 1)">
+            <span class="opt-ltr">B</span>
+            <div class="opt-txt">Proses yang menerima satu atau lebih aliran data masuk tetapi tidak pernah menghasilkan aliran data keluar.<div class="opt-fb">Benar! Black Hole adalah proses buntu yang menerima input data namun tidak memproduksi output apa pun.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(0, 2)">
+            <span class="opt-ltr">C</span>
+            <div class="opt-txt">Aliran data yang menghubungkan dua entitas eksternal secara langsung tanpa melalui proses.<div class="opt-fb">Kurang tepat. Ini adalah pelanggaran batas sistem luar lingkup DFD.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(0, 3)">
+            <span class="opt-ltr">D</span>
+            <div class="opt-txt">Pemberian nama aliran data yang menggunakan kata kerja aktif.<div class="opt-fb">Kurang tepat. Aliran data seharusnya berupa kata benda.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOAL 2 -->
+      <div class="q-item" id="mcq1">
+        <div class="q-text"><span class="q-num">2</span> Pada penyusunan Document Flowchart, simbol belah ketupat (diamond) digunakan untuk menunjukkan:</div>
+        <div class="options">
+          <div class="opt" onclick="selectMCQ(1, 0)">
+            <span class="opt-ltr">A</span>
+            <div class="opt-txt">Pengarsipan berkas dokumen permanen berdasarkan tanggal.<div class="opt-fb">Kurang tepat. Pengarsipan disimbolkan dengan segitiga terbalik.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(1, 1)">
+            <span class="opt-ltr">B</span>
+            <div class="opt-txt">Titik evaluasi keputusan otorisasi yang menghasilkan cabang alur alternatif (Ya / Tidak).<div class="opt-fb">Benar! Belah ketupat menggambarkan titik logika keputusan seperti persetujuan plafon pembiayaan.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(1, 2)">
+            <span class="opt-ltr">C</span>
+            <div class="opt-txt">Pemrosesan data otomatis oleh sistem komputer server.<div class="opt-fb">Kurang tepat. Pemrosesan komputer digambarkan dengan persegi panjang berujung melingkar.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(1, 3)">
+            <span class="opt-ltr">D</span>
+            <div class="opt-txt">Konektor perpindahan halaman diagram yang berbeda.<div class="opt-fb">Kurang tepat. Konektor halaman lain digambarkan dengan simbol off-page connector segilima.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOAL 3 -->
+      <div class="q-item" id="mcq2">
+        <div class="q-text"><span class="q-num">3</span> Praktik seorang Account Officer (AO) di lapangan yang menerima setoran tunai uang muka murabahah dari nasabah lalu menyimpannya selama beberapa hari sebelum disetor ke bank adalah pelanggaran prinsip pengendalian:</div>
+        <div class="options">
+          <div class="opt" onclick="selectMCQ(2, 0)">
+            <span class="opt-ltr">A</span>
+            <div class="opt-txt">Segregation of Duties (Pemisahan Fungsi) &amp; Custody of Assets, yang memicu peluang fraud lapping.<div class="opt-fb">Benar! Petugas pemasaran/AO tidak boleh memegang aset kas fisik untuk mencegah penyalahgunaan dana nasabah.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(2, 1)">
+            <span class="opt-ltr">B</span>
+            <div class="opt-txt">Cross-Footing Balance Test pada buku besar.<div class="opt-fb">Kurang tepat. Cross-footing adalah pengujian matematis debet-kredit di akuntansi.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(2, 2)">
+            <span class="opt-ltr">C</span>
+            <div class="opt-txt">Luhn Modulo 10 Check Digit verification.<div class="opt-fb">Kurang tepat. Luhn check digit adalah validasi nomor identitas/rekening.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(2, 3)">
+            <span class="opt-ltr">D</span>
+            <div class="opt-txt">Data Masking pada slip e-statement.<div class="opt-fb">Kurang tepat. Data masking adalah penyamaran nomor kartu sensitif.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOAL 4 -->
+      <div class="q-item" id="mcq3">
+        <div class="q-text"><span class="q-num">4</span> Nilai Islam yang menuntut akuntan dan mahasiswa untuk menyusun karya ilmiah dan perancangan sistem akuntansi dengan kesungguhan, ketelitian, dan standar mutu terbaik berakar pada hadits Nabi SAW tentang:</div>
+        <div class="options">
+          <div class="opt" onclick="selectMCQ(3, 0)">
+            <span class="opt-ltr">A</span>
+            <div class="opt-txt">Larangan ikhtikar (penimbunan barang).<div class="opt-fb">Kurang tepat. Larangan ikhtikar berkaitan dengan etika rantai pasok dan penetapan harga.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(3, 1)">
+            <span class="opt-ltr">B</span>
+            <div class="opt-txt">Prinsip Itqan (kesempurnaan dan profesionalisme kerja yang dicintai Allah SWT).<div class="opt-fb">Benar! Hadits riwayat Thabrani menegaskan bahwa Allah mencintai hamba yang bekerja dengan itqan (sempurna dan rapi).</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(3, 2)">
+            <span class="opt-ltr">C</span>
+            <div class="opt-txt">Pembayaran upah sebelum keringat mengering.<div class="opt-fb">Kurang tepat. Ini adalah dalil siklus penggajian/SDM.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(3, 3)">
+            <span class="opt-ltr">D</span>
+            <div class="opt-txt">Pengharaman riba fadhl pada pertukaran emas.<div class="opt-fb">Kurang tepat. Ini berkaitan dengan hukum transaksi pertukaran ribawi.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MATCHING GAME -->
+      <div class="match-intro">
+        <strong>Tantangan Pencocokan Komponen Project UTS &amp; Standar Mutu:</strong> Klik satu istilah di kolom kiri, lalu klik definisi / fungsi yang tepat di kolom kanan untuk membuat pasangan berwarna!
+      </div>
+      <div class="match-container">
+        <div>
+          <div class="match-col-title">Komponen Project UTS</div>
+          <div class="match-terms" id="terms">
+            <div class="match-term" onclick="selectTerm(0)">1. Diagram Konteks (Level 0)</div>
+            <div class="match-term" onclick="selectTerm(1)">2. DFD Level 1</div>
+            <div class="match-term" onclick="selectTerm(2)">3. Swimlane Flowchart</div>
+            <div class="match-term" onclick="selectTerm(3)">4. Matriks COSO 5 Komponen</div>
+            <div class="match-term" onclick="selectTerm(4)">5. Segregation of Duties (SoD)</div>
+            <div class="match-term" onclick="selectTerm(5)">6. Prinsip Itqan</div>
+          </div>
+        </div>
+        <div>
+          <div class="match-col-title">Definisi / Peran dalam Evaluasi</div>
+          <div class="match-defs" id="defs">
+            <div class="match-def" onclick="selectDef(0)">A. Bagan alir dokumen terbagi kolom wewenang departemen yang memperlihatkan titik otorisasi dan pemisahan tugas.</div>
+            <div class="match-def" onclick="selectDef(1)">B. Dekomposisi sub-proses transaksi utama yang menghubungkan aliran data dengan Data Store database.</div>
+            <div class="match-def" onclick="selectDef(2)">C. Diagram tingkat tertinggi yang memetakan batas sistem dengan seluruh entitas eksternal tanpa memunculkan data store.</div>
+            <div class="match-def" onclick="selectDef(3)">D. Lembar diagnosis komprehensif lingkungan pengendalian, penilaian risiko, aktivitas kontrol, informasi, dan pemantauan.</div>
+            <div class="match-def" onclick="selectDef(4)">E. Doktrin etika kerja profesional Islami untuk menyelesaikan karya akademik dengan kesungguhan dan mutu tertinggi.</div>
+            <div class="match-def" onclick="selectDef(5)">F. Prinsip pengendalian internal yang melarang penggabungan fungsi otorisasi, pencatatan, dan penyimpanan aset.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="quiz-foot">
+      <button class="submit-btn" onclick="submitQuiz()">Kirim Jawaban &amp; Hitung Nilai</button>
+      <span class="score-badge" id="scoreBadge"></span>
+    </div>
+  </div>
+
+  <!-- COMPLETION BOX -->
+  <div class="completion" id="completion">
+    <h2>🎉 Selamat! Anda Telah Memahami Panduan &amp; Rubrik Project UTS</h2>
+    <p>Pemahaman teoritis mengenai pemodelan DFD, penyusunan flowchart swimlane, evaluasi matriks COSO, dan kriteria sidang presentasi telah tuntas. Lanjutkan ke Lembar Kerja Validasi dan Simulasi Sidang UTS!</p>
+    <a class="lab-btn" href="Praktikum-08-AIS.html">Buka Lembar Kerja &amp; Validasi Project UTS (Lab Milestone) →</a>
+  </div>
+
+</div>
+
+<script>
+/* ═══ APPLICATION STATE MANAGEMENT ═══ */
+const STORAGE_KEY = 'tazkia-ais-p08-v1';
+const TOTAL_SECS = 7;
+const MCQ_ANSWERS = [1, 1, 0, 1]; // B, B, A, B
+const MATCH_CORRECT = {0:2, 1:1, 2:0, 3:3, 4:5, 5:4}; // 1->C, 2->B, 3->A, 4->D, 5->F, 6->E
+const PAIR_COLORS = ['#7040B0', '#D48020', '#1F9060', '#1B7898', '#C03818', '#9E6800'];
+
+let state = {
+  done: [0],
+  mcqSel: [null, null, null, null],
+  matchPairs: {},
+  submitted: false
+};
+
+let selTerm = null;
+let selDef = null;
+
+function saveState(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+}
+
+function loadState(){
+  try{
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if(saved) state = Object.assign(state, JSON.parse(saved));
+  }catch(e){}
+}
+
+function updateProgress(){
+  const doneCount = state.done.length;
+  const pct = Math.round((doneCount / TOTAL_SECS) * 100);
+  document.getElementById('topProg').style.width = pct + '%';
+  document.getElementById('topPct').textContent = pct + '%';
+
+  for(let i=0; i<TOTAL_SECS; i++){
+    const st = document.getElementById('st' + i);
+    const sc = document.getElementById('sc' + i);
+    if(!st) continue;
+    if(state.done.includes(i)){
+      st.className = (i === 6) ? 'step quiz done' : 'step done';
+      if(sc) sc.className = 'sconn done';
+    } else if(i === state.done.length){
+      st.className = (i === 6) ? 'step quiz active' : 'step active';
+      if(sc) sc.className = 'sconn';
+    } else {
+      st.className = (i === 6) ? 'step quiz' : 'step';
+      if(sc) sc.className = 'sconn';
+    }
+  }
+}
+
+function paham(idx){
+  if(!state.done.includes(idx)) state.done.push(idx);
+  const nextIdx = idx + 1;
+  if(nextIdx < TOTAL_SECS && !state.done.includes(nextIdx)){
+    state.done.push(nextIdx);
+  }
+  saveState();
+  applyState();
+
+  const nextSec = document.getElementById('sec' + nextIdx);
+  if(nextSec){
+    nextSec.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+}
+
+function selectMCQ(q, optIdx){
+  if(state.submitted) return;
+  state.mcqSel[q] = optIdx;
+  saveState();
+  const opts = document.querySelectorAll('#mcq' + q + ' .opt');
+  opts.forEach((o, i)=>o.classList.toggle('selected', i === optIdx));
+}
+
+function selectTerm(idx){
+  if(state.submitted) return;
+  selTerm = idx;
+  document.querySelectorAll('#terms .match-term').forEach((el, j)=>el.classList.toggle('selected', j === idx));
+  checkMatch();
+}
+
+function selectDef(idx){
+  if(state.submitted) return;
+  selDef = idx;
+  document.querySelectorAll('#defs .match-def').forEach((el, j)=>el.classList.toggle('selected', j === idx));
+  checkMatch();
+}
+
+function checkMatch(){
+  if(selTerm === null || selDef === null) return;
+  state.matchPairs[selTerm] = selDef;
+  saveState();
+
+  const color = PAIR_COLORS[selTerm % PAIR_COLORS.length];
+  const termEl = document.querySelectorAll('#terms .match-term')[selTerm];
+  const defEl = document.querySelectorAll('#defs .match-def')[selDef];
+
+  if(termEl){
+    termEl.style.borderColor = color;
+    termEl.style.background = color + '18';
+    termEl.style.color = color;
+  }
+  if(defEl){
+    defEl.style.borderColor = color;
+    defEl.style.background = color + '18';
+    defEl.style.color = color;
+  }
+
+  selTerm = null;
+  selDef = null;
+  document.querySelectorAll('#terms .match-term, #defs .match-def').forEach(el=>el.classList.remove('selected'));
+}
+
+function submitQuiz(){
+  state.submitted = true;
+  saveState();
+  let score = 0;
+  const total = MCQ_ANSWERS.length + Object.keys(MATCH_CORRECT).length;
+
+  // Grade MCQs
+  MCQ_ANSWERS.forEach((ans, q)=>{
+    const sel = state.mcqSel[q];
+    const opts = document.querySelectorAll('#mcq' + q + ' .opt');
+    opts.forEach((o, idx)=>{
+      if(idx === ans) o.className = 'opt correct';
+      else if(idx === sel && sel !== ans) o.className = 'opt wrong';
+    });
+    if(sel === ans) score++;
+  });
+
+  // Grade Matching
+  Object.entries(MATCH_CORRECT).forEach(([t, d])=>{
+    if(state.matchPairs[t] === d) score++;
+  });
+
+  const pct = Math.round((score / total) * 100);
+  const badge = document.getElementById('scoreBadge');
+  badge.style.display = 'inline-block';
+  badge.textContent = `Skor: ${score}/${total} (${pct}%)`;
+
+  if(pct >= 75){
+    badge.className = 'score-badge pass';
+    if(!state.done.includes(6)) state.done.push(6);
+    saveState();
+    updateProgress();
+    document.getElementById('completion').classList.add('show');
+    document.getElementById('completion').scrollIntoView({behavior:'smooth'});
+  } else {
+    badge.className = 'score-badge fail';
+    badge.textContent += ' — Pelajari kembali materi panduan dan coba lagi!';
+  }
+}
+
+function applyState(){
+  for(let i=0; i<TOTAL_SECS; i++){
+    const sec = document.getElementById('sec' + i);
+    if(!sec) continue;
+    if(state.done.includes(i)){
+      sec.classList.remove('locked');
+      const isDone = (i < state.done.length - 1) || (state.done.length === TOTAL_SECS);
+      sec.classList.toggle('done-sec', isDone);
+    } else {
+      if(!sec.classList.contains('locked')) sec.classList.add('locked');
+      sec.classList.remove('done-sec');
+    }
+  }
+
+  state.mcqSel.forEach((sel, q)=>{
+    if(sel === null) return;
+    document.querySelectorAll('#mcq' + q + ' .opt')[sel]?.classList.add('selected');
+  });
+
+  Object.entries(state.matchPairs).forEach(([t, d])=>{
+    const color = PAIR_COLORS[t % PAIR_COLORS.length];
+    const termEl = document.querySelectorAll('#terms .match-term')[t];
+    const defEl = document.querySelectorAll('#defs .match-def')[d];
+    if(termEl){
+      termEl.style.borderColor = color;
+      termEl.style.background = color + '18';
+      termEl.style.color = color;
+    }
+    if(defEl){
+      defEl.style.borderColor = color;
+      defEl.style.background = color + '18';
+      defEl.style.color = color;
+    }
+  });
+
+  if(state.submitted) submitQuiz();
+  updateProgress();
+}
+
+loadState();
+applyState();
+</script>
+</body>
+</html>

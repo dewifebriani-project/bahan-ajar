@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pertemuan 5 — Pengendalian Internal &amp; COSO Framework</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap">
+<style>
+/* ═══ MEETING COLOR VARIABLES (P05 = Amber Flame & Crimson Burgundy) ═══ */
+:root{
+  --meet-from:#1A0800; --meet-mid:#2E1005; --meet-to:#481808;
+  --meet-acc:#D46020;  --meet-acc2:#E88030; --meet-star:#D46020;
+  /* SYSTEM TOKENS */
+  --bg:#EDF1F6;--sf:#FFFFFF;--sf2:#FBF2EC;--sf3:#F6ECE4;
+  --bd:#D8C4B8;--bs:#EADFD8;
+  --tx:#1C0C04;--txm:#4A3830;--txl:#8C756B;
+  --pri:#2E1005;--pmid:#D46020;--pril:#FCEBD8;--prx:#FAF0E8;
+  --acc:#D46020;--accl:#FCEBD8;
+  --sya:#1F9060;--syal:#D0EEE2;--syab:#40B080;
+  --ok:#1F9060;--okl:#D0EEE2;
+  --warn:#C03818;--warnl:#FCDBD0;
+  /* MATCHING PAIR COLORS */
+  --p0:#D46020;--p0l:#FCEBD8; --p1:#1F9060;--p1l:#D0EEE2;
+  --p2:#7040B0;--p2l:#EEE0FA; --p3:#1B7898;--p3l:#D8EEF6;
+  --p4:#C03818;--p4l:#FCDBD0; --p5:#9E6800;--p5l:#FDF0D0;
+  --r:8px;--rs:5px;
+  --shadow:0 4px 20px rgba(46,16,5,.12);
+  --shadow-sm:0 2px 8px rgba(46,16,5,.08);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#0E0604;--sf:#1A0D08;--sf2:#140804;--sf3:#1E100A;
+  --bd:#361C12;--bs:#28140C;
+  --tx:#F4E8E2;--txm:#B0988E;--txl:#6E554B;
+  --pri:#E88030;--pmid:#D46020;--pril:#2A1006;--prx:#1F0B04;
+  --acc:#E88030;--accl:#2A1006;
+  --sya:#30B878;--syal:#041410;--syab:#186040;
+  --ok:#30B878;--okl:#041410;
+  --warn:#E05030;--warnl:#280800;
+  --p0l:#281000;--p1l:#041410;--p2l:#180828;--p3l:#0A2030;--p4l:#200408;--p5l:#241800;
+}}
+:root[data-theme=dark]{
+  --bg:#0E0604;--sf:#1A0D08;--sf2:#140804;--sf3:#1E100A;
+  --bd:#361C12;--bs:#28140C;
+  --tx:#F4E8E2;--txm:#B0988E;--txl:#6E554B;
+  --pri:#E88030;--pmid:#D46020;--pril:#2A1006;--prx:#1F0B04;
+  --acc:#E88030;--accl:#2A1006;
+  --sya:#30B878;--syal:#041410;--syab:#186040;
+  --ok:#30B878;--okl:#041410;
+  --warn:#E05030;--warnl:#280800;
+  --p0l:#281000;--p1l:#041410;--p2l:#180828;--p3l:#0A2030;--p4l:#200408;--p5l:#241800;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color:var(--tx);margin:0;font-size:15px;line-height:1.65}
+
+/* ── TOPBAR ── */
+.topbar{background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.back-btn{color:rgba(255,255,255,.65);font-size:13px;font-weight:600;cursor:pointer;border:none;background:none;display:flex;align-items:center;gap:4px;transition:color .15s;text-decoration:none}
+.back-btn:hover{color:#fff}
+.top-div{width:1px;height:20px;background:rgba(255,255,255,.15)}
+.top-course{font-size:11.5px;color:rgba(255,255,255,.5)}
+.top-meeting{font-size:13px;font-weight:700;color:rgba(255,255,255,.95)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.top-badge{font-size:11px;font-weight:700;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:2px 10px;color:rgba(255,255,255,.85)}
+.prog-wrap{width:120px;height:5px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden}
+.prog-bar{height:100%;background:var(--meet-acc2);border-radius:3px;transition:width .4s ease}
+.prog-txt{font-size:11px;color:rgba(255,255,255,.5);text-align:right}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(160deg,var(--meet-from) 0%,var(--meet-mid) 55%,var(--meet-to) 100%);color:#fff;padding:38px 24px 0;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;pointer-events:none;opacity:.15}
+.hero-inner{max-width:840px;margin:0 auto;position:relative;z-index:1;padding-bottom:30px}
+.hero-ew{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.hero-line{width:22px;height:1px;background:var(--meet-acc2)}
+.hero-tag{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--meet-acc2)}
+.hero-bignum{font-family:'Amiri',serif;font-size:72px;font-weight:700;line-height:1;color:rgba(255,255,255,.07);position:absolute;right:0;top:-8px;letter-spacing:-.02em;-webkit-user-select:none;user-select:none}
+.hero-title{font-family:'Amiri',serif;font-size:30px;font-weight:700;margin:0 0 6px;line-height:1.2}
+.hero-sub{font-size:14.5px;color:rgba(255,255,255,.7);margin:0 0 18px}
+.hero-chips{display:flex;flex-wrap:wrap;gap:6px}
+.hchip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:3px 11px;font-size:12px;color:rgba(255,255,255,.8)}
+.hchip strong{color:#fff}
+.hero-arch{line-height:0;margin-top:-1px}
+.hero-arch svg{display:block;width:100%;height:26px}
+
+/* ── STEPS CONNECTOR ── */
+.steps-wrap{background:var(--sf);border-bottom:1px solid var(--bs);padding:12px 24px;overflow-x:auto;position:sticky;top:52px;z-index:90;box-shadow:var(--shadow-sm)}
+.steps{display:flex;align-items:center;max-width:840px;margin:0 auto}
+.step{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--txl);white-space:nowrap;cursor:default}
+.sdot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:var(--sf3);border:2px solid var(--bs);color:var(--txl);flex-shrink:0;transition:all .25s}
+.step.done .sdot{background:var(--ok);border-color:var(--ok);color:#fff}
+.step.active .sdot{background:var(--pmid);border-color:var(--pmid);color:#fff}
+.step.quiz .sdot{background:var(--accl);border-color:var(--acc);color:var(--acc)}
+.step.quiz.done .sdot{background:var(--ok);border-color:var(--ok);color:#fff}
+.slabel{display:none}
+@media(min-width:580px){.slabel{display:inline}}
+.sconn{flex:1;height:2px;background:var(--bs);min-width:10px;transition:background .25s}
+.sconn.done{background:var(--ok)}
+
+/* ── BODY ── */
+.body{max-width:840px;margin:0 auto;padding:26px 18px 80px}
+@media(min-width:640px){.body{padding:30px 26px 80px}}
+
+/* ── SECTION CARD ── */
+.sec{background:var(--sf);border:1px solid var(--bs);border-radius:var(--r);margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow-sm);transition:opacity .4s,filter .4s}
+.sec.locked{opacity:.38;filter:grayscale(.45);pointer-events:none;user-select:none}
+.sec.unlocking{animation:sIn .35s ease both}
+@keyframes sIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.sec-hd{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--bs);background:var(--sf3)}
+.sec-num{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:var(--pmid);color:#fff;flex-shrink:0;transition:background .3s}
+.sec.done-sec .sec-num{background:var(--ok)}
+.sec-title-wrap{flex:1}
+.sec-title{font-family:'Amiri',serif;font-size:17.5px;font-weight:700;color:var(--pri);margin:0}
+.sec-sub2{font-size:12px;color:var(--txl);margin:1px 0 0}
+.sec-chk{font-size:18px;color:var(--ok);flex-shrink:0;display:none}
+.sec.done-sec .sec-chk{display:block}
+.sec-body{padding:20px 22px}
+@media(max-width:480px){.sec-body{padding:14px 14px}}
+.sec-foot{padding:14px 22px;border-top:1px solid var(--bs);display:flex;justify-content:flex-end;align-items:center;gap:10px;background:var(--sf3)}
+.done-msg{font-size:12.5px;color:var(--ok);font-weight:600;display:none}
+.sec.done-sec .done-msg{display:block}
+.sec.done-sec .paham-btn{display:none}
+.paham-btn{background:var(--pmid);color:#fff;border:none;border-radius:var(--r);padding:9px 20px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s;font-family:'Source Sans 3',sans-serif}
+.paham-btn:hover{background:#E88030}
+.paham-btn::after{content:'→'}
+
+/* ── TYPOGRAPHY ── */
+.lead{font-size:15.5px;color:var(--txm);line-height:1.7;margin:0 0 16px}
+h3.sub{font-family:'Amiri',serif;font-size:18px;font-weight:700;color:var(--pri);margin:20px 0 9px;display:flex;align-items:center;gap:8px}
+h3.sub::before{content:'';width:4px;height:16px;background:var(--meet-acc2);border-radius:2px;flex-shrink:0}
+h4.sub2{font-size:13.5px;font-weight:700;color:var(--pmid);margin:14px 0 6px;text-transform:uppercase;letter-spacing:.06em}
+p{color:var(--txm);margin:0 0 11px;line-height:1.65}
+ul.detail{padding-left:0;list-style:none;margin:0 0 13px}
+ul.detail li{padding:6px 0 6px 18px;position:relative;color:var(--txm);border-bottom:1px solid var(--bs);font-size:14px;line-height:1.5}
+ul.detail li:last-child{border-bottom:none}
+ul.detail li::before{content:'▸';position:absolute;left:0;color:var(--pmid);font-size:11px;top:8px}
+ul.detail li strong{color:var(--tx)}
+ul.bullet{padding-left:20px;margin:0 0 13px}
+ul.bullet li{margin-bottom:5px;color:var(--txm);font-size:14px;line-height:1.5}
+
+/* ── CALLOUT ── */
+.callout{border-radius:var(--rs);padding:13px 16px;margin:12px 0;font-size:14px;line-height:1.6}
+.callout.info{background:var(--prx);border-left:4px solid var(--pmid);color:var(--txm)}
+.callout.info strong{color:var(--pri)}
+.callout.warn{background:var(--warnl);border-left:4px solid var(--warn);color:var(--txm)}
+.callout.warn strong{color:var(--warn)}
+.callout.sya{background:var(--syal);border-left:4px solid var(--sya);color:var(--txm)}
+.callout.sya strong{color:var(--sya)}
+.callout.case{background:var(--sf3);border:1px solid var(--bs);border-left:4px solid var(--meet-acc2);color:var(--txm)}
+.case-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--meet-acc2);margin-bottom:5px}
+
+/* ── COSO CUBE & COMPONENT CARDS ── */
+.coso-cube-wrap{margin:16px 0;border:1px solid var(--bs);border-radius:var(--r);overflow:hidden;background:var(--sf)}
+.cube-hd{background:linear-gradient(90deg,var(--pri),var(--meet-mid));color:#fff;padding:10px 16px;font-size:12.5px;font-weight:700;letter-spacing:.06em}
+.cube-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:12px;padding:16px}
+@media(max-width:640px){.cube-grid{grid-template-columns:1fr}}
+.cube-col{background:var(--sf3);border:1.5px solid var(--bs);border-radius:var(--rs);padding:12px}
+.cube-col-title{font-family:'Amiri',serif;font-size:15px;font-weight:700;color:var(--pri);margin-bottom:8px;border-bottom:1px solid var(--bs);padding-bottom:4px}
+.cube-col-list{list-style:none;padding:0;margin:0;font-size:12.5px;color:var(--txm)}
+.cube-col-list li{padding:4px 0;border-bottom:1px solid rgba(0,0,0,.04)}
+.cube-col-list li strong{color:var(--pri)}
+
+.comp-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:14px 0}
+@media(max-width:760px){.comp-grid{grid-template-columns:1fr}}
+.comp-card{background:var(--sf3);border:1.5px solid var(--bs);border-radius:var(--rs);padding:12px 10px;text-align:center;transition:all .2s}
+.comp-card:hover{border-color:var(--pmid);box-shadow:var(--shadow-sm);transform:translateY(-2px)}
+.comp-num{font-size:11px;font-weight:700;color:var(--pmid);letter-spacing:.06em}
+.comp-title{font-family:'Amiri',serif;font-size:14.5px;font-weight:700;color:var(--pri);margin:3px 0 4px}
+.comp-desc{font-size:11.5px;color:var(--txm);line-height:1.4}
+.comp-princ{margin-top:6px;padding-top:6px;border-top:1px dashed var(--bs);font-size:10.5px;font-weight:700;color:var(--meet-acc)}
+
+/* ── COMPARISON TABLE ── */
+.cmp-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13.5px}
+.cmp-table th{background:var(--pri);color:#fff;padding:9px 12px;text-align:left;font-size:12px}
+.cmp-table td{padding:9px 12px;border-bottom:1px solid var(--bs);color:var(--txm);vertical-align:top}
+.cmp-table tr:last-child td{border-bottom:none}
+.cmp-table tr:nth-child(even) td{background:var(--sf3)}
+
+/* ── AYAT & SYARIAH ── */
+.sya-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:540px){.sya-grid{grid-template-columns:1fr}}
+.sya-card{background:var(--sf3);border:1px solid var(--bs);border-top:3px solid var(--sya);border-radius:var(--rs);padding:14px}
+.sya-card-title{font-family:'Amiri',serif;font-size:16px;font-weight:700;color:var(--sya);margin-bottom:4px}
+.sya-card-desc{font-size:13px;color:var(--txm);line-height:1.55}
+.sya-card-ref{font-size:11.5px;color:var(--syab);margin-top:6px;font-weight:600}
+
+.ayat-box{background:linear-gradient(135deg,var(--meet-from),var(--meet-mid));border-radius:var(--r);padding:18px 22px;margin:14px 0;color:#fff}
+.ayat-ar{font-family:'Amiri',serif;font-size:20px;line-height:1.85;text-align:right;direction:rtl;color:#FCEBD8;margin-bottom:12px}
+.ayat-trans{font-style:italic;color:rgba(255,255,255,.8);font-size:13.5px;line-height:1.6;margin-bottom:8px;border-top:1px solid rgba(255,255,255,.15);padding-top:9px}
+.ayat-ref{font-size:12px;color:var(--meet-acc2);font-weight:600}
+
+/* ── QUIZ STYLES ── */
+.quiz-sec{background:var(--sf);border:2px solid var(--acc);border-radius:var(--r);margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow);transition:opacity .4s,filter .4s}
+.quiz-sec.locked{opacity:.38;filter:grayscale(.45);pointer-events:none;user-select:none}
+.quiz-hd{background:linear-gradient(135deg,var(--meet-from),var(--meet-mid));color:#fff;padding:15px 22px;display:flex;align-items:center;gap:11px}
+.quiz-icon{font-size:22px}
+.quiz-hd-text{flex:1}
+.quiz-hd-title{font-family:'Amiri',serif;font-size:19px;font-weight:700;margin:0}
+.quiz-hd-sub{font-size:12px;color:rgba(255,255,255,.65);margin:2px 0 0}
+.quiz-body{padding:20px 22px}
+
+.q-item{margin-bottom:22px}
+.q-text{font-size:14.5px;font-weight:600;color:var(--tx);margin-bottom:11px;line-height:1.5}
+.q-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--pmid);color:#fff;border-radius:50%;font-size:10.5px;font-weight:700;margin-right:7px;flex-shrink:0;vertical-align:middle}
+.options{display:flex;flex-direction:column;gap:6px}
+.opt{padding:9px 14px;border-radius:var(--rs);border:2px solid var(--bs);background:var(--sf3);cursor:pointer;font-size:13.5px;color:var(--txm);transition:all .15s;display:flex;align-items:flex-start;gap:9px;-webkit-user-select:none;user-select:none}
+.opt:hover{border-color:var(--pmid);background:var(--prx);color:var(--pri)}
+.opt.selected{border-color:var(--pmid);background:var(--pril);color:var(--pri);font-weight:600}
+.opt.correct{border-color:var(--ok);background:var(--okl);color:#0A3020;font-weight:600}
+.opt.wrong{border-color:var(--warn);background:var(--warnl);color:#6A1808}
+.opt-ltr{width:20px;height:20px;border-radius:50%;background:var(--bs);display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;flex-shrink:0;transition:all .15s}
+.opt.selected .opt-ltr{background:var(--pmid);color:#fff}
+.opt.correct .opt-ltr{background:var(--ok);color:#fff}
+.opt.wrong .opt-ltr{background:var(--warn);color:#fff}
+.opt-txt{flex:1;line-height:1.5}
+.opt-fb{font-size:11.5px;font-style:italic;margin-top:4px;display:none;color:inherit;opacity:.85}
+.opt.correct .opt-fb,.opt.wrong .opt-fb{display:block}
+
+/* MATCHING */
+.match-intro{font-size:13.5px;color:var(--txm);margin-bottom:14px;line-height:1.55;padding:10px 14px;background:var(--prx);border-radius:var(--rs)}
+.match-container{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:520px){.match-container{grid-template-columns:1fr}}
+.match-col-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--txl);margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--bs)}
+.match-terms,.match-defs{display:flex;flex-direction:column;gap:5px}
+.match-term,.match-def{padding:9px 12px;border:2px solid var(--bs);border-radius:var(--rs);cursor:pointer;font-size:13px;color:var(--txm);background:var(--sf3);transition:all .15s;-webkit-user-select:none;user-select:none;line-height:1.4}
+.match-term{font-weight:700;color:var(--tx)}
+.match-term:hover,.match-def:hover{border-color:var(--pmid);background:var(--prx)}
+.match-term.selected{border-color:var(--pmid);background:var(--pril);color:var(--pri)}
+
+.quiz-foot{padding:14px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;background:var(--sf3);border-top:1px solid var(--bs)}
+.submit-btn{background:linear-gradient(135deg,var(--meet-mid),var(--meet-acc2));color:#fff;border:none;border-radius:var(--r);padding:10px 24px;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s;font-family:'Source Sans 3',sans-serif}
+.submit-btn:hover{opacity:.9}
+.score-badge{font-size:14px;font-weight:700;padding:6px 14px;border-radius:20px;display:none}
+.score-badge.pass{background:var(--okl);color:var(--ok);border:1px solid var(--ok)}
+.score-badge.fail{background:var(--warnl);color:var(--warn);border:1px solid var(--warn)}
+
+.completion{display:none;background:linear-gradient(135deg,var(--meet-mid),var(--meet-to));color:#fff;border-radius:var(--r);padding:28px;text-align:center;margin-top:18px}
+.completion.show{display:block}
+.completion h2{font-family:'Amiri',serif;font-size:24px;font-weight:700;margin-bottom:8px}
+.completion p{color:rgba(255,255,255,.75);font-size:13.5px;margin-bottom:14px}
+.completion .lab-btn{display:inline-block;background:var(--meet-acc2);color:#fff;border-radius:20px;padding:10px 24px;font-weight:700;font-size:14px;text-decoration:none;transition:transform .15s}
+.completion .lab-btn:hover{transform:translateY(-2px)}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <a class="back-btn" href="../RPS-SIA.html">← RPS</a>
+    <div class="top-div"></div>
+    <div>
+      <div class="top-course">Sistem Informasi Akuntansi · FEBI Universitas Tazkia</div>
+      <div class="top-meeting">Pertemuan 05 — Pengendalian Internal &amp; COSO Framework</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span class="top-badge">CPMK-3 · Romney Ch. 7</span>
+    <div class="prog-wrap"><div class="prog-bar" id="topProg" style="width:14%"></div></div>
+    <span class="prog-txt" id="topPct">14%</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <svg class="hero-bg" viewBox="0 0 600 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs><pattern id="dots-p5" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="20" cy="20" r="1.8" fill="#D46020" opacity=".5"/>
+      <path d="M0,20 L40,20 M20,0 L20,40" stroke="#D46020" stroke-width=".3" opacity=".25"/>
+    </pattern></defs>
+    <rect width="100%" height="100%" fill="url(#dots-p5)"/>
+  </svg>
+  <div class="hero-inner">
+    <div class="hero-bignum">05</div>
+    <div class="hero-ew"><div class="hero-line"></div><span class="hero-tag">Sistem Informasi Akuntansi — Modul Teori Mendalam</span></div>
+    <h1 class="hero-title">Pengendalian Internal &amp; COSO Framework</h1>
+    <p class="hero-sub">Arsitektur Kubus COSO 2013 (17 Prinsip) · Sarbanes-Oxley (SOX) Compliance · Pengendalian Preventif, Detektif &amp; Korektif · Konsep Raqabah &amp; Muhasabah</p>
+    <div class="hero-chips">
+      <span class="hchip"><strong>CPMK-3</strong> C4 — Menganalisis</span>
+      <span class="hchip">Romney &amp; Steinbart Ch. 7 &amp; COSO 2013</span>
+      <span class="hchip">Internal Control &amp; SOX 404</span>
+      <span class="hchip">Ganjil 2026/2027</span>
+    </div>
+  </div>
+  <div class="hero-arch"><svg viewBox="0 0 1200 26" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,26 L0,14 Q20,4 40,14 Q60,26 80,14 Q100,4 120,14 Q140,26 160,14 Q180,4 200,14 Q220,26 240,14 Q260,4 280,14 Q300,26 320,14 Q340,4 360,14 Q380,26 400,14 Q420,4 440,14 Q460,26 480,14 Q500,4 520,14 Q540,26 560,14 Q580,4 600,14 Q620,26 640,14 Q660,4 680,14 Q700,26 720,14 Q740,4 760,14 Q780,26 800,14 Q820,4 840,14 Q860,26 880,14 Q900,4 920,14 Q940,26 960,14 Q980,4 1000,14 Q1020,26 1040,14 Q1060,4 1080,14 Q1100,26 1120,14 Q1140,4 1160,14 Q1180,26 1200,14 L1200,26 Z" fill="var(--bg)"/>
+  </svg></div>
+</div>
+
+<!-- STEP INDICATOR TRACK -->
+<div class="steps-wrap">
+  <div class="steps" id="stepTrack">
+    <div class="step active" id="st0"><div class="sdot">1</div><span class="slabel">Tujuan &amp; Kubus</span></div>
+    <div class="sconn" id="sc0"></div>
+    <div class="step" id="st1"><div class="sdot">2</div><span class="slabel">Evolusi &amp; SOX</span></div>
+    <div class="sconn" id="sc1"></div>
+    <div class="step" id="st2"><div class="sdot">3</div><span class="slabel">5 Komponen COSO</span></div>
+    <div class="sconn" id="sc2"></div>
+    <div class="step" id="st3"><div class="sdot">4</div><span class="slabel">Taksonomi Kontrol</span></div>
+    <div class="sconn" id="sc3"></div>
+    <div class="step" id="st4"><div class="sdot">5</div><span class="slabel">Raqabah &amp; Syariah</span></div>
+    <div class="sconn" id="sc4"></div>
+    <div class="step" id="st5"><div class="sdot">6</div><span class="slabel">Kasus BPRS</span></div>
+    <div class="sconn" id="sc5"></div>
+    <div class="step quiz" id="st6"><div class="sdot">★</div><span class="slabel">Kuis</span></div>
+  </div>
+</div>
+
+<!-- MAIN BODY -->
+<div class="body">
+
+  <!-- SEKSI 0: TUJUAN & KUBUS COSO -->
+  <div class="sec" id="sec0">
+    <div class="sec-hd">
+      <div class="sec-num">01</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">Tujuan Pembelajaran &amp; Anatomi Kubus COSO 2013</h2>
+        <div class="sec-sub2">Capaian CPMK-3 (Bloom C4 Menganalisis) · Definisi &amp; 3 Dimensi Pengendalian Internal</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Pengendalian internal (<em>internal control</em>) adalah suatu proses yang dipengaruhi oleh dewan direksi, dewan pengawas syariah, manajemen, dan personel entitas lainnya, yang dirancang untuk memberikan <strong>keyakinan memadai (reasonable assurance)</strong> mengenai pencapaian tujuan organisasi.</p>
+
+      <h3 class="sub">Target Capaian Pembelajaran (CPMK-3)</h3>
+      <ul class="detail">
+        <li><strong>Menganalisis Arsitektur Kubus COSO:</strong> Menghubungkan 3 kategori tujuan (Operasi, Pelaporan, Kepatuhan) dengan 5 komponen pengendalian dan struktur organisasi.</li>
+        <li><strong>Membedah Regulasi Sarbanes-Oxley Act (SOX):</strong> Mengevaluasi dampak SOX Section 404 (ICFR) dan Section 302 terhadap tata kelola Sistem Informasi Akuntansi.</li>
+        <li><strong>Menguasai 17 Prinsip COSO 2013:</strong> Mengimplementasikan prinsip-prinsip pengendalian ke dalam modul software SIA dan infrastruktur teknologi.</li>
+        <li><strong>Mengklasifikasikan Taksonomi Pengendalian:</strong> Mengidentifikasi pengendalian <em>Preventive, Detective, Corrective</em>, serta <em>General Controls</em> vs <em>Application Controls</em>.</li>
+        <li><strong>Mengintegrasikan Doktrin Raqabah &amp; Muhasabah:</strong> Membangun kesadaran muraqabatullah dan evaluasi diri (<em>Control Self-Assessment</em>) sebagai pengendalian intrinsik dalam akuntansi Islam.</li>
+      </ul>
+
+      <h3 class="sub">3 Dimensi Kubus Pengendalian Internal COSO</h3>
+      <div class="coso-cube-wrap">
+        <div class="cube-hd">STRUKTUR KUBUS COSO 2013 (INTERNAL CONTROL — INTEGRATED FRAMEWORK)</div>
+        <div class="cube-grid">
+          <div class="cube-col">
+            <div class="cube-col-title">1. Sisi Atas: 3 Kategori Tujuan</div>
+            <ul class="cube-col-list">
+              <li><strong>Operations (Operasional):</strong> Efisiensi, efektivitas operasional, dan perlindungan aset terhadap kerugian.</li>
+              <li><strong>Reporting (Pelaporan):</strong> Keandalan, ketepatan waktu, dan transparansi laporan keuangan internal &amp; eksternal.</li>
+              <li><strong>Compliance (Kepatuhan):</strong> Ketaatan terhadap undang-undang, regulasi OJK/BI, dan fatwa DSN-MUI.</li>
+            </ul>
+          </div>
+          <div class="cube-col" style="border-color:var(--pmid);background:var(--prx)">
+            <div class="cube-col-title" style="color:var(--pmid)">2. Sisi Depan: 5 Komponen</div>
+            <ul class="cube-col-list">
+              <li><strong>1. Control Environment:</strong> Fondasi etika &amp; tone at the top.</li>
+              <li><strong>2. Risk Assessment:</strong> Analisis risiko inheren &amp; residual.</li>
+              <li><strong>3. Control Activities:</strong> Kebijakan &amp; prosedur (SoD, validasi).</li>
+              <li><strong>4. Info &amp; Communication:</strong> Aliran data SIA berkualitas.</li>
+              <li><strong>5. Monitoring Activities:</strong> Evaluasi berkelanjutan &amp; audit.</li>
+            </ul>
+          </div>
+          <div class="cube-col">
+            <div class="cube-col-title">3. Sisi Samping: Tingkat Entitas</div>
+            <ul class="cube-col-list">
+              <li><strong>Entity Level:</strong> Kantor Pusat / Korporasi.</li>
+              <li><strong>Division / Region:</strong> Kantor Wilayah.</li>
+              <li><strong>Operating Unit:</strong> Kantor Cabang / KCP.</li>
+              <li><strong>Function:</strong> Departemen (Finance, IT, Risk, HR).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout info">
+        <strong>Keterbatasan Inheren Pengendalian Internal:</strong> Romney &amp; Steinbart (Ch. 7) mengingatkan bahwa pengendalian internal <em>tidak dapat memberikan jaminan mutlak (absolute assurance)</em> karena adanya keterbatasan manusiawi: salah pertimbangan (<em>human error</em>), trade-off biaya vs manfaat (<em>cost-benefit ratio</em>), kolusi dua orang atau lebih (<em>collusion</em>), dan pengabaian oleh pimpinan (<em>management override</em>).
+      </div>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(0)">Saya Paham, Lanjut ke Evolusi Regulasi &amp; SOX</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 1: EVOLUSI REGULASI & SOX -->
+  <div class="sec locked" id="sec1">
+    <div class="sec-hd">
+      <div class="sec-num">02</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">Evolusi Kerangka Regulasi &amp; Sarbanes-Oxley Act (SOX)</h2>
+        <div class="sec-sub2">Latar Belakang Skandal Keuangan Global · Mandat SOX Section 404 &amp; Section 302</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Kerangka pengendalian internal modern tidak lahir di ruang hampa, melainkan merupakan respons langsung terhadap krisis kepercayaan publik akibat skandal mega-fraud korporasi dunia pada awal dekade 2000-an (seperti Enron, WorldCom, dan Tyco).</p>
+
+      <h3 class="sub">Kronologi Evolusi Kerangka COSO</h3>
+      <ul class="bullet">
+        <li><strong>1985 — Pembentukan Treadway Commission (COSO):</strong> Didirikan oleh 5 asosiasi profesi akuntansi Amerika Serikat (AICPA, AAA, FEI, IIA, IMA) untuk meneliti penyebab utama rekayasa pelaporan keuangan.</li>
+        <li><strong>1992 — COSO Internal Control — Integrated Framework:</strong> Kerangka kerja komprehensif pertama yang memperkenalkan model 5 komponen pengendalian internal.</li>
+        <li><strong>2002 — Pengesahan Sarbanes-Oxley Act (SOX):</strong> Undang-undang federal AS paling berpengaruh yang mewajibkan perusahaan publik memperketat tata kelola dan audit sistem pengendalian internal.</li>
+        <li><strong>2004 — COSO ERM (Enterprise Risk Management):</strong> Perluasan kerangka kerja menjadi 8 komponen berbasis manajemen risiko korporasi.</li>
+        <li><strong>2013 — COSO Internal Control Framework Revisi:</strong> Memperbarui kerangka 1992 dengan menetapkan <strong>17 Prinsip Fundamental</strong> eksplisit yang mencakup lingkungan bisnis digital dan sistem informasi modern.</li>
+      </ul>
+
+      <h3 class="sub">Bedah Mandat Kritis Sarbanes-Oxley Act (SOX)</h3>
+      <div class="cmp-table-wrap">
+        <table class="cmp-table">
+          <thead>
+            <tr>
+              <th>Pasal SOX</th>
+              <th>Mandat Utama</th>
+              <th>Dampak Langsung terhadap Sistem Informasi Akuntansi (SIA)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>SOX Section 404 (ICFR)</strong></td>
+              <td>Manajemen wajib menyusun laporan tahunan yang menilai efektivitas <em>Internal Control over Financial Reporting (ICFR)</em>, dan KAP eksternal wajib menerbitkan opini audit atas efektivitas pengendalian tersebut.</td>
+              <td>Seluruh proses bisnis, konfigurasi sistem akuntansi, pembatasan hak akses (RBAC), dan log jejak audit harus terdokumentasi rapi, teruji, dan dapat dibuktikan kepatuhannya kepada auditor.</td>
+            </tr>
+            <tr>
+              <td><strong>SOX Section 302</strong></td>
+              <td>CEO dan CFO wajib menandatangani surat pernyataan pertanggungjawaban pribadi bahwa laporan keuangan disajikan secara wajar dan pengendalian internal telah dievaluasi dalam 90 hari terakhir.</td>
+              <td>Mendorong terciptanya dashboard eksekutif dan modul pelaporan keuangan real-time yang memverifikasi integritas data sebelum dipublikasikan.</td>
+            </tr>
+            <tr>
+              <td><strong>SOX Section 802</strong></td>
+              <td>Sanksi pidana berat (denda hingga $5 juta dan hukuman penjara hingga 20 tahun) bagi pihak yang memanipulasi, memusnahkan, atau menyembunyikan dokumen dan log audit elektronik.</td>
+              <td>Wajib diterapkannya arsitektur penyimpanan log audit kekal (<em>Write-Once-Read-Many / WORM</em>) dan pencadangan data otomatis (<em>Automated Off-site Backup</em>).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout warn">
+        <strong>Pelajaran Tata Kelola bagi Lembaga Keuangan Syariah:</strong> Di Indonesia, regulasi Bank Indonesia (PBI) dan Otoritas Jasa Keuangan (POJK No. 65/POJK.03/2016 tentang Penerapan Manajemen Risiko bagi Bank Umum Syariah) mengadopsi prinsip-prinsip ketat yang setara dengan SOX dan COSO, menuntut pemisahan fungsi dan auditabilitas sistem perbankan syariah.
+      </div>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(1)">Lanjut ke 5 Komponen &amp; 17 Prinsip COSO</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 2: 5 KOMPONEN & 17 PRINSIP COSO -->
+  <div class="sec locked" id="sec2">
+    <div class="sec-hd">
+      <div class="sec-num">03</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">5 Komponen COSO 2013 &amp; 17 Prinsip Fundamental SIA</h2>
+        <div class="sec-sub2">Rincian Komponen Terintegrasi · Pemetaan Kontrol Sistem Informasi Akuntansi</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Kerangka COSO 2013 menetapkan bahwa sistem pengendalian internal dinilai <strong>efektif</strong> jika kelima komponen hadir (<em>present</em>) dan berfungsi (<em>functioning</em>) secara terpadu. Terdapat 17 prinsip fundamental yang menjadi pilar kelima komponen tersebut:</p>
+
+      <div class="comp-grid">
+        <div class="comp-card">
+          <div class="comp-num">KOMPONEN 1</div>
+          <div class="comp-title">Control Environment</div>
+          <div class="comp-desc">Fondasi moral, etika, dan struktur wewenang organisasi (<em>Tone at the Top</em>).</div>
+          <div class="comp-princ">Prinsip 1 – 5</div>
+        </div>
+        <div class="comp-card">
+          <div class="comp-num">KOMPONEN 2</div>
+          <div class="comp-title">Risk Assessment</div>
+          <div class="comp-desc">Identifikasi dan evaluasi risiko bisnis serta potensi ancaman fraud.</div>
+          <div class="comp-princ">Prinsip 6 – 9</div>
+        </div>
+        <div class="comp-card">
+          <div class="comp-num">KOMPONEN 3</div>
+          <div class="comp-title">Control Activities</div>
+          <div class="comp-desc">Kebijakan dan prosedur operasional untuk memitigasi risiko (SoD, ITGC).</div>
+          <div class="comp-princ">Prinsip 10 – 12</div>
+        </div>
+        <div class="comp-card">
+          <div class="comp-num">KOMPONEN 4</div>
+          <div class="comp-title">Information &amp; Comms</div>
+          <div class="comp-desc">Pertukaran informasi akuntansi yang berkualitas dan sistem whistleblowing.</div>
+          <div class="comp-princ">Prinsip 13 – 15</div>
+        </div>
+        <div class="comp-card">
+          <div class="comp-num">KOMPONEN 5</div>
+          <div class="comp-title">Monitoring Activities</div>
+          <div class="comp-desc">Evaluasi berkala dan perbaikan defisiensi pengendalian secara berkelanjutan.</div>
+          <div class="comp-princ">Prinsip 16 – 17</div>
+        </div>
+      </div>
+
+      <h3 class="sub">Matriks 17 Prinsip COSO dalam Implementasi SIA</h3>
+      <table class="cmp-table">
+        <thead>
+          <tr>
+            <th>Komponen</th>
+            <th>No</th>
+            <th>Prinsip Fundamental COSO 2013</th>
+            <th>Contoh Implementasi Konkret dalam SIA</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td rowspan="5"><strong>1. Control Environment</strong></td>
+            <td>1</td>
+            <td>Menunjukkan komitmen terhadap integritas &amp; nilai etika</td>
+            <td>Pakta integritas digital, penandatanganan kode etik anti-suap saat login tahunan.</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Dewan komisaris/DPS menjalankan fungsi pengawasan independen</td>
+            <td>Dashboard audit independen untuk Komite Audit &amp; DPS tanpa intervensi direksi.</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Menetapkan struktur organisasi, jalur pelaporan, wewenang &amp; tanggung jawab</td>
+            <td>Matriks Role-Based Access Control (RBAC) pada menu sistem akuntansi.</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>Menunjukkan komitmen terhadap rekrutmen &amp; kompetensi SDM</td>
+            <td>Sertifikasi kompetensi akuntansi/syariah berkala bagi operator dan staf TI.</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>Menegakkan akuntabilitas kinerja individu</td>
+            <td>Evaluasi KPI yang mengintegrasikan metrik kepatuhan SOP dan nihil fraud.</td>
+          </tr>
+          <tr>
+            <td rowspan="4"><strong>2. Risk Assessment</strong></td>
+            <td>6</td>
+            <td>Menetapkan tujuan yang spesifik dan jelas</td>
+            <td>Target zero-tolerance pada kebocoran data nasabah dan selisih kas fisik.</td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td>Mengidentifikasi &amp; menganalisis risiko pencapaian tujuan</td>
+            <td>Pemetaan matriks risiko (Inherent vs Residual Risk) pada modul pembiayaan.</td>
+          </tr>
+          <tr>
+            <td>8</td>
+            <td>Menilai potensi terjadinya risiko kecurangan (Fraud Risk)</td>
+            <td>Analisis titik rawan lapping, skimming, dan pencairan fiktif pada siklus kas.</td>
+          </tr>
+          <tr>
+            <td>9</td>
+            <td>Mengidentifikasi perubahan signifikan dalam lingkungan bisnis</td>
+            <td>Asesmen dampak migrasi cloud server dan kepatuhan fatwa baru DSN-MUI.</td>
+          </tr>
+          <tr>
+            <td rowspan="3"><strong>3. Control Activities</strong></td>
+            <td>10</td>
+            <td>Mengembangkan aktivitas pengendalian untuk mitigasi risiko</td>
+            <td>Pemisahan tugas (SoD), limit otorisasi bertingkat, rekonsiliasi bank harian.</td>
+          </tr>
+          <tr>
+            <td>11</td>
+            <td>Mengembangkan pengendalian umum atas teknologi informasi (ITGC)</td>
+            <td>Multi-Factor Authentication (MFA), firewall, disaster recovery plan, data encryption.</td>
+          </tr>
+          <tr>
+            <td>12</td>
+            <td>Menyebarkan pengendalian melalui kebijakan dan prosedur formal</td>
+            <td>SOP formal pembatalan transaksi (<em>void</em>) yang mewajibkan otorisasi supervisor.</td>
+          </tr>
+          <tr>
+            <td rowspan="3"><strong>4. Information &amp; Comms</strong></td>
+            <td>13</td>
+            <td>Memperoleh dan menggunakan informasi berkualitas dan relevan</td>
+            <td>Otomasi closing jurnal akhir periode dan eliminasi jurnal penyesuaian manual.</td>
+          </tr>
+          <tr>
+            <td>14</td>
+            <td>Mengomunikasikan informasi secara internal dalam organisasi</td>
+            <td>Whistleblowing System (<em>Amanah Line</em>) online terenkripsi dengan jaminan anonimitas.</td>
+          </tr>
+          <tr>
+            <td>15</td>
+            <td>Berkomunikasi dengan pihak eksternal berkepentingan</td>
+            <td>Pengiriman E-Statement mutasi rekening otomatis ke email/WhatsApp nasabah.</td>
+          </tr>
+          <tr>
+            <td rowspan="2"><strong>5. Monitoring Activities</strong></td>
+            <td>16</td>
+            <td>Melakukan evaluasi berkelanjutan (<em>ongoing</em>) atau terpisah (<em>separate</em>)</td>
+            <td>Audit internal rutin berbasis risiko (RBIA) dan inspeksi berkala cabang pembantu.</td>
+          </tr>
+          <tr>
+            <td>17</td>
+            <td>Mengevaluasi dan mengomunikasikan defisiensi pengendalian</td>
+            <td>Issue Tracking System temuan audit dengan eskalasi batas waktu (SLA) ke Direksi.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(2)">Lanjut ke Taksonomi Pengendalian SIA</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 3: TAKSONOMI PENGENDALIAN SIA -->
+  <div class="sec locked" id="sec3">
+    <div class="sec-hd">
+      <div class="sec-num">04</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">Taksonomi Pengendalian SIA: Preventif, Detektif &amp; Korektif</h2>
+        <div class="sec-sub2">Klasifikasi Berdasarkan Waktu &amp; Lingkup · IT General Controls vs Application Controls</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Dalam perancangan Sistem Informasi Akuntansi, pengendalian dikelompokkan ke dalam dua dimensi utama: berdasarkan <strong>waktu kejadian (timing)</strong> dan berdasarkan <strong>lingkup penerapan (scope)</strong>.</p>
+
+      <h3 class="sub">1. Klasifikasi Pengendalian Berdasarkan Waktu (Timing)</h3>
+      <div class="pillars-grid">
+        <div class="pillar-card hl">
+          <span class="pillar-badge">Preventive Controls</span>
+          <div class="pillar-title">Mencegah Sebelum Terjadi</div>
+          <div class="pillar-desc">Pengendalian paling hemat biaya (<em>cost-effective</em>). Mencegah masuknya error atau transaksi tidak sah ke sistem.</div>
+          <ul class="bullet" style="margin-top:6px;font-size:12px;padding-left:15px">
+            <li>Pemisahan Tugas (Segregation of Duties).</li>
+            <li>Otorisasi ganda (<em>Dual Control / Two-Tier Approval</em>).</li>
+            <li>Input Validations (Field check, Limit check, Range check).</li>
+            <li>Pembatasan hak akses berbasis kata sandi kuat / MFA.</li>
+          </ul>
+        </div>
+        <div class="pillar-card">
+          <span class="pillar-badge" style="background:#1B7898">Detective Controls</span>
+          <div class="pillar-title">Menemukan yang Terlanjur Lolos</div>
+          <div class="pillar-desc">Mendeteksi kekeliruan atau kecurangan yang berhasil melewati pertahanan preventif sesegera mungkin.</div>
+          <ul class="bullet" style="margin-top:6px;font-size:12px;padding-left:15px">
+            <li>Rekonsiliasi bank otomatis harian.</li>
+            <li>Perhitungan fisik kas berkala (<em>cash count</em>).</li>
+            <li>Laporan pengecualian sistem (<em>Exception Reports</em>).</li>
+            <li>Pemeriksaan log jejak audit berkala (<em>Audit Trail Review</em>).</li>
+          </ul>
+        </div>
+        <div class="pillar-card">
+          <span class="pillar-badge" style="background:var(--warn)">Corrective Controls</span>
+          <div class="pillar-title">Memulihkan &amp; Memperbaiki</div>
+          <div class="pillar-desc">Mengoreksi kesalahan yang terdeteksi, memulihkan data, dan mencegah insiden serupa terulang kembali.</div>
+          <ul class="bullet" style="margin-top:6px;font-size:12px;padding-left:15px">
+            <li>SOP jurnal koreksi / pembatalan (<em>void</em>).</li>
+            <li>Pemulihan dari data cadangan (<em>Backup Restore</em>).</li>
+            <li>Pelaksanaan Rencana Pemulihan Bencana (<em>DRP</em>).</li>
+            <li>Klaim asuransi kerugian (<em>Fidelity Bond</em>).</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 class="sub">2. IT General Controls (ITGC) vs Application Controls</h3>
+      <div class="sya-grid">
+        <div class="sya-card" style="border-top-color:var(--pri)">
+          <div class="sya-card-title" style="color:var(--pri)">IT General Controls (ITGC)</div>
+          <div class="sya-card-desc">Pengendalian payung tingkat infrastruktur dan lingkungan TI yang menaungi seluruh aplikasi organisasi:</div>
+          <ul class="bullet" style="font-size:12px;margin-top:6px;padding-left:15px">
+            <li><strong>Access Controls:</strong> Manajemen User ID, MFA, proteksi jaringan VPN.</li>
+            <li><strong>Change Management:</strong> Prosedur pengujian source code sebelum rilis ke production.</li>
+            <li><strong>Computer Operations:</strong> Penjadwalan batch job, backup snapshot, antivirus.</li>
+            <li><strong>Business Continuity:</strong> Server cadangan replikasi dan Disaster Recovery Center.</li>
+          </ul>
+        </div>
+        <div class="sya-card" style="border-top-color:var(--pmid)">
+          <div class="sya-card-title" style="color:var(--pmid)">Application Controls (Kontrol Aplikasi)</div>
+          <div class="sya-card-desc">Pengendalian terprogram yang tertanam langsung di dalam kode modul software akuntansi:</div>
+          <ul class="bullet" style="font-size:12px;margin-top:6px;padding-left:15px">
+            <li><strong>Input Controls:</strong> Pemeriksaan format angka (<em>field check</em>), kelengkapan data (<em>completeness check</em>), batas wajar (<em>reasonableness check</em>).</li>
+            <li><strong>Processing Controls:</strong> Pengecekan saldo debet-kredit seimbang (<em>matching balance</em>), verifikasi nomor urut transaksi.</li>
+            <li><strong>Output Controls:</strong> Enkripsi file laporan PDF, restriksi cetak ulang kwitansi, watermarking dokumen.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(3)">Lanjut ke Integrasi Nilai Syariah</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 4: NILAI SYARIAH RAQABAH & MUHASABAH -->
+  <div class="sec locked" id="sec4">
+    <div class="sec-hd">
+      <div class="sec-num">05</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">Integrasi Nilai Syariah: Raqabah, Muhasabah &amp; Taqwa</h2>
+        <div class="sec-sub2">Pengendalian Internal Spiritual · Mengapa Prosedur Formal Saja Tidak Cukup?</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Sistem pengendalian internal konvensional (seperti COSO dan SOX) berfokus pada <strong>pengendalian ekstrinsik</strong> (prosedur, pemisahan tugas, dan audit). Namun, sistem terbaik sekalipun dapat ditembus melalui kolusi. Islam melengkapinya dengan <strong>pengendalian intrinsik berbasis Taqwa, Muraqabatullah (Raqabah), dan Muhasabah</strong>.</p>
+
+      <div class="ayat-box">
+        <div class="ayat-ar">يَا أَيُّهَا الَّذِينَ آمَنُوا اتَّقُوا اللَّهَ وَلْتَنظُرْ نَفْسٌ مَّا قَدَّمَتْ لِغَدٍ ۖ وَاتَّقُوا اللَّهَ ۚ إِنَّ اللَّهَ خَبِيرٌ بِمَا تَعْمَلُونَ</div>
+        <div class="ayat-trans">"Wahai orang-orang yang beriman! Bertakwalah kepada Allah dan hendaklah setiap orang memperhatikan apa yang telah diperbuatnya untuk hari esok (akhirat), dan bertakwalah kepada Allah. Sungguh, Allah Maha Mengetahui apa yang kamu kerjakan."</div>
+        <div class="ayat-ref">QS. Al-Hasyr [59]: 18 — Landasan Teologis Doktrin Muhasabah (Control Self-Assessment)</div>
+      </div>
+
+      <div class="ayat-box" style="background:linear-gradient(135deg,#1E0C06,#2E1005)">
+        <div class="ayat-ar">مَّا يَلْفِظُ مِن قَوْلٍ إِلَّا لَدَيْهِ رَقِيبٌ عَتِيدٌ</div>
+        <div class="ayat-trans">"Tidak ada suatu kata yang diucapkannya melainkan ada di sisinya malaikat pengawas yang selalu siap (mencatat)."</div>
+        <div class="ayat-ref">QS. Qaf [50]: 18 — Prinsip Raqabah: Pengawasan Ilahiah sebagai Eternal Immutable Audit Trail</div>
+      </div>
+
+      <h3 class="sub">Hadits Fondasi Muhasabah (Evaluasi Diri)</h3>
+      <div class="callout sya">
+        <strong>Pesan Khalifah Umar bin Al-Khattab RA (Diriwayatkan oleh Imam Tirmidzi &amp; Ahmad):</strong><br>
+        <em>"حَاسِبُوا أَنْفُسَكُمْ قَبْلَ أَنْ تُحَاسَبُوا، وَزِنُوا أَنْفُسَكُمْ قَبْلَ أَنْ تُوزَنُوا"</em><br>
+        "Hisablah (evaluasilah) diri kalian sebelum kalian dihisab di hadapan Allah, dan timbanglah amal kalian sebelum amal kalian ditimbang."<br>
+        <span style="font-size:12px;color:var(--txl)">Dalam konteks SIA, hadits ini menjadi ruh bagi pelaksanaan <strong>Control Self-Assessment (CSA)</strong> dan audit internal proaktif.</span>
+      </div>
+
+      <h3 class="sub">Matriks Integrasi COSO dengan Dimensi Nilai Syariah</h3>
+      <div class="sya-grid">
+        <div class="sya-card">
+          <div class="sya-card-title">1. Control Environment ↔ Taqwa &amp; Amanah</div>
+          <div class="sya-card-desc">Integritas kepemimpinan berlandaskan takut kepada Allah SWT. Jabatan dipandang sebagai amanah berat, bukan hak istimewa untuk mengeksploitasi wewenang.</div>
+          <div class="sya-card-ref">Prinsip Amanah &amp; Itqan</div>
+        </div>
+        <div class="sya-card">
+          <div class="sya-card-title">2. Risk Assessment ↔ Prinsip Ihtiyath</div>
+          <div class="sya-card-desc">Sikap kehati-hatian (<em>prudence/ihtiyath</em>) dalam mengidentifikasi risiko gharar, maysir, riba, dan tadlis yang dapat merusak kehalalan operasional.</div>
+          <div class="sya-card-ref">Prinsip Hifz al-Mal &amp; Saddu adz-Dzari'ah</div>
+        </div>
+        <div class="sya-card">
+          <div class="sya-card-title">3. Control Activities ↔ Al-Adl &amp; SoD</div>
+          <div class="sya-card-desc">Keadilan pembagian wewenang tanpa sentralisasi kekuasaan mutlak pada satu figur. Mencegah kezaliman dan monopoli otorisasi.</div>
+          <div class="sya-card-ref">Prinsip Keadilan Wewenang</div>
+        </div>
+        <div class="sya-card">
+          <div class="sya-card-title">4. Monitoring ↔ Al-Muhasabah &amp; Hisbah</div>
+          <div class="sya-card-desc">Audit internal bukan untuk mencari kesalahan pribadi, melainkan sarana muhasabah kelembagaan dan penegakan hisbah demi mencapai falah.</div>
+          <div class="sya-card-ref">Prinsip Pengawasan Kolektif</div>
+        </div>
+      </div>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(4)">Lanjut ke Studi Kasus Evaluasi BPRS</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 5: STUDI KASUS EVALUASI BPRS AMANAH UMMAH -->
+  <div class="sec locked" id="sec5">
+    <div class="sec-hd">
+      <div class="sec-num">06</div>
+      <div class="sec-title-wrap">
+        <h2 class="sec-title">Studi Kasus Evaluasi COSO: Audit Defisiensi BPRS Amanah Ummah</h2>
+        <div class="sec-sub2">Penerapan Audit Pengendalian Internal · Klasifikasi Material Weakness vs Significant Deficiency</div>
+      </div>
+      <div class="sec-chk">✓</div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Otoritas Jasa Keuangan (OJK) bersama Kantor Akuntan Publik independen melakukan asesmen pengendalian internal berbasis kerangka COSO 2013 pada <strong>BPRS Amanah Ummah</strong> (terekam dalam <code>dataset-coso-internal-control-p05.csv</code>). Hasil audit menemukan 3 tingkat defisiensi kritis:</p>
+
+      <div class="callout case">
+        <div class="case-label">TAKSONOMI DEFISIENSI AUDIT PENGENDALIAN INTERNAL</div>
+        <ul class="bullet" style="margin:0;font-size:13px">
+          <li><strong>Control Deficiency (Defisiensi Kontrol):</strong> Kelemahan rancangan/operasional kontrol yang tidak memungkinkan pencegahan/deteksi salah saji secara tepat waktu (Contoh: Keterlambatan closing penyusutan aset).</li>
+          <li><strong>Significant Deficiency (Defisiensi Signifikan):</strong> Kelemahan yang cukup penting untuk mendapat perhatian pihak yang bertanggung jawab atas tata kelola (Contoh: DPS tidak punya dashboard audit log real-time).</li>
+          <li><strong>Material Weakness (Kelemahan Material):</strong> Defisiensi parah di mana terdapat kemungkinan wajar bahwa salah saji material laporan keuangan <strong>tidak akan dapat dicegah atau dideteksi</strong> tepat waktu (Contoh: Password superuser dibagi bersama, otorisasi pembiayaan self-approved).</li>
+        </ul>
+      </div>
+
+      <h3 class="sub">3 Temuan Material Weakness pada BPRS Amanah Ummah</h3>
+      <table class="cmp-table">
+        <thead>
+          <tr>
+            <th>ID Kontrol</th>
+            <th>Komponen COSO</th>
+            <th>Deskripsi Kerentanan Sistem</th>
+            <th>Status Keparahan</th>
+            <th>Rekomendasi Perbaikan Sistem</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="background:#FFF0EB">
+            <td><strong>CTRL-003</strong></td>
+            <td>Control Environment (P3)</td>
+            <td>Staf marketing mikro merangkap input data permohonan dan menyetujui sendiri pencairan pembiayaan &lt; Rp 20 Juta tanpa validasi ganda.</td>
+            <td><span style="color:var(--warn);font-weight:700">Material Weakness</span></td>
+            <td>Wajibkan pemisahan tugas (SoD) dan kunci tombol Approve di core banking agar hanya bisa diklik oleh Branch Manager.</td>
+          </tr>
+          <tr style="background:#FFF0EB">
+            <td><strong>CTRL-012</strong></td>
+            <td>Control Activities (P10)</td>
+            <td>Penerimaan setoran angsuran di lapangan masih menggunakan kuitansi manual kertas tanpa integrasi notifikasi instan.</td>
+            <td><span style="color:var(--warn);font-weight:700">Material Weakness</span></td>
+            <td>Ganti seluruh kuitansi fisik dengan Android Mobile E-Receipt real-time dengan WhatsApp Gateway otomatis ke nomor nasabah.</td>
+          </tr>
+          <tr style="background:#FFF0EB">
+            <td><strong>CTRL-013</strong></td>
+            <td>Control Activities (P11)</td>
+            <td>Akses superuser database server menggunakan satu akun admin bersama tanpa login individual personal.</td>
+            <td><span style="color:var(--warn);font-weight:700">Material Weakness</span></td>
+            <td>Terapkan akun personal berbasis Role-Based Access Control (RBAC), Multi-Factor Authentication, dan larang login shared.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout tip">
+        <strong>Langkah Selanjutnya pada Sesi Praktikum:</strong> Pada lembar <code>Praktikum-05-AIS.html</code>, Anda akan menganalisis 25 item pengendalian pada dataset BPRS Amanah Ummah, menghitung skor risiko residual, dan merancang matriks mitigasi COSO 17 prinsip secara komprehensif!
+      </div>
+    </div>
+    <div class="sec-foot">
+      <span class="done-msg">✓ Selesai dipelajari</span>
+      <button class="paham-btn" onclick="paham(5)">Lanjut ke Kuis Uji Pemahaman</button>
+    </div>
+  </div>
+
+  <!-- SEKSI 6: KUIS INTERAKTIF -->
+  <div class="quiz-sec locked" id="sec6">
+    <div class="quiz-hd">
+      <span class="quiz-icon">📝</span>
+      <div class="quiz-hd-text">
+        <h2 class="quiz-hd-title">Uji Pemahaman: Evaluasi Modul 05</h2>
+        <div class="quiz-hd-sub">4 Pilihan Ganda + 1 Permainan Pencocokan 6 Prinsip COSO &amp; Syariah (Batas Kelulusan: 75%)</div>
+      </div>
+    </div>
+    <div class="quiz-body">
+
+      <!-- SOAL 1 -->
+      <div class="q-item" id="mcq0">
+        <div class="q-text"><span class="q-num">1</span> Manakah komponen COSO 2013 yang menjadi <strong>fondasi utama (payung etika)</strong> bagi keempat komponen lainnya, yang mencakup integritas kepemimpinan (<em>Tone at the Top</em>) dan struktur wewenang organisasi?</div>
+        <div class="options">
+          <div class="opt" onclick="selectMCQ(0, 0)">
+            <span class="opt-ltr">A</span>
+            <div class="opt-txt">Control Activities.<div class="opt-fb">Kurang tepat. Control activities adalah kebijakan dan prosedur teknis, bukan fondasi nilai etika pucuk pimpinan.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(0, 1)">
+            <span class="opt-ltr">B</span>
+            <div class="opt-txt">Control Environment (Lingkungan Pengendalian).<div class="opt-fb">Benar! Control Environment adalah fondasi dasar yang menentukan suasana etika dan integritas seluruh organisasi.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(0, 2)">
+            <span class="opt-ltr">C</span>
+            <div class="opt-txt">Risk Assessment.<div class="opt-fb">Kurang tepat. Risk assessment adalah proses identifikasi risiko, bertumpu pada lingkungan pengendalian yang kuat.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(0, 3)">
+            <span class="opt-ltr">D</span>
+            <div class="opt-txt">Monitoring Activities.<div class="opt-fb">Kurang tepat. Monitoring adalah evaluasi berkala di akhir siklus.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOAL 2 -->
+      <div class="q-item" id="mcq1">
+        <div class="q-text"><span class="q-num">2</span> Menurut Sarbanes-Oxley Act (SOX) Section 404, manajemen perusahaan publik diwajibkan untuk:</div>
+        <div class="options">
+          <div class="opt" onclick="selectMCQ(1, 0)">
+            <span class="opt-ltr">A</span>
+            <div class="opt-txt">Menghapus seluruh penggunaan kata sandi manual dan menggantinya dengan pemindai retina.<div class="opt-fb">Kurang tepat. SOX tidak mengatur teknologi biometrik spesifik.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(1, 1)">
+            <span class="opt-ltr">B</span>
+            <div class="opt-txt">Menerbitkan laporan tahunan mengenai efektivitas Pengendalian Internal atas Pelaporan Keuangan (ICFR) yang diaudit KAP independen.<div class="opt-fb">Benar! SOX 404 mewajibkan laporan tahunan efektivitas ICFR beserta opini auditor independen.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(1, 2)">
+            <span class="opt-ltr">C</span>
+            <div class="opt-txt">Memastikan seluruh laba perusahaan dibagikan sebagai dividen tunai tanpa saldo laba ditahan.<div class="opt-fb">Kurang tepat. Ini adalah keputusan RUPS permodalan, bukan regulasi SOX ICFR.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(1, 3)">
+            <span class="opt-ltr">D</span>
+            <div class="opt-txt">Mengambil alih seluruh wewenang dewan komisaris oleh direktur utama.<div class="opt-fb">Salah. SOX justru memperkuat independensi komite audit dewan komisaris.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOAL 3 -->
+      <div class="q-item" id="mcq2">
+        <div class="q-text"><span class="q-num">3</span> Sebuah kontrol software akuntansi yang secara otomatis memeriksa apakah angka nominal transaksi berada dalam batas wajar antara Rp 10.000 hingga Rp 100.000.000 disebut jenis pengendalian:</div>
+        <div class="options">
+          <div class="opt" onclick="selectMCQ(2, 0)">
+            <span class="opt-ltr">A</span>
+            <div class="opt-txt">Detective Control — Bank Reconciliation.<div class="opt-fb">Kurang tepat. Ini bekerja saat input sebelum data tersimpan.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(2, 1)">
+            <span class="opt-ltr">B</span>
+            <div class="opt-txt">Corrective Control — Backup Snapshot.<div class="opt-fb">Kurang tepat. Backup adalah kontrol pemulihan data setelah insiden.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(2, 2)">
+            <span class="opt-ltr">C</span>
+            <div class="opt-txt">Preventive Application Control (Input Range Check).<div class="opt-fb">Benar! Range check pada form input adalah pengendalian preventif aplikasi untuk menyaring data salah masuk ke database.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(2, 3)">
+            <span class="opt-ltr">D</span>
+            <div class="opt-txt">IT General Control (Change Management).<div class="opt-fb">Kurang tepat. Change management adalah tata kelola pengembangan kode software, bukan validasi form input.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOAL 4 -->
+      <div class="q-item" id="mcq3">
+        <div class="q-text"><span class="q-num">4</span> Dalam perspektif akuntansi Islam, kesadaran bahwa Allah SWT senantiasa mengawasi setiap transaksi secara sempurna (sebagaimana firman-Nya dalam QS. Qaf: 18) diistilahkan sebagai prinsip:</div>
+        <div class="options">
+          <div class="opt" onclick="selectMCQ(3, 0)">
+            <span class="opt-ltr">A</span>
+            <div class="opt-txt">Ikhtikar.<div class="opt-fb">Salah. Ikhtikar adalah penimbunan barang yang diharamkan.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(3, 1)">
+            <span class="opt-ltr">B</span>
+            <div class="opt-txt">Raqabah (Muraqabatullah).<div class="opt-fb">Benar! Raqabah adalah kesadaran pengawasan Ilahi yang menjadi pengendali internal spiritual tertinggi.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(3, 2)">
+            <span class="opt-ltr">C</span>
+            <div class="opt-txt">Gharar.<div class="opt-fb">Salah. Gharar adalah ketidakpastian/ketidakjelasan dalam akad.</div></div>
+          </div>
+          <div class="opt" onclick="selectMCQ(3, 3)">
+            <span class="opt-ltr">D</span>
+            <div class="opt-txt">Tadlis.<div class="opt-fb">Salah. Tadlis adalah penipuan/penyembunyian cacat transaksi.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MATCHING GAME -->
+      <div class="match-intro">
+        <strong>Tantangan Pencocokan Konsep COSO &amp; Syariah:</strong> Klik satu konsep di kolom kiri, lalu klik definisi / analogi yang tepat di kolom kanan untuk membuat pasangan berwarna!
+      </div>
+      <div class="match-container">
+        <div>
+          <div class="match-col-title">Konsep / Komponen</div>
+          <div class="match-terms" id="terms">
+            <div class="match-term" onclick="selectTerm(0)">1. Control Environment</div>
+            <div class="match-term" onclick="selectTerm(1)">2. SOX Section 404</div>
+            <div class="match-term" onclick="selectTerm(2)">3. Application Controls</div>
+            <div class="match-term" onclick="selectTerm(3)">4. Material Weakness</div>
+            <div class="match-term" onclick="selectTerm(4)">5. Doktrin Muhasabah</div>
+            <div class="match-term" onclick="selectTerm(5)">6. Prinsip Raqabah</div>
+          </div>
+        </div>
+        <div>
+          <div class="match-col-title">Definisi / Analogi Sistem</div>
+          <div class="match-defs" id="defs">
+            <div class="match-def" onclick="selectDef(0)">A. Defisiensi kontrol internal parah di mana salah saji material berpeluang besar tidak terdeteksi tepat waktu.</div>
+            <div class="match-def" onclick="selectDef(1)">B. Kesadaran pengawasan Ilahiah yang berfungsi sebagai pengendali internal spiritual melebihi prosedur formal.</div>
+            <div class="match-def" onclick="selectDef(2)">C. Mandat kewajiban laporan tahunan efektivitas ICFR oleh manajemen dan audit independen KAP.</div>
+            <div class="match-def" onclick="selectDef(3)">D. Fondasi etika, tata kelola, dan tone at the top yang menaungi seluruh komponen pengendalian lainnya.</div>
+            <div class="match-def" onclick="selectDef(4)">E. Pengendalian terprogram langsung di dalam modul software (input, processing, output validation).</div>
+            <div class="match-def" onclick="selectDef(5)">F. Evaluasi diri dan introspeksi proaktif organisasi syariah (paralel dengan Control Self-Assessment / Monitoring).</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="quiz-foot">
+      <button class="submit-btn" onclick="submitQuiz()">Kirim Jawaban &amp; Hitung Nilai</button>
+      <span class="score-badge" id="scoreBadge"></span>
+    </div>
+  </div>
+
+  <!-- COMPLETION BOX -->
+  <div class="completion" id="completion">
+    <h2>🎉 Selamat! Anda Telah Menguasai Materi Pertemuan 05</h2>
+    <p>Pemahaman teoritis tentang Kubus COSO 2013 (17 Prinsip), Sarbanes-Oxley Act, Taksonomi Kontrol SIA, dan Nilai Syariah Raqabah &amp; Muhasabah telah tuntas. Lanjutkan ke lembar praktikum laboratorium!</p>
+    <a class="lab-btn" href="Praktikum-05-AIS.html">Buka Lembar Praktikum 05 (Lab 4) →</a>
+  </div>
+
+</div>
+
+<script>
+/* ═══ APPLICATION STATE MANAGEMENT ═══ */
+const STORAGE_KEY = 'tazkia-ais-p05-v1';
+const TOTAL_SECS = 7;
+const MCQ_ANSWERS = [1, 1, 2, 1]; // B, B, C, B
+const MATCH_CORRECT = {0:3, 1:2, 2:4, 3:0, 4:5, 5:1}; // 1->D, 2->C, 3->E, 4->A, 5->F, 6->B
+const PAIR_COLORS = ['#D46020', '#1F9060', '#7040B0', '#1B7898', '#C03818', '#9E6800'];
+
+let state = {
+  done: [0],
+  mcqSel: [null, null, null, null],
+  matchPairs: {},
+  submitted: false
+};
+
+let selTerm = null;
+let selDef = null;
+
+function saveState(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+}
+
+function loadState(){
+  try{
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if(saved) state = Object.assign(state, JSON.parse(saved));
+  }catch(e){}
+}
+
+function updateProgress(){
+  const doneCount = state.done.length;
+  const pct = Math.round((doneCount / TOTAL_SECS) * 100);
+  document.getElementById('topProg').style.width = pct + '%';
+  document.getElementById('topPct').textContent = pct + '%';
+
+  for(let i=0; i<TOTAL_SECS; i++){
+    const st = document.getElementById('st' + i);
+    const sc = document.getElementById('sc' + i);
+    if(!st) continue;
+    if(state.done.includes(i)){
+      st.className = (i === 6) ? 'step quiz done' : 'step done';
+      if(sc) sc.className = 'sconn done';
+    } else if(i === state.done.length){
+      st.className = (i === 6) ? 'step quiz active' : 'step active';
+      if(sc) sc.className = 'sconn';
+    } else {
+      st.className = (i === 6) ? 'step quiz' : 'step';
+      if(sc) sc.className = 'sconn';
+    }
+  }
+}
+
+function paham(idx){
+  if(!state.done.includes(idx)) state.done.push(idx);
+  const nextIdx = idx + 1;
+  if(nextIdx < TOTAL_SECS && !state.done.includes(nextIdx)){
+    state.done.push(nextIdx);
+  }
+  saveState();
+  applyState();
+
+  const nextSec = document.getElementById('sec' + nextIdx);
+  if(nextSec){
+    nextSec.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+}
+
+function selectMCQ(q, optIdx){
+  if(state.submitted) return;
+  state.mcqSel[q] = optIdx;
+  saveState();
+  const opts = document.querySelectorAll('#mcq' + q + ' .opt');
+  opts.forEach((o, i)=>o.classList.toggle('selected', i === optIdx));
+}
+
+function selectTerm(idx){
+  if(state.submitted) return;
+  selTerm = idx;
+  document.querySelectorAll('#terms .match-term').forEach((el, j)=>el.classList.toggle('selected', j === idx));
+  checkMatch();
+}
+
+function selectDef(idx){
+  if(state.submitted) return;
+  selDef = idx;
+  document.querySelectorAll('#defs .match-def').forEach((el, j)=>el.classList.toggle('selected', j === idx));
+  checkMatch();
+}
+
+function checkMatch(){
+  if(selTerm === null || selDef === null) return;
+  state.matchPairs[selTerm] = selDef;
+  saveState();
+
+  const color = PAIR_COLORS[selTerm % PAIR_COLORS.length];
+  const termEl = document.querySelectorAll('#terms .match-term')[selTerm];
+  const defEl = document.querySelectorAll('#defs .match-def')[selDef];
+
+  if(termEl){
+    termEl.style.borderColor = color;
+    termEl.style.background = color + '18';
+    termEl.style.color = color;
+  }
+  if(defEl){
+    defEl.style.borderColor = color;
+    defEl.style.background = color + '18';
+    defEl.style.color = color;
+  }
+
+  selTerm = null;
+  selDef = null;
+  document.querySelectorAll('#terms .match-term, #defs .match-def').forEach(el=>el.classList.remove('selected'));
+}
+
+function submitQuiz(){
+  state.submitted = true;
+  saveState();
+  let score = 0;
+  const total = MCQ_ANSWERS.length + Object.keys(MATCH_CORRECT).length;
+
+  // Grade MCQs
+  MCQ_ANSWERS.forEach((ans, q)=>{
+    const sel = state.mcqSel[q];
+    const opts = document.querySelectorAll('#mcq' + q + ' .opt');
+    opts.forEach((o, idx)=>{
+      if(idx === ans) o.className = 'opt correct';
+      else if(idx === sel && sel !== ans) o.className = 'opt wrong';
+    });
+    if(sel === ans) score++;
+  });
+
+  // Grade Matching
+  Object.entries(MATCH_CORRECT).forEach(([t, d])=>{
+    if(state.matchPairs[t] === d) score++;
+  });
+
+  const pct = Math.round((score / total) * 100);
+  const badge = document.getElementById('scoreBadge');
+  badge.style.display = 'inline-block';
+  badge.textContent = `Skor: ${score}/${total} (${pct}%)`;
+
+  if(pct >= 75){
+    badge.className = 'score-badge pass';
+    if(!state.done.includes(6)) state.done.push(6);
+    saveState();
+    updateProgress();
+    document.getElementById('completion').classList.add('show');
+    document.getElementById('completion').scrollIntoView({behavior:'smooth'});
+  } else {
+    badge.className = 'score-badge fail';
+    badge.textContent += ' — Pelajari kembali materi dan coba lagi!';
+  }
+}
+
+function applyState(){
+  for(let i=0; i<TOTAL_SECS; i++){
+    const sec = document.getElementById('sec' + i);
+    if(!sec) continue;
+    if(state.done.includes(i)){
+      sec.classList.remove('locked');
+      const isDone = (i < state.done.length - 1) || (state.done.length === TOTAL_SECS);
+      sec.classList.toggle('done-sec', isDone);
+    } else {
+      if(!sec.classList.contains('locked')) sec.classList.add('locked');
+      sec.classList.remove('done-sec');
+    }
+  }
+
+  state.mcqSel.forEach((sel, q)=>{
+    if(sel === null) return;
+    document.querySelectorAll('#mcq' + q + ' .opt')[sel]?.classList.add('selected');
+  });
+
+  Object.entries(state.matchPairs).forEach(([t, d])=>{
+    const color = PAIR_COLORS[t % PAIR_COLORS.length];
+    const termEl = document.querySelectorAll('#terms .match-term')[t];
+    const defEl = document.querySelectorAll('#defs .match-def')[d];
+    if(termEl){
+      termEl.style.borderColor = color;
+      termEl.style.background = color + '18';
+      termEl.style.color = color;
+    }
+    if(defEl){
+      defEl.style.borderColor = color;
+      defEl.style.background = color + '18';
+      defEl.style.color = color;
+    }
+  });
+
+  if(state.submitted) submitQuiz();
+  updateProgress();
+}
+
+loadState();
+applyState();
+</script>
+</body>
+</html>

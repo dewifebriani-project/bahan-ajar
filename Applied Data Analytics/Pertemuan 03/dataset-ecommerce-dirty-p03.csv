@@ -1,0 +1,106 @@
+order_id,order_date,customer_id,customer_name,customer_city,product_category,product_name,price_raw,quantity,shipping_cost_raw,payment_method,order_status,customer_rating
+TRX-2026001,2026-02-21,CUST-109,Fajar Ramadhan,YOGYA, Fashion Muslim,Koko Kurta Pria Modern,175000,2,Rp 30.000,Transfer Bank Syariah,Refunded,4
+TRX-2026002,2026-10-15,CUST-101,Dewi Sartika,bogor,KULINER HALAL,Kopi Arabika Gayo Halal 250g,Rp 75.000,5,Rp 10.000,COD (Bayar di Tempat),Cancelled,5
+TRX-2026003,INVALID_DATE,CUST-113,Khadijah Putri,Yogyakarta,KOSMETIK HALAL,Facial Wash Tea Tree 100ml,Rp48000,2,GRATIS,BSI Mobile,Processing,5
+TRX-2026004,2026-06-06,CUST-122,Maryam Jameelah,Yogyakarta,Makanan Halal,Kurma Ajwa Madinah 500g,Rp120000,4,Rp 30.000,qris,Processing,4
+TRX-2026005,2026-06-26,CUST-103,Farhan Maulana,bogor,Kuliner Halal ,Madu Habbatussauda Murni 250ml,Rp 85.000,-1,20000,QRIS,Cancelled,3
+TRX-2026006,2026-07-19,CUST-105,Muhammad Rizki,Jakarta Timur,FASHION MUSLIM,Abaya Dubai Bordir,Rp350000,1,Rp 30.000,Paylater Syariah,Cancelled,4
+TRX-2026007,22-09-2026,CUST-125,nurul hidayah ,Bandung,Perlengkapan Ibadah,Sajadah Bulu Tebal Turki,Rp 14.500.000,7,,QRIS,Delivered,4
+TRX-2026008,05-06-2026,CUST-118,Raihan Pratama,Yogyakarta,Skincare & Kosmetik,Sunscreen SPF 50 Halal 50ml,Rp 79.000,-1,0,QRIS Barcode,delivered,1
+TRX-2026009,2026-12-03,CUST-103,Zahra Amalia,JKT TIMUR,PERLENGKAPAN IBADAH,Tasbih Digital Led,Rp 25.000,8,,Transfer Bank,Refunded,5
+TRX-2026010,2026-09-15,CUST-108,  HASAN BASRI  ,SBY,Makanan Halal,Kripik Tempe Oven Halal 200g,Rp 35.000,1,Rp 10.000,COD (Bayar di Tempat),delivered,4
+TRX-2026011,24/10/2026,CUST-108,  SALMA NABILA  ,Jakarta Timur,herbal & suplemen,Kapsul Spirulina Organik 100ct,95000,1,10000,Transfer Bank Syariah,DELIVERED,4
+TRX-2026012,2026-09-07,CUST-114,yusuf habibi ,jak-sel,Perlengkapan Ibadah,Sajadah Bulu Tebal Turki,Rp 145.000,99,GRATIS,BSI Mobile,Processing,5
+TRX-2026013,7 Jul 2026,CUST-106,aisyah humaira ,Palembang,perlengkapan ibadah,Sajadah Bulu Tebal Turki,145000,0,,Transfer Bank,Shipped,4
+TRX-2026014,19/12/2026,CUST-124,Siti Maryam,Surabaya,PERLENGKAPAN IBADAH,Al-Qur'an Terjemah Tajwid A5,Rp 98.000,2,Rp 10.000,qris,Cancelled,4
+TRX-2026015,14/11/2026,CUST-117,umar al-faruq ,Semarang,KOSMETIK HALAL,Sunscreen SPF 50 Halal 50ml,Rp 79.000,3,10000,Transfer Bank Syariah,Cancelled,4
+TRX-2026016,2026-05-17,CUST-112,fathimah azzahra ,Bandung,perlengkapan ibadah,Sajadah Bulu Tebal Turki,145000,99,10000,Transfer Bank,Refunded,
+TRX-2026017,09-02-2026,CUST-124,umar al-faruq ,bdg,KOSMETIK HALAL,Sunscreen SPF 50 Halal 50ml,79000,9,10000,BSI Mobile,Processing,4
+TRX-2026018,2026-05-21,CUST-115,Salma Nabila,Jakarta Timur,FASHION MUSLIM,Koko Kurta Pria Modern,175000,9,25000,,DELIVERED,2
+TRX-2026019,12/04/2026,CUST-122,Taufiq Hidayat,Tangerang,FASHION MUSLIM,Abaya Dubai Bordir,350000.00,99,GRATIS,,Refunded,3
+TRX-2026020,26-11-2026,CUST-108,  LUKMAN HAKIM  ,JKT Selatan,PERLENGKAPAN IBADAH,Tasbih Digital Led,Rp 25.000,-1,Rp 15.000,,delivered,4
+TRX-2026021,2026-05-25,CUST-117,zahra amalia ,Jakarta Selatan,fashion muslim,Mukena Dewasa Katun Rayon,Rp 195.000,0,Rp 10.000,E-Wallet Syariah,Processing,4
+TRX-2026022,2026-10-13,CUST-102, Ahmad Fauzi ,Palembang,kuliner halal,Madu Habbatussauda Murni 250ml,85000,0,Rp 350.000,COD (Bayar di Tempat),Delivered,5
+TRX-2026023,2026-07-22,CUST-123,  FAJAR RAMADHAN  ,YOGYA,HERBAL & SUPLEMEN,Minyak Zaitun Extra Virgin 500ml,110000,1,Rp 15.000,E-Wallet Syariah,Cancelled,5
+TRX-2026024,22/04/2026,CUST-124,muhammad rizki ,YOGYA,Kosmetik Halal,Sunscreen SPF 50 Halal 50ml,Rp79000,10,Rp 15.000,,delivered,4
+TRX-2026025,15-07-2026,CUST-119,lukman hakim ,DEPOK,KULINER HALAL,Kripik Tempe Oven Halal 200g,35000,1,GRATIS,qris,Refunded,4
+TRX-2026026,2026-02-28,CUST-115,Zahra Amalia,Makassar,Ibadah Tools,Sajadah Bulu Tebal Turki,Rp145000,2,GRATIS,Paylater Syariah,Processing,5
+TRX-2026027,2026-04-21,CUST-103,fathimah azzahra ,bogor,FASHION MUSLIM,Koko Kurta Pria Modern,Rp 175.000,2,GRATIS,BSI Mobile,DELIVERED,4
+TRX-2026028,2026-07-27,CUST-125,  LUKMAN HAKIM  ,Makassar,Herbal,Minyak Zaitun Extra Virgin 500ml,Rp 110.000,4,0,E-Wallet Syariah,Refunded,4
+TRX-2026029,2026-04-16,,Hasan Basri,Palembang,HERBAL & SUPLEMEN,Minyak Zaitun Extra Virgin 500ml,Rp110000,-1,,,Shipped,2
+TRX-2026030,2026-07-21,CUST-115,umar al-faruq ,bdg,perlengkapan ibadah,Sajadah Bulu Tebal Turki,Rp 145.000,7,GRATIS,E-Wallet Syariah,Delivered,2
+TRX-2026031,12/04/2026,CUST-125,Siti Maryam,BANDUNG,Kuliner Halal,Madu Habbatussauda Murni 250ml,85000,4,15000,Paylater Syariah,Processing,4
+TRX-2026032,INVALID_DATE,CUST-104,Khadijah Putri,DEPOK,HERBAL & SUPLEMEN,Minyak Zaitun Extra Virgin 500ml,Rp 110.000,2,Rp 20.000,BSI Mobile,Cancelled,5
+TRX-2026033,2026-06-22,CUST-121,Salma Nabila,Jakarta Timur,herbal & suplemen,Kapsul Spirulina Organik 100ct,95000,10,Rp 15.000,Transfer Bank,DELIVERED,
+TRX-2026034,2026-08-25,CUST-124,Hasan Basri,jak-sel,Kuliner Halal ,Kopi Arabika Gayo Halal 250g,Rp 75.000,4,Rp 25.000,COD (Bayar di Tempat),delivered,5
+TRX-2026035,20-12-2026,,  ALI IMRAN  ,Medan,Herbal,Kapsul Spirulina Organik 100ct,95000,4,25000,Paylater Syariah,Delivered,4
+TRX-2026036,10/11/2026,CUST-116, Zaidan Arifin ,Medan,kosmetik halal,Sunscreen SPF 50 Halal 50ml,Rp79000,3,Rp 15.000,COD (Bayar di Tempat),Cancelled,2
+TRX-2026037,2026-12-07,CUST-124, Taufiq Hidayat ,BOGOR,FASHION MUSLIM,Mukena Dewasa Katun Rayon,Rp 195.000,3,Rp 30.000,QRIS,Delivered,2
+TRX-2026038,2026-08-21,CUST-101, Ibrahim Malik ,bogor,Kuliner Halal,Kurma Ajwa Madinah 500g,Rp 120.000,5,GRATIS,E-Wallet Syariah,Cancelled,4
+TRX-2026039,26 Oct 2026,CUST-103,Nurul Hidayah,Tangerang,Makanan Halal,Kripik Tempe Oven Halal 200g,Rp 35.000,-1,Rp 30.000,E-Wallet Syariah,Cancelled,6
+TRX-2026040,25/04/2026,CUST-109,dewi sartika ,SBY,FASHION MUSLIM,Koko Kurta Pria Modern,Rp 175.000,4,Rp 15.000,QRIS Barcode,Refunded,4
+TRX-2026041,09/11/2026,CUST-107,zahra amalia ,JKT TIMUR,KULINER HALAL,Kopi Arabika Gayo Halal 250g,Rp 75.000,3,20000,Paylater Syariah,Refunded,5
+TRX-2026042,2026-09-17,CUST-103,Salma Nabila,Yogyakarta,Kuliner Halal,Kopi Arabika Gayo Halal 250g,Rp 75.000,0,GRATIS,Transfer Bank Syariah,Refunded,4
+TRX-2026043,16/09/2026,CUST-109, Farhan Maulana ,Tangsel,Fashion Muslim ,Koko Kurta Pria Modern,Rp 175.000,1,0,COD (Bayar di Tempat),Shipped,1
+TRX-2026044,2026-09-27,CUST-103,  HASAN BASRI  ,Makassar,Herbal Suplemen,Minyak Zaitun Extra Virgin 500ml,Rp110000,4,Rp 15.000,Transfer Bank,Processing,4
+TRX-2026045,07/05/2026,CUST-110, Lukman Hakim ,Jakarta Selatan,KULINER HALAL,Kripik Tempe Oven Halal 200g,Rp 35.000,4,Rp 10.000,Paylater Syariah,Refunded,5
+TRX-2026046,2026-12-17,CUST-116, Fathimah Azzahra ,JKT TIMUR,HERBAL & SUPLEMEN,Minyak Zaitun Extra Virgin 500ml,110000.00,2,0,QRIS Barcode,Processing,1
+TRX-2026047,17-05-2026,CUST-110,Farhan Maulana,YOGYA,PERLENGKAPAN IBADAH,Tasbih Digital Led,25000,3,25000,Paylater Syariah,Processing,3
+TRX-2026048,2026-07-08,CUST-124,aisyah humaira ,YOGYA,Fashion Muslim ,Abaya Dubai Bordir,Rp 35.000.000,3,0,Paylater Syariah,,4
+TRX-2026049,03-08-2026,CUST-109,lukman hakim ,jak-sel,Skincare & Kosmetik,Sunscreen SPF 50 Halal 50ml,Rp 7.900.000,4,0,Transfer Bank Syariah,delivered,1
+TRX-2026050,2026-12-08,CUST-104,Lukman Hakim,Tangerang Selatan,kuliner halal,Kurma Ajwa Madinah 500g,120000.00,1,Rp 20.000,E-Wallet Syariah,Cancelled,2
+TRX-2026051,2026-03-06,CUST-113, Fathimah Azzahra ,surabaya,FASHION MUSLIM,Abaya Dubai Bordir,350000,3,25000,QRIS Barcode,delivered,1
+TRX-2026052,19/05/2026,CUST-114,Yusuf Habibi,bdg,Herbal,Minyak Zaitun Extra Virgin 500ml,Rp 110.000,3,20000,Transfer Bank Syariah,Refunded,4
+TRX-2026053,2026-12-20,CUST-110,Fathimah Azzahra,Depok,KULINER HALAL,Kripik Tempe Oven Halal 200g,35000,2,10000,QRIS Barcode,Delivered,2
+TRX-2026054,10/06/2026,CUST-106,Zahra Amalia,Depok,perlengkapan ibadah,Al-Qur'an Terjemah Tajwid A5,Rp98000,4,,QRIS Barcode,DELIVERED,4
+TRX-2026055,05-04-2026,CUST-124,Aisyah Humaira,Palembang,Kosmetik Halal,Facial Wash Tea Tree 100ml,Rp48000,1,20000,E-Wallet Syariah,DELIVERED,4
+TRX-2026056,2026-09-20,CUST-120,Muhammad Rizki,Tangerang Selatan,Skincare & Kosmetik,Lip Cream Matte Halal,Rp 59.000,1,Rp 25.000,BSI Mobile,Cancelled,5
+TRX-2026057,19/12/2026,CUST-114,Ibrahim Malik,Bogor,fashion muslim,Hijab Voal Segiempat,Rp 65.000,2,0,BSI Mobile,DELIVERED,-1
+TRX-2026058,2026-07-02,CUST-104,  YUSUF HABIBI  ,bdg,Fashion Muslim,Gamis Syar'i Premium,Rp285000,2,GRATIS,qris,Processing,4
+TRX-2026059,11-03-2026,,Fajar Ramadhan,SBY,KULINER HALAL,Kopi Arabika Gayo Halal 250g,Rp 75.000,6,Rp 15.000,,DELIVERED,2
+TRX-2026060,2026-02-24,CUST-125,  FARHAN MAULANA  ,Surabaya,Makanan Halal,Kripik Tempe Oven Halal 200g,Rp 35.000,10,25000,Transfer Bank Syariah,Shipped,4
+TRX-2026061,16 Dec 2026,CUST-103,Hasan Basri,jak-sel,fashion muslim,Abaya Dubai Bordir,350000,3,Rp 30.000,Transfer Bank,Cancelled,4
+TRX-2026062,28/11/2026,CUST-125, Ali Imran ,BANDUNG,herbal & suplemen,Kapsul Spirulina Organik 100ct,Rp95000,1,Rp 20.000,QRIS Barcode,delivered,4
+TRX-2026063,2026-02-27,CUST-104,Zaidan Arifin,SBY, Fashion Muslim,Hijab Voal Segiempat,Rp 6.500.000,1,Rp 25.000,Transfer Bank Syariah,Cancelled,4
+TRX-2026064,2026-11-05,CUST-104,zahra amalia ,Makassar,Makanan Halal,Kopi Arabika Gayo Halal 250g,Rp 75.000,1,20000,Transfer Bank Syariah,Refunded,1
+TRX-2026065,2026-01-12,CUST-105,  AISYAH HUMAIRA  ,Medan,Fashion Muslim,Gamis Syar'i Premium,Rp285000,4,15000,COD (Bayar di Tempat),DELIVERED,4
+TRX-2026066,2026-03-02,,muhammad rizki ,YOGYA,Herbal,Kapsul Spirulina Organik 100ct,95000,2,GRATIS,BSI Mobile,Delivered,3
+TRX-2026067,2026-11-17,CUST-108,  BILAL SANTOSO  ,bdg,KOSMETIK HALAL,Lip Cream Matte Halal,Rp59000,7,Rp 10.000,Paylater Syariah,delivered,4
+TRX-2026068,17-09-2026,CUST-112,  NADIA SYAHRINI  ,Jakarta Selatan,Perlengkapan Ibadah,Sajadah Bulu Tebal Turki,145000.00,4,GRATIS,E-Wallet Syariah,,5
+TRX-2026069,27 Dec 2026,CUST-103,nurul hidayah ,surabaya,Herbal Suplemen,Minyak Zaitun Extra Virgin 500ml,Rp 110.000,10,Rp 20.000,QRIS,Refunded,5
+TRX-2026070,12 Dec 2026,CUST-121,  FATHIMAH AZZAHRA  ,Bogor,KULINER HALAL,Madu Habbatussauda Murni 250ml,85000,10,Rp 25.000,Paylater Syariah,Processing,3
+TRX-2026071,2026-11-28,CUST-115,Yusuf Habibi,Palembang,Makanan Halal,Kopi Arabika Gayo Halal 250g,Rp 75.000,3,10000,Transfer Bank Syariah,DELIVERED,
+TRX-2026072,28/02/2026,CUST-117,Farhan Maulana,Palembang,Fashion Muslim ,Hijab Voal Segiempat,65000.00,2,Rp 25.000,Transfer Bank,Delivered,3
+TRX-2026073,23/02/2026,, Lukman Hakim ,Tangerang Selatan,PERLENGKAPAN IBADAH,Al-Qur'an Terjemah Tajwid A5,Rp 98.000,-1,Rp 20.000,Transfer Bank Syariah,Refunded,5
+TRX-2026074,10/05/2026,CUST-122,Bilal Santoso,bogor, Fashion Muslim,Koko Kurta Pria Modern,175000,-1,Rp 25.000,QRIS,Delivered,5
+TRX-2026075,27/03/2026,CUST-124,  RAIHAN PRATAMA  ,YOGYA,Herbal Suplemen,Kapsul Spirulina Organik 100ct,Rp 95.000,2,Rp 350.000,COD (Bayar di Tempat),Shipped,6
+TRX-2026076,03-05-2026,CUST-104,Zahra Amalia,Surabaya,fashion muslim,Hijab Voal Segiempat,65000.00,4,Rp 15.000,QRIS,Delivered,2
+TRX-2026077,2026-10-15,CUST-124, Fathimah Azzahra ,BOGOR,PERLENGKAPAN IBADAH,Tasbih Digital Led,Rp 25.000,0,,Paylater Syariah,Processing,4
+TRX-2026078,27-04-2026,CUST-105,Siti Maryam,Depok, Fashion Muslim,Mukena Dewasa Katun Rayon,195000.00,2,Rp 30.000,QRIS,Delivered,5
+TRX-2026079,2026-01-12,CUST-113,fathimah azzahra ,jak-sel,KOSMETIK HALAL,Facial Wash Tea Tree 100ml,Rp 48.000,-1,GRATIS,COD (Bayar di Tempat),,
+TRX-2026080,16-12-2026,CUST-125,Yusuf Habibi,jak-sel,fashion muslim,Gamis Syar'i Premium,Rp 285.000,4,Rp 20.000,qris,Delivered,5
+TRX-2026081,03-02-2026,CUST-116,Ahmad Fauzi,surabaya,KULINER HALAL,Kripik Tempe Oven Halal 200g,Rp 35.000,3,Rp 25.000,QRIS,Delivered,4
+TRX-2026082,2026-08-13,CUST-113,Umar Al-Faruq,Depok,fashion muslim,Koko Kurta Pria Modern,Rp 175.000,1,GRATIS,COD (Bayar di Tempat),DELIVERED,2
+TRX-2026083,2026-11-27,CUST-123,Dewi Sartika,jak-sel,Perlengkapan Ibadah,Sajadah Bulu Tebal Turki,Rp 145.000,2,0,COD (Bayar di Tempat),Cancelled,3
+TRX-2026084,09-01-2026,CUST-107,  TAUFIQ HIDAYAT  ,Jogja,kosmetik halal,Sunscreen SPF 50 Halal 50ml,Rp 79.000,4,GRATIS,E-Wallet Syariah,delivered,5
+TRX-2026085,26/02/2026,CUST-103, Dewi Sartika ,bogor,Fashion Muslim,Mukena Dewasa Katun Rayon,Rp 195.000,4,25000,QRIS,DELIVERED,3
+TRX-2026086,2026-07-20,CUST-102, Hamzah Perkasa ,Surabaya,Kuliner Halal,Kurma Ajwa Madinah 500g,Rp 120.000,4,Rp 10.000,qris,DELIVERED,1
+TRX-2026087,2026-10-02,CUST-115, Zaidan Arifin ,jak-sel, Fashion Muslim,Abaya Dubai Bordir,Rp 350.000,3,Rp 10.000,Transfer Bank Syariah,Shipped,
+TRX-2026088,04-05-2026,CUST-123,bilal santoso ,Tangsel,Kuliner Halal,Madu Habbatussauda Murni 250ml,Rp 85.000,2,0,Paylater Syariah,Processing,3
+TRX-2026089,22/06/2026,CUST-118,Khadijah Putri,Semarang,kuliner halal,Kurma Ajwa Madinah 500g,120000,2,GRATIS,qris,Delivered,5
+TRX-2026090,2026-09-26,CUST-103,Aisyah Humaira,Medan,Ibadah Tools,Tasbih Digital Led,Rp25000,5,Rp 20.000,BSI Mobile,Refunded,4
+TRX-2026091,2026-03-25,CUST-102,  RAIHAN PRATAMA  ,Bandung,kuliner halal,Kurma Ajwa Madinah 500g,Rp 12.000.000,3,GRATIS,QRIS Barcode,Cancelled,4
+TRX-2026092,2026-11-17,CUST-119,Maryam Jameelah,Yogyakarta,Kosmetik Halal,Sunscreen SPF 50 Halal 50ml,Rp79000,1,Rp 350.000,QRIS Barcode,Processing,4
+TRX-2026093,16/11/2026,CUST-121,ibrahim malik ,Palembang,herbal & suplemen,Minyak Zaitun Extra Virgin 500ml,110000,2,Rp 25.000,Paylater Syariah,Cancelled,
+TRX-2026094,INVALID_DATE,CUST-112,Fajar Ramadhan,Surabaya,fashion muslim,Mukena Dewasa Katun Rayon,Rp 195.000,4,Rp 10.000,Transfer Bank Syariah,Shipped,4
+TRX-2026095,27 Jun 2026,CUST-124,  TAUFIQ HIDAYAT  ,Surabaya,Ibadah Tools,Sajadah Bulu Tebal Turki,145000.00,1,Rp 350.000,Transfer Bank,delivered,4
+TRX-2026096,10/08/2026,CUST-121, Khadijah Putri ,Jakarta Timur,HERBAL & SUPLEMEN,Kapsul Spirulina Organik 100ct,95000.00,8,Rp 25.000,Transfer Bank Syariah,delivered,5
+TRX-2026097,17-08-2026,CUST-109,Bilal Santoso,Jakarta Timur,Fashion Muslim,Abaya Dubai Bordir,Rp 350.000,7,20000,QRIS,Cancelled,4
+TRX-2026098,2026-12-05,CUST-116,Fajar Ramadhan,Surabaya,fashion muslim,Abaya Dubai Bordir,Rp 35.000.000,4,,QRIS Barcode,Cancelled,5
+TRX-2026099,2026-01-16,CUST-122,Salma Nabila,Palembang, Fashion Muslim,Gamis Syar'i Premium,285000,0,GRATIS,qris,Cancelled,5
+TRX-2026100,2026-11-05,CUST-119,  NURUL HIDAYAH  ,Tangerang Selatan,Skincare & Kosmetik,Sunscreen SPF 50 Halal 50ml,Rp 79.000,4,25000,Transfer Bank Syariah,Cancelled,5
+TRX-2026006,2026-07-19,CUST-105,Muhammad Rizki,Jakarta Timur,FASHION MUSLIM,Abaya Dubai Bordir,Rp350000,1,Rp 30.000,Paylater Syariah,Cancelled,4
+TRX-2026013,7 Jul 2026,CUST-106,aisyah humaira ,Palembang,perlengkapan ibadah,Sajadah Bulu Tebal Turki,145000,0,,Transfer Bank,Shipped,4
+TRX-2026029,2026-04-16,,Hasan Basri,Palembang,HERBAL & SUPLEMEN,Minyak Zaitun Extra Virgin 500ml,Rp110000,-1,,,Shipped,2
+TRX-2026046,2026-12-17,CUST-116, Fathimah Azzahra ,JKT TIMUR,HERBAL & SUPLEMEN,Minyak Zaitun Extra Virgin 500ml,110000.00,2,0,QRIS Barcode,Processing,1
+TRX-2026071,2026-11-28,CUST-115,Yusuf Habibi,Palembang,Makanan Halal,Kopi Arabika Gayo Halal 250g,Rp 75.000,3,10000,Transfer Bank Syariah,DELIVERED,

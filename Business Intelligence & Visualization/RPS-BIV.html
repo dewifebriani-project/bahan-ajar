@@ -1,0 +1,568 @@
+<title>RPS — Business Intelligence & Visualization</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#EDF1F6;--sf:#FFFFFF;--sf2:#F0EAF8;--sf3:#F7F4FC;
+  --bd:#C4CDD8;--bs:#DDE3EC;
+  --tx:#0C1824;--txm:#475569;--txl:#8A9AB0;
+  --pri:#1A0838;--prid:#0E0420;--pmid:#6030B0;
+  --pril:#E8D8F8;--prx:#F4EEF8;
+  --acc:#C09030;--accl:#F8EDD0;--acc2:#D0A840;
+  --sya:#1F9060;--syal:#D0EEE2;--syab:#40B080;
+  --uts-bg:#F0EAFA;--uts-bd:#7040B0;--uts-tx:#4A2090;
+  --uas-bg:#E8F6FC;--uas-bd:#2080B0;--uas-tx:#0A3858;
+  --lab-bg:#F4EEF8;--lab-bd:#8040C0;--lab-tx:#3A1080;
+  --warn-bg:#FCEBD8;--warn-bd:#D46020;--warn-tx:#5A1C04;
+  --c1:#1A0838;--c2:#6030B0;--c3:#C09030;
+  --c4:#2080B0;--c5:#1F9060;--c6:#A03020;
+  --r:8px;--rs:5px;
+  --shadow:0 4px 20px rgba(26,8,56,.09);
+  --shadow-sm:0 2px 8px rgba(26,8,56,.06);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#0A0418;--sf:#140828;--sf2:#180C30;--sf3:#100620;
+  --bd:#28104A;--bs:#1A0830;
+  --tx:#E8D8F8;--txm:#8060A8;--txl:#3A1860;
+  --pri:#8050D0;--pmid:#A070E0;--pril:#18082A;--prx:#0C0418;
+  --acc:#D0A840;--accl:#18100A;
+  --sya:#30B878;--syal:#041410;
+  --uts-bg:#180828;--uts-bd:#9060D0;--uts-tx:#C090F0;
+  --uas-bg:#041828;--uas-bd:#3090C0;--uas-tx:#70C0F0;
+  --lab-bg:#180828;--lab-bd:#A060E0;--lab-tx:#D0A0F8;
+  --warn-bg:#180800;--warn-bd:#D46020;--warn-tx:#F09060;
+}}
+:root[data-theme=dark]{
+  --bg:#0A0418;--sf:#140828;--sf2:#180C30;--sf3:#100620;
+  --bd:#28104A;--bs:#1A0830;
+  --tx:#E8D8F8;--txm:#8060A8;--txl:#3A1860;
+  --pri:#8050D0;--pmid:#A070E0;--pril:#18082A;--prx:#0C0418;
+  --acc:#D0A840;--accl:#18100A;
+  --sya:#30B878;--syal:#041410;
+  --uts-bg:#180828;--uts-bd:#9060D0;--uts-tx:#C090F0;
+  --uas-bg:#041828;--uas-bd:#3090C0;--uas-tx:#70C0F0;
+  --lab-bg:#180828;--lab-bd:#A060E0;--lab-tx:#D0A0F8;
+  --warn-bg:#180800;--warn-bd:#D46020;--warn-tx:#F09060;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color:var(--tx);margin:0;font-size:15px;line-height:1.6}
+
+.hd{background:linear-gradient(160deg,#0E0420 0%,#1A0838 55%,#2A1060 100%);color:#fff;position:relative;overflow:hidden}
+.hd-stars{position:absolute;inset:0;pointer-events:none;opacity:.13}
+.hd-inner{max-width:900px;margin:0 auto;padding:36px 28px 14px;position:relative;z-index:1}
+.hd-eyebrow{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.hd-line{width:28px;height:1px;background:var(--acc)}
+.hd-eyetxt{font-size:11.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--acc)}
+.hd-title{font-family:'Amiri',serif;font-size:32px;font-weight:700;margin:0 0 5px;line-height:1.15}
+.hd-sub{font-size:15px;color:rgba(255,255,255,.55);margin:0 0 20px}
+.hd-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.hpill{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:16px;padding:3px 13px;font-size:12px;color:rgba(255,255,255,.75)}
+.hpill strong{color:#fff}
+.hd-arch{line-height:0}
+.hd-arch svg{display:block;width:100%;height:28px}
+.synergy-banner{background:rgba(192,144,48,.12);border:1px solid rgba(192,144,48,.25);border-radius:var(--rs);padding:9px 14px;margin-bottom:16px;font-size:13px;color:rgba(255,255,255,.75);display:flex;align-items:center;gap:8px}
+.synergy-banner strong{color:#E0C060}
+
+.tabs-wrap{background:var(--sf);border-bottom:1px solid var(--bs);position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(26,8,56,.07)}
+.tabs{display:flex;max-width:900px;margin:0 auto;overflow-x:auto;padding:0 20px}
+.tab{padding:14px 18px;font-size:13.5px;font-weight:600;color:var(--txl);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:all .2s;flex-shrink:0}
+.tab:hover{color:var(--pmid)}
+.tab.active{color:var(--pri);border-bottom-color:var(--acc);background:var(--bg)}
+
+.tab-content{display:none;max-width:900px;margin:0 auto;padding:28px 24px 60px}
+.tab-content.active{display:block}
+
+.card{background:var(--sf);border:1px solid var(--bs);border-radius:var(--r);margin-bottom:14px;box-shadow:var(--shadow-sm);overflow:hidden}
+.card-hd{display:flex;align-items:center;gap:11px;padding:14px 20px;border-bottom:1px solid var(--bs);background:var(--sf3)}
+.card-icon{font-size:20px}
+.card-title{font-family:'Amiri',serif;font-size:17px;font-weight:700;color:var(--pri)}
+.card-body{padding:18px 22px}
+
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+@media(max-width:600px){.stat-row{grid-template-columns:1fr 1fr}}
+.stat{background:var(--sf);border:1px solid var(--bs);border-radius:var(--rs);padding:12px 15px;text-align:center}
+.stat-val{font-family:'Amiri',serif;font-size:22px;font-weight:700;color:var(--pri);line-height:1.1}
+.stat-lbl{font-size:11.5px;color:var(--txl);margin-top:3px}
+
+h3.sec{font-family:'Amiri',serif;font-size:19px;font-weight:700;color:var(--pri);margin:22px 0 10px;display:flex;align-items:center;gap:8px}
+h3.sec::before{content:'';width:4px;height:18px;background:var(--acc);border-radius:2px;flex-shrink:0}
+p{color:var(--txm);margin:0 0 11px}
+ul.lst{padding-left:0;list-style:none;margin:0 0 13px}
+ul.lst li{padding:5px 0 5px 18px;position:relative;color:var(--txm);border-bottom:1px solid var(--bs);font-size:13.5px;line-height:1.5}
+ul.lst li:last-child{border-bottom:none}
+ul.lst li::before{content:'▸';position:absolute;left:0;color:var(--pmid);font-size:11px;top:7px}
+ul.lst li strong{color:var(--tx)}
+.callout{border-radius:var(--rs);padding:12px 16px;margin:12px 0;font-size:13.5px;line-height:1.6}
+.callout.info{background:var(--prx);border-left:4px solid var(--pmid);color:var(--txm)}
+.callout.sya{background:var(--syal);border-left:4px solid var(--sya);color:var(--txm)}
+.callout.syn{background:rgba(192,144,48,.08);border-left:4px solid var(--acc);color:var(--txm)}
+.callout.warn{background:var(--warn-bg);border-left:4px solid var(--warn-bd);color:var(--txm)}
+
+.cpmk-grid{display:flex;flex-direction:column;gap:9px}
+.cpmk-card{background:var(--sf3);border:1px solid var(--bs);border-radius:var(--rs);padding:13px 16px;border-left:4px solid var(--pmid)}
+.cpmk-head{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.cpmk-id{font-weight:700;font-size:12.5px;color:var(--pmid)}
+.cpmk-bloom{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--prx);color:var(--pmid)}
+.cpmk-cpl{font-size:11px;color:var(--txl);margin-left:auto}
+.cpmk-rumusan{font-size:13.5px;font-weight:600;color:var(--tx);margin-bottom:4px}
+.cpmk-detail{font-size:12.5px;color:var(--txm);line-height:1.5}
+.cpmk-prt{font-size:11px;color:var(--txl);margin-top:4px}
+
+.assess-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+@media(max-width:560px){.assess-grid{grid-template-columns:1fr}}
+.assess-card{border-radius:var(--rs);padding:13px 15px;border:1px solid var(--bs)}
+.assess-card.lab{background:var(--lab-bg);border-color:var(--lab-bd)}
+.assess-card.uts{background:var(--uts-bg);border-color:var(--uts-bd)}
+.assess-card.uas{background:var(--uas-bg);border-color:var(--uas-bd)}
+.assess-card.part{background:var(--sf3)}
+.assess-pct{font-family:'Amiri',serif;font-size:28px;font-weight:700;line-height:1}
+.assess-card.lab .assess-pct{color:var(--lab-tx)}
+.assess-card.uts .assess-pct{color:var(--uts-tx)}
+.assess-card.uas .assess-pct{color:var(--uas-tx)}
+.assess-card.part .assess-pct{color:var(--txm)}
+.assess-name{font-weight:700;font-size:13.5px;margin:3px 0;color:var(--tx)}
+.assess-desc{font-size:12px;color:var(--txm);line-height:1.5}
+
+.phase-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--txl);padding:10px 0 5px;display:flex;align-items:center;gap:8px}
+.phase-label::after{content:'';flex:1;height:1px;background:var(--bs)}
+.meeting-card{background:var(--sf);border:1px solid var(--bs);border-radius:var(--rs);margin-bottom:8px;overflow:hidden;cursor:pointer;transition:box-shadow .2s}
+.meeting-card:hover{box-shadow:var(--shadow)}
+.meeting-summary{display:flex;align-items:center;gap:11px;padding:11px 16px}
+.meet-num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;color:#fff;flex-shrink:0}
+.meet-main{flex:1;min-width:0}
+.meet-title{font-weight:700;font-size:13.5px;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meet-meta{font-size:11.5px;color:var(--txl);margin-top:1px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chip{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:10px;white-space:nowrap}
+.chip-lab{background:var(--lab-bg);color:var(--lab-tx);border:1px solid var(--lab-bd)}
+.chip-cermah{background:var(--prx);color:var(--pmid)}
+.chip-diskusi{background:var(--sf2);color:var(--pmid)}
+.chip-part{background:#F5EBD8;color:#6A2808}
+.chip-uts{background:var(--uts-bg);color:var(--uts-tx);border:1px solid var(--uts-bd)}
+.chip-uas{background:var(--uas-bg);color:var(--uas-tx);border:1px solid var(--uas-bd)}
+.chip-proj{background:#E0F4E8;color:#0A4020;border:1px solid #60C080}
+.chip-cpmk{background:var(--sf3);color:var(--txm);border:1px solid var(--bs)}
+.chip-crit{background:var(--warn-bg);color:var(--warn-tx);border:1px solid var(--warn-bd)}
+.meet-expand{font-size:16px;color:var(--txl);flex-shrink:0;transition:transform .25s}
+.meeting-card.open .meet-expand{transform:rotate(180deg)}
+.meeting-detail{display:none;padding:0 16px 14px;border-top:1px solid var(--bs);background:var(--sf3)}
+.meeting-card.open .meeting-detail{display:block}
+.detail-section{margin:12px 0}
+.detail-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--txl);margin-bottom:5px}
+.detail-text{font-size:13.5px;color:var(--txm);line-height:1.6}
+.sya-tag{display:inline-flex;align-items:center;gap:6px;background:var(--syal);border:1px solid var(--syab);border-radius:var(--rs);padding:6px 12px;font-size:12.5px;color:var(--sya);font-weight:600;margin-bottom:6px}
+.sya-isi{font-size:13px;color:var(--txm);line-height:1.6}
+.sya-ref{font-size:11.5px;color:var(--syab);margin-top:4px;font-style:italic}
+
+.proj-phase{background:var(--sf);border:1px solid var(--bs);border-radius:var(--r);margin-bottom:12px;overflow:hidden}
+.proj-phase-hd{background:linear-gradient(135deg,#1A0838,#2A1060);color:#fff;padding:13px 20px;display:flex;align-items:center;gap:10px}
+.proj-phase-num{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.proj-phase-title{font-family:'Amiri',serif;font-size:16px;font-weight:700}
+.proj-phase-sub{font-size:12px;color:rgba(255,255,255,.55)}
+.proj-phase-body{padding:16px 20px}
+.proj-deliverable{background:var(--sf3);border:1px solid var(--bs);border-radius:var(--rs);padding:11px 14px;margin-bottom:8px;font-size:13.5px;color:var(--txm)}
+.proj-deliverable strong{color:var(--tx)}
+.rubric-table{width:100%;border-collapse:collapse;font-size:13px}
+.rubric-table th{background:var(--pri);color:#fff;padding:7px 12px;text-align:left;font-size:11.5px}
+.rubric-table td{padding:7px 12px;border-bottom:1px solid var(--bs);color:var(--txm)}
+.rubric-table tr:last-child td{border-bottom:none}
+.rubric-table tr:nth-child(even) td{background:var(--sf3)}
+
+/* Chart principles visual */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 0}
+@media(max-width:480px){.chart-grid{grid-template-columns:1fr}}
+.chart-card{background:var(--sf3);border:1px solid var(--bs);border-radius:var(--rs);padding:10px 12px;text-align:center}
+.chart-icon{font-size:22px;margin-bottom:4px}
+.chart-name{font-weight:700;font-size:12px;color:var(--tx);margin-bottom:2px}
+.chart-use{font-size:11px;color:var(--txm)}
+</style>
+
+<!-- HEADER -->
+<div class="hd">
+  <svg class="hd-stars" viewBox="0 0 600 220" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs><pattern id="sp3" width="80" height="80" patternUnits="userSpaceOnUse">
+      <path d="M56,40 L46.5,42.7 L51.3,51.3 L42.7,46.5 L40,56 L37.3,46.5 L28.7,51.3 L33.5,42.7 L24,40 L33.5,37.3 L28.7,28.7 L37.3,33.5 L40,24 L42.7,33.5 L51.3,28.7 L46.5,37.3 Z" fill="none" stroke="#C09030" stroke-width="1"/>
+      <line x1="0" y1="40" x2="24" y2="40" stroke="#C09030" stroke-width=".4" opacity=".5"/>
+      <line x1="56" y1="40" x2="80" y2="40" stroke="#C09030" stroke-width=".4" opacity=".5"/>
+      <line x1="40" y1="0" x2="40" y2="24" stroke="#C09030" stroke-width=".4" opacity=".5"/>
+      <line x1="40" y1="56" x2="40" y2="80" stroke="#C09030" stroke-width=".4" opacity=".5"/>
+    </pattern></defs>
+    <rect width="100%" height="100%" fill="url(#sp3)"/>
+  </svg>
+  <div class="hd-inner">
+    <div class="hd-eyebrow"><div class="hd-line"></div><span class="hd-eyetxt">Universitas Tazkia — Fakultas Ekonomi &amp; Bisnis Islam</span></div>
+    <h1 class="hd-title">Business Intelligence &amp; Visualization</h1>
+    <p class="hd-sub">Dari Data ke Keputusan: Power BI, Desain Dashboard, dan Data Storytelling untuk Bisnis Syariah</p>
+    <div class="synergy-banner">⚡ <span><strong>Sinergi Paralel:</strong> Berjalan bersamaan dengan ADA — pada P13, output Python dari ADA (dataset bersih + model) langsung diintegrasikan ke dalam Power BI di BIV</span></div>
+    <div class="hd-pills">
+      <span class="hpill"><strong>DTA-402</strong></span>
+      <span class="hpill">3 SKS</span>
+      <span class="hpill">Ganjil 2026/2027</span>
+      <span class="hpill">Prasyarat: Introduction to Data Analytics</span>
+      <span class="hpill">Power BI · Tableau · Plotly</span>
+    </div>
+  </div>
+  <div class="hd-arch"><svg viewBox="0 0 1200 28" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,28 L0,16 Q20,4 40,16 Q60,28 80,16 Q100,4 120,16 Q140,28 160,16 Q180,4 200,16 Q220,28 240,16 Q260,4 280,16 Q300,28 320,16 Q340,4 360,16 Q380,28 400,16 Q420,4 440,16 Q460,28 480,16 Q500,4 520,16 Q540,28 560,16 Q580,4 600,16 Q620,28 640,16 Q660,4 680,16 Q700,28 720,16 Q740,4 760,16 Q780,28 800,16 Q820,4 840,16 Q860,28 880,16 Q900,4 920,16 Q940,28 960,16 Q980,4 1000,16 Q1020,28 1040,16 Q1060,4 1080,16 Q1100,28 1120,16 Q1140,4 1160,16 Q1180,28 1200,16 L1200,28 Z" fill="var(--bg)"/>
+  </svg></div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('ringkasan',this)">Ringkasan</div>
+    <div class="tab" onclick="showTab('cpmk',this)">CPL &amp; CPMK</div>
+    <div class="tab" onclick="showTab('penilaian',this)">Penilaian</div>
+    <div class="tab" onclick="showTab('jadwal',this)">Jadwal</div>
+    <div class="tab" onclick="showTab('project',this)">Project</div>
+  </div>
+</div>
+
+<!-- TAB: RINGKASAN -->
+<div class="tab-content active" id="tab-ringkasan">
+  <div class="stat-row">
+    <div class="stat"><div class="stat-val">16</div><div class="stat-lbl">Pertemuan</div></div>
+    <div class="stat"><div class="stat-val">3</div><div class="stat-lbl">Tools Utama</div></div>
+    <div class="stat"><div class="stat-val">6</div><div class="stat-lbl">CPMK</div></div>
+    <div class="stat"><div class="stat-val">12</div><div class="stat-lbl">Lab Reports</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-icon">🎯</div><div class="card-title">Deskripsi &amp; Visi Matakuliah</div></div>
+    <div class="card-body">
+      <p>Business Intelligence &amp; Visualization (BIV) membekali mahasiswa dengan kemampuan mengubah data mentah menjadi <strong>narasi visual yang mendukung keputusan bisnis</strong>. Matakuliah ini menjawab satu tantangan nyata: banyak analis bisa menganalisis data, tapi sedikit yang bisa menyampaikannya dengan cara yang membuat pengambil keputusan paham dan bertindak.</p>
+      <p>Visi akhir: mahasiswa mampu membangun <strong>executive dashboard</strong> yang bisa langsung digunakan oleh manajemen — bukan hanya indah secara visual, tapi berdampak pada keputusan bisnis.</p>
+      <div class="callout warn">
+        <strong>Kesalahan umum yang akan kita hindari:</strong> Grafik yang menyesatkan (truncated axis, 3D pie chart), dashboard penuh angka tanpa hierarki, dan "insight" yang hanya menyajikan ulang data tanpa rekomendasi. P2–P3 khusus membahas ini.
+      </div>
+      <div class="callout syn"><strong>Sinergi dengan ADA:</strong> BIV adalah "layer komunikasi" di atas "layer analisis" ADA. Data yang dianalisis Python di ADA akan divisualisasikan dan dikomunikasikan lewat Power BI di BIV — mahasiswa belajar dua bahasa: bahasa analisis dan bahasa visual.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-icon">🛠️</div><div class="card-title">Tools &amp; Prinsip Desain</div></div>
+    <div class="card-body">
+      <ul class="lst">
+        <li><strong>Power BI Desktop:</strong> Tool utama — gratis, standar industri enterprise, tersedia versi edukasi. Fitur: Power Query (ETL), DAX (kalkulasi), Report Builder, Power BI Service (cloud sharing)</li>
+        <li><strong>Plotly/Plotly Express:</strong> Visualisasi interaktif berbasis Python — digunakan untuk dashboard dalam Streamlit (sinergi ADA) dan eksplorasi chart kompleks</li>
+        <li><strong>Google Looker Studio:</strong> Alternatif gratis berbasis cloud, connect ke Google Sheets/BigQuery — diperkenalkan di P12 sebagai pembanding</li>
+        <li><strong>Prinsip desain:</strong> Gestalt principles, pre-attentive attributes, CRAP (Contrast, Repetition, Alignment, Proximity), chart selection framework</li>
+        <li><strong>Data Storytelling:</strong> Struktur SCR (Situation-Complication-Resolution), annotation, callout, dan narrative arc</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-icon">🗂️</div><div class="card-title">Empat Fase Pembelajaran</div></div>
+    <div class="card-body">
+      <ul class="lst">
+        <li><strong>Fase 1 — Fondasi Visual (P1–4):</strong> Konsep BI, prinsip desain visualisasi, mengenali chart menyesatkan, intro Power BI dan Power Query.</li>
+        <li><strong>Fase 2 — Power BI Mastery (P5–9):</strong> DAX, desain dashboard, data storytelling, intermediate Power BI features. UTS = mini dashboard Power BI.</li>
+        <li><strong>Fase 3 — Lanjutan &amp; Sinergi (P10–14):</strong> Advanced Power BI, Looker Studio, integrasi Python→Power BI, executive dashboard untuk keputusan bisnis.</li>
+        <li><strong>Fase 4 — Capstone (P15–16):</strong> Workshop + Demo Day bersama ADA. Setiap kelompok mempresentasikan executive dashboard kepada "klien" simulasi.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: CPMK -->
+<div class="tab-content" id="tab-cpmk">
+  <div class="card">
+    <div class="card-hd"><div class="card-icon">📐</div><div class="card-title">Capaian Pembelajaran Lulusan (CPL) yang Didukung</div></div>
+    <div class="card-body">
+      <ul class="lst">
+        <li><strong>CPL-KK3:</strong> Mampu mengaplikasikan teknik analisis data untuk menghasilkan insight yang mendukung keputusan bisnis</li>
+        <li><strong>CPL-KK5:</strong> Mampu merancang dan menyampaikan narasi berbasis data kepada pemangku kepentingan bisnis secara efektif</li>
+        <li><strong>CPL-S2:</strong> Menunjukkan integritas dalam menyajikan data — tidak menyesatkan, tidak memanipulasi visual</li>
+      </ul>
+    </div>
+  </div>
+  <h3 class="sec">CPMK — Capaian Pembelajaran Matakuliah</h3>
+  <div class="cpmk-grid" id="cpmkGrid"></div>
+</div>
+
+<!-- TAB: PENILAIAN -->
+<div class="tab-content" id="tab-penilaian">
+  <h3 class="sec">Komponen Penilaian</h3>
+  <div class="assess-grid">
+    <div class="assess-card lab">
+      <div class="assess-pct">30%</div>
+      <div class="assess-name">Lab Reports (12×)</div>
+      <div class="assess-desc">Setiap lab menghasilkan file Power BI (.pbix) atau notebook Plotly + screenshot + interpretasi singkat. Dinilai dari ketepatan teknis, kualitas visual, dan interpretasi bisnis.</div>
+    </div>
+    <div class="assess-card uts">
+      <div class="assess-pct">25%</div>
+      <div class="assess-name">Mini Dashboard UTS (P9)</div>
+      <div class="assess-desc">Kelompok 3–4 orang. Power BI dashboard 3–5 halaman dari dataset yang digunakan di ADA. Presentasi 10 menit kepada "klien" simulasi. Dinilai: ketepatan visual, storytelling, dan actionable insight.</div>
+    </div>
+    <div class="assess-card uas">
+      <div class="assess-pct">35%</div>
+      <div class="assess-name">Executive Dashboard UAS (Demo Day P16)</div>
+      <div class="assess-desc">Power BI dashboard eksekutif yang komprehensif + data story presentation. Demo bersama ADA Demo Day. Audiens: dosen + tamu undangan (simulasi klien/manajemen).</div>
+    </div>
+    <div class="assess-card part">
+      <div class="assess-pct">10%</div>
+      <div class="assess-name">Partisipasi &amp; Critique</div>
+      <div class="assess-desc">Aktif dalam critique session (menilai dashboard teman secara konstruktif), kontribusi diskusi, dan kehadiran. Critique session P7 dinilai secara khusus.</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hd"><div class="card-icon">📊</div><div class="card-title">Rubrik Penilaian Executive Dashboard (UAS)</div></div>
+    <div class="card-body">
+      <div style="overflow-x:auto">
+      <table class="rubric-table">
+        <thead><tr><th>Kriteria</th><th>Bobot</th><th>Sangat Baik (A)</th><th>Baik (B)</th><th>Cukup (C)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Kualitas Visual</strong></td><td>25%</td><td>Hierarki jelas, chart tepat, warna konsisten, tidak ada elemen menyesatkan</td><td>Visual umumnya baik, ada 1–2 pilihan chart yang kurang tepat</td><td>Visual ada tapi tidak mengikuti prinsip desain yang dipelajari</td></tr>
+          <tr><td><strong>Interaktivitas</strong></td><td>20%</td><td>Filter, drill-through, tooltip, dan bookmark berfungsi dengan baik</td><td>Beberapa fitur interaktif ada tapi tidak semua berfungsi optimal</td><td>Dashboard statis atau interaktivitas minimal</td></tr>
+          <tr><td><strong>Data Storytelling</strong></td><td>30%</td><td>Narasi SCR jelas, insight actionable, rekomendasi konkrit dan bisa dilaksanakan</td><td>Ada narasi tapi kurang terstruktur atau insight kurang tajam</td><td>Hanya menyajikan data, tidak ada narasi atau rekomendasi</td></tr>
+          <tr><td><strong>Akurasi Teknis</strong></td><td>15%</td><td>Semua kalkulasi DAX benar, filter tidak konflik, tidak ada angka yang salah</td><td>Kalkulasi umumnya benar, ada kesalahan kecil yang tidak kritis</td><td>Ada kesalahan kalkulasi yang mempengaruhi insight</td></tr>
+          <tr><td><strong>Nilai Islami</strong></td><td>10%</td><td>Topik berkontribusi pada maslahat, penyajian sidq (jujur), tidak ada elemen menyesatkan</td><td>Ada kesadaran nilai islami tapi kurang elaborasi</td><td>Disebutkan tapi sangat superfisial</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: JADWAL -->
+<div class="tab-content" id="tab-jadwal">
+  <div class="callout info" style="margin-bottom:16px">Klik setiap pertemuan untuk melihat detail topik, prinsip desain yang dipelajari, dan insersi nilai syariah.</div>
+  <div id="jadwalContainer"></div>
+</div>
+
+<!-- TAB: PROJECT -->
+<div class="tab-content" id="tab-project">
+  <div class="callout syn" style="margin-bottom:16px"><strong>Koordinasi ADA–BIV:</strong> Kelompok dan dataset SAMA dengan ADA. Demo Day dijadwalkan bersamaan — kelompok presentasi analytics app (ADA) sekaligus executive dashboard (BIV) kepada audiens yang sama. Jadwalkan bersama dosen ADA.</div>
+
+  <div class="proj-phase">
+    <div class="proj-phase-hd"><div class="proj-phase-num">1</div><div><div class="proj-phase-title">Mini Dashboard UTS — Power BI Report</div><div class="proj-phase-sub">P9 · Kelompok 3–4 orang (sama dengan ADA) · Presentasi 10 menit</div></div></div>
+    <div class="proj-phase-body">
+      <div class="proj-deliverable"><strong>Deliverable:</strong> File .pbix Power BI + presentasi (maks 8 slide) + demo live dashboard</div>
+      <div class="proj-deliverable"><strong>Konten minimal:</strong> (1) Halaman Overview dengan KPI cards; (2) Minimal 2 halaman analisis mendalam (bisa drill-through); (3) Minimal 1 slicer/filter interaktif; (4) Halaman "Story" berisi narasi insight dan rekomendasi; (5) Semua visual mengikuti prinsip yang dipelajari di P2–P7</div>
+      <div class="proj-deliverable"><strong>Dataset:</strong> Dataset yang sama dengan mini project ADA (Kaggle) — koordinasi dengan kelompok ADA sangat dianjurkan agar satu cerita</div>
+    </div>
+  </div>
+
+  <div class="proj-phase">
+    <div class="proj-phase-hd"><div class="proj-phase-num">2</div><div><div class="proj-phase-title">Executive Dashboard (UAS) — Demo Day Bersama ADA</div><div class="proj-phase-sub">P16 · Kelompok sama · Demo 15 menit + 5 menit Q&A</div></div></div>
+    <div class="proj-phase-body">
+      <div class="proj-deliverable"><strong>Deliverable:</strong> (1) File .pbix final (publish ke Power BI Service jika tersedia); (2) Slide presentasi "data story" 5–8 slide; (3) Laporan naratif 2–3 halaman berisi interpretasi dan rekomendasi bisnis</div>
+      <div class="proj-deliverable"><strong>Fitur wajib:</strong> Executive summary halaman 1 (KPI + traffic light status) · Drill-down ke detail · Bookmark untuk navigasi · Minimal 1 custom tooltip · Filter/slicer interaktif · Halaman mobile view</div>
+      <div class="proj-deliverable"><strong>Data Storytelling:</strong> Presentasi menggunakan struktur SCR: <em>Situation</em> (konteks bisnis) → <em>Complication</em> (masalah/peluang yang ditemukan dari data) → <em>Resolution</em> (rekomendasi berbasis data)</div>
+      <div class="callout sya" style="margin-top:10px"><strong>Prinsip Sidq dalam Dashboard:</strong> Setiap kelompok wajib mengisi checklist "Anti-Misleading Visualization" — memastikan tidak ada axis yang terpotong, persentase yang tidak menjumlahkan 100%, atau cherry-picking data yang mengaburkan gambaran sebenarnya.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const CPMK_DATA = [
+  {id:'CPMK-1',bc:'b2',bloom:'C2 — Memahami',cpl:'CPL-KK3',prt:'1–3',
+   rumusan:'Menjelaskan konsep Business Intelligence, ekosistem tools BI, dan prinsip desain visualisasi data yang efektif dan tidak menyesatkan',
+   detail:'Mencakup perbedaan BI vs analytics vs reporting, komponen BI (OLAP, data warehouse, ETL, reporting), Gestalt principles, pre-attentive attributes, CRAP design, dan kriteria "honest visualization."'},
+  {id:'CPMK-2',bc:'b3',bloom:'C3 — Menerapkan',cpl:'CPL-KK3',prt:'3–6',
+   rumusan:'Menggunakan Power BI (Power Query + DAX) untuk membangun laporan dan dashboard dari berbagai sumber data',
+   detail:'Mencakup koneksi data, transformasi di Power Query (M language), pembuatan model data (relasi), calculated columns, measures dasar hingga menengah (CALCULATE, FILTER, time intelligence), dan desain halaman laporan.'},
+  {id:'CPMK-3',bc:'b3',bloom:'C3 — Menerapkan',cpl:'CPL-KK5',prt:'6–8',
+   rumusan:'Merancang dashboard interaktif yang mengikuti prinsip desain yang dipelajari: hierarki visual, warna semantik, dan navigasi intuitif',
+   detail:'Mencakup layout hierarki (F-pattern, Z-pattern), warna semantik vs aksen, white space, tipografi untuk data, desain mobile vs desktop, bookmarks, tooltips, dan drill-through.'},
+  {id:'CPMK-4',bc:'b5',bloom:'C5 — Mengevaluasi',cpl:'CPL-KK5',prt:'7–8',
+   rumusan:'Menyusun narasi data (data storytelling) yang menghubungkan insight analitik dengan rekomendasi bisnis yang actionable',
+   detail:'Mencakup struktur SCR (Situation-Complication-Resolution), annotation dan callout, "so what?" test, dari angka ke keputusan, presentasi kepada audiens non-teknis, dan menghindari "death by data."'},
+  {id:'CPMK-5',bc:'b3',bloom:'C3 — Menerapkan',cpl:'CPL-KK3',prt:'10–13',
+   rumusan:'Mengintegrasikan output Python (ADA) ke dalam pipeline Power BI dan menggunakan tools BI alternatif (Looker Studio)',
+   detail:'Mencakup import data dari pandas output (CSV/Excel/Parquet), Python visual di Power BI, workflow ADA→BIV end-to-end, Looker Studio sebagai alternatif berbasis cloud, dan perbandingan tools.'},
+  {id:'CPMK-6',bc:'b6',bloom:'C6 — Mencipta',cpl:'CPL-KK5',prt:'14–16',
+   rumusan:'Membangun executive dashboard komprehensif yang menggabungkan analisis, visualisasi, dan storytelling untuk mendukung keputusan bisnis syariah',
+   detail:'Mencakup balanced scorecard dalam BI, KPI definition, executive summary design, mobile-first, deployment ke Power BI Service, dan presentasi "klien" menggunakan framework SCR.'},
+];
+
+const MEETINGS = [
+  {num:1,cpmk:'CPMK-1',bc:'b2',col:'#1A0838',phase:1,
+   title:'Pengantar BI & Ekosistem Tools Visualisasi',
+   ref:'The Business Intelligence Guidebook — Rick Sherman; Gartner BI Magic Quadrant 2024',
+   topik:'Apa itu Business Intelligence vs Analytics vs Reporting (bukan sinonim); komponen ekosistem BI: ETL/ELT pipeline, data warehouse, OLAP cube, reporting layer; landscape tools: Power BI, Tableau, Looker, Qlik, Sisense — positioning dan kekuatan masing-masing; mengapa BI penting bagi lembaga keuangan syariah.',
+   syariah:{nilai:'Bayan — Kejelasan untuk Keputusan',isi:'Bayan (kejelasan) adalah kemampuan menyampaikan kebenaran dengan cara yang bisa dipahami. BI adalah bayan dalam dunia bisnis — mengubah data kompleks menjadi informasi yang jelas, sehingga pemimpin bisa mengambil keputusan yang benar dan bertanggung jawab.',ref:'QS. Ar-Rahman: 4 — "Dia mengajarkan bayan (kejelasan ekspresi)"'},
+   metode:['Ceramah','Diskusi'],penilaian:{label:'Partisipasi',cls:'chip-part'}},
+
+  {num:2,cpmk:'CPMK-1',bc:'b2',col:'#2A1060',phase:1,
+   title:'Prinsip Desain Visualisasi — Pilih Chart yang Tepat',
+   ref:'Storytelling with Data — Cole Nussbaumer Knaflic; The Functional Art — Alberto Cairo',
+   topik:'Framework pemilihan chart: comparison (bar, lollipop), trend (line, area), composition (stacked bar, treemap), relationship (scatter, bubble), distribution (histogram, box plot); Gestalt principles (proximity, similarity, continuity, closure); pre-attentive attributes (warna, ukuran, posisi); kapan TIDAK menggunakan pie chart.',
+   syariah:{nilai:"Adl — Representasi yang Jujur",isi:"Adl (keadilan) dalam visualisasi berarti setiap grafik merepresentasikan data secara proporsional dan jujur. Memilih chart yang salah — misalnya pie chart untuk 7 kategori, atau stacked bar yang membingungkan — adalah bentuk ketidakadilan kepada pembaca yang dapat membuat mereka mengambil keputusan yang salah.",ref:'QS. Al-Maidah: 8 — "...dan janganlah kebencianmu terhadap suatu kaum mendorong kamu untuk berlaku tidak adil"'},
+   metode:['LAB'],penilaian:{label:'Lab 1',cls:'chip-lab'}},
+
+  {num:3,cpmk:'CPMK-1',bc:'b2',col:'#2A1060',phase:1,
+   title:'Mengenali & Menghindari Visualisasi Menyesatkan',
+   ref:'How Charts Lie — Alberto Cairo; Calling Bullshit — Bergstrom & West (Ch. 8)',
+   topik:'Anatomi chart menyesatkan: truncated y-axis, 3D chart distortion, cherry-picking rentang waktu, dual-axis yang menipu, correlation ≠ causation; workshop: menganalisis 10 chart dari media Indonesia dan menemukan kesalahan; membuat versi "jujur" dari chart yang menyesatkan.',
+   syariah:{nilai:"Sidq vs Tadlis — Kejujuran vs Penipuan",isi:"Tadlis (menyembunyikan cacat) adalah dilarang dalam muamalah Islam. Visualisasi menyesatkan adalah tadlis dalam komunikasi data — menyembunyikan kebenaran dengan cara teknis yang tampak sah. Seorang analis Muslim wajib memastikan setiap grafik yang dipublikasikan tidak memanipulasi persepsi pembaca.",ref:'Hadis: "Barang siapa menipu kami, maka ia bukan dari golongan kami." — prinsip kejujuran dalam transaksi dan komunikasi'},
+   metode:['LAB','Diskusi'],penilaian:{label:'Lab 2',cls:'chip-lab'}},
+
+  {num:4,cpmk:'CPMK-2',bc:'b3',col:'#3A1880',phase:1,
+   title:'Intro Power BI — Connect, Model, Visualize',
+   ref:'Microsoft Learn Power BI (learn.microsoft.com/power-bi); Guy in a Cube YouTube channel',
+   topik:'Power BI Desktop: interface (Reports, Data, Model view); koneksi sumber data (Excel, CSV, web); model data dasar (fact table vs dimension table, relasi); built-in visuals: bar, line, pie, card, table, matrix; publish ke Power BI Service; Power BI Mobile overview.',
+   syariah:{nilai:"Ilmu & Amal — Pengetahuan yang Diimplementasikan",isi:"Ilmu tanpa amal adalah pohon tanpa buah. Pertemuan ini adalah amal pertama dari ilmu BI — mahasiswa tidak hanya membaca tentang Power BI, tapi langsung membangun report pertama mereka. Setiap laporan yang dibuat adalah amal yang dapat mendukung pengambilan keputusan yang lebih baik.",ref:'Hadis: "Keutamaan orang berilmu atas ahli ibadah seperti keutamaan bulan atas bintang-bintang"'},
+   metode:['LAB'],penilaian:{label:'Lab 3',cls:'chip-lab'}},
+
+  {num:5,cpmk:'CPMK-2',bc:'b3',col:'#3A1880',phase:2,
+   title:'Power Query — ETL di dalam Power BI',
+   ref:'M is for Data Monkey — Ken Puls & Miguel Escobar; Microsoft Power Query documentation',
+   topik:'Power Query Editor: Applied Steps, Formula Bar, M language basics; transformasi wajib: split column, pivot/unpivot, merge queries, append tables, change type, handle errors; data profiling (column quality, distribution, profile); praktikum: ETL dari 3 sumber berbeda menjadi 1 model terpadu.',
+   syariah:{nilai:"Taharah Data — Kesucian sebagai Fondasi",isi:"Seperti dalam fikih, ibadah tidak sah tanpa taharah; analisis BI tidak valid tanpa data yang bersih. Power Query adalah alat taharah data — memastikan bahwa informasi yang tersaji di dashboard benar-benar merepresentasikan realitas, bukan artefak dari data yang kotor.",ref:'Prinsip taharah (kesucian) dalam fikih — analogi kebersihan data sebagai syarat analisis yang sah'},
+   metode:['LAB'],penilaian:{label:'Lab 4',cls:'chip-lab'}},
+
+  {num:6,cpmk:'CPMK-2',bc:'b3',col:'#3A1880',phase:2,
+   title:'DAX Dasar — Measures & Calculated Columns',
+   ref:'The Definitive Guide to DAX — Russo & Ferrari (Ch. 1–4); SQLBI.com tutorials',
+   topik:'Perbedaan calculated column vs measure (penting!); basic measures: SUM, AVERAGE, COUNT, COUNTROWS, DISTINCTCOUNT; CALCULATE: modifikasi filter context; time intelligence: SAMEPERIODLASTYEAR, MTD, YTD; FORMAT untuk tampilan; praktikum: build KPI measures untuk laporan keuangan BPRS simulasi.',
+   syariah:{nilai:"Mizan — Pengukuran yang Tepat dan Akurat",isi:"Mizan dalam Islam adalah timbangan yang adil dan akurat. DAX measures adalah mizan digital — menghitung angka bisnis dengan tepat. Kalkulasi yang salah (misalnya SUMX yang digunakan sebagai SUM, menghasilkan angka yang terlalu besar) adalah pelanggaran mizan yang dapat menyesatkan keputusan manajemen.",ref:'QS. Ar-Rahman: 7–9 — "...dan Dia menegakkan mizan (timbangan) agar kamu tidak melampaui batas dalam timbangan"'},
+   metode:['LAB'],penilaian:{label:'Lab 5',cls:'chip-lab'}},
+
+  {num:7,cpmk:'CPMK-3',bc:'b3',col:'#5028A0',phase:2,
+   title:'Desain Dashboard — Hierarki, Warna & Layout',
+   ref:'Dashboard Design for Rich and Rapid Monitoring — Stephen Few; CRAP design principles',
+   topik:'CRAP principles (Contrast, Repetition, Alignment, Proximity) dalam dashboard; F-pattern dan Z-pattern layout; warna semantik (merah = bahaya, hijau = aman) vs aksen; tipografi untuk data (tabular numbers, sans-serif); white space sebagai elemen desain; Critique Session: setiap mahasiswa mereview dashboard temannya menggunakan rubrik yang disediakan.',
+   syariah:{nilai:'Itqan — Kesempurnaan dalam Merancang',isi:'Itqan adalah melakukan pekerjaan dengan standar tertinggi. Desain dashboard yang itqan tidak cukup "asal berfungsi" — ia harus intuitif, konsisten, dan meringankan beban kognitif penggunanya. Dashboard yang membingungkan, meskipun datanya benar, gagal menjalankan tujuan informasi.',ref:'Hadis: "Sesungguhnya Allah mencintai jika seseorang melakukan pekerjaan, ia melakukannya dengan itqan (sempurna)"'},
+   metode:['LAB','Diskusi'],penilaian:{label:'Lab 6',cls:'chip-lab'}},
+
+  {num:8,cpmk:'CPMK-4',bc:'b5',col:'#5028A0',phase:2,
+   title:'Data Storytelling — dari Angka ke Keputusan',
+   ref:'Storytelling with Data — Knaflic (Ch. 7–9); HBR "How to Tell a Story with Data"',
+   topik:'Framework SCR (Situation-Complication-Resolution) untuk presentasi data; "So What?" test: setiap temuan harus menjawab pertanyaan ini; annotation dan callout untuk mengarahkan perhatian; membedakan laporan deskriptif vs rekomendasi prescriptive; praktikum: buat satu-slide data story dari dataset koperasi syariah.',
+   syariah:{nilai:'Hikmah — Menyampaikan Kebenaran dengan Bijak',isi:'Hikmah bukan hanya kebenaran, tapi kebenaran yang disampaikan dengan cara yang tepat kepada orang yang tepat. Data storytelling adalah hikmah dalam komunikasi bisnis — insight analitik hanya berdampak jika disampaikan dengan cara yang bisa dipahami dan mendorong tindakan.',ref:'QS. An-Nahl: 125 — "Serulah ke jalan Tuhanmu dengan hikmah dan pelajaran yang baik"'},
+   metode:['LAB','Presentasi'],penilaian:{label:'Lab 7',cls:'chip-lab'}},
+
+  {num:9,cpmk:'CPMK-3,4',bc:'b4',col:'#7040B0',phase:2,
+   title:'UTS — Mini Dashboard Power BI',
+   ref:'Dataset kelompok dari ADA (Kaggle)',
+   topik:'Presentasi mini dashboard Power BI kelompok (3–4 orang): minimum 3 halaman, semua visual mengikuti prinsip yang dipelajari, minimal 1 DAX measure non-trivial, narasi insight menggunakan SCR. Peer critique: setiap kelompok memberikan feedback konstruktif kepada 1 kelompok lain.',
+   syariah:{nilai:"Shura & Tawashau bil Haqq",isi:"Peer critique session adalah implementasi shura (musyawarah) dan tawashau bil haqq (saling menasihati dalam kebenaran). Memberikan feedback yang jujur dan konstruktif kepada rekan adalah amal yang lebih bermanfaat daripada sekadar memuji.",ref:'QS. Al-Ashr: 3 — "...dan saling menasihati dalam kebenaran, dan saling menasihati dalam kesabaran"'},
+   metode:['Presentasi'],penilaian:{label:'UTS',cls:'chip-uts'}},
+
+  {num:10,cpmk:'CPMK-2,3',bc:'b3',col:'#4A20A0',phase:3,
+   title:'Advanced Power BI — Bookmarks, Drill & Tooltip',
+   ref:'Power BI documentation — Bookmarks, Drill-through, Tooltips',
+   topik:'Bookmarks untuk navigasi non-linear dan "story mode"; drill-through pages untuk detail-on-demand; custom page tooltips (popup detail saat hover); conditional formatting via DAX (warna berubah berdasarkan nilai); Q&A visual untuk natural language query; praktikum: tambahkan semua fitur ini ke dashboard UTS masing-masing.',
+   syariah:{nilai:"Tafshil — Penjelasan Berlapis dan Terperinci",isi:"Dalam tafsir Al-Quran, tafshil adalah penjelasan yang berlapis — dari ringkasan ke detail. Desain dashboard berlapis (overview → detail via drill-through → tooltip) mencerminkan tafshil: pengguna memulai dari gambaran besar dan mendalami detail hanya saat dibutuhkan, tanpa tenggelam dalam informasi.",ref:'QS. Hud: 1 — "...kitab yang ayat-ayatnya disusun dengan rapi kemudian dijelaskan secara terperinci"'},
+   metode:['LAB'],penilaian:{label:'Lab 8',cls:'chip-lab'}},
+
+  {num:11,cpmk:'CPMK-2',bc:'b3',col:'#4A20A0',phase:3,
+   title:'DAX Lanjutan — FILTER, RANKX & Row Context',
+   ref:'The Definitive Guide to DAX — Russo & Ferrari (Ch. 5–8); SQLBI YouTube',
+   topik:'Filter context vs row context (konsep paling penting di DAX); FILTER, ALL, ALLEXCEPT untuk manipulasi context; RELATED untuk cross-table reference; RANKX untuk ranking dinamis; SWITCH untuk conditional measures; praktikum: build dynamic TOP-N analysis dan running total untuk laporan keuangan.',
+   syariah:{nilai:'Ijtihad — Berpikir Mendalam untuk Memecahkan Masalah',isi:'Ijtihad adalah pengerahan segenap kemampuan akal untuk memecahkan masalah yang kompleks. DAX lanjutan membutuhkan ijtihad mental — memahami bagaimana filter context bekerja membutuhkan pemikiran yang cermat dan tidak bisa dikerjakan secara superfisial.',ref:'Prinsip ijtihad dalam ushul fiqh — analogi dengan complex problem solving dalam DAX'},
+   metode:['LAB'],penilaian:{label:'Lab 9',cls:'chip-lab'}},
+
+  {num:12,cpmk:'CPMK-5',bc:'b3',col:'#4A20A0',phase:3,
+   title:'Looker Studio & Tableau Public — Alternatif Tools',
+   ref:'Google Looker Studio documentation (lookerstudio.google.com); Tableau Public (public.tableau.com)',
+   topik:'Google Looker Studio: connect ke Google Sheets/BigQuery, drag-drop report, calculated fields, share public link (gratis tanpa akun); Tableau Public: calculated fields, LOD expressions basics, Tableau Public Gallery; perbandingan tiga tools (Power BI vs Looker vs Tableau): kapan masing-masing lebih unggul; pertimbangan biaya untuk UMKM dan NGO.',
+   syariah:{nilai:"Ikhtiyar — Memilih Alat yang Paling Tepat",isi:"Ikhtiyar (memilih dengan bijak) adalah bentuk tanggung jawab. Seorang analis yang merekomendasikan Power BI Enterprise kepada UMKM kecil yang anggarannya terbatas tidak bijak — ia tidak mempertimbangkan kemaslahatan kliennya. Mengenal berbagai tools dan memilih yang paling sesuai konteks adalah ikhtiyar yang bertanggung jawab.",ref:'Hadis: "Sesungguhnya Allah menyukai apabila seseorang melakukan pekerjaan dilakukan dengan baik (tepat)" — termasuk pemilihan alat'},
+   metode:['LAB'],penilaian:{label:'Lab 10',cls:'chip-lab'}},
+
+  {num:13,cpmk:'CPMK-5',bc:'b3',col:'#3A1880',phase:3,
+   title:'Integrasi Python → Power BI (Sinergi ADA)',
+   ref:'Microsoft documentation: Python in Power BI; pandas documentation',
+   topik:'Import dataset bersih dari ADA (CSV/Excel/Parquet) ke Power BI; Python script sebagai data source di Power BI; Python visual (matplotlib/seaborn langsung di Power BI); workflow end-to-end: ADA (analisis + model) → BIV (dashboard eksekutif); demo: insight clustering ADA ditampilkan sebagai segmentasi visual di Power BI.',
+   syariah:{nilai:"Ta'awun — Sinergi Antar Disiplin",isi:"Ta'awun dalam konteks akademik adalah mengintegrasikan kekuatan berbagai ilmu untuk menghasilkan solusi yang lebih baik. Sinergi ADA–BIV adalah ta'awun antar dua matkul: analitik yang kuat dari ADA berpadu dengan komunikasi visual yang efektif dari BIV, menghasilkan insight yang tidak hanya benar tapi juga berdampak.",ref:"QS. Al-Maidah: 2 — 'Dan tolong-menolonglah kamu dalam kebaikan dan takwa'"},
+   metode:['LAB'],penilaian:{label:'Lab 11',cls:'chip-lab'}},
+
+  {num:14,cpmk:'CPMK-6',bc:'b6',col:'#3A1880',phase:3,
+   title:'Executive Dashboard & BI untuk Keputusan Bisnis',
+   ref:'Information Dashboard Design — Stephen Few; Balanced Scorecard — Kaplan & Norton',
+   topik:'Balanced Scorecard dalam BI: 4 perspektif (Keuangan, Pelanggan, Proses Internal, Pembelajaran); executive summary halaman 1 — desain KPI card yang informatif; traffic light system (RAG: Red-Amber-Green) untuk status; BI untuk lembaga keuangan syariah: metrik khusus (NPF, FDR, BOPO, CAR); kasus: bangun executive dashboard BPRS dalam 90 menit.',
+   syariah:{nilai:"Mas'uliyyah — Akuntabilitas kepada Pimpinan",isi:"Mas'uliyyah (akuntabilitas) adalah kewajiban untuk mempertanggungjawabkan amanah. Executive dashboard adalah instrumen mas'uliyyah — ia memungkinkan manajemen untuk menjalankan tanggung jawab mereka dengan informasi yang akurat, real-time, dan dapat diandalkan. Dashboard yang salah = amanah yang dikhianati.",ref:'QS. Al-Mudassir: 38 — "Setiap diri bertanggung jawab atas apa yang telah diperbuatnya"'},
+   metode:['LAB','Ceramah'],penilaian:{label:'Lab 12',cls:'chip-lab'}},
+
+  {num:15,cpmk:'CPMK-6',bc:'b6',col:'#2A1060',phase:4,
+   title:'Project Workshop — Bimbingan Executive Dashboard',
+   ref:'Proyek kelompok masing-masing',
+   topik:'Workshop terbimbing: review dashboard kelompok oleh dosen, feedback terstruktur (design critique, DAX review, story audit); checklist "Anti-Misleading Visualization" diisi bersama; koordinasi persiapan Demo Day dengan kelompok ADA; tips presentasi kepada "klien" non-teknis.',
+   syariah:{nilai:"Tawashau bil Haqq — Saling Menasihati",isi:"Workshop ini adalah ruang tawashau bil haqq — dosen dan rekan memberikan nasihat yang jujur untuk meningkatkan kualitas karya. Menerima kritik dengan lapang dada dan memberikan kritik dengan niat baik adalah adab yang diajarkan Islam dalam proses pembelajaran.",ref:'QS. Al-Ashr: 3 — "dan saling menasihati dalam kebenaran"'},
+   metode:['Workshop'],penilaian:{label:'Progress',cls:'chip-proj'}},
+
+  {num:16,cpmk:'CPMK-6',bc:'b6',col:'#2A1060',phase:4,
+   title:'Demo Day — Executive Dashboard Presentation',
+   ref:'Project Final (bersama ADA Demo Day)',
+   topik:'Demo Day bersama ADA: setiap kelompok mempresentasikan executive dashboard Power BI (15 menit) menggunakan framework SCR kepada audiens yang mencakup dosen ADA, dosen BIV, dan tamu undangan simulasi klien/manajemen. Aspek yang dinilai: kualitas visual, interaktivitas, storytelling, akurasi teknis, dan relevansi nilai islami.',
+   syariah:{nilai:"Amanah & Tabligh — Pertanggungjawaban dan Penyampaian",isi:"Demo Day adalah momen dua nilai Islam bersatu: amanah (mempertanggungjawabkan karya yang telah dikerjakan dengan sepenuh hati) dan tabligh (menyampaikan insight kepada pengambil keputusan). Ini adalah simulasi peran nyata seorang analis BI — berdiri di depan manajemen dan menyampaikan temuan dengan kejujuran dan kejelasan.",ref:'QS. Al-Mudassir: 38 + QS. Ar-Rahman: 4 — akuntabilitas dan kejelasan komunikasi'},
+   metode:['Presentasi'],penilaian:{label:'UAS',cls:'chip-uas'}},
+];
+
+const PHASES = {1:'Fase 1 — Fondasi Visual (P1–4)',2:'Fase 2 — Power BI Mastery (P5–9)',3:'Fase 3 — Lanjutan & Sinergi (P10–14)',4:'Fase 4 — Capstone (P15–16)'};
+const BLOOM_COLORS = {b1:'#6A8E40',b2:'#2A7898',b3:'#9030A0',b4:'#6040A8',b5:'#A03020',b6:'#1F9060'};
+
+function showTab(id,el){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  el.classList.add('active');
+  if(id==='jadwal'&&!document.getElementById('jadwalContainer').children.length)buildJadwal();
+  if(id==='cpmk'&&!document.getElementById('cpmkGrid').children.length)buildCPMK();
+}
+
+function buildCPMK(){
+  const g=document.getElementById('cpmkGrid');
+  CPMK_DATA.forEach(c=>{
+    const bc=BLOOM_COLORS[c.bc]||'#6030B0';
+    g.innerHTML+=`<div class="cpmk-card" style="border-left-color:${bc}">
+      <div class="cpmk-head">
+        <span class="cpmk-id">${c.id}</span>
+        <span class="cpmk-bloom" style="background:${bc}22;color:${bc}">${c.bloom}</span>
+        <span class="cpmk-cpl">${c.cpl}</span>
+      </div>
+      <div class="cpmk-rumusan">${c.rumusan}</div>
+      <div class="cpmk-detail">${c.detail}</div>
+      <div class="cpmk-prt">Pertemuan: ${c.prt}</div>
+    </div>`;
+  });
+}
+
+function buildJadwal(){
+  const c=document.getElementById('jadwalContainer');
+  let lastPhase=0;
+  MEETINGS.forEach(m=>{
+    if(m.phase!==lastPhase){
+      const ph=document.createElement('div');
+      ph.className='phase-label';ph.textContent=PHASES[m.phase]||'';
+      c.appendChild(ph);lastPhase=m.phase;
+    }
+    const card=document.createElement('div');
+    card.className='meeting-card';
+    const chips=(m.metode||[]).map(mt=>{
+      const cls=mt==='LAB'?'chip-lab':mt==='Ceramah'?'chip-cermah':mt==='Diskusi'?'chip-diskusi':mt==='Presentasi'?'chip-uts':'chip-proj';
+      return `<span class="chip ${cls}">${mt}</span>`;
+    }).join('');
+    card.innerHTML=`<div class="meeting-summary">
+      <div class="meet-num" style="background:${m.col||'#1A0838'}">${String(m.num).padStart(2,'0')}</div>
+      <div class="meet-main">
+        <div class="meet-title">${m.title}</div>
+        <div class="meet-meta">${chips}<span class="chip chip-cpmk">${m.cpmk}</span></div>
+      </div>
+      <div class="meet-expand">▾</div>
+    </div>
+    <div class="meeting-detail">
+      <div class="detail-section">
+        <div class="detail-label">Topik &amp; Konten</div>
+        <div class="detail-text">${m.topik}</div>
+      </div>
+      <div class="detail-section">
+        <div class="detail-label">Referensi</div>
+        <div class="detail-text" style="font-size:12.5px;font-style:italic;color:var(--txl)">${m.ref}</div>
+      </div>
+      ${m.syariah?`<div class="detail-section">
+        <div class="detail-label">Insersi Nilai Syariah</div>
+        <div class="sya-tag">☽ ${m.syariah.nilai}</div>
+        <div class="sya-isi">${m.syariah.isi}</div>
+        <div class="sya-ref">${m.syariah.ref}</div>
+      </div>`:''}
+      <div class="detail-section">
+        <div class="detail-label">Penilaian</div>
+        <span class="chip ${m.penilaian.cls}">${m.penilaian.label}</span>
+      </div>
+    </div>`;
+    card.querySelector('.meeting-summary').addEventListener('click',()=>card.classList.toggle('open'));
+    c.appendChild(card);
+  });
+}
+</script>

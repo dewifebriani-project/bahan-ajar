@@ -1,0 +1,36 @@
+Transaction_ID,Transaction_Date,Customer_ID,Customer_Name,Account_Officer,Transaction_Type,Amount_Rp,Receipt_Type,System_Posting_Timestamp,Approval_Authority,Audit_Forensic_Flag
+TRX-2026-001,2026-01-21,CUST-108,Umar Al-Faruq,AO-02 Dewi Sartika,Setoran Angsuran Murabahah,1500000,Official System E-Receipt,2026-01-21 08:27:00,System Auto-Validated,Normal
+TRX-2026-002,2026-05-03,CUST-101,Muhammad Rizki,AO-02 Dewi Sartika,Pencairan Pembiayaan Murabahah,5000000,Official System E-Receipt,2026-05-03 14:12:00,MGR-01 Ir. H. Faisal (Branch Manager),Normal
+TRX-2026-003,2026-02-18,CUST-115,Bilal Santoso,AO-03 Hendra Wijaya,Setoran Angsuran Murabahah,750000,Official System E-Receipt,2026-02-18 14:24:00,System Auto-Validated,Normal
+TRX-2026-004,2026-04-23,CUST-105,Fathimah Azzahra,AO-03 Hendra Wijaya,Setoran Angsuran Murabahah,450000,Official System E-Receipt,2026-04-23 13:27:00,System Auto-Validated,Normal
+TRX-2026-005,2026-01-13,CUST-120,Khadijah Putri,AO-01 Budi Santoso,Penarikan Tabungan Wadiah,200000,Official System E-Receipt,2026-01-13 13:32:00,Teller Head Validation,Normal
+TRX-2026-006,2026-01-13,CUST-120,Aisyah Humaira,AO-02 Dewi Sartika,Setoran Angsuran Murabahah,450000,Official System E-Receipt,2026-01-13 12:50:00,System Auto-Validated,Normal
+TRX-2026-007,2026-02-22,CUST-108,Nurul Hidayah,AO-04 Siti Aminah,Setoran Tabungan Wadiah,2500000,Official System E-Receipt,2026-02-22 12:15:00,Teller Head Validation,Normal
+TRX-2026-008,2026-03-21,CUST-112,Fathimah Azzahra,AO-03 Hendra Wijaya,Setoran Angsuran Murabahah,1500000,Official System E-Receipt,2026-03-21 10:33:00,System Auto-Validated,Normal
+TRX-2026-009,2026-02-21,CUST-115,Salma Nabila,AO-03 Hendra Wijaya,Pencairan Pembiayaan Murabahah,10000000,Official System E-Receipt,2026-02-21 11:20:00,MGR-01 Ir. H. Faisal (Branch Manager),Normal
+TRX-2026-010,2026-01-27,CUST-111,Salma Nabila,AO-03 Hendra Wijaya,Setoran Angsuran Murabahah,750000,Official System E-Receipt,2026-01-27 11:12:00,System Auto-Validated,Normal
+TRX-2026-011,2026-06-19,CUST-121,Raihan Pratama,AO-04 Siti Aminah,Penarikan Tabungan Wadiah,500000,Official System E-Receipt,2026-06-19 13:23:00,Teller Head Validation,Normal
+TRX-2026-012,2026-02-09,CUST-118,Khadijah Putri,AO-04 Siti Aminah,Penarikan Tabungan Wadiah,1000000,Official System E-Receipt,2026-02-09 11:45:00,Teller Head Validation,Normal
+TRX-2026-013,2026-02-08,CUST-125,Siti Maryam,AO-01 Budi Santoso,Pencairan Pembiayaan Murabahah,8000000,Official System E-Receipt,2026-02-08 15:15:00,MGR-01 Ir. H. Faisal (Branch Manager),Normal
+TRX-2026-014,2026-06-26,CUST-103,Salma Nabila,AO-04 Siti Aminah,Penarikan Tabungan Wadiah,1000000,Official System E-Receipt,2026-06-26 14:48:00,Teller Head Validation,Normal
+TRX-2026-015,2026-01-18,CUST-118,Usman Effendi,AO-03 Hendra Wijaya,Setoran Tabungan Wadiah,200000,Official System E-Receipt,2026-01-18 09:53:00,Teller Head Validation,Normal
+TRX-2026-016,2026-04-10,CUST-101,Taufiq Hidayat,AO-03 Hendra Wijaya,Pencairan Pembiayaan Murabahah,5000000,Official System E-Receipt,2026-04-10 10:39:00,MGR-01 Ir. H. Faisal (Branch Manager),Normal
+TRX-2026-017,2026-06-28,CUST-117,Hamzah Perkasa,AO-02 Dewi Sartika,Pencairan Pembiayaan Murabahah,10000000,Official System E-Receipt,2026-06-28 12:50:00,MGR-01 Ir. H. Faisal (Branch Manager),Normal
+TRX-2026-018,2026-02-25,CUST-111,Raihan Pratama,AO-01 Budi Santoso,Setoran Angsuran Murabahah,900000,Official System E-Receipt,2026-02-25 08:48:00,System Auto-Validated,Normal
+TRX-2026-019,2026-03-27,CUST-108,Bilal Santoso,AO-01 Budi Santoso,Setoran Angsuran Murabahah,1200000,Official System E-Receipt,2026-03-27 11:13:00,System Auto-Validated,Normal
+TRX-2026-020,2026-01-27,CUST-122,Raihan Pratama,AO-02 Dewi Sartika,Setoran Tabungan Wadiah,2500000,Official System E-Receipt,2026-01-27 10:18:00,Teller Head Validation,Normal
+TRX-2026-021,2026-05-07,CUST-110,Salma Nabila,AO-03 Hendra Wijaya,Penarikan Tabungan Wadiah,2500000,Official System E-Receipt,2026-05-07 11:55:00,Teller Head Validation,Normal
+TRX-2026-022,2026-02-04,CUST-111,Ahmad Fauzi,AO-02 Dewi Sartika,Pencairan Pembiayaan Murabahah,5000000,Official System E-Receipt,2026-02-04 11:14:00,MGR-01 Ir. H. Faisal (Branch Manager),Normal
+TRX-2026-023,2026-06-03,CUST-103,Siti Maryam,AO-03 Hendra Wijaya,Setoran Angsuran Murabahah,1500000,Official System E-Receipt,2026-06-03 08:24:00,System Auto-Validated,Normal
+TRX-2026-024,2026-03-08,CUST-118,Fajar Ramadhan,AO-04 Siti Aminah,Pencairan Pembiayaan Murabahah,15000000,Official System E-Receipt,2026-03-08 15:23:00,MGR-01 Ir. H. Faisal (Branch Manager),Normal
+TRX-2026-025,2026-04-26,CUST-104,Lukman Hakim,AO-04 Siti Aminah,Setoran Tabungan Wadiah,2500000,Official System E-Receipt,2026-04-26 11:16:00,Teller Head Validation,Normal
+TRX-2026-026,2026-03-10,CUST-104,Nurul Hidayah,AO-03 Hendra Wijaya,Setoran Angsuran Murabahah,1500000,Manual Receipt - Offline Kwitansi,2026-03-15 16:45:00,System Auto-Validated,Suspicious - Lapping (Delay 5 Hari)
+TRX-2026-027,2026-03-15,CUST-108,Umar Al-Faruq,AO-03 Hendra Wijaya,Setoran Angsuran Murabahah,1500000,Manual Receipt - Offline Kwitansi,2026-03-21 17:10:00,System Auto-Validated,Suspicious - Lapping (Covering CUST-104)
+TRX-2026-028,2026-03-20,CUST-112,Aisyah Humaira,AO-03 Hendra Wijaya,Setoran Angsuran Murabahah,1500000,Manual Receipt - Offline Kwitansi,2026-03-27 18:05:00,System Auto-Validated,Suspicious - Lapping (Covering CUST-108)
+TRX-2026-029,2026-04-12,CUST-999,Fiktif - Nasabah Tanpa KTP 1,AO-01 Budi Santoso,Pencairan Pembiayaan Murabahah,25000000,Manual Slip - No Physical Survey,2026-04-12 22:30:00,AO-01 Budi Santoso (Self-Approved),Suspicious - Fictitious Loan & Segregation Breach
+TRX-2026-030,2026-04-20,CUST-998,Fiktif - Nasabah Tanpa KTP 2,AO-01 Budi Santoso,Pencairan Pembiayaan Murabahah,30000000,Manual Slip - No Physical Survey,2026-04-20 23:45:00,AO-01 Budi Santoso (Self-Approved),Suspicious - Fictitious Loan & Segregation Breach
+TRX-2026-031,2026-05-02,CUST-115,Ibrahim Malik,AO-03 Hendra Wijaya,Penarikan Tabungan Wadiah,7500000,No Slip Attached,2026-05-02 23:15:00,Override PIN - No Member Confirmation,Suspicious - Unauthorized Withdrawal (Midnight)
+TRX-2026-032,2026-04-14,CUST-121,Maryam Jameelah,AO-01 Budi Santoso,Setoran Angsuran Murabahah,850000,Official System E-Receipt,2026-04-14 08:53:00,System Auto-Validated,Normal
+TRX-2026-033,2026-04-02,CUST-108,Fathimah Azzahra,AO-02 Dewi Sartika,Setoran Angsuran Murabahah,850000,Official System E-Receipt,2026-04-02 13:16:00,System Auto-Validated,Normal
+TRX-2026-034,2026-04-18,CUST-106,Khadijah Putri,AO-04 Siti Aminah,Setoran Angsuran Murabahah,850000,Official System E-Receipt,2026-04-18 10:37:00,System Auto-Validated,Normal
+TRX-2026-035,2026-01-08,CUST-104,Siti Maryam,AO-01 Budi Santoso,Setoran Angsuran Murabahah,850000,Official System E-Receipt,2026-01-08 15:45:00,System Auto-Validated,Normal
