@@ -633,20 +633,69 @@ window.RealtimeGameEngine = {
   }
 };
 
-// 7. GEMINI AI AUTO-GRADING ENGINE & LAB REPORT SUBMISSION
-let customGeminiApiKey = '';
+// 7. LAB REPORT SUBMISSION ENGINE (DIRECT CLOUD FIRESTORE STORAGE)
+let currentLabFileData = null;
 
-// Load custom AI Key from Firestore if configured by lecturer
-window.onCloudSyncReady(dbInstance => {
-  dbInstance.collection('settings').doc('ai_config').onSnapshot(doc => {
-    if (doc.exists) {
-      const data = doc.data();
-      if (data && data.apiKey) customGeminiApiKey = data.apiKey;
-    }
-  });
-});
+window.handleLabFileSelect = function(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
 
-window.submitLabReportWithAI = async function(formEvent) {
+  if (file.size > 850 * 1024) {
+    alert("⚠️ Ukuran file (" + (file.size / 1024).toFixed(1) + " KB) melebihi batas 800 KB untuk penyimpanan langsung di Cloud Firestore. Silakan pilih berkas dokumen yang lebih ringkas atau kompres file terlebih dahulu.");
+    e.target.value = '';
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    currentLabFileData = {
+      fileName: file.name,
+      fileSize: file.size,
+      fileType: file.type || 'application/octet-stream',
+      fileBase64: evt.target.result
+    };
+
+    const promptEl = document.getElementById('labDropPrompt');
+    const infoEl = document.getElementById('labFileInfo');
+    if (promptEl) promptEl.style.display = 'none';
+    if (infoEl) infoEl.style.display = 'flex';
+    
+    const nameEl = document.getElementById('labFileName');
+    const sizeEl = document.getElementById('labFileSize');
+    const iconEl = document.getElementById('labFileIcon');
+    if (nameEl) nameEl.textContent = file.name;
+    if (sizeEl) sizeEl.textContent = formatBytes(file.size);
+    
+    let icon = '📄';
+    if (file.name.endsWith('.pdf')) icon = '📕';
+    else if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls') || file.name.endsWith('.csv')) icon = '📊';
+    else if (file.name.endsWith('.docx') || file.name.endsWith('.doc')) icon = '📝';
+    else if (file.name.endsWith('.zip') || file.name.endsWith('.rar')) icon = '📦';
+    else if (file.name.match(/\.(png|jpg|jpeg|webp)$/i)) icon = '🖼️';
+    if (iconEl) iconEl.textContent = icon;
+  };
+  reader.readAsDataURL(file);
+};
+
+window.clearLabFile = function() {
+  currentLabFileData = null;
+  const fileInput = document.getElementById('inputLabFile');
+  if (fileInput) fileInput.value = '';
+  const promptEl = document.getElementById('labDropPrompt');
+  const infoEl = document.getElementById('labFileInfo');
+  if (promptEl) promptEl.style.display = 'block';
+  if (infoEl) infoEl.style.display = 'none';
+};
+
+function formatBytes(bytes) {
+  if (!bytes) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+}
+
+window.submitLabReport = async function(formEvent) {
   if (formEvent) formEvent.preventDefault();
 
   if (!currentStudent.nim || !currentStudent.nama) {
@@ -654,28 +703,26 @@ window.submitLabReportWithAI = async function(formEvent) {
     return;
   }
 
-  const driveLink = (document.getElementById('inputLabDriveLink')?.value || '').trim();
   const labAnswer = (document.getElementById('inputLabAnswer')?.value || '').trim();
-  const statusArea = document.getElementById('aiGradingStatusArea');
-  const resultArea = document.getElementById('aiGradingResultCard');
-  const submitBtn = document.getElementById('btnSubmitLabAI');
+  const statusArea = document.getElementById('labSubmitStatusArea');
+  const resultArea = document.getElementById('labSubmitResultCard');
+  const submitBtn = document.getElementById('btnSubmitLab');
 
-  if (!driveLink && !labAnswer) {
-    alert("Harap masukkan Tautan Google Drive atau isi Ringkasan Jawaban Praktikum Anda!");
+  if (!currentLabFileData && !labAnswer) {
+    alert("Harap unggah file laporan praktikum atau isi ringkasan jawaban praktikum Anda!");
     return;
   }
 
   if (submitBtn) {
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '⏳ Menghubungkan ke Gemini AI...';
+    submitBtn.innerHTML = '⏳ Mengunggah berkas ke Firestore...';
   }
   if (statusArea) {
     statusArea.style.display = 'block';
     statusArea.innerHTML = `
       <div style="background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.3);border-radius:10px;padding:16px;text-align:center;color:#38BDF8;font-family:'Source Sans 3',sans-serif">
-        <div style="font-size:24px;margin-bottom:6px;animation:spin 2s linear infinite">⚡</div>
-        <div style="font-weight:700;font-size:14px;color:#fff">Gemini AI sedang menganalisis laporan praktikum...</div>
-        <div style="font-size:12px;color:#94A3B8;margin-top:4px">Mengevaluasi kesesuaian langkah kerja, logika akuntansi syariah, dan pemodelan data.</div>
+        <div style="font-size:24px;margin-bottom:6px">⚡</div>
+        <div style="font-weight:700;font-size:14px;color:#fff">Menyimpan berkas laporan ke Cloud Firestore...</div>
       </div>
     `;
   }
@@ -685,17 +732,6 @@ window.submitLabReportWithAI = async function(formEvent) {
   const courseInfo = detectCurrentCourseInfo() || { code: 'LAB', name: 'Praktikum Terapan' };
 
   try {
-    // 1. Evaluate with Gemini AI (or Intelligent Heuristic Assessment)
-    const aiResult = await performGeminiAssessment({
-      nim: currentStudent.nim,
-      nama: currentStudent.nama,
-      course: courseInfo.name,
-      labTitle: pageTitle,
-      driveLink: driveLink,
-      answerText: labAnswer
-    });
-
-    // 2. Save submission to Firestore collection 'lab_submissions'
     window.onCloudSyncReady(async (dbInstance) => {
       const submissionDoc = {
         nim: currentStudent.nim,
@@ -704,190 +740,91 @@ window.submitLabReportWithAI = async function(formEvent) {
         kodeMK: courseInfo.code,
         labTitle: pageTitle,
         path: path,
-        linkDrive: driveLink,
+        fileName: currentLabFileData ? currentLabFileData.fileName : '',
+        fileSize: currentLabFileData ? currentLabFileData.fileSize : 0,
+        fileType: currentLabFileData ? currentLabFileData.fileType : '',
+        fileBase64: currentLabFileData ? currentLabFileData.fileBase64 : '',
         jawaban: labAnswer,
-        skor: aiResult.score,
-        grade: aiResult.grade,
-        passed: aiResult.passed,
-        feedback: aiResult.feedback,
-        strengths: aiResult.strengths,
-        improvements: aiResult.improvements,
+        status: 'Terkumpul',
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         timestampClient: new Date().toISOString()
       };
 
-      // Save to 'lab_submissions'
+      // 1. Save to 'lab_submissions'
       await dbInstance.collection('lab_submissions').add(submissionDoc);
 
-      // Also register into 'quiz' collection for master gradebook sync
+      // 2. Also register into 'quiz' collection for gradebook overview
       await dbInstance.collection('quiz').add({
         nim: currentStudent.nim,
         nama: currentStudent.nama,
-        pertemuan: courseInfo.code + ' (Lab Report)',
-        aktivitas: 'Laporan: ' + pageTitle.substring(0, 30),
-        skor: aiResult.score,
+        pertemuan: courseInfo.code + ' (Lab)',
+        aktivitas: 'Laporan: ' + (currentLabFileData ? currentLabFileData.fileName : pageTitle.substring(0, 30)),
+        skor: 100,
         total: 100,
-        persentase: aiResult.score,
-        passed: aiResult.passed,
+        persentase: 100,
+        passed: true,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         timestampClient: new Date().toISOString()
       });
 
-      console.log("✓ Laporan praktikum & hasil penilaian Gemini AI berhasil tersimpan di Cloud!");
+      console.log("✓ Laporan praktikum & berkas berhasil tersimpan di Cloud Firestore!");
     });
 
-    // 3. Render AI Result Card
     if (statusArea) statusArea.style.display = 'none';
     if (resultArea) {
       resultArea.style.display = 'block';
-      const isPass = aiResult.passed;
       resultArea.innerHTML = `
-        <div style="background:#121826;border:2px solid ${isPass ? '#10B981' : '#F59E0B'};border-radius:12px;padding:24px;color:#fff;box-shadow:0 12px 30px rgba(0,0,0,.5);animation:fadeIn .3s">
-          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;border-bottom:1px solid #22304A;padding-bottom:12px">
+        <div style="background:#121826;border:2px solid #10B981;border-radius:12px;padding:22px;color:#fff;box-shadow:0 12px 30px rgba(0,0,0,.5);animation:fadeIn .3s">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:14px;border-bottom:1px solid #22304A;padding-bottom:12px">
             <div style="display:flex;align-items:center;gap:10px">
-              <span style="font-size:32px">${isPass ? '🏆' : '📝'}</span>
+              <span style="font-size:32px">✅</span>
               <div>
-                <h3 style="font-family:'Amiri',serif;font-size:22px;color:#fff;margin:0">Hasil Penilaian Gemini AI</h3>
+                <h3 style="font-family:'Amiri',serif;font-size:22px;color:#fff;margin:0">Laporan Praktikum Berhasil Dikumpulkan!</h3>
                 <div style="font-size:12px;color:#94A3B8">Mahasiswa: <strong style="color:#fff">${currentStudent.nama} (${currentStudent.nim})</strong></div>
               </div>
             </div>
-            <div style="text-align:right">
-              <div style="font-family:'Source Code Pro',monospace;font-size:28px;font-weight:700;color:${isPass ? '#34D399' : '#FBBF24'}">${aiResult.score} <span style="font-size:16px;color:#94A3B8">/ 100</span></div>
-              <span style="background:${isPass ? 'rgba(16,185,129,.15)' : 'rgba(245,158,11,.15)'};color:${isPass ? '#34D399' : '#FBBF24'};border:1px solid ${isPass ? 'rgba(16,185,129,.3)' : 'rgba(245,158,11,.3)'};padding:2px 10px;border-radius:12px;font-size:11.5px;font-weight:700">${isPass ? 'LULUS (Grade ' + aiResult.grade + ') ✓' : 'PERLU PERBAIKAN'}</span>
-            </div>
+            <span style="background:rgba(16,185,129,.15);color:#34D399;border:1px solid rgba(16,185,129,.3);padding:4px 12px;border-radius:12px;font-size:12px;font-weight:700">TERKUMPUL ✓</span>
           </div>
 
-          <div style="margin-bottom:14px">
-            <div style="font-size:12px;font-weight:700;color:#38BDF8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">💡 Ulasan &amp; Evaluasi Dosen AI:</div>
-            <p style="font-size:13.5px;color:#E2E8F0;line-height:1.6;margin:0">${aiResult.feedback}</p>
+          <div style="display:grid;gap:8px;font-size:13.5px;color:#CBD5E1">
+            ${currentLabFileData ? `<div style="background:#0F172A;padding:10px 14px;border-radius:8px;border:1px solid #1E293B">📁 <strong>Berkas Tersimpan:</strong> <span style="color:#38BDF8">${escapeHtml(currentLabFileData.fileName)}</span> (${formatBytes(currentLabFileData.fileSize)})</div>` : ''}
+            ${labAnswer ? `<div style="background:#0F172A;padding:10px 14px;border-radius:8px;border:1px solid #1E293B">📝 <strong>Ringkasan Jawaban:</strong> <span style="color:#94A3B8">${escapeHtml(labAnswer.substring(0, 160))}${labAnswer.length > 160 ? '...' : ''}</span></div>` : ''}
           </div>
 
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
-            <div style="background:#0F172A;border:1px solid #1E293B;border-radius:8px;padding:12px">
-              <div style="font-size:11.5px;font-weight:700;color:#34D399;margin-bottom:6px">🟢 Poin Keunggulan:</div>
-              <ul style="margin:0;padding-left:18px;font-size:12.5px;color:#94A3B8;line-height:1.5">
-                ${aiResult.strengths.map(s => `<li>${s}</li>`).join('')}
-              </ul>
-            </div>
-            <div style="background:#0F172A;border:1px solid #1E293B;border-radius:8px;padding:12px">
-              <div style="font-size:11.5px;font-weight:700;color:#FBBF24;margin-bottom:6px">🟡 Rekomendasi Perbaikan:</div>
-              <ul style="margin:0;padding-left:18px;font-size:12.5px;color:#94A3B8;line-height:1.5">
-                ${aiResult.improvements.map(i => `<li>${i}</li>`).join('')}
-              </ul>
-            </div>
-          </div>
-
-          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid #1E293B;font-size:12px;color:#64748B">
-            <span>✓ Laporan telah terverifikasi dan masuk ke Database Cloud Dosen.</span>
-            <button onclick="resetLabSubmitForm()" style="background:transparent;border:1px solid #334155;color:#94A3B8;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer">Kirim Ulang Laporan ↺</button>
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:14px;padding-top:10px;border-top:1px solid #1E293B;font-size:12px;color:#64748B">
+            <span>✓ Berkas dan data laporan telah tersimpan langsung di Cloud Firestore Dosen.</span>
+            <button onclick="resetLabSubmitForm()" style="background:transparent;border:1px solid #334155;color:#94A3B8;padding:5px 12px;border-radius:6px;font-size:11.5px;cursor:pointer">Unggah / Ganti Berkas Lain ↺</button>
           </div>
         </div>
       `;
     }
 
   } catch (err) {
-    console.error("AI grading error:", err);
+    console.error("Lab upload error:", err);
     if (statusArea) {
       statusArea.innerHTML = `
         <div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:12px;color:#FCA5A5;font-size:13px">
-          ⚠️ Terjadi kendala saat penilaian AI: ${err.message}. Laporan Anda tetap disimpan ke database.
+          ⚠️ Terjadi kendala pengunggahan berkas: ${err.message}.
         </div>
       `;
     }
   } finally {
     if (submitBtn) {
       submitBtn.disabled = false;
-      submitBtn.innerHTML = '🤖 Kumpulkan Laporan &amp; Nilai dengan Gemini AI ✓';
+      submitBtn.innerHTML = '📁 Kumpulkan Laporan Praktikum ✓';
     }
   }
 };
+
+window.submitLabReportWithAI = window.submitLabReport; // Alias for backward compatibility
 
 window.resetLabSubmitForm = function() {
-  const resultArea = document.getElementById('aiGradingResultCard');
+  const resultArea = document.getElementById('labSubmitResultCard');
   if (resultArea) resultArea.style.display = 'none';
+  clearLabFile();
+  const ans = document.getElementById('inputLabAnswer');
+  if (ans) ans.value = '';
 };
-
-// Assessment Processor with Gemini API or Rubric Engine
-async function performGeminiAssessment(data) {
-  const apiKey = customGeminiApiKey;
-  const prompt = `Anda adalah Dosen Penguji Senior di Fakultas Ekonomi & Bisnis Islam (FEBI), Universitas Tazkia.
-Tugas Anda adalah menilai laporan praktikum mahasiswa berikut berdasarkan Rubrik Outcome-Based Education (OBE):
-
-MAHASISWA: ${data.nama} (NIM: ${data.nim})
-MATA KULIAH: ${data.course}
-MODUL/TOPIK: ${data.labTitle}
-TAUTAN FILE/DRIVE: ${data.driveLink || '(Tidak dilampirkan, menggunakan teks langsung)'}
-ISI LAPORAN/JAWABAN:
-"""
-${data.answerText}
-"""
-
-KRITERIA PENILAIAN:
-1. Kelengkapan langkah praktikum (30%)
-2. Akurasi konsep akuntansi syariah / teknik analisis data / DFD / ERP (40%)
-3. Kualitas penalaran, analisis kasus, dan rekomendasi solusi (30%)
-
-KEMBALIKAN HANYA FORMAT JSON MURNI (tanpa markdown backtick atau teks lain) dengan skema:
-{
-  "score": <angka integer 60-100>,
-  "grade": "<A / B+ / B / C+ / C>",
-  "passed": <true jika score >= 70, false jika tidak>,
-  "feedback": "<Ulasan komprehensif maksimal 3 kalimat dalam Bahasa Indonesia yang formal dan suportif>",
-  "strengths": ["<poin kelebihan 1>", "<poin kelebihan 2>"],
-  "improvements": ["<saran perbaikan 1>", "<saran perbaikan 2>"]
-}`;
-
-  if (apiKey) {
-    try {
-      const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { responseMimeType: 'application/json' }
-        })
-      });
-      if (resp.ok) {
-        const json = await resp.json();
-        const rawText = json.candidates[0].content.parts[0].text;
-        return JSON.parse(rawText);
-      }
-    } catch (e) {
-      console.warn("Gemini API direct call failed, falling back to expert rubric engine:", e);
-    }
-  }
-
-  // Intelligent Heuristic Rubric Engine (Fallback)
-  const textLen = (data.answerText || '').length;
-  const hasDrive = Boolean(data.driveLink && (data.driveLink.includes('drive.google.com') || data.driveLink.includes('github.com') || data.driveLink.includes('docs.google.com')));
-  
-  let baseScore = 75;
-  if (hasDrive) baseScore += 12;
-  if (textLen > 150) baseScore += 8;
-  if (textLen > 300) baseScore += 5;
-  baseScore = Math.min(100, Math.max(65, baseScore));
-
-  let grade = 'B';
-  if (baseScore >= 85) grade = 'A';
-  else if (baseScore >= 80) grade = 'B+';
-  else if (baseScore >= 75) grade = 'B';
-  else grade = 'C+';
-
-  return {
-    score: baseScore,
-    grade: grade,
-    passed: baseScore >= 70,
-    feedback: `Laporan praktikum untuk topik "${data.labTitle}" telah dianalisis. Mahasiswa menunjukkan pemahaman yang baik terhadap alur transaksi dan penyelesaian kasus praktikum berbasis standar Tazkia.`,
-    strengths: [
-      hasDrive ? "Kelengkapan berkas praktikum telah dilampirkan via tautan penyimpanan cloud" : "Penjabaran analisis langkah praktikum tersusun dengan baik",
-      "Struktur jawaban sesuai dengan alur studi kasus yang diinstruksikan"
-    ],
-    improvements: [
-      "Perdalam interpretasi dampak pengendalian internal terhadap transparansi laporan keuangan",
-      "Pastikan format penomoran diagram dan akun akuntansi selalu konsisten"
-    ]
-  };
-}
 
 // 8. AUTO-INJECT LAB SUBMISSION WIDGET ON PRAKTIKUM PAGES
 function mountLabSubmissionWidget() {
@@ -904,15 +841,15 @@ function mountLabSubmissionWidget() {
   section.style.marginTop = '36px';
   section.innerHTML = `
     <div style="background:linear-gradient(135deg,#0C1D30 0%,#12253A 100%);border:2px solid #1B7898;border-radius:14px;padding:26px 24px;color:#fff;box-shadow:0 10px 30px rgba(0,0,0,.4);font-family:'Source Sans 3',sans-serif">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:12px">
-        <span style="font-size:32px">🤖</span>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:14px">
+        <span style="font-size:32px">📁</span>
         <div>
-          <h3 style="font-family:'Amiri',serif;font-size:23px;color:#fff;margin:0">Pengumpulan Laporan Praktikum &amp; Penilaian AI (Gemini)</h3>
-          <p style="font-size:13px;color:#94A3B8;margin:2px 0 0">Kumpulkan hasil kerja praktikum Anda. Gemini AI akan mengevaluasi jawaban secara instan dan mengirimkan rekap ke Dosen.</p>
+          <h3 style="font-family:'Amiri',serif;font-size:23px;color:#fff;margin:0">Pengumpulan Laporan Praktikum Mahasiswa</h3>
+          <p style="font-size:13px;color:#94A3B8;margin:2px 0 0">Unggah berkas laporan praktikum Anda dan tuliskan ringkasan hasil kerja. Berkas akan langsung tersimpan di Cloud Firestore Dosen.</p>
         </div>
       </div>
 
-      <form onsubmit="submitLabReportWithAI(event)" style="display:grid;gap:14px">
+      <form onsubmit="submitLabReport(event)" style="display:grid;gap:14px">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
           <div>
             <label style="display:block;font-size:12px;font-weight:700;color:#CBD5E1;margin-bottom:4px">NIM Mahasiswa:</label>
@@ -925,26 +862,41 @@ function mountLabSubmissionWidget() {
         </div>
 
         <div>
-          <label style="display:block;font-size:12px;font-weight:700;color:#CBD5E1;margin-bottom:4px">🔗 Tautan Laporan (Google Drive / GitHub / Docs):</label>
-          <input type="url" id="inputLabDriveLink" placeholder="https://drive.google.com/file/d/... atau link repository GitHub" style="width:100%;padding:10px 12px;border-radius:6px;border:1.5px solid #334155;background:#0F172A;color:#FFD488;font-size:13.5px;box-sizing:border-box;outline:none">
-          <span style="font-size:11px;color:#94A3B8">Pastikan link Google Drive sudah diatur ke <em>"Anyone with the link can view"</em>.</span>
+          <label style="display:block;font-size:12px;font-weight:700;color:#CBD5E1;margin-bottom:6px">📁 Upload File Laporan Praktikum (PDF / Excel / Word / ZIP / Gambar):</label>
+          <input type="file" id="inputLabFile" accept=".pdf,.docx,.doc,.xlsx,.xls,.pptx,.ppt,.zip,.rar,.png,.jpg,.jpeg,.csv,.txt" style="display:none" onchange="handleLabFileSelect(event)">
+          
+          <div id="labDropZone" onclick="document.getElementById('inputLabFile').click()" style="border:2px dashed #38BDF8;border-radius:10px;padding:20px;text-align:center;background:rgba(56,189,248,.04);cursor:pointer;transition:all .2s">
+            <div id="labDropPrompt">
+              <div style="font-size:32px;margin-bottom:4px">📤</div>
+              <div style="font-weight:700;font-size:14px;color:#fff">Klik untuk Memilih File Laporan Praktikum</div>
+              <div style="font-size:11.5px;color:#94A3B8;margin-top:4px">Format yang didukung: PDF, Word (DOCX), Excel (XLSX), Gambar, ZIP, CSV (Maks. 800 KB)</div>
+            </div>
+            <div id="labFileInfo" style="display:none;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap">
+              <span style="font-size:32px" id="labFileIcon">📄</span>
+              <div style="text-align:left">
+                <div id="labFileName" style="font-weight:700;color:#38BDF8;font-size:14px"></div>
+                <div id="labFileSize" style="font-size:11.5px;color:#94A3B8"></div>
+              </div>
+              <button type="button" onclick="event.stopPropagation(); clearLabFile();" style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#FCA5A5;padding:4px 10px;border-radius:6px;font-size:11.5px;cursor:pointer">Ganti File ↺</button>
+            </div>
+          </div>
         </div>
 
         <div>
-          <label style="display:block;font-size:12px;font-weight:700;color:#CBD5E1;margin-bottom:4px">📝 Ringkasan Jawaban &amp; Analisis Kasus Praktikum:</label>
+          <label style="display:block;font-size:12px;font-weight:700;color:#CBD5E1;margin-bottom:4px">📝 Ringkasan Jawaban &amp; Analisis Praktikum:</label>
           <textarea id="inputLabAnswer" rows="4" placeholder="Tuliskan kesimpulan analisis kasus praktikum, query SQL, atau penjelasan DFD/bagan akun di sini..." style="width:100%;padding:10px 12px;border-radius:6px;border:1.5px solid #334155;background:#0F172A;color:#fff;font-size:13.5px;box-sizing:border-box;font-family:inherit;outline:none;resize:vertical"></textarea>
         </div>
 
         <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:6px">
-          <button type="submit" id="btnSubmitLabAI" style="background:linear-gradient(135deg,#0284C7,#0EA5E9);color:#fff;border:none;border-radius:8px;padding:12px 24px;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 16px rgba(14,165,233,.3);transition:all .15s">
-            <span>🤖 Kumpulkan Laporan &amp; Nilai dengan Gemini AI ✓</span>
+          <button type="submit" id="btnSubmitLab" style="background:linear-gradient(135deg,#0284C7,#0EA5E9);color:#fff;border:none;border-radius:8px;padding:12px 24px;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 16px rgba(14,165,233,.3);transition:all .15s">
+            <span>📁 Kumpulkan Laporan Praktikum ✓</span>
           </button>
-          <span style="font-size:12px;color:#94A3B8">Nilai otomatis tersimpan ke Cloud Firestore Tazkia</span>
+          <span style="font-size:12px;color:#94A3B8">File otomatis tersimpan ke Cloud Firestore Tazkia</span>
         </div>
       </form>
 
-      <div id="aiGradingStatusArea" style="margin-top:16px;display:none"></div>
-      <div id="aiGradingResultCard" style="margin-top:16px;display:none"></div>
+      <div id="labSubmitStatusArea" style="margin-top:16px;display:none"></div>
+      <div id="labSubmitResultCard" style="margin-top:16px;display:none"></div>
     </div>
   `;
 

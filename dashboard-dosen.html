@@ -154,7 +154,7 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
   <div class="hd">
     <span class="hd-badge">Monitoring Pembelajaran OBE &amp; Multi-Kelas</span>
     <h1 class="hd-title">Dashboard Manajemen Akademik Dosen</h1>
-    <p class="hd-sub">Pantau nilai mahasiswa, evaluasi laporan praktikum dengan Gemini AI, dan kelola PIN rahasia tiap mata kuliah.</p>
+    <p class="hd-sub">Pantau nilai mahasiswa, rekapitulasi berkas laporan praktikum, dan kelola PIN rahasia tiap mata kuliah.</p>
   </div>
 
   <!-- TAB NAVIGATION BAR -->
@@ -164,7 +164,7 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
       <span id="tabBadgeSubmissions" class="tab-badge">0</span>
     </button>
     <button id="tabBtnLabs" class="tab-btn" onclick="switchTab('labs')">
-      <span>📑 Laporan Praktikum &amp; Review AI</span>
+      <span>📑 Laporan Praktikum</span>
       <span id="tabBadgeLabs" class="tab-badge">0 Laporan</span>
     </button>
     <button id="tabBtnRoster" class="tab-btn" onclick="switchTab('roster')">
@@ -255,12 +255,12 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
     </div>
   </div>
 
-  <!-- ════════ TAB 2: LAPORAN PRAKTIKUM & REVIEW AI ════════ -->
+  <!-- ════════ TAB 2: LAPORAN PRAKTIKUM ════════ -->
   <div id="tabContentLabs" class="tab-pane">
     <div class="controls">
       <div>
-        <h3 style="font-family:'Amiri',serif;font-size:20px;color:#fff;margin:0 0 2px">📑 Rekapitulasi Laporan Praktikum &amp; Penilaian Gemini AI</h3>
-        <p style="font-size:12.5px;color:var(--txm);margin:0">Pantau file laporan praktikum yang dikumpulkan mahasiswa dan hasil evaluasi otomatis dari AI.</p>
+        <h3 style="font-family:'Amiri',serif;font-size:20px;color:#fff;margin:0 0 2px">📑 Rekapitulasi Berkas Laporan Praktikum Mahasiswa</h3>
+        <p style="font-size:12.5px;color:var(--txm);margin:0">Pantau dan unduh berkas laporan praktikum (PDF, Excel, Word, ZIP, Gambar) serta ringkasan jawaban mahasiswa.</p>
       </div>
       <button class="btn-export" onclick="exportLabsToCSV()">📥 Export Laporan Lab (CSV)</button>
     </div>
@@ -273,11 +273,10 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
             <th>NIM</th>
             <th>Nama Mahasiswa</th>
             <th>Mata Kuliah / Modul Lab</th>
-            <th>Tautan Berkas</th>
-            <th>Skor AI</th>
-            <th>Status</th>
-            <th>Ringkasan Feedback AI</th>
-            <th>Waktu Kumpul</th>
+            <th>Berkas Terunggah</th>
+            <th>Ringkasan Jawaban</th>
+            <th style="width:110px;text-align:center">Status</th>
+            <th>Waktu Pengumpulan</th>
             <th style="text-align:center;width:140px">Aksi</th>
           </tr>
         </thead>
@@ -417,24 +416,15 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
       </table>
     </div>
 
-    <!-- AI CONFIGURATION CARD -->
-    <div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:20px;margin-top:20px">
-      <h4 style="font-family:'Amiri',serif;font-size:19px;color:#fff;margin:0 0 4px">🤖 Konfigurasi Google Gemini AI (Auto-Grading API)</h4>
-      <p style="font-size:12.5px;color:var(--txm);margin-bottom:14px">Masukkan Google Gemini API Key Anda jika ingin menggunakan model khusus (Opsional — sistem otomatis menggunakan rubrik terstandarisasi Tazkia secara default).</p>
-      <div style="display:flex;gap:10px;max-width:600px">
-        <input type="password" id="inputGeminiApiKey" placeholder="AIzaSy..." class="form-input" style="flex:1">
-        <button class="btn-primary" onclick="saveGeminiApiKey()">Simpan API Key ✓</button>
-      </div>
-    </div>
   </div>
 
 </main>
 
-<!-- ════════ MODAL: DETAIL LAPORAN PRAKTIKUM & REVIEW AI ════════ -->
+<!-- ════════ MODAL: DETAIL LAPORAN PRAKTIKUM ════════ -->
 <div id="labDetailModal" class="modal-overlay">
   <div class="modal-box modal-box-wide">
     <div class="modal-header">
-      <h3 class="modal-title">📑 Detail Laporan Praktikum &amp; Penilaian AI</h3>
+      <h3 class="modal-title">📑 Detail Berkas Laporan Praktikum</h3>
       <button class="modal-close" onclick="closeLabDetailModal()">&times;</button>
     </div>
     <div class="modal-body" id="labDetailModalBody">
@@ -711,18 +701,7 @@ function initLecturerDashboard() {
       updateRosterKPIs();
     });
 
-    // 4. AI Config
-    dbInstance.collection('settings').doc('ai_config').onSnapshot(doc => {
-      if (doc.exists) {
-        const data = doc.data();
-        if (data && data.apiKey) {
-          const input = document.getElementById('inputGeminiApiKey');
-          if (input) input.value = data.apiKey;
-        }
-      }
-    });
-
-    // 5. Users
+    // 4. Users
     dbInstance.collection('users').onSnapshot(snapshot => {
       allUsersMap = {};
       snapshot.forEach(doc => {
@@ -775,14 +754,13 @@ function initLecturerDashboard() {
           nama: d.nama || (allUsersMap[d.nim] ? allUsersMap[d.nim].nama : '-'),
           mataKuliah: d.mataKuliah || '-',
           labTitle: d.labTitle || 'Praktikum',
+          fileName: d.fileName || '',
+          fileSize: d.fileSize || 0,
+          fileType: d.fileType || '',
+          fileBase64: d.fileBase64 || '',
           linkDrive: d.linkDrive || '',
           jawaban: d.jawaban || '',
-          skor: d.skor !== undefined ? Number(d.skor) : 0,
-          grade: d.grade || 'B',
-          passed: d.passed !== undefined ? d.passed : true,
-          feedback: d.feedback || '-',
-          strengths: d.strengths || [],
-          improvements: d.improvements || [],
+          status: d.status || 'Terkumpul',
           timestamp: d.timestampClient || (d.timestamp ? new Date(d.timestamp.seconds * 1000).toLocaleString('id-ID') : '-'),
           rawDate: rawDate
         });
@@ -796,6 +774,15 @@ function initLecturerDashboard() {
 }
 
 /* ════════ TAB 2: LAB REPORTS TABLE ════════ */
+function formatBytes(bytes) {
+  if (!bytes) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+}
+window.formatBytes = formatBytes;
+
 function renderLabTable() {
   const tbody = document.getElementById('labTableBody');
   if (!tbody) return;
@@ -803,7 +790,7 @@ function renderLabTable() {
   if (allLabData.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="10" class="empty-state">
+        <td colspan="9" class="empty-state">
           <div class="empty-icon">📭</div>
           <div>Belum ada mahasiswa yang mengumpulkan laporan praktikum.</div>
         </td>
@@ -813,10 +800,12 @@ function renderLabTable() {
   }
 
   tbody.innerHTML = allLabData.map((row, idx) => {
-    const isPass = row.passed;
-    const driveBtn = row.linkDrive ? 
-      `<a href="${escapeHtml(row.linkDrive)}" target="_blank" style="color:#38BDF8;text-decoration:none;font-size:12px;font-weight:700">🔗 Buka File Drive</a>` :
-      `<span style="color:var(--txl);font-size:11.5px">Teks Langsung</span>`;
+    let fileBtn = '<span style="color:var(--txl);font-size:11.5px">Hanya Teks</span>';
+    if (row.fileBase64) {
+      fileBtn = `<a href="${row.fileBase64}" download="${escapeHtml(row.fileName || 'laporan-lab')}" class="action-btn" style="background:#0284C7;color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:4px;font-size:11.5px;padding:3px 8px" title="Unduh ${escapeHtml(row.fileName)}">📥 ${escapeHtml(row.fileName.length > 18 ? row.fileName.substring(0, 15) + '...' : row.fileName)} (${formatBytes(row.fileSize)})</a>`;
+    } else if (row.linkDrive) {
+      fileBtn = `<a href="${escapeHtml(row.linkDrive)}" target="_blank" style="color:#38BDF8;text-decoration:none;font-size:11.5px;font-weight:700">🔗 Link Drive</a>`;
+    }
 
     return `
       <tr>
@@ -824,14 +813,13 @@ function renderLabTable() {
         <td style="font-family:'Source Code Pro',monospace;font-weight:700;color:var(--pri)">${row.nim}</td>
         <td><strong>${escapeHtml(row.nama)}</strong></td>
         <td><span style="background:var(--sf2);padding:2px 8px;border-radius:6px;font-size:12px;border:1px solid var(--bs)">${escapeHtml(row.labTitle.substring(0, 35))}</span></td>
-        <td>${driveBtn}</td>
-        <td class="badge-score">${row.skor} / 100</td>
-        <td><span class="${isPass ? 'badge-pass' : 'badge-fail'}">${isPass ? 'LULUS (' + row.grade + ') ✓' : 'PERLU PERBAIKAN'}</span></td>
-        <td style="max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:var(--txm)">${escapeHtml(row.feedback)}</td>
+        <td>${fileBtn}</td>
+        <td style="max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:var(--txm)">${escapeHtml(row.jawaban || '-')}</td>
+        <td style="text-align:center"><span class="badge-pass">TERKUMPUL ✓</span></td>
         <td style="font-size:12px;color:var(--txm)">${row.timestamp}</td>
         <td style="text-align:center">
           <div style="display:inline-flex;gap:5px">
-            <button class="action-btn" onclick="openLabDetailModal('${row.id}')">👁️ Review AI</button>
+            <button class="action-btn" onclick="openLabDetailModal('${row.id}')">👁️ Lihat</button>
             <button class="action-btn action-delete" onclick="deleteLabSubmission('${row.id}')">🗑️</button>
           </div>
         </td>
@@ -854,43 +842,34 @@ function openLabDetailModal(docId) {
           <div style="font-size:12.5px;color:var(--txm);margin-top:2px">${escapeHtml(item.mataKuliah)} · ${escapeHtml(item.labTitle)}</div>
         </div>
         <div style="text-align:right">
-          <div style="font-size:24px;font-weight:700;color:${item.passed ? '#34D399' : '#FBBF24'};font-family:'Source Code Pro',monospace">${item.skor} / 100</div>
-          <span class="${item.passed ? 'badge-pass' : 'badge-fail'}">${item.passed ? 'LULUS (' + item.grade + ') ✓' : 'PERLU PERBAIKAN'}</span>
+          <span class="badge-pass" style="font-size:13px;padding:4px 12px">TERKUMPUL ✓</span>
+          <div style="font-size:11.5px;color:var(--txm);margin-top:4px">${item.timestamp}</div>
         </div>
       </div>
 
-      ${item.linkDrive ? `
+      ${item.fileBase64 ? `
+        <div style="background:#0F172A;border:1.5px solid #38BDF8;border-radius:var(--rs);padding:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <span style="font-size:32px">📁</span>
+            <div>
+              <div style="font-weight:700;color:#fff;font-size:14.5px">${escapeHtml(item.fileName || 'Berkas Laporan Praktikum')}</div>
+              <div style="font-size:12px;color:var(--txm)">Ukuran: ${formatBytes(item.fileSize)} · Format: ${escapeHtml(item.fileType || 'application/octet-stream')}</div>
+            </div>
+          </div>
+          <a href="${item.fileBase64}" download="${escapeHtml(item.fileName || 'laporan-praktikum')}" class="btn-primary" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px;padding:10px 18px">
+            <span>📥 Unduh Berkas Mahasiswa</span>
+          </a>
+        </div>
+      ` : (item.linkDrive ? `
         <div style="background:#0F172A;border:1px solid #1E293B;border-radius:var(--rs);padding:12px">
-          <div style="font-size:11.5px;font-weight:700;color:#38BDF8;margin-bottom:4px">🔗 Tautan Dokumen / Google Drive:</div>
+          <div style="font-size:11.5px;font-weight:700;color:#38BDF8;margin-bottom:4px">🔗 Tautan Dokumen / Cloud:</div>
           <a href="${escapeHtml(item.linkDrive)}" target="_blank" style="color:#7DD3FC;font-size:13px;word-break:break-all">${escapeHtml(item.linkDrive)} ➔</a>
         </div>
-      ` : ''}
+      ` : '')}
 
       <div>
-        <div style="font-size:12px;font-weight:700;color:var(--txm);text-transform:uppercase;margin-bottom:6px">📝 Teks Jawaban &amp; Analisis Praktikum Mahasiswa:</div>
-        <div style="background:#0F172A;border:1px solid var(--bd);border-radius:var(--rs);padding:14px;color:#E2E8F0;font-size:13px;white-space:pre-wrap;line-height:1.6;max-height:180px;overflow-y:auto">${escapeHtml(item.jawaban || '(Mahasiswa hanya melampirkan tautan Google Drive)')}</div>
-      </div>
-
-      <div style="background:rgba(56,189,248,.05);border:1.5px solid rgba(56,189,248,.3);border-radius:var(--rs);padding:16px">
-        <div style="font-size:12.5px;font-weight:700;color:#38BDF8;display:flex;align-items:center;gap:6px;margin-bottom:6px">
-          <span>🤖 Evaluasi &amp; Ulasan Gemini AI:</span>
-        </div>
-        <p style="font-size:13.5px;color:#fff;line-height:1.6;margin:0 0 12px">${escapeHtml(item.feedback)}</p>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div style="background:#0C1D30;border-radius:6px;padding:10px">
-            <div style="font-size:11px;font-weight:700;color:#34D399;margin-bottom:4px">🟢 Poin Keunggulan:</div>
-            <ul style="margin:0;padding-left:16px;font-size:12px;color:#94A3B8;line-height:1.45">
-              ${(item.strengths || []).map(s => `<li>${escapeHtml(s)}</li>`).join('')}
-            </ul>
-          </div>
-          <div style="background:#0C1D30;border-radius:6px;padding:10px">
-            <div style="font-size:11px;font-weight:700;color:#FBBF24;margin-bottom:4px">🟡 Saran Perbaikan:</div>
-            <ul style="margin:0;padding-left:16px;font-size:12px;color:#94A3B8;line-height:1.45">
-              ${(item.improvements || []).map(i => `<li>${escapeHtml(i)}</li>`).join('')}
-            </ul>
-          </div>
-        </div>
+        <div style="font-size:12px;font-weight:700;color:var(--txm);text-transform:uppercase;margin-bottom:6px">📝 Ringkasan Jawaban &amp; Analisis Praktikum Mahasiswa:</div>
+        <div style="background:#0F172A;border:1px solid var(--bd);border-radius:var(--rs);padding:14px;color:#E2E8F0;font-size:13.5px;white-space:pre-wrap;line-height:1.6;max-height:260px;overflow-y:auto">${escapeHtml(item.jawaban || '(Mahasiswa tidak menyertakan ringkasan teks tambahan)')}</div>
       </div>
     </div>
   `;
@@ -908,26 +887,16 @@ function deleteLabSubmission(docId) {
   dbRef.collection('lab_submissions').doc(docId).delete();
 }
 
-function saveGeminiApiKey() {
-  const key = document.getElementById('inputGeminiApiKey').value.trim();
-  if (!dbRef) return;
-  dbRef.collection('settings').doc('ai_config').set({
-    apiKey: key,
-    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-  }, { merge: true }).then(() => {
-    alert("✅ Google Gemini API Key berhasil disimpan ke Cloud!");
-  });
-}
-
 function exportLabsToCSV() {
   if (allLabData.length === 0) {
     alert("Belum ada data laporan praktikum untuk diexport!");
     return;
   }
-  let csv = "data:text/csv;charset=utf-8,No,NIM,Nama Mahasiswa,Modul Lab,Link Drive,Skor AI,Grade,Status,Feedback AI,Waktu\n";
+  let csv = "data:text/csv;charset=utf-8,No,NIM,Nama Mahasiswa,Modul Lab,Nama Berkas,Ukuran Berkas,Ringkasan Jawaban,Status,Waktu\n";
   allLabData.forEach((r, idx) => {
-    const cleanFeedback = (r.feedback || '').replace(/"/g, '""');
-    csv += `"${idx+1}","${r.nim}","${r.nama}","${r.labTitle}","${r.linkDrive}",${r.skor},"${r.grade}","${r.passed ? 'LULUS' : 'BELUM LULUS'}","${cleanFeedback}","${r.timestamp}"\n`;
+    const cleanJawaban = (r.jawaban || '').replace(/"/g, '""');
+    const cleanFile = (r.fileName || (r.linkDrive ? 'Link Drive' : 'Hanya Teks')).replace(/"/g, '""');
+    csv += `"${idx+1}","${r.nim}","${r.nama}","${r.labTitle}","${cleanFile}","${formatBytes(r.fileSize)}","${cleanJawaban}","Terkumpul","${r.timestamp}"\n`;
   });
   const link = document.createElement("a");
   link.href = encodeURI(csv);
@@ -1644,7 +1613,6 @@ window.exportToCSV = exportToCSV;
 window.openLabDetailModal = openLabDetailModal;
 window.closeLabDetailModal = closeLabDetailModal;
 window.deleteLabSubmission = deleteLabSubmission;
-window.saveGeminiApiKey = saveGeminiApiKey;
 
 // Inisialisasi saat window dimuat
 if (document.readyState === 'loading') {
