@@ -1134,6 +1134,12 @@ function submitQuiz() {
   const pct = Math.round(total/maxScore*100);
   state.passed = pct >= 70;
   save();
+
+  // Sinkronisasi Nilai Kuis ke Cloud Firestore
+  if (window.saveScoreToCloud) {
+    window.saveScoreToCloud('Pertemuan 01', 'Kuis Pemahaman AIS', total, maxScore, { mcqScore, matchScore, passed: state.passed });
+  }
+
   document.getElementById('submitBtn').style.display='none';
   document.getElementById('retryBtn').style.display='flex';
   document.getElementById('quizScore').textContent=`Skor: ${total}/${maxScore} (${pct}%) — `+(state.passed?'LULUS ✓':'Belum Lulus');

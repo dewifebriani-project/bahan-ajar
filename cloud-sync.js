@@ -187,35 +187,58 @@ function updateTopStudentBadge() {
   }
 }
 
-// 5. Submit Skor Kuis / Tugas Praktikum ke Cloud Firestore
-window.saveScoreToCloud = async function(pertemuan, aktivitas, skor, total, detail = {}) {
+// 5. Toast Notification System
+function showCloudToast(message, isError = false) {
+  let toast = document.getElementById('cloudSyncToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'cloudSyncToast';
+    toast.style.cssText = "position:fixed;bottom:24px;right:24px;z-index:99999;padding:12px 20px;border-radius:10px;font-size:13.5px;font-weight:600;color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.4);transition:all .3s;font-family:'Source Sans 3',sans-serif;display:flex;align-items:center;gap:10px";
+    document.body.appendChild(toast);
+  }
+  toast.style.background = isError ? 'linear-gradient(135deg, #991B1B, #DC2626)' : 'linear-gradient(135deg, #065F46, #059669)';
+  toast.style.border = isError ? '1px solid #F87171' : '1px solid #34D399';
+  toast.innerHTML = (isError ? '⚠️ ' : '☁️ ') + message;
+  toast.style.opacity = '1';
+  toast.style.transform = 'translateY(0)';
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(10px)';
+  }, 4000);
+}
+
+// 6. Submit Skor Kuis / Tugas Praktikum ke Cloud Firestore
+window.saveScoreToCloud = function(pertemuan, aktivitas, skor, total, detail = {}) {
   if (!currentStudent.nim) {
     showIdentityModal();
     return;
   }
 
-  const record = {
-    nim: currentStudent.nim,
-    nama: currentStudent.nama,
-    pertemuan: pertemuan,
-    aktivitas: aktivitas,
-    skor: skor,
-    total: total,
-    persentase: Math.round((skor / total) * 100),
-    detail: detail,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    timestampClient: new Date().toISOString()
-  };
+  window.onCloudSyncReady(async (dbInstance) => {
+    const record = {
+      nim: currentStudent.nim,
+      nama: currentStudent.nama,
+      pertemuan: pertemuan,
+      aktivitas: aktivitas,
+      skor: skor,
+      total: total,
+      persentase: Math.round((skor / total) * 100),
+      detail: detail,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      timestampClient: new Date().toISOString()
+    };
 
-  try {
-    if (db) {
-      // Save to 'quiz' or 'sessions' collection
-      await db.collection('quiz').add(record);
+    try {
+      // Save to 'quiz' collection
+      await dbInstance.collection('quiz').add(record);
       console.log(`✓ Skor ${aktivitas} ${pertemuan} berhasil tersimpan di Cloud Firestore!`);
+      showCloudToast(`Skor <strong>${aktivitas}</strong> (${skor}/${total}) berhasil tersimpan di Cloud Firestore!`);
+    } catch (err) {
+      console.error("Gagal menyimpan skor ke cloud:", err);
+      showCloudToast(`Gagal menyimpan ke Cloud: ${err.message}. Periksa tab Rules di Firebase!`, true);
     }
-  } catch (err) {
-    console.error("Gagal menyimpan skor ke cloud:", err);
-  }
+  });
 };
 
 // 6. REALTIME MULTIPLAYER GAME ROOM ENGINE (P02 Games)

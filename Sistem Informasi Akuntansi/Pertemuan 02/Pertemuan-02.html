@@ -1013,6 +1013,11 @@ function submitQuiz(){
   badge.style.display = 'inline-block';
   badge.textContent = `Skor: ${score}/${total} (${pct}%)`;
 
+  // Sinkronisasi Nilai Kuis ke Cloud Firestore
+  if (window.saveScoreToCloud) {
+    window.saveScoreToCloud('Pertemuan 02', 'Kuis Siklus Bisnis & Data', score, total, { percentage: pct, passed: pct >= 75 });
+  }
+
   if(pct >= 75){
     badge.className = 'score-badge pass';
     document.getElementById('completion').classList.add('show');
