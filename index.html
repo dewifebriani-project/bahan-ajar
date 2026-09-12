@@ -61,10 +61,62 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
 .c-desc{font-size:13.5px;color:var(--txm);line-height:1.55;margin-bottom:24px;flex:1}
 
 .c-actions{display:grid;gap:10px;margin-top:auto}
-.btn-enter-course{display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,#1E293B,#334155);border:1px solid var(--bd);border-radius:8px;padding:12px 18px;color:#fff;text-decoration:none;font-size:14px;font-weight:700;transition:all .2s}
-.btn-enter-course:hover{background:#38BDF8;color:#0A0E17;border-color:#38BDF8;box-shadow:0 6px 18px rgba(56,189,248,.3)}
+.btn-enter-course{display:flex;align-items:center;justify-content:space-between;border-radius:8px;padding:12px 18px;text-decoration:none;font-size:14px;font-weight:700;transition:all .2s;color:#fff}
+
+/* AIS - Warm Amber / Orange Button */
+.card-sia .btn-enter-course, .card-ais .btn-enter-course{
+  background:linear-gradient(135deg,#C2410C 0%,#EA580C 100%);
+  border:1px solid #F97316;
+  box-shadow:0 4px 14px rgba(234,88,12,.28);
+}
+.card-sia .btn-enter-course:hover, .card-ais .btn-enter-course:hover{
+  background:linear-gradient(135deg,#EA580C 0%,#FB923C 100%);
+  box-shadow:0 6px 20px rgba(234,88,12,.48);
+  transform:translateY(-1px);
+}
+
+/* ADA - Vibrant Cyan / Sky Blue Button */
+.card-ada .btn-enter-course{
+  background:linear-gradient(135deg,#0284C7 0%,#0EA5E9 100%);
+  border:1px solid #38BDF8;
+  box-shadow:0 4px 14px rgba(14,165,233,.28);
+}
+.card-ada .btn-enter-course:hover{
+  background:linear-gradient(135deg,#0EA5E9 0%,#38BDF8 100%);
+  box-shadow:0 6px 20px rgba(56,189,248,.48);
+  transform:translateY(-1px);
+}
+
+/* BIV - Emerald / Mint Green Button */
+.card-biv .btn-enter-course{
+  background:linear-gradient(135deg,#047857 0%,#059669 100%);
+  border:1px solid #10B981;
+  box-shadow:0 4px 14px rgba(16,185,129,.28);
+}
+.card-biv .btn-enter-course:hover{
+  background:linear-gradient(135deg,#059669 0%,#10B981 100%);
+  box-shadow:0 6px 20px rgba(16,185,129,.48);
+  transform:translateY(-1px);
+}
+
+/* Custom - Royal Purple Button */
+.card-custom .btn-enter-course{
+  background:linear-gradient(135deg,#6B21A8 0%,#7E22CE 100%);
+  border:1px solid #9333EA;
+  box-shadow:0 4px 14px rgba(147,51,234,.28);
+}
+.card-custom .btn-enter-course:hover{
+  background:linear-gradient(135deg,#7E22CE 0%,#A855F7 100%);
+  box-shadow:0 6px 20px rgba(168,85,247,.48);
+  transform:translateY(-1px);
+}
+
 .c-rps{display:flex;align-items:center;justify-content:space-between;background:transparent;border:1px solid var(--bd);border-radius:8px;padding:8px 14px;color:var(--txm);text-decoration:none;font-size:12.5px;font-weight:600;transition:all .15s}
 .c-rps:hover{background:var(--sf2);color:#fff;border-color:rgba(255,255,255,.2)}
+.card-sia .c-rps:hover, .card-ais .c-rps:hover{border-color:rgba(234,88,12,.4);color:#FFB885;background:rgba(234,88,12,.08)}
+.card-ada .c-rps:hover{border-color:rgba(56,189,248,.4);color:#7DD3FC;background:rgba(56,189,248,.08)}
+.card-biv .c-rps:hover{border-color:rgba(16,185,129,.4);color:#6EE7B7;background:rgba(16,185,129,.08)}
+.card-custom .c-rps:hover{border-color:rgba(168,85,247,.4);color:#D8B4FE;background:rgba(168,85,247,.08)}
 
 /* ── FOOTER ── */
 .ft{background:#070A10;border-top:1px solid #1E293B;padding:24px;text-align:center;font-size:13px;color:var(--txl)}
@@ -86,7 +138,7 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
   <div id="courseGrid" class="course-grid">
     
     <!-- ════════ ACCOUNTING INFORMATION SYSTEMS (AIS) ════════ -->
-    <div id="card_AIS" class="course-card card-sia">
+    <div id="card_AIS" class="course-card card-sia card-ais">
       <div class="c-header">
         <div class="c-icon">🏛️</div>
         <span class="c-pin" title="Hubungi Dosen Pengampu" style="background:rgba(232,128,48,.15);border:1px solid rgba(232,128,48,.35);color:#FFB885">PIN: ****</span>
