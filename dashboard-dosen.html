@@ -193,7 +193,7 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
         <div class="kpi-icon">👥</div>
         <div>
           <div class="kpi-num" id="kpiStudents">0</div>
-          <div class="kpi-lbl">Mahasiswa Terdata</div>
+          <div class="kpi-lbl">Mahasiswa Mengumpulkan</div>
         </div>
       </div>
       <div class="kpi-card">
@@ -728,7 +728,7 @@ function initLecturerDashboard() {
       snapshot.forEach(doc => {
         allUsersMap[doc.id] = doc.data();
       });
-      document.getElementById('kpiStudents').textContent = Object.keys(allUsersMap).length;
+      updateKPIs();
     });
 
     // 5. Quiz Collection
@@ -1409,10 +1409,15 @@ window.populateDropdowns = populateDropdowns;
 /* ════════ TAB 1: GRADEBOOK TABLE & KPI ════════ */
 function updateKPIs() {
   const kpiSub = document.getElementById('kpiSubmissions');
+  const kpiStu = document.getElementById('kpiStudents');
   const kpiAvg = document.getElementById('kpiAvgScore');
   const kpiPass = document.getElementById('kpiPassRate');
 
   if (kpiSub) kpiSub.textContent = allQuizData.length;
+
+  const uniqueNims = new Set(allQuizData.filter(q => q.nim && q.nim !== '-').map(q => q.nim));
+  if (kpiStu) kpiStu.textContent = uniqueNims.size;
+
   if (allQuizData.length === 0) {
     if (kpiAvg) kpiAvg.textContent = '0%';
     if (kpiPass) kpiPass.textContent = '0%';
