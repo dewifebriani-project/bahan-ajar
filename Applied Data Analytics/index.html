@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Applied Data Analytics (DAT-301) — Silabus & Modul Perkuliahan</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap">
+<script src="../cloud-sync.js"></script>
+<style>
+:root {
+  --bg: #0A0E17;
+  --sf: #121826;
+  --sf2: #182236;
+  --sf3: #1E293B;
+  --bd: #22304A;
+  --tx: #F0F4FA;
+  --txm: #94A3B8;
+  --txl: #64748B;
+  --acc: #38BDF8;
+  --r: 14px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Source Sans 3', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--tx);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.6;
+}
+.hd {
+  background: linear-gradient(180deg, #0F172A 0%, #0A0E17 100%);
+  padding: 36px 24px 28px;
+  border-bottom: 1px solid var(--bd);
+  position: relative;
+}
+.hd-container {
+  max-width: 920px;
+  margin: 0 auto;
+}
+.top-nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.nav-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #38BDF8;
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 6px 14px;
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 8px;
+  transition: all 0.15s;
+}
+.nav-back:hover {
+  background: rgba(56, 189, 248, 0.18);
+  transform: translateX(-3px);
+}
+.btn-rps {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #F8FAFC;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 16px;
+  background: var(--sf3);
+  border: 1px solid var(--bd);
+  border-radius: 8px;
+  transition: all 0.15s;
+}
+.btn-rps:hover {
+  border-color: var(--acc);
+  color: var(--acc);
+}
+
+.hd-badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #CBD5E1;
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.hd-title {
+  font-family: 'Amiri', serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.25;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.hd-desc {
+  font-size: 14.5px;
+  color: var(--txm);
+  max-width: 760px;
+}
+
+.main {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 36px 24px 60px;
+  flex: 1;
+  width: 100%;
+}
+.sec-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.sec-title {
+  font-family: 'Amiri', serif;
+  font-size: 22px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sec-title::before {
+  content: "";
+  width: 4px;
+  height: 20px;
+  background: var(--acc);
+  border-radius: 2px;
+}
+.meeting-count {
+  font-size: 13px;
+  color: var(--txl);
+  font-weight: 600;
+}
+
+.meetings-list {
+  display: grid;
+  gap: 14px;
+}
+.meeting-card {
+  background: var(--sf);
+  border: 1px solid var(--bd);
+  border-radius: var(--r);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s;
+}
+.meeting-card:hover {
+  background: var(--sf2);
+  border-color: var(--acc);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+}
+.meeting-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  flex: 1;
+}
+.meeting-icon {
+  font-size: 28px;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.meeting-details {
+  flex: 1;
+}
+.meeting-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+.meeting-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+.meeting-badge {
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--txm);
+  padding: 2px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.04em;
+}
+.meeting-desc {
+  font-size: 13.5px;
+  color: var(--txm);
+  line-height: 1.5;
+}
+.meeting-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #1E293B;
+  color: #F8FAFC;
+  border: 1px solid var(--bd);
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.meeting-card:hover .meeting-btn {
+  background: var(--acc);
+  color: #0A0E17;
+  border-color: var(--acc);
+  font-weight: 700;
+}
+
+.ft {
+  background: #070A10;
+  border-top: 1px solid #1E293B;
+  padding: 20px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--txl);
+}
+@media(max-width: 640px) {
+  .meeting-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .meeting-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+</style>
+</head>
+<body>
+
+<header class="hd">
+  <div class="hd-container">
+    <div class="top-nav-bar">
+      <a href="../index.html" class="nav-back">← Kembali ke Portal Utama</a>
+      <a href="Pertemuan 01/RPS-ADA.html" class="btn-rps">📋 Rencana Pembelajaran (RPS) <span>➔</span></a>
+    </div>
+    <div>
+      <span class="hd-badge">DAT-301 · 3 SKS · Fakultas Ekonomi &amp; Bisnis Islam</span>
+      <h1 class="hd-title"><span>📊</span> Applied Data Analytics</h1>
+      <p class="hd-desc">Eksplorasi data bisnis, statistik terapan, pemodelan prediktif, evaluasi regresi & forecasting keuangan syariah.</p>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+  <div class="sec-hd">
+    <h2 class="sec-title">Daftar Pertemuan Perkuliahan</h2>
+    <span class="meeting-count">3 Pertemuan Tersedia</span>
+  </div>
+
+  <div class="meetings-list">
+    
+    <a href="Pertemuan 01/index.html" class="meeting-card">
+      <div class="meeting-left">
+        <div class="meeting-icon">📁</div>
+        <div class="meeting-details">
+          <div class="meeting-header">
+            <h3 class="meeting-title">Pertemuan 01: Setup Environment, Google Colab & Python</h3>
+            <span class="meeting-badge">5 Berkas</span>
+          </div>
+          <p class="meeting-desc">Pengenalan Google Colab, library Pandas/Numpy, struktur data dasar, dan dataset BPRS.</p>
+        </div>
+      </div>
+      <div class="meeting-btn">Buka Berkas &amp; Lab <span>➔</span></div>
+    </a>
+    <a href="Pertemuan 02/index.html" class="meeting-card">
+      <div class="meeting-left">
+        <div class="meeting-icon">📁</div>
+        <div class="meeting-details">
+          <div class="meeting-header">
+            <h3 class="meeting-title">Pertemuan 02: Pandas Groupby, Aggregation & Filtering</h3>
+            <span class="meeting-badge">2 Berkas</span>
+          </div>
+          <p class="meeting-desc">Teknik manipulasi data lanjutan, agregasi statistik, segmentasi nasabah, dan lab praktikum.</p>
+        </div>
+      </div>
+      <div class="meeting-btn">Buka Berkas &amp; Lab <span>➔</span></div>
+    </a>
+    <a href="Pertemuan 03/index.html" class="meeting-card">
+      <div class="meeting-left">
+        <div class="meeting-icon">📁</div>
+        <div class="meeting-details">
+          <div class="meeting-header">
+            <h3 class="meeting-title">Pertemuan 03: Data Wrangling, Cleaning & Preprocessing</h3>
+            <span class="meeting-badge">4 Berkas</span>
+          </div>
+          <p class="meeting-desc">Pembersihan data kotor, imputasi missing values, deteksi anomali, dan normalisasi dataset.</p>
+        </div>
+      </div>
+      <div class="meeting-btn">Buka Berkas &amp; Lab <span>➔</span></div>
+    </a>
+  </div>
+</main>
+
+<footer class="ft">
+  Universitas Tazkia · Fakultas Ekonomi &amp; Bisnis Islam · Tim Dosen Sistem Informasi Akuntansi &amp; Data Analytics © 2026
+</footer>
+
+</body>
+</html>
