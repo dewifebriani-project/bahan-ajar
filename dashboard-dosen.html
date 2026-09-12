@@ -941,6 +941,7 @@ async function deleteLabSubmission(docId) {
     const batch = dbRef.batch();
     chunksSnap.forEach(cd => batch.delete(cd.ref));
     batch.delete(dbRef.collection('lab_submissions').doc(docId));
+    batch.delete(dbRef.collection('quiz').doc('lab_' + docId));
     await batch.commit();
   } catch(e) {
     dbRef.collection('lab_submissions').doc(docId).delete();

@@ -30,7 +30,7 @@ let currentStudent = {
 // 3. Dynamic Course Registry & Confidential PINs
 const DEFAULT_COURSES = [
   { code: 'SIA', name: 'Sistem Informasi Akuntansi (AKS-302)', folder: 'Sistem Informasi Akuntansi', pin: '3021', icon: '🏛️' },
-  { code: 'ADA', name: 'Applied Data Analytics (DAT-301)', folder: 'Applied Data Analytics', pin: '3011', icon: '📊' },
+  { code: 'ADA', name: 'Applied Data Analytics (ADA-301)', folder: 'Applied Data Analytics', pin: '3011', icon: '📊' },
   { code: 'BIV', name: 'Business Intelligence & Visualization (BIV-301)', folder: 'Business Intelligence', pin: '3012', icon: '📈' }
 ];
 
@@ -109,7 +109,7 @@ function escapeHtml(str) {
 window.escapeHtml = escapeHtml;
 
 // Helper: Run callback when Firebase DB is ready
-window.onCloudSyncReady = function(cb) {
+window.onCloudSyncReady = function (cb) {
   if (isDbReady && db) {
     cb(db);
   } else {
@@ -117,7 +117,7 @@ window.onCloudSyncReady = function(cb) {
   }
 };
 
-window.getDbInstance = function() {
+window.getDbInstance = function () {
   return new Promise((resolve) => {
     window.onCloudSyncReady(resolve);
   });
@@ -254,7 +254,7 @@ function showPinModal(info, requiredPin) {
     const isDosenPage = info.code === 'DOSEN';
     const titleText = isDosenPage ? 'Autentikasi Dosen Pengampu' : 'Kunci Akses Kelas';
     const subtitleText = isDosenPage ? 'Halaman Khusus Dosen &amp; Gradebook Akademik' : `Mata Kuliah: <strong style="color:#38BDF8">${info.name}</strong>`;
-    const descText = isDosenPage 
+    const descText = isDosenPage
       ? 'Halaman ini memuat rekapan seluruh nilai dan berkas rahasia mahasiswa. Masukkan PIN Dosen (4 Digit) untuk melanjutkan.'
       : 'Materi ini bersifat <em>confidential</em>. Masukkan PIN akses yang dibagikan oleh Dosen di dalam kelas untuk membuka materi.';
 
@@ -292,7 +292,7 @@ function showPinModal(info, requiredPin) {
   }
 }
 
-window.submitCoursePin = function(courseCode) {
+window.submitCoursePin = function (courseCode) {
   const input = document.getElementById('inputCoursePin');
   if (!input) return;
   const typedPin = input.value.trim();
@@ -319,8 +319,8 @@ window.submitCoursePin = function(courseCode) {
   } else {
     input.value = '';
     input.style.borderColor = '#EF4444';
-    alert(courseCode === 'DOSEN' 
-      ? "❌ PIN Dosen Salah! Hanya Dosen Pengampu yang memiliki akses ke dashboard ini." 
+    alert(courseCode === 'DOSEN'
+      ? "❌ PIN Dosen Salah! Hanya Dosen Pengampu yang memiliki akses ke dashboard ini."
       : "❌ PIN Salah! Silakan tanyakan PIN akses yang benar kepada Dosen pengampu di kelas.");
     input.focus();
   }
@@ -565,7 +565,7 @@ function showCloudToast(message, isError = false) {
 }
 
 // 6. Submit Skor Kuis / Tugas Praktikum ke Cloud Firestore
-window.saveScoreToCloud = function(pertemuan, aktivitas, skor, total, detail = {}) {
+window.saveScoreToCloud = function (pertemuan, aktivitas, skor, total, detail = {}) {
   if (!currentStudent.nim) {
     showIdentityModal();
     return;
@@ -604,7 +604,7 @@ window.RealtimeGameEngine = {
   leaderboardUnsubscribe: null,
 
   // Bergabung atau membuat Room Game
-  joinRoom: function(roomId, teamName, onUpdateCallback) {
+  joinRoom: function (roomId, teamName, onUpdateCallback) {
     this.activeRoomId = roomId || 'BMT-ARENA-02';
     window.onCloudSyncReady(dbInstance => {
       const roomRef = dbInstance.collection('games').doc(this.activeRoomId);
@@ -637,10 +637,10 @@ window.RealtimeGameEngine = {
   },
 
   // Update Nilai Skor Tim Realtime (untuk Proyektor Dosen / Tim)
-  updateTeamScoreRealtime: function(teamName, pointDelta) {
+  updateTeamScoreRealtime: function (teamName, pointDelta) {
     window.onCloudSyncReady(dbInstance => {
       const roomRef = dbInstance.collection('games').doc(this.activeRoomId);
-      
+
       dbInstance.runTransaction(async transaction => {
         const doc = await transaction.get(roomRef);
         if (!doc.exists) return;
@@ -657,7 +657,7 @@ window.RealtimeGameEngine = {
   },
 
   // Submit Skor Individu / Pasangan ke Live Leaderboard
-  submitPlayerScore: function(playerScore, comboCount, roundCompleted) {
+  submitPlayerScore: function (playerScore, comboCount, roundCompleted) {
     if (!currentStudent.nim) {
       showIdentityModal();
       return;
@@ -682,7 +682,7 @@ window.RealtimeGameEngine = {
   },
 
   // Listen to Top Players Realtime Leaderboard
-  listenLeaderboard: function(onLeaderboardChange) {
+  listenLeaderboard: function (onLeaderboardChange) {
     window.onCloudSyncReady(dbInstance => {
       if (this.leaderboardUnsubscribe) this.leaderboardUnsubscribe();
       this.leaderboardUnsubscribe = dbInstance.collection('games').doc(this.activeRoomId).collection('players')
@@ -700,19 +700,19 @@ window.RealtimeGameEngine = {
 // 7. LAB REPORT SUBMISSION ENGINE (DIRECT CLOUD FIRESTORE STORAGE WITH MULTI-MB CHUNKING)
 let currentLabFileData = null;
 
-window.handleLabFileSelect = function(e) {
+window.handleLabFileSelect = function (e) {
   const file = e.target.files && e.target.files[0];
   if (!file) return;
 
   // Support up to 10 MB
   if (file.size > 10 * 1024 * 1024) {
-    alert("⚠️ Ukuran file (" + (file.size / (1024*1024)).toFixed(1) + " MB) melebihi batas maksimal 10 MB. Silakan pilih berkas dokumen yang lebih kecil.");
+    alert("⚠️ Ukuran file (" + (file.size / (1024 * 1024)).toFixed(1) + " MB) melebihi batas maksimal 10 MB. Silakan pilih berkas dokumen yang lebih kecil.");
     e.target.value = '';
     return;
   }
 
   const reader = new FileReader();
-  reader.onload = function(evt) {
+  reader.onload = function (evt) {
     currentLabFileData = {
       fileName: file.name,
       fileSize: file.size,
@@ -724,13 +724,13 @@ window.handleLabFileSelect = function(e) {
     const infoEl = document.getElementById('labFileInfo');
     if (promptEl) promptEl.style.display = 'none';
     if (infoEl) infoEl.style.display = 'flex';
-    
+
     const nameEl = document.getElementById('labFileName');
     const sizeEl = document.getElementById('labFileSize');
     const iconEl = document.getElementById('labFileIcon');
     if (nameEl) nameEl.textContent = file.name;
     if (sizeEl) sizeEl.textContent = formatBytes(file.size);
-    
+
     let icon = '📄';
     if (file.name.endsWith('.pdf')) icon = '📕';
     else if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls') || file.name.endsWith('.csv')) icon = '📊';
@@ -742,7 +742,7 @@ window.handleLabFileSelect = function(e) {
   reader.readAsDataURL(file);
 };
 
-window.clearLabFile = function() {
+window.clearLabFile = function () {
   currentLabFileData = null;
   const fileInput = document.getElementById('inputLabFile');
   if (fileInput) fileInput.value = '';
@@ -760,7 +760,7 @@ function formatBytes(bytes) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 }
 
-window.submitLabReport = async function(formEvent) {
+window.submitLabReport = async function (formEvent) {
   if (formEvent) {
     if (typeof formEvent.preventDefault === 'function') formEvent.preventDefault();
     if (typeof formEvent.stopPropagation === 'function') formEvent.stopPropagation();
@@ -844,15 +844,21 @@ window.submitLabReport = async function(formEvent) {
       timestampClient: new Date().toISOString()
     };
 
-    // 1. Save to 'lab_submissions'
-    const docRef = await dbInstance.collection('lab_submissions').add(submissionDoc);
+    const pMatch = path.match(/Pertemuan[_\-\s%20]*(\d+)/i) || path.match(/P0*(\d+)/i);
+    const pNum = pMatch ? ('P' + String(pMatch[1]).padStart(2, '0')) : 'P01';
+    const submissionId = `${currentStudent.nim}_${courseInfo.code}_${pNum}`;
+    const quizDocId = `lab_${currentStudent.nim}_${courseInfo.code}_${pNum}`;
+
+    // 1. Save / Update to 'lab_submissions'
+    const docRef = dbInstance.collection('lab_submissions').doc(submissionId);
+    await docRef.set(submissionDoc, { merge: true });
 
     // If chunked, split into chunks of 400,000 chars and save into subcollection
     if (isChunked && currentLabFileData && currentLabFileData.fileBase64) {
       const raw = currentLabFileData.fileBase64;
       const chunkSize = 400000;
       const numChunks = Math.ceil(raw.length / chunkSize);
-      
+
       await docRef.update({ totalChunks: numChunks });
 
       // Batch upload chunks in batches of 10
@@ -860,26 +866,26 @@ window.submitLabReport = async function(formEvent) {
         const batch = dbInstance.batch();
         for (let j = i; j < Math.min(i + 10, numChunks); j++) {
           const chunkData = raw.substring(j * chunkSize, (j + 1) * chunkSize);
-          const chunkRef = dbInstance.collection('lab_submissions').doc(docRef.id).collection('chunks').doc('c_' + j);
+          const chunkRef = docRef.collection('chunks').doc('c_' + j);
           batch.set(chunkRef, { index: j, data: chunkData });
         }
         await batch.commit();
       }
     }
 
-    // 2. Also register into 'quiz' collection for gradebook overview
-    await dbInstance.collection('quiz').add({
+    // 2. Also register into 'quiz' collection for gradebook overview (upsert single row per lab)
+    await dbInstance.collection('quiz').doc(quizDocId).set({
       nim: currentStudent.nim,
       nama: currentStudent.nama,
-      pertemuan: courseInfo.code + ' (Lab)',
-      aktivitas: 'Laporan: ' + (currentLabFileData ? currentLabFileData.fileName : pageTitle.substring(0, 30)),
+      pertemuan: courseInfo.code + ' (' + pNum + ' Lab)',
+      aktivitas: 'Laporan ' + pNum + ': ' + (currentLabFileData ? currentLabFileData.fileName : pageTitle.substring(0, 30)),
       skor: 100,
       total: 100,
       persentase: 100,
       passed: true,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       timestampClient: new Date().toISOString()
-    });
+    }, { merge: true });
 
     console.log("✓ Laporan praktikum & berkas berhasil tersimpan di Cloud Firestore!");
 
@@ -934,7 +940,7 @@ window.submitLabReport = async function(formEvent) {
 
 window.submitLabReportWithAI = window.submitLabReport; // Alias for backward compatibility
 
-window.resetLabSubmitForm = function() {
+window.resetLabSubmitForm = function () {
   const resultArea = document.getElementById('labSubmitResultCard');
   if (resultArea) resultArea.style.display = 'none';
   clearLabFile();
