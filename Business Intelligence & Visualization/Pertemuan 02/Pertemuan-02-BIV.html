@@ -672,6 +672,15 @@ const PAIR_COLORS = [
   { b: 'var(--p4)', l: 'var(--p4l)' }
 ];
 
+const SECTION_BTNS = [
+  "Saya Paham, Lanjut ke Framework Chart ➔",
+  "Saya Paham, Lanjut ke The Pie Chart Trap ➔",
+  "Saya Paham, Lanjut ke Prinsip Gestalt ➔",
+  "Saya Paham, Lanjut ke Pre-Attentive Visual ➔",
+  "Saya Paham, Lanjut ke Nilai Syariah ➔",
+  "Saya Paham, Masuk ke Interactive Simulator & Kuis ➔"
+];
+
 let state = {
   done: [0],
   scenarios: [null, null, null],
@@ -698,14 +707,41 @@ function applyState() {
   for (let i = 0; i < TOTAL_SECS; i++) {
     const el = document.getElementById('sec' + i);
     if (!el) continue;
-    if (state.done.includes(i)) {
-      el.className = 'sec-card unlocked';
+    const isUnlocked = state.done.includes(i);
+    const isDone = (i < TOTAL_SECS - 1) ? state.done.includes(i + 1) : state.passed;
+
+    if (isUnlocked) {
+      el.className = 'sec-card unlocked' + (isDone ? ' done-sec' : '');
       const n = document.getElementById('sn' + i);
-      if (n) { n.className = 'sec-num done'; n.textContent = '✓'; }
+      if (n) {
+        n.className = isDone ? 'sec-num done' : 'sec-num';
+        n.textContent = isDone ? '✓' : (i + 1);
+      }
       const btn = el.querySelector('.btn-paham');
-      if (btn) { btn.className = 'btn-paham done'; btn.disabled = true; btn.textContent = '✓ Selesai'; }
+      if (btn) {
+        if (isDone) {
+          btn.className = 'btn-paham done';
+          btn.disabled = true;
+          btn.textContent = '✓ Selesai';
+        } else {
+          btn.className = 'btn-paham';
+          btn.disabled = false;
+          btn.textContent = SECTION_BTNS[i] || 'Lanjut ➔';
+        }
+      }
     } else {
       el.className = 'sec-card locked';
+      const n = document.getElementById('sn' + i);
+      if (n) {
+        n.className = 'sec-num';
+        n.textContent = (i + 1);
+      }
+      const btn = el.querySelector('.btn-paham');
+      if (btn) {
+        btn.className = 'btn-paham';
+        btn.disabled = false;
+        if (SECTION_BTNS[i]) btn.textContent = SECTION_BTNS[i];
+      }
     }
   }
 
@@ -740,15 +776,27 @@ function unlock(secIdx) {
 
 function updateProgress() {
   const total = TOTAL_SECS;
-  const doneCount = state.done.length + (state.passed ? 1 : 0);
+  let doneCount = 0;
+  for (let i = 0; i < TOTAL_SECS - 1; i++) {
+    if (state.done.includes(i + 1)) doneCount++;
+  }
+  if (state.passed) doneCount++;
+
   const pct = Math.min(100, Math.round((doneCount / total) * 100));
   document.getElementById('progPct').textContent = pct + '%';
+
   for (let i = 0; i < TOTAL_SECS; i++) {
     const d = document.getElementById('pd' + i);
     if (!d) continue;
-    if (i < state.done.length + (state.passed ? 1 : 0)) d.className = 'prog-dot done';
-    else if (i === state.done.length) d.className = 'prog-dot active';
-    else d.className = 'prog-dot';
+    const isStepDone = (i < TOTAL_SECS - 1) ? state.done.includes(i + 1) : state.passed;
+    const isStepActive = state.done.includes(i) && !isStepDone;
+    if (isStepDone) {
+      d.className = 'prog-dot done';
+    } else if (isStepActive) {
+      d.className = 'prog-dot active';
+    } else {
+      d.className = 'prog-dot';
+    }
   }
 }
 
