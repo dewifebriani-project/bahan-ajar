@@ -130,6 +130,7 @@ function markDbReady(firestoreInstance) {
   console.log("✓ Firebase Firestore 'akuntansi-syariah' siap digunakan!");
   listenDynamicCourses();
   listenStudentsRoster();
+  listenMeetingLocks();
   checkStudentIdentity();
   while (readyCallbacks.length > 0) {
     const cb = readyCallbacks.shift();
@@ -138,7 +139,210 @@ function markDbReady(firestoreInstance) {
   window.dispatchEvent(new CustomEvent('cloud-sync-ready', { detail: { db } }));
 }
 
-// 4. Confidential Course PIN Gate & Student Roster Engine
+// 4. Meeting Locks & Access Control Engine
+let activeMeetingLocks = {
+  'AIS_P01': true, 'AIS_P02': true, 'AIS_P03': false, 'AIS_P04': false,
+  'AIS_P05': false, 'AIS_P06': false, 'AIS_P07': false, 'AIS_P08': false,
+  'ADA_P01': true, 'ADA_P02': true, 'ADA_P03': false,
+  'BIV_P01': true
+};
+window.activeMeetingLocks = activeMeetingLocks;
+
+function listenMeetingLocks() {
+  window.onCloudSyncReady(dbInstance => {
+    dbInstance.collection('settings').doc('meeting_locks').onSnapshot(doc => {
+      if (doc.exists) {
+        activeMeetingLocks = { ...doc.data() };
+      } else {
+        // Auto seed default meeting locks (P01 & P02 open, others locked)
+        dbInstance.collection('settings').doc('meeting_locks').set({
+          ...activeMeetingLocks,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+      }
+      window.activeMeetingLocks = activeMeetingLocks;
+      applyMeetingLocksToUI();
+      checkDirectMeetingPageLock();
+      window.dispatchEvent(new CustomEvent('meeting-locks-updated', { detail: { locks: activeMeetingLocks } }));
+    }, err => {
+      console.warn("Using offline fallback for meeting locks:", err);
+      applyMeetingLocksToUI();
+      checkDirectMeetingPageLock();
+    });
+  });
+}
+
+function isMeetingUnlocked(courseCode, pNum) {
+  const pCode = 'P' + String(pNum).padStart(2, '0');
+  const key = `${courseCode}_${pCode}`;
+  if (key in activeMeetingLocks) {
+    return activeMeetingLocks[key] === true;
+  }
+  return pNum <= 2;
+}
+window.isMeetingUnlocked = isMeetingUnlocked;
+
+function applyMeetingLocksToUI() {
+  const info = detectCurrentCourseInfo();
+  if (!info || info.code === 'DOSEN') return;
+
+  const isDosenUser = currentStudent.nim === '0206015';
+  const meetingCards = document.querySelectorAll('.meeting-card');
+  if (meetingCards.length === 0) return;
+
+  meetingCards.forEach((card, idx) => {
+    const titleEl = card.querySelector('.meeting-title');
+    const href = card.getAttribute('href') || '';
+    let pNum = idx + 1;
+    const match = (titleEl ? titleEl.textContent : href).match(/Pertemuan\s*(\d{1,2})/i);
+    if (match) {
+      pNum = parseInt(match[1], 10);
+    }
+
+    const unlocked = isMeetingUnlocked(info.code, pNum);
+
+    if (isDosenUser) {
+      let badge = card.querySelector('.dosen-preview-badge');
+      if (!badge) {
+        badge = document.createElement('span');
+        badge.className = 'dosen-preview-badge';
+        badge.style.cssText = 'font-size:11px;padding:2px 8px;border-radius:6px;font-weight:700;margin-left:8px;display:inline-flex;align-items:center;gap:4px';
+        const header = card.querySelector('.meeting-header');
+        if (header) header.appendChild(badge);
+      }
+      if (unlocked) {
+        badge.innerHTML = '🟢 Akses Terbuka';
+        badge.style.background = 'rgba(16,185,129,.15)';
+        badge.style.border = '1px solid rgba(16,185,129,.35)';
+        badge.style.color = '#6EE7B7';
+      } else {
+        badge.innerHTML = '🔒 Terkunci (Dosen Override)';
+        badge.style.background = 'rgba(239,68,68,.15)';
+        badge.style.border = '1px solid rgba(239,68,68,.35)';
+        badge.style.color = '#FCA5A5';
+      }
+      return;
+    }
+
+    // Student view
+    if (!unlocked) {
+      card.classList.add('meeting-card-locked');
+      card.style.opacity = '0.65';
+      card.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+      card.style.borderStyle = 'dashed';
+      card.style.background = 'rgba(18, 24, 38, 0.6)';
+
+      const icon = card.querySelector('.meeting-icon');
+      if (icon) icon.textContent = '🔒';
+
+      const badge = card.querySelector('.meeting-badge');
+      if (badge) {
+        badge.innerHTML = '🔒 Belum Dibuka';
+        badge.style.background = 'rgba(239, 68, 68, 0.15)';
+        badge.style.borderColor = 'rgba(239, 68, 68, 0.35)';
+        badge.style.color = '#FCA5A5';
+      }
+
+      const btn = card.querySelector('.meeting-btn');
+      if (btn) {
+        btn.innerHTML = '🔒 Terkunci';
+        btn.style.background = '#1E293B';
+        btn.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+        btn.style.color = '#FCA5A5';
+        btn.style.cursor = 'not-allowed';
+      }
+
+      card.onclick = function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        showMeetingLockedAlert(info.name, pNum);
+      };
+    } else {
+      card.classList.remove('meeting-card-locked');
+      card.style.opacity = '';
+      card.style.borderColor = '';
+      card.style.borderStyle = '';
+      card.style.background = '';
+      card.onclick = null;
+    }
+  });
+}
+
+function showMeetingLockedAlert(courseName, pNum) {
+  let modal = document.getElementById('meetingLockedAlertModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'meetingLockedAlertModal';
+    modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;animation:modalPop .2s ease-out';
+    document.body.appendChild(modal);
+  }
+
+  modal.innerHTML = `
+    <div style="background:#121826;border:1.5px solid rgba(239,68,68,.4);border-radius:16px;max-width:480px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.8);overflow:hidden;text-align:center;padding:32px 24px">
+      <div style="font-size:48px;margin-bottom:12px">🔒</div>
+      <span style="display:inline-block;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.35);color:#FCA5A5;padding:3px 12px;border-radius:20px;font-size:11.5px;font-weight:700;letter-spacing:.05em;margin-bottom:12px">MODUL BELUM DIBUKA</span>
+      <h3 style="font-family:'Amiri',serif;font-size:22px;color:#fff;margin-bottom:8px">Pertemuan ${pNum} Belum Waktunya</h3>
+      <p style="font-size:13.5px;color:#94A3B8;line-height:1.6;margin-bottom:24px">
+        Materi kuliah dan lembar kerja praktikum untuk <strong>Pertemuan ${pNum}</strong> pada mata kuliah ini masih dikunci oleh Dosen Pengampu. Silakan tunggu jadwal sesi perkuliahan berlangsung.
+      </p>
+      <button onclick="document.getElementById('meetingLockedAlertModal').remove()" style="background:linear-gradient(135deg,#0284C7,#0EA5E9);color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:13.5px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(14,165,233,.3)">
+        Saya Mengerti ✓
+      </button>
+    </div>
+  `;
+}
+
+function checkDirectMeetingPageLock() {
+  const path = decodeURIComponent(window.location.pathname);
+  const match = path.match(/Pertemuan\s*(\d{1,2})/i);
+  if (!match) return;
+
+  const pNum = parseInt(match[1], 10);
+  const info = detectCurrentCourseInfo();
+  if (!info || info.code === 'DOSEN') return;
+
+  const isDosenUser = currentStudent.nim === '0206015';
+  if (isDosenUser) return;
+
+  const unlocked = isMeetingUnlocked(info.code, pNum);
+  if (!unlocked) {
+    renderFullscreenMeetingLockGate(info.name, pNum);
+  } else {
+    const gate = document.getElementById('fullscreenMeetingLockGate');
+    if (gate) gate.remove();
+  }
+}
+
+function renderFullscreenMeetingLockGate(courseName, pNum) {
+  let gate = document.getElementById('fullscreenMeetingLockGate');
+  if (!gate) {
+    gate = document.createElement('div');
+    gate.id = 'fullscreenMeetingLockGate';
+    gate.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:#0A0E17;z-index:9999999;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center';
+    document.body.appendChild(gate);
+  }
+
+  gate.innerHTML = `
+    <div style="max-width:520px;background:#121826;border:1.5px solid rgba(239,68,68,.35);border-radius:16px;padding:40px 28px;box-shadow:0 24px 60px rgba(0,0,0,.85)">
+      <div style="font-size:56px;margin-bottom:14px">🔒</div>
+      <span style="display:inline-block;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.35);color:#FCA5A5;padding:3px 14px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:.06em;margin-bottom:14px">MODUL BELUM DIBUKA</span>
+      <h2 style="font-family:'Amiri',serif;font-size:26px;color:#fff;margin-bottom:10px">Pertemuan ${pNum} Sedang Dikunci</h2>
+      <p style="font-size:14px;color:#94A3B8;line-height:1.6;margin-bottom:28px">
+        Materi slide perkuliahan dan lembar kerja praktikum untuk <strong>Pertemuan ${pNum} (${escapeHtml(courseName)})</strong> belum dibuka oleh Dosen Pengampu karena belum waktunya.
+      </p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a href="../index.html" style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#0284C7,#0EA5E9);color:#fff;padding:12px 22px;border-radius:8px;font-size:13.5px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(14,165,233,.3)">
+          ← Kembali ke Silabus Modul
+        </a>
+        <a href="../../index.html" style="display:inline-flex;align-items:center;gap:8px;background:#1E293B;border:1px solid #334155;color:#E2E8F0;padding:12px 20px;border-radius:8px;font-size:13.5px;font-weight:600;text-decoration:none">
+          🏛️ Portal Utama
+        </a>
+      </div>
+    </div>
+  `;
+}
+
+// 5. Confidential Course PIN Gate & Student Roster Engine
 function listenStudentsRoster() {
   window.onCloudSyncReady(dbInstance => {
     dbInstance.collection('settings').doc('students_roster').onSnapshot(doc => {

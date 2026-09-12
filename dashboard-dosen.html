@@ -175,6 +175,10 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
       <span>🔐 Pengaturan PIN &amp; Mata Kuliah</span>
       <span id="tabBadgeCourses" class="tab-badge">0 Kelas</span>
     </button>
+    <button id="tabBtnLocks" class="tab-btn" onclick="switchTab('locks')">
+      <span>🔒 Kunci &amp; Akses Modul</span>
+      <span id="tabBadgeLocks" class="tab-badge" style="background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.3);color:#FCA5A5">Kontrol Akses</span>
+    </button>
   </div>
 
   <!-- ════════ TAB 1: REKAP NILAI MAHASISWA ════════ -->
@@ -418,6 +422,47 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
 
   </div>
 
+  <!-- ════════ TAB 5: KUNCI & BUKA KUNCI PERTEMUAN ════════ -->
+  <div id="tabContentLocks" class="tab-pane">
+    
+    <div class="controls">
+      <div>
+        <h3 style="font-family:'Amiri',serif;font-size:20px;color:#fff;margin:0 0 2px">🔒 Kontrol Kunci &amp; Akses Folder Pertemuan</h3>
+        <p style="font-size:12.5px;color:var(--txm);margin:0">Kunci materi &amp; praktikum pertemuan yang belum waktunya. Mahasiswa tidak dapat membuka materi yang dikunci.</p>
+      </div>
+      <div class="btn-group">
+        <select id="lockCourseFilter" class="filter-select" onchange="renderMeetingLocks()">
+          <option value="ALL">Semua Mata Kuliah</option>
+          <option value="AIS">AIS — Accounting Information Systems</option>
+          <option value="ADA">ADA — Applied Data Analytics</option>
+          <option value="BIV">BIV — Business Intelligence &amp; Visualization</option>
+        </select>
+        <button class="btn-export" onclick="bulkToggleLocks(true)">🔓 Buka Semua</button>
+        <button class="action-btn action-delete" style="padding:9px 16px;font-size:13px;font-weight:700" onclick="bulkToggleLocks(false)">🔒 Kunci Semua</button>
+      </div>
+    </div>
+
+    <!-- LOCKS TABLE -->
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th style="width:40px">No</th>
+            <th style="width:110px">Mata Kuliah</th>
+            <th>Pertemuan / Topik Perkuliahan</th>
+            <th>Deskripsi Modul &amp; Lab</th>
+            <th style="width:180px;text-align:center">Status Mahasiswa</th>
+            <th style="width:170px;text-align:center">Aksi Ganti Status</th>
+          </tr>
+        </thead>
+        <tbody id="meetingLocksBody">
+          <!-- Rendered dynamically by renderMeetingLocks() -->
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
 </main>
 
 <!-- ════════ MODAL: DETAIL LAPORAN PRAKTIKUM ════════ -->
@@ -613,29 +658,23 @@ var lecturerCourses = [
 
 var activePins = { AIS: '3021', SIA: '3021', ADA: '3011', BIV: '3012', DOSEN: '7788' };
 var lecturerRoster = (window.activeStudentsRoster && window.activeStudentsRoster.length > 0) ? [...window.activeStudentsRoster] : (window.DEFAULT_STUDENTS_ROSTER || []);
+var lecturerMeetingLocks = window.activeMeetingLocks || {};
 var allQuizData = [];
 var allLabData = [];
 var allUsersMap = {};
 var dbRef = null;
 
 window.switchTab = function(tabId) {
-  const tGrades = document.getElementById('tabBtnGrades');
-  const tLabs = document.getElementById('tabBtnLabs');
-  const tRoster = document.getElementById('tabBtnRoster');
-  const tPins = document.getElementById('tabBtnPins');
-  const cGrades = document.getElementById('tabContentGrades');
-  const cLabs = document.getElementById('tabContentLabs');
-  const cRoster = document.getElementById('tabContentRoster');
-  const cPins = document.getElementById('tabContentPins');
-
-  if (tGrades) tGrades.classList.toggle('active', tabId === 'grades');
-  if (tLabs) tLabs.classList.toggle('active', tabId === 'labs');
-  if (tRoster) tRoster.classList.toggle('active', tabId === 'roster');
-  if (tPins) tPins.classList.toggle('active', tabId === 'pins');
-  if (cGrades) cGrades.classList.toggle('active', tabId === 'grades');
-  if (cLabs) cLabs.classList.toggle('active', tabId === 'labs');
-  if (cRoster) cRoster.classList.toggle('active', tabId === 'roster');
-  if (cPins) cPins.classList.toggle('active', tabId === 'pins');
+  const tabs = ['grades', 'labs', 'roster', 'pins', 'locks'];
+  tabs.forEach(t => {
+    const btn = document.getElementById('tabBtn' + t.charAt(0).toUpperCase() + t.slice(1));
+    const content = document.getElementById('tabContent' + t.charAt(0).toUpperCase() + t.slice(1));
+    if (btn) btn.classList.toggle('active', tabId === t);
+    if (content) content.classList.toggle('active', tabId === t);
+  });
+  if (tabId === 'locks') {
+    renderMeetingLocks();
+  }
 };
 
 function initLecturerDashboard() {
@@ -643,6 +682,7 @@ function initLecturerDashboard() {
   populateDropdowns();
   renderRosterTable();
   updateRosterKPIs();
+  renderMeetingLocks();
 
   window.onCloudSyncReady((dbInstance) => {
     dbRef = dbInstance;
@@ -669,6 +709,17 @@ function initLecturerDashboard() {
       console.warn("Error loading courses_meta:", err);
       renderPinTable();
       populateDropdowns();
+    });
+
+    // 2. Meeting Locks (Live Sync)
+    dbInstance.collection('settings').doc('meeting_locks').onSnapshot(doc => {
+      if (doc.exists) {
+        lecturerMeetingLocks = { ...doc.data() };
+      }
+      renderMeetingLocks();
+    }, err => {
+      console.warn("Error loading meeting_locks:", err);
+      renderMeetingLocks();
     });
 
     // 2. Access PINs
@@ -1674,6 +1725,150 @@ window.exportToCSV = exportToCSV;
 window.openLabDetailModal = openLabDetailModal;
 window.closeLabDetailModal = closeLabDetailModal;
 window.deleteLabSubmission = deleteLabSubmission;
+
+/* ════════ TAB 5: MEETING LOCKS ENGINE ════════ */
+var ALL_COURSE_MEETINGS = [
+  // AIS (8 Meetings)
+  { courseCode: 'AIS', courseName: 'Accounting Information Systems (AIS-302)', pNum: 1, pCode: 'P01', title: 'Pertemuan 01: Pengantar AIS & 6 Komponen', desc: 'Konsep dasar SIA, 6 komponen sistem informasi akuntansi, dan studi kasus BPRS.' },
+  { courseCode: 'AIS', courseName: 'Accounting Information Systems (AIS-302)', pNum: 2, pCode: 'P02', title: 'Pertemuan 02: Proses Bisnis & Pemodelan Data (DFD)', desc: 'Diagram alir data DFD Level 0 & 1, flowchart sistem, dan dataset bagan akun BMT.' },
+  { courseCode: 'AIS', courseName: 'Accounting Information Systems (AIS-302)', pNum: 3, pCode: 'P03', title: 'Pertemuan 03: Enterprise Systems & ERP Akuntansi', desc: 'Arsitektur ERP SAP/Odoo, integrasi modul keuangan, rantai pasok halal, dan otomasi jurnal.' },
+  { courseCode: 'AIS', courseName: 'Accounting Information Systems (AIS-302)', pNum: 4, pCode: 'P04', title: 'Pertemuan 04: Etika, Fraud & Kejahatan Komputer', desc: 'Analisis kecurangan akuntansi (Fraud Triangle Cressey), studi kasus skandal keuangan, dan lab investigasi.' },
+  { courseCode: 'AIS', courseName: 'Accounting Information Systems (AIS-302)', pNum: 5, pCode: 'P05', title: 'Pertemuan 05: Pengendalian Internal & Kerangka COSO', desc: 'Penerapan 5 komponen COSO Internal Control Framework dan penyusunan Risk Control Matrix (RCM).' },
+  { courseCode: 'AIS', courseName: 'Accounting Information Systems (AIS-302)', pNum: 6, pCode: 'P06', title: 'Pertemuan 06: Keamanan Informasi & Audit Forensik', desc: 'Keamanan data finansial, ISO 27001, audit forensik digital, dan analisis log insiden siber.' },
+  { courseCode: 'AIS', courseName: 'Accounting Information Systems (AIS-302)', pNum: 7, pCode: 'P07', title: 'Pertemuan 07: ITGC, Application Controls & Audit Trail', desc: 'IT General Controls, application controls, segregation of duties (SoD), dan verifikasi audit trail.' },
+  { courseCode: 'AIS', courseName: 'Accounting Information Systems (AIS-302)', pNum: 8, pCode: 'P08', title: 'Pertemuan 08: Milestone Evaluasi & Rubrik Penilaian UTS', desc: 'Evaluasi capaian CPL/CPMK, review komprehensif rancangan SIA, dan rubrik penilaian proyek UTS.' },
+
+  // ADA (3 Meetings)
+  { courseCode: 'ADA', courseName: 'Applied Data Analytics (ADA-301)', pNum: 1, pCode: 'P01', title: 'Pertemuan 01: Setup Environment, Google Colab & Python', desc: 'Pengenalan ekosistem data analytics, struktur data Python, dan analisis deskriptif data keuangan BPRS.' },
+  { courseCode: 'ADA', courseName: 'Applied Data Analytics (ADA-301)', pNum: 2, pCode: 'P02', title: 'Pertemuan 02: Pandas Groupby, Aggregation & Filtering', desc: 'Manipulasi data lanjutan dengan Pandas: filtering multi-kondisi, agregasi statistik, dan segmentasi nasabah.' },
+  { courseCode: 'ADA', courseName: 'Applied Data Analytics (ADA-301)', pNum: 3, pCode: 'P03', title: 'Pertemuan 03: Data Wrangling, Cleaning & Preprocessing', desc: 'Teknik penanganan missing values, imputasi statistik, deteksi outlier, dan normalisasi dataset e-commerce.' },
+
+  // BIV (1 Meeting)
+  { courseCode: 'BIV', courseName: 'Business Intelligence & Visualization (BIV-301)', pNum: 1, pCode: 'P01', title: 'Pertemuan 01: Fondasi BI & Power BI Interactive Dashboard', desc: 'Arsitektur data warehouse, KPI dashboard eksekutif, visualisasi interaktif PowerBI/Tableau untuk keputusan manajerial.' }
+];
+
+function renderMeetingLocks() {
+  const tbody = document.getElementById('meetingLocksBody');
+  if (!tbody) return;
+
+  const filterCourse = document.getElementById('lockCourseFilter') ? document.getElementById('lockCourseFilter').value : 'ALL';
+  
+  const filteredMeetings = ALL_COURSE_MEETINGS.filter(m => {
+    if (filterCourse === 'ALL') return true;
+    return m.courseCode === filterCourse;
+  });
+
+  if (filteredMeetings.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" class="empty-state">
+          <div class="empty-icon">📭</div>
+          <div>Tidak ada pertemuan untuk mata kuliah ini.</div>
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = filteredMeetings.map((m, idx) => {
+    const key = `${m.courseCode}_${m.pCode}`;
+    const isOpen = (key in lecturerMeetingLocks) ? (lecturerMeetingLocks[key] === true) : (m.pNum <= 2);
+    
+    let courseColor = '#38BDF8';
+    if (m.courseCode === 'AIS') courseColor = '#E88030';
+    if (m.courseCode === 'ADA') courseColor = '#10B981';
+    if (m.courseCode === 'BIV') courseColor = '#F59E0B';
+
+    const statusBadge = isOpen
+      ? `<span class="badge-pass" style="display:inline-flex;align-items:center;gap:4px">🟢 Akses Terbuka</span>`
+      : `<span class="badge-fail" style="display:inline-flex;align-items:center;gap:4px">🔒 Terkunci (Belum Waktunya)</span>`;
+
+    const actionBtn = isOpen
+      ? `<button class="action-btn action-delete" onclick="toggleSingleMeetingLock('${key}', false)">🔒 Kunci Modul</button>`
+      : `<button class="btn-primary" style="padding:6px 14px;font-size:12px" onclick="toggleSingleMeetingLock('${key}', true)">🔓 Buka Kunci</button>`;
+
+    return `
+      <tr style="${isOpen ? '' : 'background:rgba(239,68,68,.03)'}">
+        <td style="color:var(--txl);font-family:'Source Code Pro',monospace">${idx + 1}</td>
+        <td>
+          <span style="background:rgba(255,255,255,.06);border:1px solid ${courseColor};color:${courseColor};padding:3px 8px;border-radius:6px;font-size:12px;font-weight:700;font-family:'Source Code Pro',monospace">${m.courseCode}</span>
+        </td>
+        <td>
+          <strong style="color:#fff;font-size:14px">${escapeHtml(m.title)}</strong>
+        </td>
+        <td style="color:var(--txm);font-size:12.5px;max-width:320px">${escapeHtml(m.desc)}</td>
+        <td style="text-align:center">${statusBadge}</td>
+        <td style="text-align:center">${actionBtn}</td>
+      </tr>
+    `;
+  }).join('');
+}
+window.renderMeetingLocks = renderMeetingLocks;
+
+async function toggleSingleMeetingLock(key, isOpen) {
+  lecturerMeetingLocks[key] = isOpen;
+  renderMeetingLocks();
+
+  if (!dbRef) return;
+  try {
+    await dbRef.collection('settings').doc('meeting_locks').set({
+      [key]: isOpen,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+    showToastNotification(`✓ Status ${key} berhasil diubah ke: ${isOpen ? 'TERBUKA' : 'TERKUNCI'}`);
+  } catch (err) {
+    console.error("Error updating meeting lock:", err);
+    alert("Gagal memperbarui status kunci: " + err.message);
+  }
+}
+window.toggleSingleMeetingLock = toggleSingleMeetingLock;
+
+async function bulkToggleLocks(isOpen) {
+  const filterCourse = document.getElementById('lockCourseFilter') ? document.getElementById('lockCourseFilter').value : 'ALL';
+  const targetMeetings = ALL_COURSE_MEETINGS.filter(m => {
+    if (filterCourse === 'ALL') return true;
+    return m.courseCode === filterCourse;
+  });
+
+  const updates = {};
+  targetMeetings.forEach(m => {
+    const key = `${m.courseCode}_${m.pCode}`;
+    lecturerMeetingLocks[key] = isOpen;
+    updates[key] = isOpen;
+  });
+
+  renderMeetingLocks();
+
+  if (!dbRef) return;
+  try {
+    await dbRef.collection('settings').doc('meeting_locks').set({
+      ...updates,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+    showToastNotification(`✓ Semua pertemuan ${filterCourse !== 'ALL' ? filterCourse : ''} berhasil di-${isOpen ? 'BUKA' : 'KUNCI'}!`);
+  } catch (err) {
+    console.error("Error updating bulk meeting locks:", err);
+    alert("Gagal memperbarui status kunci: " + err.message);
+  }
+}
+window.bulkToggleLocks = bulkToggleLocks;
+
+function showToastNotification(msg) {
+  let toast = document.getElementById('dashboardActionToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'dashboardActionToast';
+    toast.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#0F172A;border:1.5px solid #38BDF8;color:#F0F4FA;padding:12px 20px;border-radius:10px;font-size:13.5px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.6);z-index:99999;display:flex;align-items:center;gap:8px;animation:modalPop .2s ease-out';
+    document.body.appendChild(toast);
+  }
+  toast.innerHTML = `<span>⚡</span> <span>${escapeHtml(msg)}</span>`;
+  toast.style.display = 'flex';
+  clearTimeout(window._toastTimeout);
+  window._toastTimeout = setTimeout(() => {
+    if (toast) toast.style.display = 'none';
+  }, 3500);
+}
+window.showToastNotification = showToastNotification;
 
 // Inisialisasi saat window dimuat
 if (document.readyState === 'loading') {
