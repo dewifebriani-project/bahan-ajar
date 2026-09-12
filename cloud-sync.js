@@ -17,7 +17,7 @@ const FIREBASE_CONFIG = {
   measurementId: "G-3N3W7V0195"
 };
 
-// 2. Global State & Firestore Instance
+// 2. Global State, PIN Gate & Firestore Instance
 let db = null;
 let isDbReady = false;
 const readyCallbacks = [];
@@ -26,6 +26,16 @@ let currentStudent = {
   nim: localStorage.getItem('tazkia_student_nim') || '',
   nama: localStorage.getItem('tazkia_student_nama') || ''
 };
+
+// 3. Default Confidential PINs (Dapat diubah dosen di Dashboard Dosen)
+const DEFAULT_COURSE_PINS = {
+  'SIA': '3021',    // Sistem Informasi Akuntansi
+  'ADA': '3011',    // Applied Data Analytics
+  'BIV': '3012',    // Business Intelligence & Visualization
+  'DOSEN': '7788'   // Dashboard Dosen
+};
+
+let activeCoursePins = { ...DEFAULT_COURSE_PINS };
 
 // Helper: Run callback when Firebase DB is ready
 window.onCloudSyncReady = function(cb) {
@@ -41,6 +51,7 @@ function markDbReady(firestoreInstance) {
   isDbReady = true;
   window.firebaseDb = db;
   console.log("✓ Firebase Firestore 'akuntansi-syariah' siap digunakan!");
+  checkCourseAccessPin();
   checkStudentIdentity();
   while (readyCallbacks.length > 0) {
     const cb = readyCallbacks.shift();
@@ -48,6 +59,119 @@ function markDbReady(firestoreInstance) {
   }
   window.dispatchEvent(new CustomEvent('cloud-sync-ready', { detail: { db } }));
 }
+
+// 4. Confidential Course PIN Gate Engine
+function detectCurrentCourse() {
+  const path = decodeURIComponent(window.location.pathname);
+  if (path.includes('Sistem Informasi Akuntansi')) return 'SIA';
+  if (path.includes('Applied Data Analytics')) return 'ADA';
+  if (path.includes('Business Intelligence')) return 'BIV';
+  if (path.includes('dashboard-dosen')) return 'DOSEN';
+  return null; // Portal index.html bebas diakses untuk melihat katalog
+}
+
+function checkCourseAccessPin() {
+  const courseCode = detectCurrentCourse();
+  if (!courseCode) return;
+
+  window.onCloudSyncReady(dbInstance => {
+    // Sinkronkan PIN dari Firestore 'settings/access_pins' jika ada perubahan oleh Dosen
+    dbInstance.collection('settings').doc('access_pins').onSnapshot(doc => {
+      if (doc.exists) {
+        activeCoursePins = { ...DEFAULT_COURSE_PINS, ...doc.data() };
+      }
+      validateCoursePin(courseCode);
+    }, err => {
+      validateCoursePin(courseCode);
+    });
+  });
+}
+
+function validateCoursePin(courseCode) {
+  const requiredPin = activeCoursePins[courseCode] || DEFAULT_COURSE_PINS[courseCode];
+  const unlocked = localStorage.getItem('tazkia_pin_unlocked_' + courseCode);
+
+  if (unlocked === requiredPin) {
+    const lockModal = document.getElementById('coursePinModal');
+    if (lockModal) lockModal.remove();
+    document.body.style.overflow = '';
+  } else {
+    showPinModal(courseCode, requiredPin);
+  }
+}
+
+function showPinModal(courseCode, requiredPin) {
+  if (!document.body) {
+    document.addEventListener('DOMContentLoaded', () => showPinModal(courseCode, requiredPin));
+    return;
+  }
+
+  let modal = document.getElementById('coursePinModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'coursePinModal';
+    document.body.style.overflow = 'hidden';
+
+    const courseNames = {
+      'SIA': 'Sistem Informasi Akuntansi (AKS-302)',
+      'ADA': 'Applied Data Analytics (DAT-301)',
+      'BIV': 'Business Intelligence & Visualization (BIV-301)',
+      'DOSEN': 'Dashboard Monitoring & Rekap Nilai Dosen'
+    };
+
+    modal.innerHTML = `
+      <div style="position:fixed;inset:0;background:rgba(7,15,28,.97);backdrop-filter:blur(10px);z-index:999999;display:flex;align-items:center;justify-content:center;padding:18px">
+        <div style="background:#121826;border:2px solid #D46020;border-radius:14px;padding:32px 24px;max-width:400px;width:100%;color:#fff;box-shadow:0 20px 50px rgba(0,0,0,.8);font-family:'Source Sans 3',sans-serif;text-align:center">
+          <div style="font-size:42px;margin-bottom:8px">🔒</div>
+          <h3 style="font-family:'Amiri',serif;font-size:24px;margin:0 0 6px;color:#FFB885">Kunci Akses Kelas</h3>
+          <p style="font-size:13.5px;color:#CBD5E1;margin-bottom:6px">Mata Kuliah: <strong style="color:#38BDF8">${courseNames[courseCode] || courseCode}</strong></p>
+          <p style="font-size:12px;color:#94A3B8;margin-bottom:18px">Materi ini bersifat <em>confidential</em>. Masukkan PIN 4 digit yang dibagikan oleh Dosen di dalam kelas untuk membuka akses.</p>
+          
+          <div style="margin-bottom:18px">
+            <input type="password" id="inputCoursePin" maxlength="8" placeholder="••••" style="width:100%;padding:12px;border-radius:8px;border:1.5px solid #334155;background:#0F172A;color:#FFD488;font-size:22px;letter-spacing:.3em;text-align:center;box-sizing:border-box;font-family:'Source Code Pro',monospace;outline:none">
+          </div>
+
+          <button onclick="submitCoursePin('${courseCode}')" style="width:100%;background:linear-gradient(135deg,#D46020,#E88030);color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;box-shadow:0 4px 16px rgba(212,96,32,.3)">🔓 Buka Akses Materi ✓</button>
+          
+          <div style="margin-top:16px">
+            <a href="${courseCode === 'DOSEN' ? 'index.html' : '../../index.html'}" style="color:#94A3B8;font-size:12.5px;text-decoration:none">← Kembali ke Portal Utama</a>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    setTimeout(() => {
+      const input = document.getElementById('inputCoursePin');
+      if (input) {
+        input.focus();
+        input.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') submitCoursePin(courseCode);
+        });
+      }
+    }, 100);
+  }
+}
+
+window.submitCoursePin = function(courseCode) {
+  const input = document.getElementById('inputCoursePin');
+  if (!input) return;
+  const typedPin = input.value.trim();
+  const requiredPin = activeCoursePins[courseCode] || DEFAULT_COURSE_PINS[courseCode];
+
+  if (typedPin === requiredPin) {
+    localStorage.setItem('tazkia_pin_unlocked_' + courseCode, requiredPin);
+    const modal = document.getElementById('coursePinModal');
+    if (modal) modal.remove();
+    document.body.style.overflow = '';
+    showCloudToast(`Akses <strong>${courseCode}</strong> berhasil terbuka!`);
+  } else {
+    input.value = '';
+    input.style.borderColor = '#EF4444';
+    alert("❌ PIN Salah! Silakan tanyakan PIN akses yang benar kepada Dosen pengampu di kelas.");
+    input.focus();
+  }
+};
 
 // 3. Initialize Firebase SDK from CDN
 (function initFirebase() {
