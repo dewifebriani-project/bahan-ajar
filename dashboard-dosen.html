@@ -606,12 +606,12 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
 
 <script>
 var lecturerCourses = [
-  { code: 'SIA', name: 'Sistem Informasi Akuntansi (AKS-302)', folder: 'Sistem Informasi Akuntansi', pin: '3021', icon: '🏛️' },
-  { code: 'ADA', name: 'Applied Data Analytics (DAT-301)', folder: 'Applied Data Analytics', pin: '3011', icon: '📊' },
+  { code: 'AIS', name: 'Accounting Information Systems (AIS-302)', folder: 'Sistem Informasi Akuntansi', pin: '3021', icon: '🏛️' },
+  { code: 'ADA', name: 'Applied Data Analytics (ADA-301)', folder: 'Applied Data Analytics', pin: '3011', icon: '📊' },
   { code: 'BIV', name: 'Business Intelligence & Visualization (BIV-301)', folder: 'Business Intelligence', pin: '3012', icon: '📈' }
 ];
 
-var activePins = { SIA: '3021', ADA: '3011', BIV: '3012', DOSEN: '7788' };
+var activePins = { AIS: '3021', SIA: '3021', ADA: '3011', BIV: '3012', DOSEN: '7788' };
 var lecturerRoster = (window.activeStudentsRoster && window.activeStudentsRoster.length > 0) ? [...window.activeStudentsRoster] : (window.DEFAULT_STUDENTS_ROSTER || []);
 var allQuizData = [];
 var allLabData = [];

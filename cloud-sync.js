@@ -29,45 +29,45 @@ let currentStudent = {
 
 // 3. Dynamic Course Registry & Confidential PINs
 const DEFAULT_COURSES = [
-  { code: 'SIA', name: 'Sistem Informasi Akuntansi (AKS-302)', folder: 'Sistem Informasi Akuntansi', pin: '3021', icon: '🏛️' },
+  { code: 'AIS', name: 'Accounting Information Systems (AIS-302)', folder: 'Sistem Informasi Akuntansi', pin: '3021', icon: '🏛️' },
   { code: 'ADA', name: 'Applied Data Analytics (ADA-301)', folder: 'Applied Data Analytics', pin: '3011', icon: '📊' },
   { code: 'BIV', name: 'Business Intelligence & Visualization (BIV-301)', folder: 'Business Intelligence', pin: '3012', icon: '📈' }
 ];
 
 let registeredCourses = [...DEFAULT_COURSES];
-let activeCoursePins = { 'SIA': '3021', 'ADA': '3011', 'BIV': '3012', 'DOSEN': '7788' };
+let activeCoursePins = { 'AIS': '3021', 'SIA': '3021', 'ADA': '3011', 'BIV': '3012', 'DOSEN': '7788' };
 
 // Official Master Student Roster (37 Mahasiswa Terdaftar)
 const DEFAULT_STUDENTS_ROSTER = [
-  // --- SIA Kelas Karyawan (11 Mahasiswa) ---
-  { nim: "2510102001", nama: "Zahra Qatrun Nada", courses: ["SIA"], classGroup: "SIA - Karyawan", status: "Aktif" },
-  { nim: "2510102003", nama: "Nikita Rahma Alyssa Yuda", courses: ["SIA"], classGroup: "SIA - Karyawan", status: "Aktif" },
-  { nim: "2510102005", nama: "Muhammad Isnan Azuhri", courses: ["SIA"], classGroup: "SIA - Karyawan", status: "Aktif" },
-  { nim: "2510102006", nama: "Nurjanah", courses: ["SIA"], classGroup: "SIA - Karyawan", status: "Aktif" },
-  { nim: "2510102008", nama: "Tengku Airin Putri Rudyansyah", courses: ["SIA"], classGroup: "SIA - Karyawan", status: "Aktif" },
-  { nim: "2510102010", nama: "Muhammad Faisal Fadilah", courses: ["SIA"], classGroup: "SIA - Karyawan", status: "Aktif" },
-  { nim: "2510102011", nama: "Era Firda Fajriah", courses: ["SIA"], classGroup: "SIA - Karyawan", status: "Aktif" },
-  { nim: "2510102028", nama: "Farhan Reflyansyah Hutabarat", courses: ["SIA"], classGroup: "SIA - Karyawan", status: "Aktif" },
-  { nim: "2510102030", nama: "Khairunnisa Najla Salsabila", courses: ["SIA"], classGroup: "SIA - Karyawan", status: "Aktif" },
-  { nim: "2510102031", nama: "Safanah Sayidatus Sajil Hakim", courses: ["SIA"], classGroup: "SIA - Karyawan", status: "Aktif" },
-  { nim: "2510102034", nama: "Hanifah", courses: ["SIA"], classGroup: "SIA - Karyawan", status: "Aktif" },
+  // --- AIS Kelas Karyawan (11 Mahasiswa) ---
+  { nim: "2510102001", nama: "Zahra Qatrun Nada", courses: ["AIS", "SIA"], classGroup: "AIS - Karyawan", status: "Aktif" },
+  { nim: "2510102003", nama: "Nikita Rahma Alyssa Yuda", courses: ["AIS", "SIA"], classGroup: "AIS - Karyawan", status: "Aktif" },
+  { nim: "2510102005", nama: "Muhammad Isnan Azuhri", courses: ["AIS", "SIA"], classGroup: "AIS - Karyawan", status: "Aktif" },
+  { nim: "2510102006", nama: "Nurjanah", courses: ["AIS", "SIA"], classGroup: "AIS - Karyawan", status: "Aktif" },
+  { nim: "2510102008", nama: "Tengku Airin Putri Rudyansyah", courses: ["AIS", "SIA"], classGroup: "AIS - Karyawan", status: "Aktif" },
+  { nim: "2510102010", nama: "Muhammad Faisal Fadilah", courses: ["AIS", "SIA"], classGroup: "AIS - Karyawan", status: "Aktif" },
+  { nim: "2510102011", nama: "Era Firda Fajriah", courses: ["AIS", "SIA"], classGroup: "AIS - Karyawan", status: "Aktif" },
+  { nim: "2510102028", nama: "Farhan Reflyansyah Hutabarat", courses: ["AIS", "SIA"], classGroup: "AIS - Karyawan", status: "Aktif" },
+  { nim: "2510102030", nama: "Khairunnisa Najla Salsabila", courses: ["AIS", "SIA"], classGroup: "AIS - Karyawan", status: "Aktif" },
+  { nim: "2510102031", nama: "Safanah Sayidatus Sajil Hakim", courses: ["AIS", "SIA"], classGroup: "AIS - Karyawan", status: "Aktif" },
+  { nim: "2510102034", nama: "Hanifah", courses: ["AIS", "SIA"], classGroup: "AIS - Karyawan", status: "Aktif" },
 
-  // --- SIA Kelas Reguler (15 Mahasiswa) ---
-  { nim: "2510102007", nama: "Muhammad Annas Akbar", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
-  { nim: "2510102012", nama: "Parvez Athaya Rifa Adrian", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
-  { nim: "2510102013", nama: "Adibah Aulia Pulungan", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
-  { nim: "2510102014", nama: "Dinda Haselanova Putri", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
-  { nim: "2510102017", nama: "Zahwan Hanif Aghna Rahardjo", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
-  { nim: "2510102018", nama: "Akmal Husein", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
-  { nim: "2510102019", nama: "RAHMA MAUDILAH YUANA PUTRI", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
-  { nim: "2510102020", nama: "Zaydan Ilmi Taqiyudin", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
-  { nim: "2510102021", nama: "Mutia Adelah", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
-  { nim: "2510102022", nama: "LIVIA AZARAH", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
-  { nim: "2510102023", nama: "Aulia Nuzulul Fitria", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
-  { nim: "2510102024", nama: "Muhammad Ibrahim", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
-  { nim: "2510102025", nama: "Iffah Husnul Zahidah", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
-  { nim: "2510102026", nama: "Syamil Al Fayiz", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
-  { nim: "2510102033", nama: "RAGIL ADITIYA", courses: ["SIA"], classGroup: "SIA - Reguler", status: "Aktif" },
+  // --- AIS Kelas Reguler (15 Mahasiswa) ---
+  { nim: "2510102007", nama: "Muhammad Annas Akbar", courses: ["AIS", "SIA"], classGroup: "AIS - Reguler", status: "Aktif" },
+  { nim: "2510102012", nama: "Parvez Athaya Rifa Adrian", courses: ["AIS", "SIA"], classGroup: "AIS - Reguler", status: "Aktif" },
+  { nim: "2510102013", nama: "Adibah Aulia Pulungan", courses: ["AIS", "SIA"], classGroup: "AIS - Reguler", status: "Aktif" },
+  { nim: "2510102014", nama: "Dinda Haselanova Putri", courses: ["AIS", "SIA"], classGroup: "AIS - Reguler", status: "Aktif" },
+  { nim: "2510102017", nama: "Zahwan Hanif Aghna Rahardjo", courses: ["AIS", "SIA"], classGroup: "AIS - Reguler", status: "Aktif" },
+  { nim: "2510102018", nama: "Akmal Husein", courses: ["AIS", "SIA"], classGroup: "AIS - Reguler", status: "Aktif" },
+  { nim: "2510102019", nama: "RAHMA MAUDILAH YUANA PUTRI", courses: ["AIS", "SIA"], classGroup: "AIS - Reguler", status: "Aktif" },
+  { nim: "2510102020", nama: "Zaydan Ilmi Taqiyudin", courses: ["AIS", "SIA"], classGroup: "AIS - Reguler", status: "Aktif" },
+  { nim: "2510102021", nama: "Mutia Adelah", courses: ["AIS", "SIA"], classGroup: "AIS - Reguler", status: "Aktif" },
+  { nim: "2510102022", nama: "LIVIA AZARAH", courses: ["AIS", "SIA"], classGroup: "AIS - Reguler", status: "Aktif" },
+  { nim: "2510102023", nama: "Aulia Nuzulul Fitria", courses: ["AIS", "SIA"], classGroup: "AIS - Reguler", status: "Aktif" },
+  { nim: "2510102024", nama: "Muhammad Ibrahim", courses: ["AIS", "SIA"], classGroup: "AIS - Reguler", status: "Aktif" },
+  { nim: "2510102025", nama: "Iffah Husnul Zahidah", courses: ["AIS", "SIA"], classGroup: "AIS - Reguler", status: "Aktif" },
+  { nim: "2510102026", nama: "Syamil Al Fayiz", courses: ["AIS", "SIA"], classGroup: "AIS - Reguler", status: "Aktif" },
+  { nim: "2510102033", nama: "RAGIL ADITIYA", courses: ["AIS", "SIA"], classGroup: "AIS - Reguler", status: "Aktif" },
 
   // --- ADA & BIV (11 Mahasiswa) ---
   { nim: "2410102002", nama: "Aliffa Rahmadanni", courses: ["ADA", "BIV"], classGroup: "ADA / BIV", status: "Aktif" },
