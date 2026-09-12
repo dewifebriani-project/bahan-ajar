@@ -429,6 +429,13 @@ function switchTab(tabId) {
 }
 
 function initLecturerDashboard() {
+  // Render default state immediately for instantaneous UI response
+  renderPinTable();
+  populateDropdowns();
+  if (document.getElementById('tabBadgeCourses')) {
+    document.getElementById('tabBadgeCourses').textContent = registeredCourses.length + ' Kelas';
+  }
+
   window.onCloudSyncReady((dbInstance) => {
     dbRef = dbInstance;
 
@@ -439,10 +446,18 @@ function initLecturerDashboard() {
         if (data && Array.isArray(data.courses) && data.courses.length > 0) {
           registeredCourses = [...data.courses];
         }
+      } else {
+        // Auto-seed default courses if not present
+        dbInstance.collection('settings').doc('courses_meta').set({
+          courses: DEFAULT_COURSES,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
       }
       renderPinTable();
       populateDropdowns();
-      document.getElementById('tabBadgeCourses').textContent = registeredCourses.length + ' Kelas';
+      if (document.getElementById('tabBadgeCourses')) {
+        document.getElementById('tabBadgeCourses').textContent = registeredCourses.length + ' Kelas';
+      }
     }, err => {
       renderPinTable();
       populateDropdowns();
