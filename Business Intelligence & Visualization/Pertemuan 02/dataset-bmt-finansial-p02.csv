@@ -1,0 +1,49 @@
+id_pembiayaan,tanggal,cabang,jenis_akad,sektor_ekonomi,nominal_pembiayaan,margin_keuntungan,kolektibilitas,skor_kelayakan,npf_kategori
+PB-2026-001,2026-01-05,Jakarta Pusat,Murabahah,Perdagangan Sembako,45000000,5400000,Lancar,88,Non-NPF
+PB-2026-002,2026-01-08,Bogor Barat,Mudharabah,Kuliner Halal,35000000,4200000,Lancar,85,Non-NPF
+PB-2026-003,2026-01-12,Depok Timur,Musyarakah,Fashion Muslim,60000000,7800000,DPK,74,Non-NPF
+PB-2026-004,2026-01-15,Tangerang Selatan,Ijarah,Jasa Pendidikan,25000000,3000000,Lancar,92,Non-NPF
+PB-2026-005,2026-01-19,Bekasi Kota,Murabahah,Konveksi,50000000,6000000,Kurang Lancar,65,NPF
+PB-2026-006,2026-01-22,Bandung Juanda,Musyarakah,Pertanian Organik,80000000,10400000,Lancar,90,Non-NPF
+PB-2026-007,2026-01-25,Jakarta Pusat,Qardhul Hasan,Perdagangan Sembako,10000000,0,Lancar,95,Non-NPF
+PB-2026-008,2026-01-28,Bogor Barat,Murabahah,Kuliner Halal,40000000,4800000,Lancar,82,Non-NPF
+PB-2026-009,2026-02-02,Depok Timur,Mudharabah,Fashion Muslim,55000000,6600000,Lancar,87,Non-NPF
+PB-2026-010,2026-02-05,Tangerang Selatan,Musyarakah,Jasa Pendidikan,75000000,9750000,Lancar,91,Non-NPF
+PB-2026-011,2026-02-09,Bekasi Kota,Murabahah,Perdagangan Sembako,30000000,3600000,DPK,72,Non-NPF
+PB-2026-012,2026-02-12,Bandung Juanda,Ijarah,Kuliner Halal,20000000,2400000,Lancar,89,Non-NPF
+PB-2026-013,2026-02-16,Jakarta Pusat,Musyarakah,Konveksi,90000000,11700000,Lancar,94,Non-NPF
+PB-2026-014,2026-02-20,Bogor Barat,Murabahah,Pertanian Organik,45000000,5400000,Diragukan,61,NPF
+PB-2026-015,2026-02-24,Depok Timur,Qardhul Hasan,Perdagangan Sembako,8000000,0,Lancar,96,Non-NPF
+PB-2026-016,2026-02-27,Tangerang Selatan,Mudharabah,Fashion Muslim,65000000,7800000,Lancar,86,Non-NPF
+PB-2026-017,2026-03-03,Bekasi Kota,Musyarakah,Kuliner Halal,70000000,9100000,Macet,55,NPF
+PB-2026-018,2026-03-06,Bandung Juanda,Murabahah,Jasa Pendidikan,35000000,4200000,Lancar,88,Non-NPF
+PB-2026-019,2026-03-10,Jakarta Pusat,Ijarah,Konveksi,28000000,3360000,Lancar,90,Non-NPF
+PB-2026-020,2026-03-14,Bogor Barat,Musyarakah,Perdagangan Sembako,85000000,11050000,Lancar,93,Non-NPF
+PB-2026-021,2026-03-18,Depok Timur,Murabahah,Pertanian Organik,50000000,6000000,Lancar,84,Non-NPF
+PB-2026-022,2026-03-21,Tangerang Selatan,Qardhul Hasan,Kuliner Halal,12000000,0,Lancar,95,Non-NPF
+PB-2026-023,2026-03-25,Bekasi Kota,Mudharabah,Fashion Muslim,48000000,5760000,DPK,70,Non-NPF
+PB-2026-024,2026-03-29,Bandung Juanda,Musyarakah,Konveksi,95000000,12350000,Lancar,92,Non-NPF
+PB-2026-025,2026-04-02,Jakarta Pusat,Murabahah,Kuliner Halal,52000000,6240000,Lancar,89,Non-NPF
+PB-2026-026,2026-04-06,Bogor Barat,Ijarah,Jasa Pendidikan,30000000,3600000,Lancar,87,Non-NPF
+PB-2026-027,2026-04-10,Depok Timur,Musyarakah,Perdagangan Sembako,78000000,10140000,Kurang Lancar,67,NPF
+PB-2026-028,2026-04-14,Tangerang Selatan,Murabahah,Pertanian Organik,42000000,5040000,Lancar,85,Non-NPF
+PB-2026-029,2026-04-18,Bekasi Kota,Qardhul Hasan,Perdagangan Sembako,15000000,0,Lancar,97,Non-NPF
+PB-2026-030,2026-04-22,Bandung Juanda,Mudharabah,Kuliner Halal,62000000,7440000,Lancar,91,Non-NPF
+PB-2026-031,2026-04-26,Jakarta Pusat,Musyarakah,Fashion Muslim,110000000,14300000,Lancar,96,Non-NPF
+PB-2026-032,2026-04-30,Bogor Barat,Murabahah,Konveksi,38000000,4560000,DPK,75,Non-NPF
+PB-2026-033,2026-05-04,Depok Timur,Ijarah,Jasa Pendidikan,26000000,3120000,Lancar,88,Non-NPF
+PB-2026-034,2026-05-08,Tangerang Selatan,Musyarakah,Kuliner Halal,88000000,11440000,Lancar,94,Non-NPF
+PB-2026-035,2026-05-12,Bekasi Kota,Murabahah,Pertanian Organik,46000000,5520000,Diragukan,58,NPF
+PB-2026-036,2026-05-16,Bandung Juanda,Qardhul Hasan,Fashion Muslim,10000000,0,Lancar,95,Non-NPF
+PB-2026-037,2026-05-20,Jakarta Pusat,Mudharabah,Perdagangan Sembako,58000000,6960000,Lancar,90,Non-NPF
+PB-2026-038,2026-05-24,Bogor Barat,Musyarakah,Kuliner Halal,72000000,9360000,Lancar,86,Non-NPF
+PB-2026-039,2026-05-28,Depok Timur,Murabahah,Konveksi,44000000,5280000,Lancar,83,Non-NPF
+PB-2026-040,2026-06-02,Tangerang Selatan,Ijarah,Jasa Pendidikan,32000000,3840000,Lancar,91,Non-NPF
+PB-2026-041,2026-06-06,Bekasi Kota,Musyarakah,Perdagangan Sembako,82000000,10660000,Macet,52,NPF
+PB-2026-042,2026-06-10,Bandung Juanda,Murabahah,Pertanian Organik,40000000,4800000,Lancar,89,Non-NPF
+PB-2026-043,2026-06-14,Jakarta Pusat,Musyarakah,Kuliner Halal,105000000,13650000,Lancar,95,Non-NPF
+PB-2026-044,2026-06-18,Bogor Barat,Qardhul Hasan,Perdagangan Sembako,14000000,0,Lancar,98,Non-NPF
+PB-2026-045,2026-06-22,Depok Timur,Mudharabah,Fashion Muslim,64000000,7680000,Lancar,87,Non-NPF
+PB-2026-046,2026-06-25,Tangerang Selatan,Murabahah,Konveksi,47000000,5640000,Lancar,88,Non-NPF
+PB-2026-047,2026-06-28,Bekasi Kota,Ijarah,Kuliner Halal,22000000,2640000,DPK,71,Non-NPF
+PB-2026-048,2026-06-30,Bandung Juanda,Musyarakah,Jasa Pendidikan,92000000,11960000,Lancar,93,Non-NPF

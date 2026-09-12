@@ -3,20 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Business Intelligence & Visualization (BIV-301) — Silabus & Modul Perkuliahan</title>
+<title>Pertemuan 02: Prinsip Desain Visualisasi &amp; Chart Chooser — Portal Pembelajaran Digital</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap">
-<script src="../cloud-sync.js?v=20260912b"></script>
+<script src="../../cloud-sync.js?v=20260912b"></script>
 <style>
 :root {
   --bg: #0A0E17;
   --sf: #121826;
   --sf2: #182236;
-  --sf3: #1E293B;
   --bd: #22304A;
   --tx: #F0F4FA;
   --txm: #94A3B8;
   --txl: #64748B;
-  --acc: #34D399;
+  --pr: #C09030;
   --r: 14px;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -30,60 +29,34 @@ body {
   line-height: 1.6;
 }
 .hd {
-  background: linear-gradient(180deg, #0F172A 0%, #0A0E17 100%);
+  background: linear-gradient(180deg, #140A28 0%, #0A0E17 100%);
   padding: 36px 24px 28px;
   border-bottom: 1px solid var(--bd);
   position: relative;
 }
 .hd-container {
-  max-width: 920px;
+  max-width: 880px;
   margin: 0 auto;
-}
-.top-nav-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
 }
 .nav-back {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #38BDF8;
+  color: #D0A840;
   text-decoration: none;
   font-size: 13.5px;
   font-weight: 600;
+  margin-bottom: 16px;
   padding: 6px 14px;
-  background: rgba(56, 189, 248, 0.08);
-  border: 1px solid rgba(56, 189, 248, 0.25);
+  background: rgba(208, 168, 64, 0.08);
+  border: 1px solid rgba(208, 168, 64, 0.25);
   border-radius: 8px;
   transition: all 0.15s;
 }
 .nav-back:hover {
-  background: rgba(56, 189, 248, 0.18);
+  background: rgba(208, 168, 64, 0.18);
   transform: translateX(-3px);
 }
-.btn-rps {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: #F8FAFC;
-  text-decoration: none;
-  font-size: 13px;
-  font-weight: 600;
-  padding: 6px 16px;
-  background: var(--sf3);
-  border: 1px solid var(--bd);
-  border-radius: 8px;
-  transition: all 0.15s;
-}
-.btn-rps:hover {
-  border-color: var(--acc);
-  color: var(--acc);
-}
-
 .hd-badge {
   display: inline-block;
   background: rgba(255, 255, 255, 0.08);
@@ -99,23 +72,20 @@ body {
 }
 .hd-title {
   font-family: 'Amiri', serif;
-  font-size: 32px;
+  font-size: 30px;
   font-weight: 700;
   color: #fff;
   line-height: 1.25;
   margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
 }
 .hd-desc {
   font-size: 14.5px;
   color: var(--txm);
-  max-width: 760px;
+  max-width: 720px;
 }
 
 .main {
-  max-width: 920px;
+  max-width: 880px;
   margin: 0 auto;
   padding: 36px 24px 60px;
   flex: 1;
@@ -139,45 +109,43 @@ body {
   content: "";
   width: 4px;
   height: 20px;
-  background: var(--acc);
+  background: #D0A840;
   border-radius: 2px;
 }
-.meeting-count {
+.file-count {
   font-size: 13px;
   color: var(--txl);
   font-weight: 600;
 }
 
-.meetings-list {
+.file-list {
   display: grid;
   gap: 14px;
 }
-.meeting-card {
+.file-card {
   background: var(--sf);
   border: 1px solid var(--bd);
   border-radius: var(--r);
-  padding: 20px 24px;
+  padding: 18px 22px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  text-decoration: none;
-  color: inherit;
   transition: all 0.2s;
 }
-.meeting-card:hover {
+.file-card:hover {
   background: var(--sf2);
-  border-color: var(--acc);
+  border-color: rgba(208, 168, 64, 0.4);
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(0,0,0,0.35);
 }
-.meeting-left {
+.file-info {
   display: flex;
   align-items: flex-start;
-  gap: 18px;
+  gap: 16px;
   flex: 1;
 }
-.meeting-icon {
+.file-icon {
   font-size: 28px;
   width: 48px;
   height: 48px;
@@ -189,36 +157,36 @@ body {
   justify-content: center;
   flex-shrink: 0;
 }
-.meeting-details {
+.file-details {
   flex: 1;
 }
-.meeting-header {
+.file-meta {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   margin-bottom: 4px;
   flex-wrap: wrap;
 }
-.meeting-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #fff;
-}
-.meeting-badge {
+.file-badge {
   font-size: 11px;
   font-weight: 700;
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--txm);
   padding: 2px 8px;
   border-radius: 6px;
+  text-transform: uppercase;
   letter-spacing: 0.04em;
 }
-.meeting-desc {
+.file-name {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: #E2E8F0;
+}
+.file-desc {
   font-size: 13.5px;
   color: var(--txm);
-  line-height: 1.5;
+  line-height: 1.45;
 }
-.meeting-btn {
+.file-btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -226,20 +194,19 @@ body {
   color: #F8FAFC;
   border: 1px solid var(--bd);
   border-radius: 8px;
-  padding: 10px 18px;
+  padding: 9px 16px;
+  text-decoration: none;
   font-size: 13px;
   font-weight: 600;
   white-space: nowrap;
   transition: all 0.15s;
-  flex-shrink: 0;
 }
-.meeting-card:hover .meeting-btn {
-  background: var(--acc);
+.file-btn:hover {
+  background: #D0A840;
   color: #0A0E17;
-  border-color: var(--acc);
+  border-color: #D0A840;
   font-weight: 700;
 }
-
 .ft {
   background: #070A10;
   border-top: 1px solid #1E293B;
@@ -249,11 +216,11 @@ body {
   color: var(--txl);
 }
 @media(max-width: 640px) {
-  .meeting-card {
+  .file-card {
     flex-direction: column;
     align-items: flex-start;
   }
-  .meeting-btn {
+  .file-btn {
     width: 100%;
     justify-content: center;
   }
@@ -264,53 +231,65 @@ body {
 
 <header class="hd">
   <div class="hd-container">
-    <div class="top-nav-bar">
-      <a href="../index.html" class="nav-back">← Kembali ke Portal Utama</a>
-      <a href="RPS-BIV.html" class="btn-rps">📋 Rencana Pembelajaran (RPS) <span>➔</span></a>
-    </div>
+    <a href="../index.html" class="nav-back">← Kembali ke Silabus BIV</a>
     <div>
-      <span class="hd-badge">BIV-301 · 3 SKS · Fakultas Ekonomi &amp; Bisnis Islam</span>
-      <h1 class="hd-title"><span>📈</span> Business Intelligence & Visualization</h1>
-      <p class="hd-desc">Arsitektur data warehouse, KPI dashboard eksekutif, visualisasi interaktif PowerBI/Tableau untuk keputusan manajerial.</p>
+      <span class="hd-badge">BIV-301 · Business Intelligence &amp; Visualization</span>
+      <h1 class="hd-title">Pertemuan 02: Prinsip Desain Visualisasi &amp; Chart Chooser</h1>
+      <p class="hd-desc">Framework pemilihan chart, de-cluttering visual, teori Gestalt, pemrosesan pre-attentive, dan etika representasi data 'Adl.</p>
     </div>
   </div>
 </header>
 
 <main class="main">
   <div class="sec-hd">
-    <h2 class="sec-title">Daftar Pertemuan Perkuliahan</h2>
-    <span class="meeting-count">2 Pertemuan Tersedia</span>
+    <h2 class="sec-title">Daftar Berkas &amp; Aktivitas Pembelajaran</h2>
+    <span class="file-count">3 Berkas Tersedia</span>
   </div>
 
-  <div class="meetings-list">
+  <div class="file-list">
     
-    <a href="Pertemuan 01/index.html" class="meeting-card">
-      <div class="meeting-left">
-        <div class="meeting-icon">📁</div>
-        <div class="meeting-details">
-          <div class="meeting-header">
-            <h3 class="meeting-title">Pertemuan 01: Fondasi BI, Data Warehouse & Power BI</h3>
-            <span class="meeting-badge">3 Berkas</span>
+    <div class="file-card">
+      <div class="file-info">
+        <div class="file-icon">📖</div>
+        <div class="file-details">
+          <div class="file-meta">
+            <span class="file-badge" style="background:#F9731620; color:#F97316; border:1px solid #F9731640">Slide Interaktif &amp; Games</span>
+            <span class="file-name">Pertemuan-02-BIV.html</span>
           </div>
-          <p class="meeting-desc">Konsep dasar Business Intelligence, perancangan Star Schema data mart, dan pembuatan dashboard Power BI.</p>
+          <p class="file-desc">Slide teori interaktif, simulator chart chooser, matching game Gestalt, dan kuis evaluasi.</p>
         </div>
       </div>
-      <div class="meeting-btn">Buka Berkas &amp; Lab <span>➔</span></div>
-    </a>
+      <a href="Pertemuan-02-BIV.html" class="file-btn">Buka Slide Kuliah <span>➔</span></a>
+    </div>
 
-    <a href="Pertemuan 02/index.html" class="meeting-card">
-      <div class="meeting-left">
-        <div class="meeting-icon">📊</div>
-        <div class="meeting-details">
-          <div class="meeting-header">
-            <h3 class="meeting-title">Pertemuan 02: Prinsip Desain Visualisasi & Chart Chooser</h3>
-            <span class="meeting-badge">3 Berkas</span>
+    <div class="file-card">
+      <div class="file-info">
+        <div class="file-icon">💻</div>
+        <div class="file-details">
+          <div class="file-meta">
+            <span class="file-badge" style="background:#38BDF820; color:#38BDF8; border:1px solid #38BDF840">Lembar Praktikum</span>
+            <span class="file-name">Praktikum-02-BIV.html</span>
           </div>
-          <p class="meeting-desc">Framework pemilihan chart (comparison, trend, composition, correlation), eliminasi pie chart 3D, prinsip Gestalt, dan etika visual 'Adl.</p>
+          <p class="file-desc">Panduan lab Power BI pembuatan horizontal bar, 100% stacked bar, enclosure, dan de-cluttering.</p>
         </div>
       </div>
-      <div class="meeting-btn">Buka Berkas &amp; Lab <span>➔</span></div>
-    </a>
+      <a href="Praktikum-02-BIV.html" class="file-btn">Buka Lembar Lab <span>➔</span></a>
+    </div>
+
+    <div class="file-card">
+      <div class="file-info">
+        <div class="file-icon">📊</div>
+        <div class="file-details">
+          <div class="file-meta">
+            <span class="file-badge" style="background:#10B98120; color:#10B981; border:1px solid #10B98140">Dataset Praktikum</span>
+            <span class="file-name">dataset-bmt-finansial-p02.csv</span>
+          </div>
+          <p class="file-desc">Dataset portofolio pembiayaan BMT Syariah multi-cabang (48 baris data transaksi).</p>
+        </div>
+      </div>
+      <a href="dataset-bmt-finansial-p02.csv" class="file-btn" download>Unduh Dataset CSV <span>➔</span></a>
+    </div>
+
   </div>
 </main>
 

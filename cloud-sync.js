@@ -144,7 +144,7 @@ let activeMeetingLocks = {
   'AIS_P01': true, 'AIS_P02': true, 'AIS_P03': false, 'AIS_P04': false,
   'AIS_P05': false, 'AIS_P06': false, 'AIS_P07': false, 'AIS_P08': false,
   'ADA_P01': true, 'ADA_P02': true, 'ADA_P03': false,
-  'BIV_P01': true
+  'BIV_P01': true, 'BIV_P02': true
 };
 window.activeMeetingLocks = activeMeetingLocks;
 
@@ -430,6 +430,14 @@ function checkCourseAccessPin() {
       showPinModal(info, requiredPin);
       return;
     }
+  }
+
+  // Dosen account bypasses course PINs automatically
+  if (currentStudent && currentStudent.nim === '0206015') {
+    const lockModal = document.getElementById('coursePinModal');
+    if (lockModal) lockModal.remove();
+    document.body.style.overflow = '';
+    return;
   }
 
   const unlocked = localStorage.getItem('tazkia_pin_unlocked_' + info.code);

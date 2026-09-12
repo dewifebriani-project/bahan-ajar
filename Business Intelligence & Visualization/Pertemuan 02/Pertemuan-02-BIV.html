@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BIV P02 — Prinsip Desain Visualisasi: Pilih Chart yang Tepat</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+<script src="../../cloud-sync.js?v=20260912b"></script>
+<style>
+/* ── BIV P02 · ROYAL PURPLE & GOLD THEME ── */
+:root {
+  --meet-from: #0E0420;
+  --meet-mid: #1A0838;
+  --meet-to: #2A1060;
+  --meet-acc: #C09030;
+  --meet-acc2: #D0A840;
+  --meet-star: #C09030;
+  --bg: #EDF1F6;
+  --sf: #FFFFFF;
+  --sf2: #F4EFF8;
+  --sf3: #F8F5FC;
+  --bd: #C4CDD8;
+  --bs: #DDE3EC;
+  --tx: #0C1824;
+  --txm: #475569;
+  --txl: #8A9AB0;
+  --pri: #1A0838;
+  --pril: #EAD8F8;
+  --prx: #F4EEF8;
+  --acc: #C09030;
+  --accl: #F8EDD0;
+  --acc2: #D0A840;
+  --sya: #1F9060;
+  --syal: #D0EEE2;
+  --syab: #40B080;
+  --p0: #6030B0; --p0l: #EEE0FA;
+  --p1: #C09030; --p1l: #F8EDD0;
+  --p2: #1F9060; --p2l: #D0EEE2;
+  --p3: #2A7898; --p3l: #D8EEF6;
+  --p4: #A03020; --p4l: #F8E0D8;
+  --r: 8px;
+  --rs: 5px;
+  --shadow: 0 4px 20px rgba(26,8,56,.1);
+  --shadow-sm: 0 2px 8px rgba(26,8,56,.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme=light]) {
+    --bg: #06030E;
+    --sf: #100818;
+    --sf2: #160C28;
+    --sf3: #0E0618;
+    --bd: #28104A;
+    --bs: #180830;
+    --tx: #E8D8F8;
+    --txm: #8060A8;
+    --txl: #3A1860;
+    --pri: #8050D0;
+    --pril: #18082A;
+    --prx: #0C0418;
+    --acc: #D0A840;
+    --accl: #18100A;
+    --sya: #40C890;
+    --syal: #031410;
+    --p0l: #0E0820; --p1l: #180A00; --p2l: #031410; --p3l: #051A28; --p4l: #180600;
+  }
+}
+
+:root[data-theme=dark] {
+  --bg: #06030E;
+  --sf: #100818;
+  --sf2: #160C28;
+  --sf3: #0E0618;
+  --bd: #28104A;
+  --bs: #180830;
+  --tx: #E8D8F8;
+  --txm: #8060A8;
+  --txl: #3A1860;
+  --pri: #8050D0;
+  --pril: #18082A;
+  --prx: #0C0418;
+  --acc: #D0A840;
+  --accl: #18100A;
+  --sya: #40C890;
+  --syal: #031410;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Source Sans 3', system-ui, sans-serif; background: var(--bg); color: var(--tx); font-size: 15px; line-height: 1.65; }
+
+/* ── HEADER & HERO ── */
+.hd { background: linear-gradient(160deg, var(--meet-from) 0%, var(--meet-mid) 55%, var(--meet-to) 100%); color: #fff; position: relative; overflow: hidden; }
+.hd-ornament { position: absolute; inset: 0; pointer-events: none; opacity: .12; }
+.hd-inner { max-width: 880px; margin: 0 auto; padding: 38px 28px 12px; position: relative; z-index: 1; }
+.hd-eyebrow { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.hd-line { width: 28px; height: 1px; background: var(--meet-acc); }
+.hd-eye { font-size: 11px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; color: var(--meet-acc); }
+.hd-kode { font-size: 12px; background: rgba(192,144,48,.15); border: 1px solid rgba(192,144,48,.3); border-radius: 12px; padding: 2px 12px; color: var(--meet-acc2); margin-left: auto; }
+.hd-title { font-family: 'Amiri', serif; font-size: 34px; font-weight: 700; line-height: 1.2; margin-bottom: 6px; }
+.hd-sub { font-size: 14.5px; color: rgba(255,255,255,.65); margin-bottom: 18px; }
+.hd-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+.hpill { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14); border-radius: 14px; padding: 3px 12px; font-size: 12px; color: rgba(255,255,255,.75); }
+.hpill strong { color: #fff; }
+.hd-arch { line-height: 0; }
+.hd-arch svg { display: block; width: 100%; height: 28px; }
+
+/* ── PROGRESS BAR (STICKY) ── */
+.prog-wrap { background: var(--sf); border-bottom: 1px solid var(--bs); position: sticky; top: 0; z-index: 40; box-shadow: var(--shadow-sm); }
+.prog-inner { max-width: 880px; margin: 0 auto; padding: 10px 24px; display: flex; align-items: center; gap: 12px; }
+.prog-label { font-size: 12px; font-weight: 700; color: var(--txl); white-space: nowrap; flex-shrink: 0; }
+.prog-steps { display: flex; gap: 5px; flex: 1; }
+.prog-dot { width: 28px; height: 6px; border-radius: 3px; background: var(--bs); transition: background .3s; }
+.prog-dot.done { background: var(--meet-acc); }
+.prog-dot.active { background: rgba(192,144,48,.35); }
+.prog-pct { font-size: 12px; font-weight: 700; color: var(--acc); white-space: nowrap; }
+
+/* ── MAIN CONTENT ── */
+.main { max-width: 880px; margin: 0 auto; padding: 28px 24px 80px; }
+
+/* ── SECTION CARD ── */
+.sec-card { background: var(--sf); border: 1px solid var(--bs); border-radius: var(--r); margin-bottom: 18px; box-shadow: var(--shadow-sm); overflow: hidden; transition: opacity .3s, filter .3s; }
+.sec-card.locked { opacity: .38; filter: grayscale(.45); pointer-events: none; user-select: none; }
+.sec-card.unlocked { opacity: 1; filter: none; pointer-events: auto; }
+.sec-hd { display: flex; align-items: center; gap: 12px; padding: 15px 22px; background: var(--sf3); border-bottom: 1px solid var(--bs); flex-wrap: wrap; }
+.sec-num { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--meet-mid), var(--meet-acc)); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+.sec-num.done { background: var(--sya); }
+.sec-title { font-family: 'Amiri', serif; font-size: 19px; font-weight: 700; color: var(--pri); }
+.sec-cpmk { font-size: 11px; color: var(--acc); font-weight: 700; margin-left: auto; background: var(--accl); padding: 2px 9px; border-radius: 10px; white-space: nowrap; }
+.sec-body { padding: 22px 26px; }
+
+/* ── TYPOGRAPHY ── */
+h3.sh { font-family: 'Amiri', serif; font-size: 20px; font-weight: 700; color: var(--pri); margin: 22px 0 10px; display: flex; align-items: center; gap: 9px; }
+h3.sh::before { content: ''; width: 4px; height: 18px; background: var(--meet-acc); border-radius: 2px; flex-shrink: 0; }
+h4.shs { font-size: 14.5px; font-weight: 700; color: var(--tx); margin: 16px 0 8px; }
+p { color: var(--txm); margin-bottom: 11px; font-size: 14.5px; line-height: 1.65; }
+ul.lst { list-style: none; padding: 0; margin-bottom: 14px; }
+ul.lst li { padding: 5px 0 5px 20px; position: relative; color: var(--txm); font-size: 14px; border-bottom: 1px solid var(--bs); }
+ul.lst li:last-child { border-bottom: none; }
+ul.lst li::before { content: '▸'; position: absolute; left: 0; color: var(--acc); font-size: 11px; top: 7px; }
+ul.lst li strong { color: var(--tx); }
+
+/* ── CALLOUTS ── */
+.callout { border-radius: var(--rs); padding: 13px 16px; margin: 14px 0; font-size: 13.5px; line-height: 1.6; }
+.callout.info { background: var(--prx); border-left: 4px solid var(--acc); color: var(--txm); }
+.callout.sya { background: var(--syal); border-left: 4px solid var(--sya); color: var(--txm); }
+.callout.warn { background: #FEF3E0; border-left: 4px solid #D46020; color: #5A2C04; }
+.callout.syn { background: rgba(192,144,48,.07); border-left: 4px solid var(--acc); color: var(--txm); }
+.callout.case { background: #F8FAFC; border: 1px solid #CBD5E1; border-left: 4px solid #3B82F6; color: var(--txm); }
+.case-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #1D4ED8; margin-bottom: 6px; }
+
+/* ── BUTTONS ── */
+.btn-paham { background: linear-gradient(135deg, var(--meet-mid), var(--meet-acc)); color: #fff; border: none; border-radius: 20px; padding: 10px 22px; font-family: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; margin-top: 16px; transition: opacity .2s; }
+.btn-paham:hover { opacity: .9; }
+.btn-paham.done { background: var(--sya); cursor: default; }
+
+/* ── CHART CHOOSER GRID ── */
+.chooser-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 16px 0; }
+@media (max-width: 620px) { .chooser-grid { grid-template-columns: 1fr; } }
+.chooser-card { background: var(--sf3); border: 1px solid var(--bs); border-radius: var(--r); padding: 16px; border-top: 4px solid var(--meet-acc); }
+.chooser-card h4 { font-size: 15px; font-weight: 700; color: var(--pri); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.chooser-list { list-style: none; padding: 0; font-size: 13px; color: var(--txm); }
+.chooser-list li { margin-bottom: 6px; padding-left: 14px; position: relative; }
+.chooser-list li::before { content: '•'; position: absolute; left: 0; color: var(--acc); }
+
+/* ── GESTALT GRID ── */
+.gestalt-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 16px 0; }
+@media (max-width: 680px) { .gestalt-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 460px) { .gestalt-grid { grid-template-columns: 1fr; } }
+.gestalt-card { background: var(--sf3); border: 1px solid var(--bs); border-radius: var(--rs); padding: 14px; }
+.gestalt-icon { font-size: 24px; margin-bottom: 6px; }
+.gestalt-title { font-size: 14px; font-weight: 700; color: var(--pri); margin-bottom: 4px; }
+.gestalt-desc { font-size: 12px; color: var(--txm); line-height: 1.5; }
+
+/* ── INTERACTIVE SIMULATOR: CHART SELECTOR GAME ── */
+.game-box { background: var(--sf2); border: 2px solid var(--acc); border-radius: var(--r); padding: 20px; margin: 20px 0; }
+.game-title { font-family: 'Amiri', serif; font-size: 18px; font-weight: 700; color: var(--pri); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+.game-desc { font-size: 13.5px; color: var(--txm); margin-bottom: 16px; }
+.scenario-box { background: var(--sf); border: 1px solid var(--bs); border-radius: var(--rs); padding: 16px; margin-bottom: 14px; }
+.scenario-meta { font-size: 11px; font-weight: 700; color: var(--acc); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 6px; }
+.scenario-text { font-size: 14px; font-weight: 600; color: var(--tx); margin-bottom: 12px; }
+.chart-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+@media (max-width: 540px) { .chart-options { grid-template-columns: 1fr; } }
+.chart-opt-btn { background: var(--sf3); border: 1px solid var(--bs); border-radius: var(--rs); padding: 10px; font-family: inherit; font-size: 12.5px; font-weight: 600; color: var(--txm); cursor: pointer; text-align: center; transition: all .2s; }
+.chart-opt-btn:hover { border-color: var(--acc); color: var(--pri); }
+.chart-opt-btn.correct { background: var(--syal) !important; border-color: var(--sya) !important; color: #0A4020 !important; font-weight: 700; }
+.chart-opt-btn.wrong { background: #FEE0E0 !important; border-color: #D44040 !important; color: #901010 !important; }
+.scenario-feedback { display: none; margin-top: 10px; padding: 10px 12px; border-radius: var(--rs); font-size: 12.5px; line-height: 1.5; }
+.scenario-feedback.show { display: block; }
+.scenario-feedback.correct { background: var(--syal); color: #0A4020; border-left: 3px solid var(--sya); }
+.scenario-feedback.wrong { background: #FEF3E0; color: #5A2C04; border-left: 3px solid #D46020; }
+
+/* ── QUIZ & MATCHING ── */
+.quiz-sec { margin-top: 10px; }
+.q-item { background: var(--sf3); border: 1px solid var(--bs); border-radius: var(--rs); padding: 16px; margin-bottom: 14px; }
+.q-title { font-size: 14.5px; font-weight: 700; color: var(--tx); margin-bottom: 10px; }
+.q-opts { display: grid; gap: 8px; }
+.q-opt { display: flex; align-items: flex-start; gap: 10px; background: var(--sf); border: 1px solid var(--bs); border-radius: var(--rs); padding: 9px 13px; cursor: pointer; font-size: 13.5px; color: var(--txm); transition: all .15s; }
+.q-opt:hover { border-color: var(--acc); }
+.q-opt.selected { border-color: var(--acc); background: var(--accl); color: var(--pri); font-weight: 600; }
+.q-opt.correct { background: var(--syal) !important; border-color: var(--sya) !important; color: #0A4020 !important; font-weight: 700; }
+.q-opt.wrong { background: #FEE0E0 !important; border-color: #D44040 !important; color: #901010 !important; }
+.q-opt-letter { width: 22px; height: 22px; border-radius: 50%; background: var(--bs); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; color: var(--tx); }
+.q-opt-text { flex: 1; }
+.opt-fb { display: none; font-size: 12px; margin-top: 6px; padding: 6px 10px; border-radius: 4px; line-height: 1.45; }
+.opt-fb.show { display: block; }
+.opt-fb.correct { background: #E0F4E8; color: #0A4020; }
+.opt-fb.wrong { background: #FDE8E8; color: #7A1010; }
+
+/* ── MATCHING GAME ── */
+.match-container { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
+@media (max-width: 580px) { .match-container { grid-template-columns: 1fr; } }
+.match-col-hd { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--txl); margin-bottom: 8px; }
+.match-list { display: grid; gap: 8px; }
+.match-item { background: var(--sf); border: 1.5px solid var(--bs); border-radius: var(--rs); padding: 10px 14px; font-size: 13px; color: var(--txm); cursor: pointer; transition: all .2s; }
+.match-item:hover { border-color: var(--acc); }
+.match-item.selected { border-color: var(--acc); background: var(--accl); color: var(--pri); font-weight: 600; }
+
+/* ── SUBMISSION & COMPLETION ── */
+.quiz-submit-row { display: flex; align-items: center; gap: 14px; margin-top: 20px; }
+.btn-submit { background: linear-gradient(135deg, var(--meet-mid), var(--meet-acc)); color: #fff; border: none; border-radius: 20px; padding: 11px 26px; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+.btn-submit:disabled { opacity: .5; cursor: default; }
+.quiz-result { display: none; margin-top: 16px; padding: 16px; border-radius: var(--r); }
+.quiz-result.pass { background: var(--syal); border: 1.5px solid var(--sya); color: #0A4020; }
+.quiz-result.fail { background: #FEF3E0; border: 1.5px solid #D46020; color: #5A2C04; }
+.quiz-result .big { font-family: 'Amiri', serif; font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+
+.completion { display: none; background: linear-gradient(135deg, #1A0838, #2A1060); border-radius: var(--r); padding: 28px; text-align: center; color: #fff; margin-top: 28px; }
+.completion.show { display: block; }
+.completion h2 { font-family: 'Amiri', serif; font-size: 26px; font-weight: 700; margin-bottom: 8px; color: var(--meet-acc); }
+.completion p { color: rgba(255,255,255,.8); max-width: 600px; margin: 0 auto 20px; font-size: 14.5px; }
+.lab-link { display: inline-flex; align-items: center; gap: 8px; background: var(--meet-acc); color: #0E0420; font-weight: 700; padding: 12px 28px; border-radius: 24px; text-decoration: none; transition: opacity .2s; }
+.lab-link:hover { opacity: .9; }
+</style>
+</head>
+<body>
+
+<!-- ╔══ HEADER & HERO ══╗ -->
+<header class="hd">
+  <div class="hd-ornament">
+    <svg width="100%" height="100%"><pattern id="grid-pat" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/></pattern><rect width="100%" height="100%" fill="url(#grid-pat)"/></svg>
+  </div>
+  <div class="hd-inner">
+    <div class="hd-eyebrow">
+      <div class="hd-line"></div>
+      <span class="hd-eye">Business Intelligence &amp; Visualization · Pertemuan 02</span>
+      <span class="hd-kode">BIV-301 · 3 SKS</span>
+    </div>
+    <h1 class="hd-title">Prinsip Desain Visualisasi: Pilih Chart yang Tepat</h1>
+    <p class="hd-sub">Taksonomi pemilihan grafik, eliminasi ilusi pie chart 3D, prinsip Gestalt, dan pemrosesan pre-attentive untuk dashboard eksekutif yang jujur dan berdaya guna.</p>
+    <div class="hd-pills">
+      <span class="hpill">Target: <strong>CPMK-1 (C2)</strong></span>
+      <span class="hpill">Pilar: <strong>Chart Chooser &amp; Gestalt</strong></span>
+      <span class="hpill">Nilai Syariah: <strong>'Adl (Keadilan Representasi)</strong></span>
+      <span class="hpill">Referensi: <strong>Cole N. Knaflic &amp; Alberto Cairo</strong></span>
+    </div>
+  </div>
+  <div class="hd-arch">
+    <svg viewBox="0 0 1440 28" fill="none" preserveAspectRatio="none">
+      <path d="M0,0 C360,28 1080,28 1440,0 L1440,28 L0,28 Z" fill="var(--bg)"/>
+    </svg>
+  </div>
+</header>
+
+<!-- ╔══ STICKY PROGRESS BAR ══╗ -->
+<div class="prog-wrap">
+  <div class="prog-inner">
+    <span class="prog-label">Progress Materi</span>
+    <div class="prog-steps">
+      <div class="prog-dot active" id="pd0"></div>
+      <div class="prog-dot" id="pd1"></div>
+      <div class="prog-dot" id="pd2"></div>
+      <div class="prog-dot" id="pd3"></div>
+      <div class="prog-dot" id="pd4"></div>
+      <div class="prog-dot" id="pd5"></div>
+      <div class="prog-dot" id="pd6"></div>
+    </div>
+    <span class="prog-pct" id="progPct">0%</span>
+  </div>
+</div>
+
+<main class="main">
+
+<!-- ╔══ SEKSI 0: CAPAIAN PEMBELAJARAN & URGENSI ══╗ -->
+<div class="sec-card unlocked" id="sec0">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn0">1</div>
+    <div class="sec-title">Urgensi Desain: Mengapa 70% Dashboard Gagal?</div>
+    <span class="sec-cpmk">CPMK-1</span>
+  </div>
+  <div class="sec-body">
+    <p>Banyak organisasi menghabiskan miliaran rupiah untuk infrastruktur data warehouse dan tools BI mutakhir, namun laporannya tetap tidak dibaca oleh pimpinan. Mengapa demikian?</p>
+    
+    <div class="callout warn">
+      <strong>⚠️ Temuan Riset Gartner &amp; Harvard Business Review:</strong> Kegagalan adopsi dashboard bukan disebabkan oleh kesalahan formula SQL atau DAX, melainkan <em>Visual Miscommunication</em> — pimpinan membutuhkan waktu lebih dari 10 detik untuk memahami grafik, atau disajikan chart yang salah sehingga menghasilkan persepsi yang keliru.
+    </div>
+
+    <h3 class="sh">4 Standar Kualitas Visualisasi Data (Alberto Cairo)</h3>
+    <ul class="lst">
+      <li><strong>1. Truthful (Jujur / 'Adl):</strong> Merepresentasikan data secara akurat tanpa distorsi skala atau cherry-picking data.</li>
+      <li><strong>2. Functional (Tepat Fungsi):</strong> Memilih grafik yang sesuai dengan tugas kognitif audiens (membandingkan, melihat tren, atau mencari korelasi).</li>
+      <li><strong>3. Beautiful (Estetik &amp; Rapi):</strong> Menggunakan tipografi hierarkis, white space yang lega, dan palet warna yang harmonis.</li>
+      <li><strong>4. Insightful (Bermakna):</strong> Mengarahkan audiens pada 'So What?' — apa tindakan bisnis yang harus diambil selanjutnya.</li>
+    </ul>
+
+    <button class="btn-paham" onclick="unlock(0)">Saya Paham, Lanjut ke Framework Chart ➔</button>
+  </div>
+</div>
+
+<!-- ╔══ SEKSI 1: CHART CHOOSER FRAMEWORK ══╗ -->
+<div class="sec-card locked" id="sec1">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn1">2</div>
+    <div class="sec-title">Chart Chooser Framework: 5 Tujuan Komunikasi Data</div>
+    <span class="sec-cpmk">CPMK-1</span>
+  </div>
+  <div class="sec-body">
+    <p>Sebelum memilih grafik di Power BI, tanyakan pada diri Anda: <em>"Pesan apa yang ingin saya sampaikan kepada pengambil keputusan?"</em></p>
+
+    <div class="chooser-grid">
+      <div class="chooser-card">
+        <h4>📊 1. Comparison (Perbandingan Kategori)</h4>
+        <ul class="chooser-list">
+          <li><strong>Horizontal Bar Chart:</strong> Pilihan utama jika nama kategori panjang (misal nama cabang: <em>"Tangerang Selatan"</em>) atau kategori &gt; 5.</li>
+          <li><strong>Vertical Column Chart:</strong> Cocok untuk kategori sedikit (&lt; 5) atau perbandingan ordinal diskrit (Q1, Q2, Q3, Q4).</li>
+          <li><strong>Lollipop Chart:</strong> Alternatif modern untuk bar chart saat membandingkan banyak titik data agar tidak padat batang tebal.</li>
+        </ul>
+      </div>
+
+      <div class="chooser-card">
+        <h4>📈 2. Trend Over Time (Perubahan Waktu)</h4>
+        <ul class="chooser-list">
+          <li><strong>Line Chart:</strong> Standar emas untuk data serial kontinu (harian, bulanan, tahunan). Sumbu X WAJIB urut waktu.</li>
+          <li><strong>Area Chart:</strong> Bagus untuk memperlihatkan akumulasi volume total dari waktu ke waktu.</li>
+          <li><strong>Sparkline:</strong> Grafik garis mikro tanpa axis yang disematkan di dalam kartu KPI atau baris tabel ringkas.</li>
+        </ul>
+      </div>
+
+      <div class="chooser-card">
+        <h4>🧩 3. Composition (Part-to-Whole)</h4>
+        <ul class="chooser-list">
+          <li><strong>100% Stacked Bar:</strong> Menampilkan proporsi bagian dari 100% antar beberapa grup tanpa distorsi sudut.</li>
+          <li><strong>Treemap:</strong> Sangat efektif untuk data hierarkis dengan banyak kategori (persegi berukuran proporsional).</li>
+          <li><strong>Waterfall Chart:</strong> Memperlihatkan kontribusi positif/negatif terhadap angka awal hingga saldo akhir (contoh: Laporan Laba Rugi).</li>
+        </ul>
+      </div>
+
+      <div class="chooser-card">
+        <h4>🔗 4. Relationship &amp; Distribution</h4>
+        <ul class="chooser-list">
+          <li><strong>Scatter Plot:</strong> Menampilkan korelasi antara 2 variabel numerik kontinu (misal: Nominal Pembiayaan vs Margin Keuntungan).</li>
+          <li><strong>Bubble Chart:</strong> Korelasi 3 variabel (X, Y, dan Ukuran Lingkaran).</li>
+          <li><strong>Histogram &amp; Box Plot:</strong> Melihat sebaran frekuensi, median, kuartil, dan mendeteksi outlier pembiayaan.</li>
+        </ul>
+      </div>
+    </div>
+
+    <button class="btn-paham" onclick="unlock(1)">Saya Paham, Lanjut ke The Pie Chart Trap ➔</button>
+  </div>
+</div>
+
+<!-- ╔══ SEKSI 2: THE PIE CHART TRAP ══╗ -->
+<div class="sec-card locked" id="sec2">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn2">3</div>
+    <div class="sec-title">The Pie Chart Trap: Mengapa Pie Chart Sering Menipu?</div>
+    <span class="sec-cpmk">CPMK-1</span>
+  </div>
+  <div class="sec-body">
+    <p>Dalam dunia Business Intelligence profesional, <em>Pie Chart</em> adalah visual yang paling sering disalahgunakan dan memicu misinterpretasi data.</p>
+
+    <div class="callout warn">
+      <strong>🧠 Batasan Kognitif Otak Manusia:</strong><br>
+      Korteks visual manusia sangat akurat dalam membandingkan <strong>panjang garis (length)</strong> dan <strong>posisi relatif pada skala umum (position)</strong> dengan tingkat kesalahan &lt; 5%. Namun, otak manusia sangat buruk dalam mengestimasi <strong>derajat sudut (angle)</strong> dan <strong>luas bidang lengkung (area)</strong> dengan tingkat kesalahan mencapai 35–45%.
+    </div>
+
+    <h3 class="sh">3 Aturan Emas Pie &amp; Donut Chart</h3>
+    <ul class="lst">
+      <li><strong>DILARANG 3D:</strong> Efek 3D perspektif membuat irisan di bagian depan tampak 30–40% lebih besar daripada irisan di belakang, meskipun angkanya lebih kecil! Ini adalah pelanggaran integritas data.</li>
+      <li><strong>Maksimal 2–3 Kategori:</strong> Donut chart hanya boleh digunakan jika kategorinya sangat sedikit dan kontras ekstrem (misal: Rasio Pembiayaan Lancar 95% vs NPF 5%).</li>
+      <li><strong>Ganti dengan Horizontal Bar:</strong> Jika kategori lebih dari 3 (misal 6 akad pembiayaan atau 10 cabang), WAJIB gunakan Bar Chart horizontal yang diurutkan descending.</li>
+    </ul>
+
+    <button class="btn-paham" onclick="unlock(2)">Saya Paham, Lanjut ke Prinsip Gestalt ➔</button>
+  </div>
+</div>
+
+<!-- ╔══ SEKSI 3: GESTALT PRINCIPLES IN DASHBOARD ══╗ -->
+<div class="sec-card locked" id="sec3">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn3">4</div>
+    <div class="sec-title">Prinsip Gestalt dalam Desain Dashboard Eksekutif</div>
+    <span class="sec-cpmk">CPMK-1</span>
+  </div>
+  <div class="sec-body">
+    <p>Teori Gestalt menjelaskan bagaimana otak manusia mengelompokkan elemen visual secara otomatis sebelum memproses informasi secara detail. Menerapkan Gestalt membuat dashboard terasa rapi dan tidak membingungkan.</p>
+
+    <div class="gestalt-grid">
+      <div class="gestalt-card">
+        <div class="gestalt-icon">📐</div>
+        <div class="gestalt-title">1. Proximity (Kedekatan)</div>
+        <div class="gestalt-desc">Objek yang diletakkan berdekatan dianggap sebagai satu kesatuan fungsi (misal KPI Card Penjualan ditaruh dekat Trend Penjualan).</div>
+      </div>
+
+      <div class="gestalt-card">
+        <div class="gestalt-icon">🎨</div>
+        <div class="gestalt-title">2. Similarity (Kesamaan)</div>
+        <div class="gestalt-desc">Elemen yang berbagi warna, bentuk, atau font yang sama dianggap memiliki tipe metrik yang sejenis.</div>
+      </div>
+
+      <div class="gestalt-card">
+        <div class="gestalt-icon">📦</div>
+        <div class="gestalt-title">3. Enclosure (Pembingkaian)</div>
+        <div class="gestalt-desc">Menggunakan card container dengan background abu-abu tipis untuk memisahkan modul tanpa butuh garis tebal.</div>
+      </div>
+
+      <div class="gestalt-card">
+        <div class="gestalt-icon">➡️</div>
+        <div class="gestalt-title">4. Continuity (Kontinuitas)</div>
+        <div class="gestalt-desc">Mata membaca secara alami dari kiri-atas ke kanan-bawah (F-Pattern). Letakkan metrik paling krusial di pojok kiri atas.</div>
+      </div>
+
+      <div class="gestalt-card">
+        <div class="gestalt-icon">⭕</div>
+        <div class="gestalt-title">5. Closure (Kelengkapan)</div>
+        <div class="gestalt-desc">Otak melengkapi bentuk tanpa perlu semua border ditutup rapat. Hapus gridline berlebih untuk menghemat ruang kognitif.</div>
+      </div>
+
+      <div class="gestalt-card">
+        <div class="gestalt-icon">🌓</div>
+        <div class="gestalt-title">6. Figure-Ground</div>
+        <div class="gestalt-desc">Kontras tajam antara data utama (foreground) dengan latar belakang netral (background) agar angka langsung terbaca.</div>
+      </div>
+    </div>
+
+    <button class="btn-paham" onclick="unlock(3)">Saya Paham, Lanjut ke Pre-Attentive Visual ➔</button>
+  </div>
+</div>
+
+<!-- ╔══ SEKSI 4: PRE-ATTENTIVE VISUAL ATTRIBUTES ══╗ -->
+<div class="sec-card locked" id="sec4">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn4">5</div>
+    <div class="sec-title">Pre-Attentive Attributes: Mengarahkan Fokus dalam &lt;250ms</div>
+    <span class="sec-cpmk">CPMK-1</span>
+  </div>
+  <div class="sec-body">
+    <p><em>Pre-attentive processing</em> adalah mekanisme penglihatan manusia di mana otak memproses sinyal visual dalam waktu kurang dari 250 milidetik tanpa memerlukan konsentrasi sadar.</p>
+
+    <div class="callout info">
+      <strong>🎯 Aturan 90/10 dalam Pewarnaan BI:</strong><br>
+      Gunakan 90% warna netral (slate gray, soft navy, muted blue) untuk seluruh data konteks, dan alokasikan 10% warna aksen kontras (amber/emas untuk highlight, merah untuk anomali NPF) khusus pada titik data yang membutuhkan perhatian eksekutif segera.
+    </div>
+
+    <h3 class="sh">4 Atribut Pre-attentive Utama</h3>
+    <ul class="lst">
+      <li><strong>Color Hue (Warna):</strong> Satu batang berwarna merah di antara batang abu-abu akan langsung menarik mata direksi.</li>
+      <li><strong>Size (Ukuran):</strong> Angka KPI 32pt vs label pendukung 11pt menciptakan hierarki instan.</li>
+      <li><strong>Spatial Position (Posisi Ruang):</strong> Objek di bagian paling atas atau paling menonjol pada scatter plot langsung terbaca sebagai outlier.</li>
+      <li><strong>Intensity (Ketebalan / Kontras):</strong> Bold font atau saturation tinggi untuk menonjolkan ringkasan total.</li>
+    </ul>
+
+    <button class="btn-paham" onclick="unlock(4)">Saya Paham, Lanjut ke Nilai Syariah ➔</button>
+  </div>
+</div>
+
+<!-- ╔══ SEKSI 5: INSERSI NILAI SYARIAH ══╗ -->
+<div class="sec-card locked" id="sec5">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn5">6</div>
+    <div class="sec-title">Insersi Nilai Syariah: 'Adl (Keadilan &amp; Kejujuran Visual)</div>
+    <span class="sec-cpmk">CPMK-1</span>
+  </div>
+  <div class="sec-body">
+    <div class="callout sya">
+      <strong>📖 Firman Allah SWT — QS. Al-Maidah: 8</strong><br>
+      <em>"...dan janganlah kebencianmu terhadap suatu kaum mendorong kamu untuk berlaku tidak adil. Berlaku adillah, karena adil itu lebih dekat kepada takwa..."</em>
+    </div>
+
+    <p>Dalam konteks Business Intelligence &amp; Data Visualization, nilai <strong>'Adl (Keadilan)</strong> dan <strong>Sidq (Kejujuran)</strong> memiliki implementasi teknis yang mutlak:</p>
+
+    <ul class="lst">
+      <li><strong>Menghindari Tadlis Visual:</strong> Memotong sumbu Y (<em>truncated axis</em>) untuk membuat pertumbuhan penjualan yang kecil tampak meroket adalah bentuk penipuan persepsi yang diharamkan secara etika bisnis Islam.</li>
+      <li><strong>Proporsionalitas Skala:</strong> Setiap visualisasi harus mencerminkan realitas data secara berimbang agar keputusan manajerial yang diambil membawa maslahat bagi nasabah, karyawan, dan seluruh pemangku kepentingan.</li>
+      <li><strong>Transparansi Metrik:</strong> Selalu sertakan definisi dan basis kalkulasi data agar tidak ada ambiguitas dalam laporan akuntabilitas syariah.</li>
+    </ul>
+
+    <button class="btn-paham" onclick="unlock(5)">Saya Paham, Masuk ke Interactive Simulator &amp; Kuis ➔</button>
+  </div>
+</div>
+
+<!-- ╔══ SEKSI 6: INTERACTIVE GAMES & EVALUASI ══╗ -->
+<div class="sec-card locked" id="sec6">
+  <div class="sec-hd">
+    <div class="sec-num" id="sn6">7</div>
+    <div class="sec-title">Game Edukasi &amp; Kuis Evaluasi Pemahaman</div>
+    <span class="sec-cpmk">CPMK-1</span>
+  </div>
+  <div class="sec-body">
+
+    <!-- 🎮 GAME 1: CHART SELECTOR SIMULATOR -->
+    <div class="game-box">
+      <div class="game-title">🎮 Game 1: Chart Selector Simulator (Studi Kasus Bisnis)</div>
+      <p class="game-desc">Pilih chart yang paling tepat dan adil untuk 3 skenario nyata di bawah ini!</p>
+
+      <!-- Skenario 1 -->
+      <div class="scenario-box" id="scenBox0">
+        <div class="scenario-meta">Skenario 1 · Komparasi Kategori</div>
+        <div class="scenario-text">BMT Berkah ingin membandingkan total penyaluran dana di 12 cabang berbeda, di mana nama cabangnya cukup panjang (misal: "Cabang Khusus Pasar Tanah Abang"). Chart apa yang paling tepat?</div>
+        <div class="chart-options">
+          <button class="chart-opt-btn" onclick="checkScenario(0, 0)">Pie Chart 3D</button>
+          <button class="chart-opt-btn" onclick="checkScenario(0, 1)">Horizontal Bar Chart</button>
+          <button class="chart-opt-btn" onclick="checkScenario(0, 2)">Donut Chart</button>
+        </div>
+        <div class="scenario-feedback" id="scenFb0"></div>
+      </div>
+
+      <!-- Skenario 2 -->
+      <div class="scenario-box" id="scenBox1">
+        <div class="scenario-meta">Skenario 2 · Tren Fluktuasi</div>
+        <div class="scenario-text">Manajer ingin memantau tren rasio NPF (Non-Performing Financing) bulanan selama 24 bulan terakhir untuk melihat pola kenaikan risiko kredit macet. Chart apa yang terbaik?</div>
+        <div class="chart-options">
+          <button class="chart-opt-btn" onclick="checkScenario(1, 0)">Line Chart Kontinu</button>
+          <button class="chart-opt-btn" onclick="checkScenario(1, 1)">Treemap Chart</button>
+          <button class="chart-opt-btn" onclick="checkScenario(1, 2)">Vertical Column Chart</button>
+        </div>
+        <div class="scenario-feedback" id="scenFb1"></div>
+      </div>
+
+      <!-- Skenario 3 -->
+      <div class="scenario-box" id="scenBox2">
+        <div class="scenario-meta">Skenario 3 · Komposisi Portofolio</div>
+        <div class="scenario-text">Direksi ingin melihat perbandingan proporsi portofolio akad (Murabahah, Mudharabah, Musyarakah, Ijarah) di setiap cabang secara bersamaan dari total 100%. Chart apa yang tepat?</div>
+        <div class="chart-options">
+          <button class="chart-opt-btn" onclick="checkScenario(2, 0)">Scatter Plot</button>
+          <button class="chart-opt-btn" onclick="checkScenario(2, 1)">100% Stacked Bar Chart</button>
+          <button class="chart-opt-btn" onclick="checkScenario(2, 2)">Gauge Chart</button>
+        </div>
+        <div class="scenario-feedback" id="scenFb2"></div>
+      </div>
+    </div>
+
+    <!-- 🧩 GAME 2: MATCHING GAME -->
+    <h3 class="sh">🧩 Game 2: Matching Game Istilah &amp; Konsep Gestalt</h3>
+    <p>Pasangkan konsep visual di kolom kiri dengan definisi yang tepat di kolom kanan!</p>
+
+    <div class="match-container">
+      <div>
+        <div class="match-col-hd">Istilah / Konsep</div>
+        <div class="match-list" id="matchTerms">
+          <div class="match-item" data-ti="0" onclick="selectTerm(0)"><strong>Pre-Attentive Attribute</strong></div>
+          <div class="match-item" data-ti="1" onclick="selectTerm(1)"><strong>Gestalt Enclosure</strong></div>
+          <div class="match-item" data-ti="2" onclick="selectTerm(2)"><strong>Truncated Axis</strong></div>
+          <div class="match-item" data-ti="3" onclick="selectTerm(3)"><strong>Data-Ink Ratio</strong></div>
+          <div class="match-item" data-ti="4" onclick="selectTerm(4)"><strong>Prinsip 'Adl</strong></div>
+        </div>
+      </div>
+      <div>
+        <div class="match-col-hd">Definisi / Fungsi</div>
+        <div class="match-list" id="matchDefs">
+          <div class="match-item" data-di="0" onclick="selectDef(0)">Prinsip Edward Tufte untuk membuang gridline/dekorasi sia-sia dan memaksimalkan tinta untuk data inti</div>
+          <div class="match-item" data-di="1" onclick="selectDef(1)">Memotong skala sumbu Y agar perbedaan kecil tampak sangat besar — bentuk tadlis visual</div>
+          <div class="match-item" data-di="2" onclick="selectDef(2)">Sinyal visual bawah sadar yang diproses otak dalam &lt;250ms (seperti warna aksen tunggal)</div>
+          <div class="match-item" data-di="3" onclick="selectDef(3)">Kewajiban moral menyajikan visualisasi yang jujur, proporsional, dan tidak mendistorsi realitas</div>
+          <div class="match-item" data-di="4" onclick="selectDef(4)">Membingkai elemen dengan card berlatar tipis agar otak memprosesnya sebagai modul satu grup</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 📝 EVALUASI MCQ -->
+    <h3 class="sh" style="margin-top:28px">📝 Kuis Evaluasi Pemahaman (4 Soal Analitik)</h3>
+
+    <!-- Q1 -->
+    <div class="q-item" id="q0">
+      <div class="q-title">1. Mengapa grafik 3D Pie Chart sangat dilarang dalam visualisasi data eksekutif profesional?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="selectMCQ(0,0)"><span class="q-opt-letter">A</span><span class="q-opt-text">Karena Power BI tidak mendukung pembuatan grafik 3D tanpa lisensi berbayar.</span></div>
+        <div class="q-opt" onclick="selectMCQ(0,1)"><span class="q-opt-letter">B</span><span class="q-opt-text">Karena efek distorsi perspektif membuat irisan di depan tampak 30–40% lebih besar daripada kenyataannya, menipu persepsi audiens.</span></div>
+        <div class="q-opt" onclick="selectMCQ(0,2)"><span class="q-opt-letter">C</span><span class="q-opt-text">Karena grafik 3D hanya boleh digunakan untuk data yang memiliki 3 sumbu (X, Y, Z).</span></div>
+        <div class="q-opt" onclick="selectMCQ(0,3)"><span class="q-opt-letter">D</span><span class="q-opt-text">Karena pie chart tidak dapat diekspor menjadi format PDF.</span></div>
+      </div>
+      <div class="opt-fb" id="fb0"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q-item" id="q1">
+      <div class="q-title">2. Anda diminta membuat visualisasi korelasi antara "Nominal Pembiayaan" dan "Tingkat NPF" pada 100 nasabah BMT. Visual apa yang paling tepat?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="selectMCQ(1,0)"><span class="q-opt-letter">A</span><span class="q-opt-text">Line Chart dengan sumbu X nomor urut nasabah.</span></div>
+        <div class="q-opt" onclick="selectMCQ(1,1)"><span class="q-opt-letter">B</span><span class="q-opt-text">Donut Chart dibagi menjadi 100 irisan nasabah.</span></div>
+        <div class="q-opt" onclick="selectMCQ(1,2)"><span class="q-opt-letter">C</span><span class="q-opt-text">Scatter Plot dengan sumbu X = Nominal Pembiayaan dan sumbu Y = Tingkat NPF.</span></div>
+        <div class="q-opt" onclick="selectMCQ(1,3)"><span class="q-opt-letter">D</span><span class="q-opt-text">Treemap Chart dengan hirarki perorangan.</span></div>
+      </div>
+      <div class="opt-fb" id="fb1"></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="q-item" id="q2">
+      <div class="q-title">3. Berdasarkan prinsip Gestalt "Proximity" dan "Continuity", di manakah posisi terbaik untuk meletakkan KPI Card Total Penjualan &amp; Laba Bersih pada sebuah dashboard?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="selectMCQ(2,0)"><span class="q-opt-letter">A</span><span class="q-opt-text">Di bagian pojok kanan bawah karena itu tempat terakhir mata melihat.</span></div>
+        <div class="q-opt" onclick="selectMCQ(2,1)"><span class="q-opt-letter">B</span><span class="q-opt-text">Di bagian pojok kiri atas secara horizontal karena pola baca alami manusia adalah F/Z Pattern.</span></div>
+        <div class="q-opt" onclick="selectMCQ(2,2)"><span class="q-opt-letter">C</span><span class="q-opt-text">Di tengah-tengah canvas yang dikelilingi oleh 8 diagram lingkaran.</span></div>
+        <div class="q-opt" onclick="selectMCQ(2,3)"><span class="q-opt-letter">D</span><span class="q-opt-text">Disembunyikan di dalam tooltip hover agar layar tetap bersih.</span></div>
+      </div>
+      <div class="opt-fb" id="fb2"></div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="q-item" id="q3">
+      <div class="q-title">4. Apa implikasi penerapan nilai syariah 'Adl terhadap pemilihan skala pada sumbu Y (Y-Axis) dalam grafik batang?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="selectMCQ(3,0)"><span class="q-opt-letter">A</span><span class="q-opt-text">Sumbu Y harus dimulai dari angka 0 (Zero Baseline) agar proporsi panjang batang mencerminkan rasio angka sebenarnya tanpa manipulasi.</span></div>
+        <div class="q-opt" onclick="selectMCQ(3,1)"><span class="q-opt-letter">B</span><span class="q-opt-text">Sumbu Y boleh dipotong di angka minimum agar grafik tampak lebih dinamis dan dramatis.</span></div>
+        <div class="q-opt" onclick="selectMCQ(3,2)"><span class="q-opt-letter">C</span><span class="q-opt-text">Sumbu Y wajib dihilangkan dan diganti dengan ikon dekoratif.</span></div>
+        <div class="q-opt" onclick="selectMCQ(3,3)"><span class="q-opt-letter">D</span><span class="q-opt-text">Sumbu Y harus selalu menggunakan skala logaritmik untuk semua data.</span></div>
+      </div>
+      <div class="opt-fb" id="fb3"></div>
+    </div>
+
+    <!-- SUBMIT -->
+    <div class="quiz-submit-row">
+      <button class="btn-submit" id="btnSubmit" onclick="submitQuiz()">Kumpulkan Semua Jawaban</button>
+      <span class="quiz-score" id="quizScore" style="font-weight:700; color:var(--acc)"></span>
+    </div>
+
+    <div class="quiz-result" id="quizResult">
+      <div class="big" id="resultScore"></div>
+      <p id="resultMsg"></p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ╔══ SEKSI COMPLETION ══╗ -->
+<div class="completion" id="completion">
+  <h2>🎉 Selamat! Anda Telah Menguasai Prinsip Desain Visualisasi P02!</h2>
+  <p>Anda telah memahami taksonomi chart chooser, prinsip Gestalt, pemrosesan pre-attentive, dan etika visual syariah. Sekarang, wujudkan pemahaman ini dalam Lembar Praktikum Power BI!</p>
+  <a class="lab-link" href="Praktikum-02-BIV.html">▶ Buka Lembar Praktikum P02 (Power BI Hands-on)</a>
+</div>
+
+</main>
+
+<script>
+const STORAGE_KEY = 'tazkia-biv-p02-v1';
+const TOTAL_SECS = 7;
+
+// Simulator Scenario Answers: S1=1 (Horizontal Bar), S2=0 (Line Chart), S3=1 (100% Stacked Bar)
+const SCENARIO_CORRECT = [1, 0, 1];
+const SCENARIO_EXPLANATION = [
+  "Tepat! Horizontal Bar Chart sangat ideal untuk kategori dengan nama panjang (>5 karakter) agar label tidak miring atau terpotong.",
+  "Tepat! Line Chart kontinu adalah standar terbaik untuk melihat fluktuasi serial waktu bulanan selama 24 bulan.",
+  "Tepat! 100% Stacked Bar Chart memungkinkan perbandingan proporsi komposisi antar cabang secara adil tanpa bias sudut."
+];
+
+// MATCHING: 0->def2, 1->def4, 2->def1, 3->def0, 4->def3
+const MATCH_CORRECT = { 0: 2, 1: 4, 2: 1, 3: 0, 4: 3 };
+
+// MCQ Answers: Q0=B(1), Q1=C(2), Q2=B(1), Q3=A(0)
+const MCQ_ANSWERS = [1, 2, 1, 0];
+const MCQ_FEEDBACKS = [
+  "B Benar! Efek 3D menyebabkan ilusi optik perspektif yang mendistorsi proporsi sudut dan luas bidang.",
+  "C Benar! Scatter Plot dirancang khusus untuk memetakan hubungan/korelasi antara 2 variabel numerik kontinyu.",
+  "B Benar! Pojok kiri atas adalah titik masuk visual pertama sesuai dengan pola pemindaian F-Pattern.",
+  "A Benar! Nilai 'Adl menuntut sumbu Y dimulai dari nol pada bar chart agar perbandingan rasio panjang batang jujur."
+];
+
+const PAIR_COLORS = [
+  { b: 'var(--p0)', l: 'var(--p0l)' },
+  { b: 'var(--p1)', l: 'var(--p1l)' },
+  { b: 'var(--p2)', l: 'var(--p2l)' },
+  { b: 'var(--p3)', l: 'var(--p3l)' },
+  { b: 'var(--p4)', l: 'var(--p4l)' }
+];
+
+let state = {
+  done: [0],
+  scenarios: [null, null, null],
+  mcq: [null, null, null, null],
+  matchPairs: {},
+  submitted: false,
+  passed: false
+};
+
+function loadState() {
+  try {
+    const s = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (s) state = s;
+  } catch (e) {}
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (e) {}
+}
+
+function applyState() {
+  for (let i = 0; i < TOTAL_SECS; i++) {
+    const el = document.getElementById('sec' + i);
+    if (!el) continue;
+    if (state.done.includes(i)) {
+      el.className = 'sec-card unlocked';
+      const n = document.getElementById('sn' + i);
+      if (n) { n.className = 'sec-num done'; n.textContent = '✓'; }
+      const btn = el.querySelector('.btn-paham');
+      if (btn) { btn.className = 'btn-paham done'; btn.disabled = true; btn.textContent = '✓ Selesai'; }
+    } else {
+      el.className = 'sec-card locked';
+    }
+  }
+
+  // Restore scenarios
+  state.scenarios.forEach((ans, sIdx) => {
+    if (ans !== null) restoreScenario(sIdx, ans);
+  });
+
+  // Restore MCQ
+  state.mcq.forEach((ans, qIdx) => {
+    if (ans !== null) restoreMCQ(qIdx, ans);
+  });
+
+  // Restore Match Pairs
+  Object.entries(state.matchPairs).forEach(([ti, di]) => {
+    applyPairColor(+ti, +di);
+  });
+
+  if (state.submitted) showQuizResult();
+  updateProgress();
+}
+
+function unlock(secIdx) {
+  if (!state.done.includes(secIdx + 1)) {
+    state.done.push(secIdx + 1);
+    saveState();
+  }
+  applyState();
+  const next = document.getElementById('sec' + (secIdx + 1));
+  if (next) next.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function updateProgress() {
+  const total = TOTAL_SECS;
+  const doneCount = state.done.length + (state.passed ? 1 : 0);
+  const pct = Math.min(100, Math.round((doneCount / total) * 100));
+  document.getElementById('progPct').textContent = pct + '%';
+  for (let i = 0; i < TOTAL_SECS; i++) {
+    const d = document.getElementById('pd' + i);
+    if (!d) continue;
+    if (i < state.done.length + (state.passed ? 1 : 0)) d.className = 'prog-dot done';
+    else if (i === state.done.length) d.className = 'prog-dot active';
+    else d.className = 'prog-dot';
+  }
+}
+
+/* ── GAME 1: SCENARIO HANDLER ── */
+function checkScenario(sIdx, optIdx) {
+  if (state.submitted) return;
+  state.scenarios[sIdx] = optIdx;
+  saveState();
+  restoreScenario(sIdx, optIdx);
+}
+
+function restoreScenario(sIdx, optIdx) {
+  const box = document.getElementById('scenBox' + sIdx);
+  const btns = box.querySelectorAll('.chart-opt-btn');
+  const fb = document.getElementById('scenFb' + sIdx);
+  const correct = SCENARIO_CORRECT[sIdx];
+
+  btns.forEach((b, idx) => {
+    b.classList.remove('correct', 'wrong');
+    if (idx === optIdx) {
+      if (optIdx === correct) {
+        b.classList.add('correct');
+        fb.className = 'scenario-feedback show correct';
+        fb.innerHTML = '<strong>✓ ' + SCENARIO_EXPLANATION[sIdx] + '</strong>';
+      } else {
+        b.classList.add('wrong');
+        fb.className = 'scenario-feedback show wrong';
+        fb.innerHTML = '<strong>✗ Kurang Tepat.</strong> Pilihan ini berisiko memicu distorsi atau kesulitan membaca label. Coba telaah opsi lain!';
+      }
+    }
+  });
+}
+
+/* ── GAME 2: MATCHING LOGIC ── */
+let activeTerm = null, activeDef = null;
+const usedTerms = {}, usedDefs = {};
+
+function selectTerm(ti) {
+  if (state.submitted || usedTerms[ti]) return;
+  const terms = document.querySelectorAll('#matchTerms .match-item');
+  terms.forEach(t => t.classList.remove('selected'));
+  activeTerm = ti;
+  terms[ti].classList.add('selected');
+  tryMatch();
+}
+
+function selectDef(di) {
+  if (state.submitted || usedDefs[di]) return;
+  const defs = document.querySelectorAll('#matchDefs .match-item');
+  defs.forEach(d => d.classList.remove('selected'));
+  activeDef = di;
+  defs[di].classList.add('selected');
+  tryMatch();
+}
+
+function tryMatch() {
+  if (activeTerm === null || activeDef === null) return;
+  const ti = activeTerm, di = activeDef;
+  usedTerms[ti] = true;
+  usedDefs[di] = true;
+  state.matchPairs[ti] = di;
+  saveState();
+  applyPairColor(ti, di);
+  activeTerm = null;
+  activeDef = null;
+}
+
+function applyPairColor(ti, di) {
+  const colorIdx = Object.keys(state.matchPairs).indexOf(String(ti));
+  const c = PAIR_COLORS[colorIdx % PAIR_COLORS.length];
+  const terms = document.querySelectorAll('#matchTerms .match-item');
+  const defs = document.querySelectorAll('#matchDefs .match-item');
+  if (terms[ti]) {
+    terms[ti].style.background = c.l;
+    terms[ti].style.borderColor = c.b;
+    terms[ti].style.color = c.b;
+    terms[ti].classList.remove('selected');
+  }
+  if (defs[di]) {
+    defs[di].style.background = c.l;
+    defs[di].style.borderColor = c.b;
+    defs[di].style.color = c.b;
+    defs[di].classList.remove('selected');
+  }
+  usedTerms[ti] = true;
+  usedDefs[di] = true;
+}
+
+/* ── MCQ LOGIC ── */
+function selectMCQ(qi, ai) {
+  if (state.submitted) return;
+  state.mcq[qi] = ai;
+  saveState();
+  restoreMCQ(qi, ai);
+}
+
+function restoreMCQ(qi, ai) {
+  const opts = document.querySelectorAll('#q' + qi + ' .q-opt');
+  opts.forEach((o, i) => {
+    o.className = 'q-opt' + (i === ai ? ' selected' : '');
+  });
+}
+
+/* ── SUBMIT QUIZ ── */
+function submitQuiz() {
+  if (state.submitted) return;
+  state.submitted = true;
+  saveState();
+
+  // Grade Scenarios
+  let scenScore = 0;
+  state.scenarios.forEach((ans, idx) => {
+    if (ans === SCENARIO_CORRECT[idx]) scenScore++;
+  });
+
+  // Grade Matching
+  let matchScore = 0;
+  const terms = document.querySelectorAll('#matchTerms .match-item');
+  const defs = document.querySelectorAll('#matchDefs .match-item');
+  Object.entries(state.matchPairs).forEach(([ti, di]) => {
+    const correct = MATCH_CORRECT[+ti];
+    if (+di === correct) {
+      matchScore++;
+      if (terms[+ti]) { terms[+ti].style.borderColor = 'var(--sya)'; terms[+ti].style.background = 'var(--syal)'; }
+      if (defs[+di]) { defs[+di].style.borderColor = 'var(--sya)'; defs[+di].style.background = 'var(--syal)'; }
+    } else {
+      if (terms[+ti]) { terms[+ti].style.borderColor = '#D44040'; terms[+ti].style.background = '#FEE0E0'; }
+      if (defs[+di]) { defs[+di].style.borderColor = '#D44040'; defs[+di].style.background = '#FEE0E0'; }
+    }
+  });
+
+  // Grade MCQ
+  let mcqScore = 0;
+  state.mcq.forEach((ans, qi) => {
+    const opts = document.querySelectorAll('#q' + qi + ' .q-opt');
+    const correct = MCQ_ANSWERS[qi];
+    opts.forEach((o, i) => {
+      if (i === correct) o.classList.add('correct');
+      else if (i === ans && i !== correct) o.classList.add('wrong');
+    });
+    const fb = document.getElementById('fb' + qi);
+    if (fb) {
+      fb.className = 'opt-fb show ' + (ans === correct ? 'correct' : 'wrong');
+      fb.innerHTML = '<strong>' + (ans === correct ? '✓ ' : '✗ ') + MCQ_FEEDBACKS[qi] + '</strong>';
+    }
+    if (ans === correct) mcqScore++;
+  });
+
+  const totalPossible = 3 + 5 + 4; // 3 Scenarios + 5 Matches + 4 MCQs = 12
+  const totalScore = scenScore + matchScore + mcqScore;
+  const pct = Math.round((totalScore / totalPossible) * 100);
+  state.passed = pct >= 75;
+  saveState();
+
+  // Sync Score to Cloud Firestore
+  if (window.saveScoreToCloud) {
+    window.saveScoreToCloud('BIV Pertemuan 02', 'Kuis Prinsip Desain & Chart Chooser', totalScore, totalPossible, { percentage: pct, passed: state.passed });
+  }
+
+  showQuizResult();
+  updateProgress();
+
+  if (state.passed) {
+    const comp = document.getElementById('completion');
+    comp.classList.add('show');
+    comp.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function showQuizResult() {
+  const scenScore = state.scenarios.filter((a, i) => a === SCENARIO_CORRECT[i]).length;
+  const matchScore = Object.entries(state.matchPairs).filter(([ti, di]) => +di === MATCH_CORRECT[+ti]).length;
+  const mcqScore = state.mcq.filter((a, i) => a === MCQ_ANSWERS[i]).length;
+  const totalScore = scenScore + matchScore + mcqScore;
+  const totalPossible = 12;
+  const pct = Math.round((totalScore / totalPossible) * 100);
+
+  const el = document.getElementById('quizResult');
+  el.style.display = 'block';
+  el.className = 'quiz-result ' + (pct >= 75 ? 'pass' : 'fail');
+  document.getElementById('resultScore').textContent = 'Skor Anda: ' + totalScore + '/' + totalPossible + ' (' + pct + '%)';
+  document.getElementById('resultMsg').textContent = pct >= 75 ?
+    'Luar biasa! Pemahaman Anda tentang pemilihan chart dan prinsip desain visualisasi sudah sangat matang. Silakan lanjutkan ke Lembar Praktikum!' :
+    'Nilai belum mencapai batas kelulusan 75%. Baca kembali materi di atas dan segarkan halaman untuk mencoba lagi!';
+
+  document.getElementById('quizScore').textContent = 'Hasil: ' + totalScore + '/' + totalPossible + ' (' + pct + '%)';
+  document.getElementById('btnSubmit').disabled = true;
+}
+
+// ── INIT ──
+loadState();
+applyState();
+</script>
+
+</body>
+</html>
