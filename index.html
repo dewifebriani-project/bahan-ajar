@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portal Bahan Ajar Digital — FEBI Universitas Tazkia</title>
+<title>Portal Bahan Ajar &amp; Laboratorium Digital — FEBI Universitas Tazkia</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap">
 <script src="cloud-sync.js"></script>
 <style>
@@ -11,6 +11,7 @@
   --bg:#0A0E17;
   --sf:#121826;
   --sf2:#182236;
+  --sf3:#1E293B;
   --bd:#22304A;
   --tx:#F0F4FA;
   --txm:#94A3B8;
@@ -28,29 +29,57 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
 .hd-glow{position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:500px;height:250px;background:radial-gradient(circle,rgba(56,189,248,.18) 0%,rgba(14,165,233,0) 70%);pointer-events:none}
 .hd-badge{display:inline-block;background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.3);color:#7DD3FC;padding:3px 14px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px}
 .hd-title{font-family:'Amiri',serif;font-size:36px;font-weight:700;margin-bottom:8px;color:#fff;line-height:1.2}
-.hd-sub{font-size:15px;color:var(--txm);max-width:640px;margin:0 auto}
+.hd-sub{font-size:15px;color:var(--txm);max-width:680px;margin:0 auto}
 
 /* ── MAIN ── */
-.main{max-width:1040px;margin:0 auto;padding:40px 24px 80px;flex:1;width:100%}
-.sec-title{font-family:'Amiri',serif;font-size:22px;color:#fff;margin-bottom:20px;display:flex;align-items:center;gap:10px}
-.sec-title::before{content:'';width:4px;height:20px;background:#38BDF8;border-radius:2px}
+.main{max-width:1120px;margin:0 auto;padding:36px 24px 80px;flex:1;width:100%}
 
-.course-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:40px}
-@media(max-width:840px){.course-grid{grid-template-columns:1fr}}
+/* ── DOSEN BANNER ── */
+.dosen-banner{background:linear-gradient(135deg,rgba(56,189,248,.1),rgba(14,165,233,.05));border:1.5px solid rgba(56,189,248,.3);border-radius:var(--r);padding:20px 24px;margin-bottom:36px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.dosen-tag{font-size:11.5px;font-weight:700;color:#38BDF8;text-transform:uppercase;letter-spacing:.06em}
+.dosen-title{font-family:'Amiri',serif;font-size:21px;color:#fff;margin:2px 0 4px}
+.dosen-desc{font-size:13.5px;color:var(--txm);margin:0}
+.dosen-btn{background:linear-gradient(135deg,#0284C7,#0EA5E9);color:#fff;text-decoration:none;padding:10px 20px;border-radius:8px;font-size:13.5px;font-weight:700;box-shadow:0 4px 14px rgba(14,165,233,.3);transition:all .15s;display:inline-flex;align-items:center;gap:8px}
+.dosen-btn:hover{background:#0284C7;transform:translateY(-2px)}
 
-.course-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:24px;display:flex;flex-direction:column;transition:all .25s;position:relative;overflow:hidden}
-.course-card:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,.4)}
+/* ── SEARCH BAR ── */
+.search-box{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:12px 18px;display:flex;align-items:center;gap:12px;margin-bottom:30px}
+.search-input{background:transparent;border:none;outline:none;color:#fff;font-size:14px;width:100%;font-family:inherit}
+.search-input::placeholder{color:var(--txl)}
+
+/* ── COURSES ── */
+.sec-title{font-family:'Amiri',serif;font-size:24px;color:#fff;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.sec-title::before{content:'';width:4px;height:22px;background:#38BDF8;border-radius:2px}
+
+.course-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:40px}
+@media(max-width:960px){.course-grid{grid-template-columns:1fr}}
+
+.course-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:24px;display:flex;flex-direction:column;transition:all .25s;position:relative}
 .card-sia{border-top:4px solid var(--sia)}
 .card-ada{border-top:4px solid var(--ada)}
 .card-biv{border-top:4px solid var(--biv)}
 
-.c-icon{font-size:32px;margin-bottom:12px}
-.c-code{font-family:'Source Code Pro',monospace;font-size:11.5px;font-weight:700;color:var(--txl);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
-.c-name{font-family:'Amiri',serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:8px;line-height:1.3}
-.c-desc{font-size:13.5px;color:var(--txm);line-height:1.55;flex:1;margin-bottom:20px}
-.c-links{display:grid;gap:8px}
-.c-btn{display:flex;align-items:center;justify-content:space-between;background:var(--sf2);border:1px solid var(--bd);border-radius:8px;padding:10px 14px;color:#fff;text-decoration:none;font-size:13px;font-weight:600;transition:all .15s}
-.c-btn:hover{background:#1E293B;border-color:rgba(255,255,255,.2);color:#38BDF8}
+.c-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.c-icon{font-size:32px}
+.c-pin{padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;font-family:'Source Code Pro',monospace}
+.c-code{font-family:'Source Code Pro',monospace;font-size:12px;font-weight:700;color:var(--txl);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.c-name{font-family:'Amiri',serif;font-size:23px;font-weight:700;color:#fff;margin-bottom:8px;line-height:1.25}
+.c-desc{font-size:13px;color:var(--txm);line-height:1.5;margin-bottom:18px}
+
+.c-rps{display:flex;align-items:center;justify-content:space-between;background:var(--sf2);border:1px solid var(--bd);border-radius:8px;padding:10px 14px;color:#CBD5E1;text-decoration:none;font-size:13px;font-weight:600;margin-bottom:16px;transition:all .15s}
+.c-rps:hover{background:var(--sf3);color:#fff;border-color:rgba(255,255,255,.2)}
+
+.c-folders-title{font-size:11.5px;font-weight:700;color:var(--txl);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+
+.c-folders-list{display:grid;gap:8px}
+.folder-item{background:var(--sf2);border:1px solid var(--bd);border-radius:8px;padding:11px 14px;display:flex;align-items:center;justify-content:space-between;text-decoration:none;color:#fff;transition:all .15s}
+.folder-item:hover{background:var(--sf3);border-color:rgba(56,189,248,.4);transform:translateX(3px)}
+.folder-left{display:flex;align-items:center;gap:10px;overflow:hidden}
+.folder-icon{font-size:16px;flex-shrink:0}
+.folder-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.folder-badge{font-size:10.5px;font-weight:700;background:rgba(255,255,255,.06);color:var(--txm);padding:2px 7px;border-radius:4px;flex-shrink:0}
+.folder-arrow{font-size:12px;color:var(--txl);transition:transform .15s;flex-shrink:0;margin-left:8px}
+.folder-item:hover .folder-arrow{color:#38BDF8;transform:translateX(2px)}
 
 /* ── FOOTER ── */
 .ft{background:#070A10;border-top:1px solid #1E293B;padding:24px;text-align:center;font-size:13px;color:var(--txl)}
@@ -60,132 +89,228 @@ body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color
 
 <header class="hd">
   <div class="hd-glow"></div>
-  <span class="hd-badge">Fakultas Ekonomi &amp; Bisnis Islam</span>
+  <span class="hd-badge">Fakultas Ekonomi &amp; Bisnis Islam · Universitas Tazkia</span>
   <h1 class="hd-title">Portal Bahan Ajar &amp; Laboratorium Digital</h1>
-  <p class="hd-sub">Koleksi slide interaktif, lembar praktikum, dataset, game edukatif, dan RPS berbasis Outcome-Based Education (OBE) &amp; Insersi Nilai Syariah.</p>
+  <p class="hd-sub">Direktori modul interaktif, lembar praktikum lab, dataset keuangan syariah, dan instrumen asesmen OBE.</p>
 </header>
 
 <main class="main">
-  <div style="background:linear-gradient(135deg,rgba(56,189,248,.1),rgba(14,165,233,.05));border:1.5px solid rgba(56,189,248,.3);border-radius:var(--r);padding:18px 24px;margin-bottom:30px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+
+  <!-- DOSEN MONITORING -->
+  <div class="dosen-banner">
     <div>
-      <div style="font-size:12px;font-weight:700;color:#38BDF8;text-transform:uppercase;letter-spacing:.06em">Khusus Fasilitator &amp; Dosen Pengampu</div>
-      <h3 style="font-family:'Amiri',serif;font-size:22px;color:#fff;margin:2px 0 4px">📊 Dashboard Monitoring &amp; Rekap Nilai Mahasiswa (Cloud)</h3>
-      <p style="font-size:13px;color:var(--txm);margin:0">Pantau submission nilai kuis seluruh pertemuan secara realtime dan export rekap nilai ke format Excel/CSV.</p>
+      <span class="dosen-tag">Khusus Fasilitator &amp; Dosen Pengampu</span>
+      <h3 class="dosen-title">📊 Dashboard Monitoring &amp; Rekap Nilai Mahasiswa (Cloud)</h3>
+      <p class="dosen-desc">Pantau skor kuis dan aktivitas praktikum mahasiswa secara realtime dari Firebase Cloud Firestore.</p>
     </div>
-    <a href="dashboard-dosen.html" style="background:linear-gradient(135deg,#0284C7,#0EA5E9);color:#fff;text-decoration:none;padding:10px 20px;border-radius:8px;font-size:13.5px;font-weight:700;box-shadow:0 4px 14px rgba(14,165,233,.3);transition:all .15s;display:inline-flex;align-items:center;gap:6px">Buka Dashboard Dosen ➔</a>
+    <a href="dashboard-dosen.html" class="dosen-btn">Buka Dashboard Dosen ➔</a>
   </div>
 
   <h2 class="sec-title">Mata Kuliah Semester Ganjil 2026/2027</h2>
 
   <div class="course-grid">
+    
     <!-- ════════ SISTEM INFORMASI AKUNTANSI (SIA) ════════ -->
     <div class="course-card card-sia">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <div class="c-header">
         <div class="c-icon">🏛️</div>
-        <span style="background:rgba(232,128,48,.15);border:1px solid rgba(232,128,48,.35);color:#FFB885;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700">PIN: 3021</span>
+        <span class="c-pin" style="background:rgba(232,128,48,.15);border:1px solid rgba(232,128,48,.35);color:#FFB885">PIN: 3021</span>
       </div>
       <div class="c-code">AKS-302 · 3 SKS · 8 Pertemuan</div>
       <h3 class="c-name">Sistem Informasi Akuntansi</h3>
       <p class="c-desc">Perancangan proses bisnis, DFD, pengendalian internal COSO, keamanan siber, ITGC, dan audit trail perbankan syariah.</p>
       
-      <div class="c-links">
-        <a class="c-btn" href="Sistem Informasi Akuntansi/RPS-SIA.html" style="background:#1E293B">📋 Rencana Pembelajaran (RPS) <span>→</span></a>
-        
-        <div style="font-size:11px;font-weight:700;color:var(--txl);text-transform:uppercase;letter-spacing:.06em;margin:8px 0 2px">Modul Pertemuan &amp; Lab:</div>
-        
-        <a class="c-btn" href="Sistem Informasi Akuntansi/Pertemuan 01/Pertemuan-01.html">📖 P01: Pengantar AIS &amp; 6 Komponen <span>→</span></a>
-        
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-          <a class="c-btn" href="Sistem Informasi Akuntansi/Pertemuan 02/Pertemuan-02.html" style="font-size:12px;padding:8px 10px">📖 P02: Proses &amp; Data</a>
-          <a class="c-btn" href="Sistem Informasi Akuntansi/Pertemuan 02/Praktikum-02-AIS.html" style="font-size:12px;padding:8px 10px;color:#38BDF8">💻 Lab 1 (DFD)</a>
-        </div>
-        <a class="c-btn" href="Sistem Informasi Akuntansi/Pertemuan 02/Game-02-AIS.html" style="color:var(--sia);border-color:rgba(232,128,48,.4);background:rgba(232,128,48,.08)">🎮 Game Arena P02 (Ice Breaking) <span>→</span></a>
+      <a class="c-rps" href="Sistem Informasi Akuntansi/RPS-SIA.html">
+        <span>📋 Rencana Pembelajaran (RPS)</span>
+        <span>→</span>
+      </a>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-          <a class="c-btn" href="Sistem Informasi Akuntansi/Pertemuan 03/Pertemuan-03.html" style="font-size:12px;padding:8px 10px">📖 P03: Enterprise &amp; ERP</a>
-          <a class="c-btn" href="Sistem Informasi Akuntansi/Pertemuan 03/Praktikum-03-AIS.html" style="font-size:12px;padding:8px 10px;color:#38BDF8">💻 Lab 2 (ERP)</a>
-        </div>
+      <div class="c-folders-title">
+        <span>📁 Folder Pertemuan:</span>
+        <span style="font-size:10.5px;color:var(--txl)">Klik untuk lihat isi berkas</span>
+      </div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-          <a class="c-btn" href="Sistem Informasi Akuntansi/Pertemuan 04/Pertemuan-04.html" style="font-size:12px;padding:8px 10px">📖 P04: Etika &amp; Fraud</a>
-          <a class="c-btn" href="Sistem Informasi Akuntansi/Pertemuan 04/Praktikum-04-AIS.html" style="font-size:12px;padding:8px 10px;color:#38BDF8">💻 Lab 3 (Audit)</a>
-        </div>
+      <div class="c-folders-list">
+        <a class="folder-item" href="Sistem Informasi Akuntansi/Pertemuan 01/index.html">
+          <div class="folder-left">
+            <span class="folder-icon">📁</span>
+            <span class="folder-name">Pertemuan 01: Pengantar AIS</span>
+          </div>
+          <div style="display:flex;align-items:center">
+            <span class="folder-badge">1 Berkas</span>
+            <span class="folder-arrow">➔</span>
+          </div>
+        </a>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-          <a class="c-btn" href="Sistem Informasi Akuntansi/Pertemuan 05/Pertemuan-05.html" style="font-size:12px;padding:8px 10px">📖 P05: COSO Controls</a>
-          <a class="c-btn" href="Sistem Informasi Akuntansi/Pertemuan 05/Praktikum-05-AIS.html" style="font-size:12px;padding:8px 10px;color:#38BDF8">💻 Lab 4 (Matriks)</a>
-        </div>
+        <a class="folder-item" href="Sistem Informasi Akuntansi/Pertemuan 02/index.html">
+          <div class="folder-left">
+            <span class="folder-icon">📁</span>
+            <span class="folder-name">Pertemuan 02: Proses Bisnis &amp; DFD</span>
+          </div>
+          <div style="display:flex;align-items:center">
+            <span class="folder-badge" style="color:#FFB885;background:rgba(232,128,48,.12)">4 Berkas</span>
+            <span class="folder-arrow">➔</span>
+          </div>
+        </a>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-          <a class="c-btn" href="Sistem Informasi Akuntansi/Pertemuan 06/Pertemuan-06.html" style="font-size:12px;padding:8px 10px">📖 P06: Cybersecurity</a>
-          <a class="c-btn" href="Sistem Informasi Akuntansi/Pertemuan 06/Praktikum-06-AIS.html" style="font-size:12px;padding:8px 10px;color:#38BDF8">💻 Lab 5 (Forensik)</a>
-        </div>
+        <a class="folder-item" href="Sistem Informasi Akuntansi/Pertemuan 03/index.html">
+          <div class="folder-left">
+            <span class="folder-icon">📁</span>
+            <span class="folder-name">Pertemuan 03: Enterprise &amp; ERP</span>
+          </div>
+          <div style="display:flex;align-items:center">
+            <span class="folder-badge">4 Berkas</span>
+            <span class="folder-arrow">➔</span>
+          </div>
+        </a>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-          <a class="c-btn" href="Sistem Informasi Akuntansi/Pertemuan 07/Pertemuan-07.html" style="font-size:12px;padding:8px 10px">📖 P07: ITGC &amp; Controls</a>
-          <a class="c-btn" href="Sistem Informasi Akuntansi/Pertemuan 07/Praktikum-07-AIS.html" style="font-size:12px;padding:8px 10px;color:#38BDF8">💻 Lab 6 (Audit Trail)</a>
-        </div>
+        <a class="folder-item" href="Sistem Informasi Akuntansi/Pertemuan 04/index.html">
+          <div class="folder-left">
+            <span class="folder-icon">📁</span>
+            <span class="folder-name">Pertemuan 04: Etika &amp; Fraud</span>
+          </div>
+          <div style="display:flex;align-items:center">
+            <span class="folder-badge">3 Berkas</span>
+            <span class="folder-arrow">➔</span>
+          </div>
+        </a>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-          <a class="c-btn" href="Sistem Informasi Akuntansi/Pertemuan 08/Pertemuan-08.html" style="font-size:12px;padding:8px 10px;color:#F0A830;border-color:rgba(240,168,48,.4)">🎯 P08: UTS Project</a>
-          <a class="c-btn" href="Sistem Informasi Akuntansi/Pertemuan 08/Praktikum-08-AIS.html" style="font-size:12px;padding:8px 10px;color:#38BDF8">💻 Lab Validasi</a>
-        </div>
+        <a class="folder-item" href="Sistem Informasi Akuntansi/Pertemuan 05/index.html">
+          <div class="folder-left">
+            <span class="folder-icon">📁</span>
+            <span class="folder-name">Pertemuan 05: COSO Controls</span>
+          </div>
+          <div style="display:flex;align-items:center">
+            <span class="folder-badge">3 Berkas</span>
+            <span class="folder-arrow">➔</span>
+          </div>
+        </a>
+
+        <a class="folder-item" href="Sistem Informasi Akuntansi/Pertemuan 06/index.html">
+          <div class="folder-left">
+            <span class="folder-icon">📁</span>
+            <span class="folder-name">Pertemuan 06: Cybersecurity</span>
+          </div>
+          <div style="display:flex;align-items:center">
+            <span class="folder-badge">3 Berkas</span>
+            <span class="folder-arrow">➔</span>
+          </div>
+        </a>
+
+        <a class="folder-item" href="Sistem Informasi Akuntansi/Pertemuan 07/index.html">
+          <div class="folder-left">
+            <span class="folder-icon">📁</span>
+            <span class="folder-name">Pertemuan 07: ITGC &amp; Controls</span>
+          </div>
+          <div style="display:flex;align-items:center">
+            <span class="folder-badge">3 Berkas</span>
+            <span class="folder-arrow">➔</span>
+          </div>
+        </a>
+
+        <a class="folder-item" href="Sistem Informasi Akuntansi/Pertemuan 08/index.html" style="border-color:rgba(232,128,48,.3)">
+          <div class="folder-left">
+            <span class="folder-icon">🎯</span>
+            <span class="folder-name" style="color:#FFB885">Pertemuan 08: UTS Project</span>
+          </div>
+          <div style="display:flex;align-items:center">
+            <span class="folder-badge">3 Berkas</span>
+            <span class="folder-arrow">➔</span>
+          </div>
+        </a>
       </div>
     </div>
 
     <!-- ════════ APPLIED DATA ANALYTICS (ADA) ════════ -->
     <div class="course-card card-ada">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <div class="c-header">
         <div class="c-icon">📊</div>
-        <span style="background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.35);color:#7DD3FC;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700">PIN: 3011</span>
+        <span class="c-pin" style="background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.35);color:#7DD3FC">PIN: 3011</span>
       </div>
       <div class="c-code">DAT-301 · 3 SKS · 3 Pertemuan</div>
       <h3 class="c-name">Applied Data Analytics</h3>
       <p class="c-desc">Eksplorasi data bisnis, statistik terapan, pemodelan prediktif, evaluasi regresi &amp; forecasting keuangan syariah.</p>
       
-      <div class="c-links">
-        <a class="c-btn" href="Applied Data Analytics/Pertemuan 01/RPS-ADA.html" style="background:#1E293B">📋 Rencana Pembelajaran (RPS) <span>→</span></a>
-        
-        <div style="font-size:11px;font-weight:700;color:var(--txl);text-transform:uppercase;letter-spacing:.06em;margin:8px 0 2px">Modul Pertemuan &amp; Lab:</div>
+      <a class="c-rps" href="Applied Data Analytics/Pertemuan 01/RPS-ADA.html">
+        <span>📋 Rencana Pembelajaran (RPS)</span>
+        <span>→</span>
+      </a>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-          <a class="c-btn" href="Applied Data Analytics/Pertemuan 01/Pertemuan-01-ADA.html" style="font-size:12px;padding:8px 10px">📖 P01: Setup &amp; Python</a>
-          <a class="c-btn" href="Applied Data Analytics/Pertemuan 01/Praktikum-01-ADA.html" style="font-size:12px;padding:8px 10px;color:#38BDF8">💻 Lab 1 (Colab)</a>
-        </div>
+      <div class="c-folders-title">
+        <span>📁 Folder Pertemuan:</span>
+        <span style="font-size:10.5px;color:var(--txl)">Klik untuk lihat isi berkas</span>
+      </div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-          <a class="c-btn" href="Applied Data Analytics/Pertemuan 02/Pertemuan-02-ADA.html" style="font-size:12px;padding:8px 10px">📖 P02: Pandas Groupby</a>
-          <a class="c-btn" href="Applied Data Analytics/Pertemuan 02/Praktikum-02-ADA.html" style="font-size:12px;padding:8px 10px;color:#38BDF8">💻 Lab 2 (Filter)</a>
-        </div>
+      <div class="c-folders-list">
+        <a class="folder-item" href="Applied Data Analytics/Pertemuan 01/index.html">
+          <div class="folder-left">
+            <span class="folder-icon">📁</span>
+            <span class="folder-name">Pertemuan 01: Setup &amp; Python</span>
+          </div>
+          <div style="display:flex;align-items:center">
+            <span class="folder-badge" style="color:#7DD3FC;background:rgba(56,189,248,.12)">5 Berkas</span>
+            <span class="folder-arrow">➔</span>
+          </div>
+        </a>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-          <a class="c-btn" href="Applied Data Analytics/Pertemuan 03/Pertemuan-03-ADA.html" style="font-size:12px;padding:8px 10px">📖 P03: Wrangling</a>
-          <a class="c-btn" href="Applied Data Analytics/Pertemuan 03/Praktikum-03-ADA.html" style="font-size:12px;padding:8px 10px;color:#38BDF8">💻 Lab 3 (Cleaning)</a>
-        </div>
+        <a class="folder-item" href="Applied Data Analytics/Pertemuan 02/index.html">
+          <div class="folder-left">
+            <span class="folder-icon">📁</span>
+            <span class="folder-name">Pertemuan 02: Pandas Groupby</span>
+          </div>
+          <div style="display:flex;align-items:center">
+            <span class="folder-badge">2 Berkas</span>
+            <span class="folder-arrow">➔</span>
+          </div>
+        </a>
+
+        <a class="folder-item" href="Applied Data Analytics/Pertemuan 03/index.html">
+          <div class="folder-left">
+            <span class="folder-icon">📁</span>
+            <span class="folder-name">Pertemuan 03: Data Wrangling</span>
+          </div>
+          <div style="display:flex;align-items:center">
+            <span class="folder-badge">4 Berkas</span>
+            <span class="folder-arrow">➔</span>
+          </div>
+        </a>
       </div>
     </div>
 
     <!-- ════════ BUSINESS INTELLIGENCE & VISUALIZATION (BIV) ════════ -->
     <div class="course-card card-biv">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <div class="c-header">
         <div class="c-icon">📈</div>
-        <span style="background:rgba(52,211,153,.15);border:1px solid rgba(52,211,153,.35);color:#6EE7B7;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700">PIN: 3012</span>
+        <span class="c-pin" style="background:rgba(52,211,153,.15);border:1px solid rgba(52,211,153,.35);color:#6EE7B7">PIN: 3012</span>
       </div>
       <div class="c-code">BIV-301 · 3 SKS · 1 Pertemuan</div>
       <h3 class="c-name">Business Intelligence &amp; Visualization</h3>
       <p class="c-desc">Arsitektur data warehouse, KPI dashboard eksekutif, visualisasi interaktif PowerBI/Tableau untuk keputusan manajerial.</p>
       
-      <div class="c-links">
-        <a class="c-btn" href="Business Intelligence & Visualization/RPS-BIV.html" style="background:#1E293B">📋 Rencana Pembelajaran (RPS) <span>→</span></a>
-        
-        <div style="font-size:11px;font-weight:700;color:var(--txl);text-transform:uppercase;letter-spacing:.06em;margin:8px 0 2px">Modul Pertemuan &amp; Lab:</div>
+      <a class="c-rps" href="Business Intelligence & Visualization/RPS-BIV.html">
+        <span>📋 Rencana Pembelajaran (RPS)</span>
+        <span>→</span>
+      </a>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-          <a class="c-btn" href="Business Intelligence & Visualization/Pertemuan 01/Pertemuan-01-BIV.html" style="font-size:12px;padding:8px 10px">📖 P01: Fondasi BI</a>
-          <a class="c-btn" href="Business Intelligence & Visualization/Pertemuan 01/Praktikum-01-BIV.html" style="font-size:12px;padding:8px 10px;color:#38BDF8">💻 Lab 1 (Power BI)</a>
-        </div>
+      <div class="c-folders-title">
+        <span>📁 Folder Pertemuan:</span>
+        <span style="font-size:10.5px;color:var(--txl)">Klik untuk lihat isi berkas</span>
+      </div>
+
+      <div class="c-folders-list">
+        <a class="folder-item" href="Business Intelligence & Visualization/Pertemuan 01/index.html">
+          <div class="folder-left">
+            <span class="folder-icon">📁</span>
+            <span class="folder-name">Pertemuan 01: Fondasi BI &amp; Power BI</span>
+          </div>
+          <div style="display:flex;align-items:center">
+            <span class="folder-badge" style="color:#6EE7B7;background:rgba(52,211,153,.12)">3 Berkas</span>
+            <span class="folder-arrow">➔</span>
+          </div>
+        </a>
       </div>
     </div>
+
   </div>
 </main>
 
