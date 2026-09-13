@@ -166,10 +166,12 @@ ul.lst li strong { color: var(--tx); }
 .gestalt-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 16px 0; }
 @media (max-width: 680px) { .gestalt-grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 460px) { .gestalt-grid { grid-template-columns: 1fr; } }
-.gestalt-card { background: var(--sf3); border: 1px solid var(--bs); border-radius: var(--rs); padding: 14px; }
+.gestalt-card { background: var(--sf3); border: 1px solid var(--bs); border-radius: var(--rs); padding: 14px; display: flex; flex-direction: column; }
 .gestalt-icon { font-size: 24px; margin-bottom: 6px; }
 .gestalt-title { font-size: 14px; font-weight: 700; color: var(--pri); margin-bottom: 4px; }
-.gestalt-desc { font-size: 12px; color: var(--txm); line-height: 1.5; }
+.gestalt-desc { font-size: 12px; color: var(--txm); line-height: 1.5; margin-bottom: 8px; flex: 1; }
+.gestalt-ex { margin-top: auto; padding: 7px 9px; background: var(--prx); border-left: 3px solid var(--meet-acc); border-radius: 4px; font-size: 11px; color: var(--pmid); line-height: 1.45; }
+.gestalt-ex strong { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--meet-acc); margin-bottom: 2px; }
 
 /* ── INTERACTIVE SIMULATOR: CHART SELECTOR GAME ── */
 .game-box { background: var(--sf2); border: 2px solid var(--acc); border-radius: var(--r); padding: 20px; margin: 20px 0; }
@@ -398,37 +400,43 @@ ul.lst li strong { color: var(--tx); }
       <div class="gestalt-card">
         <div class="gestalt-icon">📐</div>
         <div class="gestalt-title">1. Proximity (Kedekatan)</div>
-        <div class="gestalt-desc">Objek yang diletakkan berdekatan dianggap sebagai satu kesatuan fungsi (misal KPI Card Penjualan ditaruh dekat Trend Penjualan).</div>
+        <div class="gestalt-desc">Elemen yang berdekatan dianggap satu kesatuan fungsi. Kelompokkan visual yang saling berkaitan agar pembaca tidak perlu "melompat" mata ke seluruh layar.</div>
+        <div class="gestalt-ex"><strong>Contoh Nyata</strong>Dashboard BSI: KPI Card "Total Pembiayaan Murabahah Rp 2,4 T" diletakkan tepat di atas grafik tren bulanannya — angka dan tren terbaca sekaligus dalam satu tatapan tanpa mata bergerak jauh.</div>
       </div>
 
       <div class="gestalt-card">
         <div class="gestalt-icon">🎨</div>
         <div class="gestalt-title">2. Similarity (Kesamaan)</div>
-        <div class="gestalt-desc">Elemen yang berbagi warna, bentuk, atau font yang sama dianggap memiliki tipe metrik yang sejenis.</div>
+        <div class="gestalt-desc">Elemen yang berbagi warna, bentuk, atau ukuran font dianggap satu kategori. Gunakan untuk membangun "bahasa warna" yang konsisten di seluruh dashboard.</div>
+        <div class="gestalt-ex"><strong>Contoh Nyata</strong>Dashboard BMT: semua metrik keuangan (pendapatan, SHU) pakai warna hijau teal, semua metrik risiko (NPF, CKPN) pakai merah — kategori terbaca hanya dari warna tanpa membaca label.</div>
       </div>
 
       <div class="gestalt-card">
         <div class="gestalt-icon">📦</div>
         <div class="gestalt-title">3. Enclosure (Pembingkaian)</div>
-        <div class="gestalt-desc">Menggunakan card container dengan background abu-abu tipis untuk memisahkan modul tanpa butuh garis tebal.</div>
+        <div class="gestalt-desc">Elemen dalam satu wadah dianggap satu modul. Cukup gunakan background berbeda atau shadow tipis — tidak perlu garis border tebal yang memenuhi layar.</div>
+        <div class="gestalt-ex"><strong>Contoh Nyata</strong>Dashboard Power BI Alfamart: modul "Performa Penjualan" di card putih kiri, modul "Status Stok Gudang" di card abu-abu kanan — tampak terpisah jelas tanpa satu garis border pun.</div>
       </div>
 
       <div class="gestalt-card">
         <div class="gestalt-icon">➡️</div>
         <div class="gestalt-title">4. Continuity (Kontinuitas)</div>
-        <div class="gestalt-desc">Mata membaca secara alami dari kiri-atas ke kanan-bawah (F-Pattern). Letakkan metrik paling krusial di pojok kiri atas.</div>
+        <div class="gestalt-desc">Mata bergerak mengikuti alur visual secara alami (F-Pattern: kiri-atas lalu ke kanan lalu ke bawah). Tempatkan informasi terpenting di jalur baca utama ini.</div>
+        <div class="gestalt-ex"><strong>Contoh Nyata</strong>Dashboard eksekutif Pertamina: KPI Produksi Minyak di pojok kiri atas, KPI Biaya tepat di bawahnya, grafik tren di panel kanan — mengikuti jalur baca F alami direksi.</div>
       </div>
 
       <div class="gestalt-card">
         <div class="gestalt-icon">⭕</div>
         <div class="gestalt-title">5. Closure (Kelengkapan)</div>
-        <div class="gestalt-desc">Otak melengkapi bentuk tanpa perlu semua border ditutup rapat. Hapus gridline berlebih untuk menghemat ruang kognitif.</div>
+        <div class="gestalt-desc">Otak secara otomatis "menutup" bentuk yang tidak lengkap. Area chart tanpa border pun tetap terbaca — hapus elemen dekoratif yang tidak menambah makna data.</div>
+        <div class="gestalt-ex"><strong>Contoh Nyata</strong>Bar chart penjualan Tokopedia tanpa satu pun gridline — grafik terasa jauh lebih bersih dan nilai tetap terbaca karena otak mengisi kekosongan secara otomatis.</div>
       </div>
 
       <div class="gestalt-card">
         <div class="gestalt-icon">🌓</div>
         <div class="gestalt-title">6. Figure-Ground</div>
-        <div class="gestalt-desc">Kontras tajam antara data utama (foreground) dengan latar belakang netral (background) agar angka langsung terbaca.</div>
+        <div class="gestalt-desc">Otak memisahkan "objek utama" (figure) dari "latar" (ground). Pastikan data paling penting memiliki kontras tinggi agar langsung menjadi titik fokus pertama.</div>
+        <div class="gestalt-ex"><strong>Contoh Nyata</strong>Dashboard direksi BRI Syariah: angka NPF 2,3% ditulis besar putih tebal di atas background merah gelap — terbaca jelas dari jarak 3 meter di layar proyektor ruang rapat.</div>
       </div>
     </div>
 
